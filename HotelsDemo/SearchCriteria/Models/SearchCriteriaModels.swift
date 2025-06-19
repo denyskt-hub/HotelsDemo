@@ -11,12 +11,18 @@ enum SearchCriteriaModels {
 	struct Request {}
 
 	struct Response {
-		let criteria: SearchCriteria
+		let criteria: SearchCriteria?
 	}
 
 	struct ViewModel {
 		let destination: String
 		let dateRange: String
 		let roomGuests: String
+	}
+
+	enum UpdateDestination {
+		struct Request {
+			let destination: Destination
+		}
 	}
 }

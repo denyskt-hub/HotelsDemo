@@ -15,6 +15,11 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 	weak var viewController: SearchCriteriaDisplayLogic?
 
 	func presentCriteria(response: SearchCriteriaModels.Response) {
-		
+		let viewModel = SearchCriteriaModels.ViewModel(
+			destination: "",
+			dateRange: "",
+			roomGuests: ""
+		)
+		viewController?.displayCriteria(viewModel: viewModel)
 	}
 }

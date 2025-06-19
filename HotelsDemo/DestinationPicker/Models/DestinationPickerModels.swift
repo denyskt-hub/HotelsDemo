@@ -8,15 +8,31 @@
 import Foundation
 
 enum DestinationPickerModels {
-	struct Request {
-		let query: String
+	enum Search {
+		struct Request {
+			let query: String
+		}
+
+		struct Response {
+			let destinations: [Destination]
+		}
+
+		struct ViewModel {
+			let destinations: [String]
+		}
 	}
 
-	struct Response {
-		let destinations: [Destination]
-	}
+	enum Select {
+		struct Request {
+			let index: Int
+		}
 
-	struct ViewModel {
-		let destinations: [String]
+		struct Response {
+			let selected: Destination
+		}
+
+		struct ViewModel {
+			let selected: Destination
+		}
 	}
 }

@@ -8,12 +8,14 @@
 import Foundation
 
 protocol DestinationPickerBusinessLogic {
-	func searchDestinations(query: String)
+	func searchDestinations(request: DestinationPickerModels.Search.Request)
+	func selectDestination(request: DestinationPickerModels.Select.Request)
 }
 
 final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
 	private let debouncer = Debouncer(delay: 0.3)
+	private var destinations = [Destination]()
 
 	var presenter: DestinationPickerPresentationLogic?
 
@@ -21,25 +23,35 @@ final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 		self.worker = worker
 	}
 
-	func searchDestinations(query: String) {
+	func searchDestinations(request: DestinationPickerModels.Search.Request) {
 		debouncer.execute { [weak self] in
-			self?.simulateSearch(query: query)
+			self?.performSearch(query: request.query)
 		}
 	}
 
-	private func simulateSearch(query: String) {
+	private func performSearch(query: String) {
 		worker.search(query: query) { [weak self] result in
 			guard let self = self else { return }
 
 			switch result {
 			case let .success(destinations):
+				self.destinations = destinations
 				self.presenter?.presentDestinations(
-					response: DestinationPickerModels.Response(destinations: destinations)
+					response: DestinationPickerModels.Search.Response(destinations: destinations)
 				)
 			case let .failure(error):
 				print(error)
 			}
 		}
+	}
+
+	func selectDestination(request: DestinationPickerModels.Select.Request) {
+		guard destinations.indices.contains(request.index) else { return }
+
+		let selected = destinations[request.index]
+		presenter?.presentSelectedDestination(
+			response: DestinationPickerModels.Select.Response(selected: selected)
+		)
 	}
 }
 
