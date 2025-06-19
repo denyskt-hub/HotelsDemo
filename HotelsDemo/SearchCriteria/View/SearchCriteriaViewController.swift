@@ -11,8 +11,12 @@ protocol SearchCriteriaDisplayLogic: AnyObject {
 	func displayCriteria(viewModel: SearchCriteriaModels.ViewModel)
 }
 
-final class SearchCriteriaViewController: UIViewController, SearchCriteriaDisplayLogic {
+final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
 	var interactor: SearchCriteriaBusinessLogic?
+
+	public override func loadView() {
+		view = SearchCriteriaRootView()
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
