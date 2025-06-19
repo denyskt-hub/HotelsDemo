@@ -15,15 +15,10 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 	var interactor: SearchCriteriaBusinessLogic?
 	var router: SearchCriteriaRouter?
 
-	private var rootView: SearchCriteriaRootView {
-		guard let view = view as? SearchCriteriaRootView else {
-			fatalError("Expected SearchCriteriaRootView as the controller's view")
-		}
-		return view
-	}
+	private let rootView = SearchCriteriaRootView()
 
 	public override func loadView() {
-		view = SearchCriteriaRootView()
+		view = rootView
 	}
 
 	override func viewDidLoad() {

@@ -14,15 +14,14 @@ protocol DestinationPickerDisplayLogic: AnyObject {
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	var interactor: DestinationPickerBusinessLogic?
 
-	private var rootView: DestinationPickerRootView {
-		guard let view = view as? DestinationPickerRootView else {
-			fatalError("Expected DestinationPickerRootView as the controller's view")
-		}
-		return view
-	}
+	private let rootView = DestinationPickerRootView()
 
 	public override func loadView() {
-		view = DestinationPickerRootView()
+		view = rootView
+	}
+
+	public override func viewDidLoad() {
+		super.viewDidLoad()
 
 		setupTextField()
 	}
@@ -31,7 +30,7 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 		rootView.textField.delegate = self
 	}
 
-	func displayDestinations(viewModel: DestinationPickerModels.ViewModel) {
+	public func displayDestinations(viewModel: DestinationPickerModels.ViewModel) {
 		// Update UI
 	}
 }
