@@ -12,37 +12,34 @@ public class SearchCriteriaRootView: NiblessView {
 
 	lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
-			destinationLabel,
-			datesLabel,
-			roomGuestsLabel
+			destinationButton,
+			datesButton,
+			roomGuestsButton
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
 		return stack
 	}()
 
-	public let destinationLabel: UILabel = {
-		let label = UILabel()
-		label.font = .preferredFont(forTextStyle: .title1)
-		label.textColor = .black
-		label.setContentHuggingPriority(.defaultLow, for: .horizontal)
-		return label
+	public let destinationButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.tintColor = .darkText
+		button.setTitle("destination", for: .normal)
+		return button
 	}()
 
-	public let datesLabel: UILabel = {
-		let label = UILabel()
-		label.font = .preferredFont(forTextStyle: .title1)
-		label.textColor = .black
-		label.backgroundColor = .systemGroupedBackground
-		label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-		return label
+	public let datesButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.tintColor = .darkText
+		button.setTitle("dates", for: .normal)
+		return button
 	}()
 
-	public let roomGuestsLabel: UILabel = {
-		let label = UILabel()
-		label.font = .preferredFont(forTextStyle: .title1)
-		label.textColor = .black
-		return label
+	public let roomGuestsButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.tintColor = .darkText
+		button.setTitle("room guests", for: .normal)
+		return button
 	}()
 
 	override public func didMoveToWindow() {
@@ -79,7 +76,6 @@ extension SearchCriteriaRootView {
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
 		let trailing = stack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
 		let top = stack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
-		let bottom = stack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+		NSLayoutConstraint.activate([leading, trailing, top])
 	}
 }
