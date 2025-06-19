@@ -23,6 +23,6 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		// save destination
 		var criteria = SearchCriteria.default
 		criteria.destination = request.destination
-		presenter?.presentCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
+		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
 	}
 }

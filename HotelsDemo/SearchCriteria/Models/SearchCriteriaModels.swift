@@ -26,5 +26,15 @@ enum SearchCriteriaModels {
 		struct Request {
 			let destination: Destination
 		}
+
+		struct Response {
+			let criteria: SearchCriteria
+		}
+
+		struct ViewModel {
+			let destination: String?
+			let dateRange: String
+			let roomGuests: String
+		}
 	}
 }
