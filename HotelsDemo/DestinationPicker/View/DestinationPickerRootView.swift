@@ -14,7 +14,7 @@ public class DestinationPickerRootView: NiblessView {
 		let stack = UIStackView(arrangedSubviews: [
 			title,
 			textField,
-			spacer
+			tableView
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
@@ -33,9 +33,9 @@ public class DestinationPickerRootView: NiblessView {
 		return textField
 	}()
 
-	private let spacer: UIView = {
-		let view = UIView()
-		return view
+	public let tableView: UITableView = {
+		let tableView = UITableView()
+		return tableView
 	}()
 
 	override public func didMoveToWindow() {

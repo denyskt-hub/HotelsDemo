@@ -59,7 +59,10 @@ final class DestinationSearchWorker: DestinationSearchService {
 	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
 		DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
 			self?.dispatcher.dispatch {
-				completion(.success([]))
+				completion(.success([
+					Destination(id: 1, type: "city", name: "London", label: "London, United Kingdom", country: "United Kingdom", cityName: "London"),
+					Destination(id: 2, type: "district", name: "Manhattan", label: "New York, Manhattan, USA", country: "USA", cityName: "New York")
+				]))
 			}
 		}
 	}

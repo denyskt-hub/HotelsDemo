@@ -12,9 +12,10 @@ protocol DestinationPickerDisplayLogic: AnyObject {
 }
 
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
-	var interactor: DestinationPickerBusinessLogic?
-
 	private let rootView = DestinationPickerRootView()
+	private var viewModel: DestinationPickerModels.ViewModel?
+
+	var interactor: DestinationPickerBusinessLogic?
 
 	public override func loadView() {
 		view = rootView
@@ -24,14 +25,33 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 		super.viewDidLoad()
 
 		setupTextField()
+		setupTableView()
 	}
 
 	private func setupTextField() {
 		rootView.textField.delegate = self
 	}
 
+	private func setupTableView() {
+		rootView.tableView.delegate = self
+		rootView.tableView.dataSource = self
+	}
+
 	public func displayDestinations(viewModel: DestinationPickerModels.ViewModel) {
-		// Update UI
+		self.viewModel = viewModel
+		rootView.tableView.reloadData()
+	}
+}
+
+extension DestinationPickerViewController: UITableViewDelegate, UITableViewDataSource {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		viewModel?.destinations.count ?? 0
+	}
+
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = UITableViewCell()
+		cell.textLabel?.text = viewModel?.destinations[indexPath.row]
+		return cell
 	}
 }
 
