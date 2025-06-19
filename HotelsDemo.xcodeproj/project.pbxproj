@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		92806D6D2E03DBD8005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */ = {
+		92806DAD2E03E0A2005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -32,17 +32,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		92806D472E03DBD6005263A8 /* HotelsDemo */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				92806D6D2E03DBD8005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */,
-			);
-			path = HotelsDemo;
-			sourceTree = "<group>";
-		};
 		92806D5E2E03DBD8005263A8 /* HotelsDemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = HotelsDemoTests;
+			sourceTree = "<group>";
+		};
+		92806DA62E03E0A2005263A8 /* HotelsDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				92806DAD2E03E0A2005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */,
+			);
+			path = HotelsDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -68,7 +68,7 @@
 		92806D3C2E03DBD6005263A8 = {
 			isa = PBXGroup;
 			children = (
-				92806D472E03DBD6005263A8 /* HotelsDemo */,
+				92806DA62E03E0A2005263A8 /* HotelsDemo */,
 				92806D5E2E03DBD8005263A8 /* HotelsDemoTests */,
 				92806D462E03DBD6005263A8 /* Products */,
 			);
@@ -99,7 +99,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				92806D472E03DBD6005263A8 /* HotelsDemo */,
+				92806DA62E03E0A2005263A8 /* HotelsDemo */,
 			);
 			name = HotelsDemo;
 			packageProductDependencies = (
