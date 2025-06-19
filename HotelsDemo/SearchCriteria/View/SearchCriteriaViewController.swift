@@ -15,6 +15,13 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 	var interactor: SearchCriteriaBusinessLogic?
 	var router: SearchCriteriaRouter?
 
+	private var rootView: SearchCriteriaRootView {
+		guard let view = view as? SearchCriteriaRootView else {
+			fatalError("Expected SearchCriteriaRootView as the controller's view")
+		}
+		return view
+	}
+
 	public override func loadView() {
 		view = SearchCriteriaRootView()
 	}
@@ -28,7 +35,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 	}
 
 	private func setupDestionationButton() {
-		(view as? SearchCriteriaRootView)?.destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
+		rootView.destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
 	}
 
 	@objc private func destinationButtonHandler() {

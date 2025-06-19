@@ -8,14 +8,17 @@
 import Foundation
 
 protocol DestinationPickerPresentationLogic {
-	func presentSuggestions(response: DestinationPickerModels.Response)
+	func presentDestinations(response: DestinationPickerModels.Response)
 
 }
 
 final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 	weak var viewController: DestinationPickerDisplayLogic?
 
-	func presentSuggestions(response: DestinationPickerModels.Response) {
-
+	func presentDestinations(response: DestinationPickerModels.Response) {
+		let viewModel = DestinationPickerModels.ViewModel(
+			destinations: response.destinations.map { $0.label }
+		)
+		viewController?.displayDestinations(viewModel: viewModel)
 	}
 }

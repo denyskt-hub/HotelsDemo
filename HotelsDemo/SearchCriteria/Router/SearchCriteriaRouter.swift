@@ -16,7 +16,8 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 
 	func routeToDestinationPicker() {
 		let destinationVC = DestinationPickerViewController()
-		let interactor = DestinationPickerInteractor()
+		let worker = DestinationSearchWorker(dispatcher: MainQueueDispatcher())
+		let interactor = DestinationPickerInteractor(worker: worker)
 		let presenter = DestinationPickerPresenter()
 
 		destinationVC.interactor = interactor

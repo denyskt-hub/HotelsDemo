@@ -13,10 +13,10 @@ enum DestinationPickerModels {
 	}
 
 	struct Response {
-		let suggestions: [Destination]
+		let destinations: [Destination]
 	}
 
 	struct ViewModel {
-		let suggestions: [String]
+		let destinations: [String]
 	}
 }

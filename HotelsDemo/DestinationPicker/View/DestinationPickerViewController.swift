@@ -8,17 +8,56 @@
 import UIKit
 
 protocol DestinationPickerDisplayLogic: AnyObject {
-	func displaySuggestions(viewModel: DestinationPickerModels.ViewModel)
+	func displayDestinations(viewModel: DestinationPickerModels.ViewModel)
 }
 
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	var interactor: DestinationPickerBusinessLogic?
 
-	public override func loadView() {
-		view = DestinationPickerRootView()
+	private var rootView: DestinationPickerRootView {
+		guard let view = view as? DestinationPickerRootView else {
+			fatalError("Expected DestinationPickerRootView as the controller's view")
+		}
+		return view
 	}
 
-	func displaySuggestions(viewModel: DestinationPickerModels.ViewModel) {
+	public override func loadView() {
+		view = DestinationPickerRootView()
+
+		setupTextField()
+	}
+
+	private func setupTextField() {
+		rootView.textField.delegate = self
+	}
+
+	func displayDestinations(viewModel: DestinationPickerModels.ViewModel) {
 		// Update UI
+	}
+}
+
+extension DestinationPickerViewController: UITextFieldDelegate {
+	func textField(
+		_ textField: UITextField,
+		shouldChangeCharactersIn range: NSRange,
+		replacementString string: String
+	) -> Bool {
+
+		if let currentText = textField.text, let textRange = Range(range, in: currentText) {
+			let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+
+			interactor?.searchDestinations(query: updatedText)
+		}
+
+		return true
+	}
+
+	func textFieldShouldClear(_ textField: UITextField) -> Bool {
+		return true
+	}
+
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		return true
 	}
 }
