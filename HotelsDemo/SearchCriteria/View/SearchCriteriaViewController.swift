@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SearchCriteriaDisplayLogic: AnyObject {
-	func displayCriteria(viewModel: SearchCriteriaModels.ViewModel)
+	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel)
 }
 
 final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
@@ -26,7 +26,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 
 		setupDestionationButton()
 
-		interactor?.loadCriteria()
+		interactor?.loadCriteria(request: SearchCriteriaModels.Load.Request())
 	}
 
 	private func setupDestionationButton() {
@@ -37,7 +37,9 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		router?.routeToDestinationPicker()
 	}
 
-	func displayCriteria(viewModel: SearchCriteriaModels.ViewModel) {
-		// Update UI
+	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
+		rootView.destinationButton.setTitle(viewModel.destination, for: .normal)
+		rootView.datesButton.setTitle(viewModel.dateRange, for: .normal)
+		rootView.roomGuestsButton.setTitle(viewModel.roomGuests, for: .normal)
 	}
 }

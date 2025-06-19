@@ -8,16 +8,18 @@
 import Foundation
 
 enum SearchCriteriaModels {
-	struct Request {}
-
-	struct Response {
-		let criteria: SearchCriteria?
-	}
-
-	struct ViewModel {
-		let destination: String
-		let dateRange: String
-		let roomGuests: String
+	enum Load {
+		struct Request {}
+		
+		struct Response {
+			let criteria: SearchCriteria
+		}
+		
+		struct ViewModel {
+			let destination: String?
+			let dateRange: String
+			let roomGuests: String
+		}
 	}
 
 	enum UpdateDestination {

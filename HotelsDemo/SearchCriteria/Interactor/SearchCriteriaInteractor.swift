@@ -8,19 +8,21 @@
 import Foundation
 
 protocol SearchCriteriaBusinessLogic {
-	func loadCriteria()
+	func loadCriteria(request: SearchCriteriaModels.Load.Request)
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request)
 }
 
 final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	var presenter: SearchCriteriaPresentationLogic?
 
-	func loadCriteria() {
-		presenter?.presentCriteria(response: SearchCriteriaModels.Response(criteria: nil))
+	func loadCriteria(request: SearchCriteriaModels.Load.Request) {
+		presenter?.presentCriteria(response: SearchCriteriaModels.Load.Response(criteria: .default))
 	}
 
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
 		// save destination
-		presenter?.presentCriteria(response: SearchCriteriaModels.Response(criteria: nil))
+		var criteria = SearchCriteria.default
+		criteria.destination = request.destination
+		presenter?.presentCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
 	}
 }
