@@ -13,6 +13,7 @@ protocol SearchCriteriaDisplayLogic: AnyObject {
 
 final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
 	var interactor: SearchCriteriaBusinessLogic?
+	var router: SearchCriteriaRouter?
 
 	public override func loadView() {
 		view = SearchCriteriaRootView()
@@ -20,7 +21,18 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		setupDestionationButton()
+
 		interactor?.loadCriteria()
+	}
+
+	private func setupDestionationButton() {
+		(view as? SearchCriteriaRootView)?.destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
+	}
+
+	@objc private func destinationButtonHandler() {
+		router?.routeToDestinationPicker()
 	}
 
 	func displayCriteria(viewModel: SearchCriteriaModels.ViewModel) {

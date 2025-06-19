@@ -30,10 +30,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let viewController = SearchCriteriaViewController()
 		let interactor = SearchCriteriaInteractor()
 		let presenter = SearchCriteriaPresenter()
+		let router = SearchCriteriaRouter()
 
 		viewController.interactor = interactor
+		viewController.router = router
 		interactor.presenter = presenter
 		presenter.viewController = viewController
+		router.viewController = viewController
 
 		return viewController
 	}
