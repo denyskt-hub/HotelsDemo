@@ -26,42 +26,33 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			guard let self else { return }
 
 			switch result {
-			case .success(let criteria):
-				self.presentLoadedCriteria(criteria ?? .default)
-			case .failure:
-				self.presentLoadedCriteria(.default)
+			case let .success(criteria):
+				self.presentLoadedCriteria(criteria)
+			case let .failure(error):
+				self.presentError(error)
 			}
 		}
 	}
 
-	struct UpdateError: Error {}
-
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
-		load { [weak self] result in
+		update(request.destination) { [weak self] result in
 			guard let self else { return }
 
 			switch result {
-			case .success(let criteria):
-				var criteria = criteria ?? .default
-				criteria.destination = request.destination
-
-				self.save(criteria) { error in
-					if let error = error {
-						self.presentError(error)
-					}
-					else {
-						self.presentUpdatedCriteria(criteria)
-					}
-				}
-
-			case .failure:
-				self.presentError(UpdateError())
+			case let .success(criteria):
+				self.presentUpdatedCriteria(criteria)
+			case let .failure(error):
+				self.presentError(error)
 			}
 		}
 	}
 
-	private func load(_ completion: @escaping (Result<SearchCriteria?, Error>) -> Void) {
+	private func load(_ completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
 		store.retrieve(completion: completion)
+	}
+
+	private func update(_ destination: Destination, completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+		store.update({ $0.destination = destination }, completion: completion)
 	}
 
 	private func save(_ criteria: SearchCriteria, _ completion: @escaping (Error?) -> Void) {
