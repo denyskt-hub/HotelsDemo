@@ -27,6 +27,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		super.viewDidLoad()
 
 		setupDestionationButton()
+		setupRoomGuestsButton()
 
 		interactor?.loadCriteria(request: SearchCriteriaModels.Load.Request())
 	}
@@ -35,8 +36,16 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		rootView.destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
 	}
 
+	private func setupRoomGuestsButton() {
+		rootView.roomGuestsButton.addTarget(self, action: #selector(roomGuestsButtonHandler), for: .touchUpInside)
+	}
+
 	@objc private func destinationButtonHandler() {
 		router?.routeToDestinationPicker()
+	}
+
+	@objc private func roomGuestsButtonHandler() {
+		router?.routeToRoomGuestsPicker()
 	}
 
 	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {

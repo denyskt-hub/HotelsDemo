@@ -9,6 +9,7 @@ import UIKit
 
 protocol SearchCriteriaRoutingLogic {
 	func routeToDestinationPicker()
+	func routeToRoomGuestsPicker()
 }
 
 final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
@@ -30,6 +31,18 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		presenter.viewController = destinationVC
 
 		viewController?.present(destinationVC, animated: true)
+	}
+
+	func routeToRoomGuestsPicker() {
+		let roomGuestsVC = RoomGuestsPickerViewController()
+		let interactor = RoomGuestsPickerInteractor()
+		let presenter = RoomGuestsPickerPresenter()
+
+		roomGuestsVC.interactor = interactor
+		interactor.presenter = presenter
+		presenter.viewController = roomGuestsVC
+
+		viewController?.present(roomGuestsVC, animated: true)
 	}
 }
 
