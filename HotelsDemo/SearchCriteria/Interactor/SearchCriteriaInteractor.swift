@@ -9,6 +9,7 @@ import Foundation
 
 protocol SearchCriteriaBusinessLogic {
 	func loadCriteria(request: SearchCriteriaModels.Load.Request)
+	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request)
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request)
 }
 
@@ -34,6 +35,24 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
+	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request) {
+		load { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				let roomGuests = RoomGuests(
+					rooms: criteria.roomsQuantity,
+					adults: criteria.adults,
+					children: criteria.childrenAge?.count ?? 0
+				)
+				self.presentLoadedRoomGuests(roomGuests)
+			case let .failure(error):
+				print(error)
+			}
+		}
+	}
+	
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
 		update(request.destination) { [weak self] result in
 			guard let self else { return }
@@ -65,6 +84,10 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 
 	private func presentLoadError(_ error: Error) {
 		presenter?.presentLoadError(error)
+	}
+
+	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
+		presenter?.presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
 	}
 
 	private func presentUpdatedCriteria(_ criteria: SearchCriteria) {

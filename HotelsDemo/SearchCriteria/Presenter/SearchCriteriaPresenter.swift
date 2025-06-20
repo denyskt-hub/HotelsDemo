@@ -11,6 +11,8 @@ protocol SearchCriteriaPresentationLogic {
 	func presentCriteria(response: SearchCriteriaModels.Load.Response)
 	func presentLoadError(_ error: Error)
 
+	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response)
+
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response)
 	func presentUpdateError(_ error: Error)
 }
@@ -25,6 +27,10 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 	func presentLoadError(_ error: Error) {
 		let viewModel = SearchCriteriaModels.Load.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displayLoadError(viewModel: viewModel)
+	}
+
+	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response) {
+		presentRoomGuests(response.roomGuests)
 	}
 
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
@@ -51,5 +57,14 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		)
 
 		viewController?.displayCriteria(viewModel: viewModel)
+	}
+
+	private func presentRoomGuests(_ roomGuests: RoomGuests) {
+		let viewModel = RoomGuestsPickerModels.ViewModel(
+			rooms: roomGuests.rooms,
+			adults: roomGuests.adults,
+			children: roomGuests.children
+		)
+		viewController?.displayRoomGuests(viewModel: viewModel)
 	}
 }

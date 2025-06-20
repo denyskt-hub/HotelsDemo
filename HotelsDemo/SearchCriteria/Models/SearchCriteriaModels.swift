@@ -26,6 +26,14 @@ enum SearchCriteriaModels {
 		}
 	}
 
+	enum LoadRoomGuests {
+		struct Request {}
+
+		struct Response {
+			let roomGuests: RoomGuests
+		}
+	}
+
 	enum UpdateDestination {
 		struct Request {
 			let destination: Destination

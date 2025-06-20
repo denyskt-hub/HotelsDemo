@@ -15,4 +15,10 @@ enum RoomGuestsPickerModels {
 			let limits: RoomGuestsLimits
 		}
 	}
+
+	struct ViewModel {
+		let rooms: Int
+		let adults: Int
+		let children: Int
+	}
 }

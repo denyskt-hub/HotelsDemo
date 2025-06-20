@@ -36,4 +36,10 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.adultsStepper.setRange(minimumValue: 1, maximumValue: limits.maxAdults)
 		rootView.childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
+
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+		rootView.roomsStepper.setValue(viewModel.rooms)
+		rootView.adultsStepper.setValue(viewModel.adults)
+		rootView.childrenStepper.setValue(viewModel.children)
+	}
 }

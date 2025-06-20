@@ -11,6 +11,7 @@ protocol SearchCriteriaDisplayLogic: AnyObject {
 	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel)
 	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel)
 	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel)
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
 }
 
 final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
@@ -45,7 +46,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 	}
 
 	@objc private func roomGuestsButtonHandler() {
-		router?.routeToRoomGuestsPicker()
+		interactor?.loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request())
 	}
 
 	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
@@ -60,6 +61,10 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 
 	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
 		displayError(message: viewModel.message)
+	}
+
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+		router?.routeToRoomGuestsPicker(viewModel: viewModel)
 	}
 
 	func displayError(title: String = "Error", message: String) {
