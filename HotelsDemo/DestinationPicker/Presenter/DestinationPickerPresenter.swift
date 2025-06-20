@@ -10,6 +10,7 @@ import Foundation
 protocol DestinationPickerPresentationLogic {
 	func presentDestinations(response: DestinationPickerModels.Search.Response)
 	func presentSelectedDestination(response: DestinationPickerModels.Select.Response)
+	func presentSearchError(_ error: Error)
 }
 
 final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
@@ -25,5 +26,10 @@ final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 	func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {
 		let viewModel = DestinationPickerModels.Select.ViewModel(selected: response.selected)
 		viewController?.displaySelectedDestination(viewModel: viewModel)
+	}
+
+	func presentSearchError(_ error: any Error) {
+		let viewModel = DestinationPickerModels.Search.ErrorViewModel(message: error.localizedDescription)
+		viewController?.displaySearchError(viewModel: viewModel)
 	}
 }

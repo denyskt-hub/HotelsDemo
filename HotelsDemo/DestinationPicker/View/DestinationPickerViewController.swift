@@ -14,6 +14,7 @@ protocol DestinationPickerDelegate: AnyObject {
 protocol DestinationPickerDisplayLogic: AnyObject {
 	func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel)
 	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel)
+	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel)
 }
 
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
@@ -34,6 +35,12 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 		setupTableView()
 	}
 
+	public override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+
+		rootView.tableView.sizeTableHeaderToFit()
+	}
+
 	private func setupTextField() {
 		rootView.textField.delegate = self
 	}
@@ -41,6 +48,8 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 	private func setupTableView() {
 		rootView.tableView.delegate = self
 		rootView.tableView.dataSource = self
+
+		rootView.tableView.tableHeaderView = rootView.errorContainer
 	}
 
 	public func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel) {
@@ -51,6 +60,10 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 	public func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel) {
 		delegate?.didSelectDestination(viewModel.selected)
 		dismiss(animated: true)
+	}
+
+	public func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel) {
+		rootView.errorLabel.text = viewModel.message
 	}
 }
 
@@ -94,5 +107,19 @@ extension DestinationPickerViewController: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		textField.resignFirstResponder()
 		return true
+	}
+}
+
+extension UITableView {
+	func sizeTableHeaderToFit() {
+		guard let header = tableHeaderView else { return }
+
+		let size = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+
+		let needsFrameUpdate = header.frame.height != size.height
+		if needsFrameUpdate {
+			header.frame.size.height = size.height
+			tableHeaderView = header
+		}
 	}
 }

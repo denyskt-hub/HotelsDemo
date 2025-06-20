@@ -20,6 +20,10 @@ enum DestinationPickerModels {
 		struct ViewModel {
 			let destinations: [String]
 		}
+
+		struct ErrorViewModel {
+			let message: String
+		}
 	}
 
 	enum Select {

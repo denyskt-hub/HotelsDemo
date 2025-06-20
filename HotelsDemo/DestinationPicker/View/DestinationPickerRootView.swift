@@ -38,6 +38,16 @@ public class DestinationPickerRootView: NiblessView {
 		return tableView
 	}()
 
+	public let errorContainer: UIView = {
+		let view = UIView()
+		return view
+	}()
+
+	public let errorLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()
 
@@ -57,10 +67,12 @@ public class DestinationPickerRootView: NiblessView {
 
 	private func setupHierarchy() {
 		addSubview(stack)
+		errorContainer.addSubview(errorLabel)
 	}
 
 	private func activateConstraints() {
 		activateConstraintsStack()
+		activateConstraintsErrorLabel()
 	}
 }
 
@@ -73,6 +85,15 @@ extension DestinationPickerRootView {
 		let trailing = stack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
 		let top = stack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
 		let bottom = stack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
+	private func activateConstraintsErrorLabel() {
+		errorLabel.translatesAutoresizingMaskIntoConstraints = false
+		let leading = errorLabel.leadingAnchor.constraint(equalTo: errorContainer.leadingAnchor)
+		let trailing = errorLabel.trailingAnchor.constraint(equalTo: errorContainer.trailingAnchor)
+		let top = errorLabel.topAnchor.constraint(equalTo: errorContainer.topAnchor)
+		let bottom = errorLabel.bottomAnchor.constraint(equalTo: errorContainer.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }

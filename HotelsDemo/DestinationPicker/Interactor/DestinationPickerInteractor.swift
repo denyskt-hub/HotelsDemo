@@ -40,7 +40,7 @@ final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 					response: DestinationPickerModels.Search.Response(destinations: destinations)
 				)
 			case let .failure(error):
-				print(error)
+				self.presentSearchError(error)
 			}
 		}
 	}
@@ -52,6 +52,10 @@ final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 		presenter?.presentSelectedDestination(
 			response: DestinationPickerModels.Select.Response(selected: selected)
 		)
+	}
+
+	private func presentSearchError(_ error: Error) {
+		presenter?.presentSearchError(error)
 	}
 }
 
