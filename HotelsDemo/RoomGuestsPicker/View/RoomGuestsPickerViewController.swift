@@ -13,6 +13,8 @@ public protocol RoomGuestsPickerDelegate: AnyObject {
 
 public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 	func applyLimits(_ limits: RoomGuestsLimits)
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
+	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
 }
 
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
@@ -28,7 +30,14 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 
+		setupRoomsStepper()
+
 		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
+	}
+
+	private func setupRoomsStepper() {
+		rootView.roomsStepper.decrementButton.addTarget(self, action: #selector(didDecrementRooms), for: .touchUpInside)
+		rootView.roomsStepper.incrementButton.addTarget(self, action: #selector(didIncrementRooms), for: .touchUpInside)
 	}
 
 	public func applyLimits(_ limits: RoomGuestsLimits) {
@@ -37,9 +46,21 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
 
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
 		rootView.roomsStepper.setValue(viewModel.rooms)
 		rootView.adultsStepper.setValue(viewModel.adults)
 		rootView.childrenStepper.setValue(viewModel.children)
+	}
+
+	public func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel) {
+		rootView.roomsStepper.setValue(viewModel.rooms)
+	}
+
+	@objc private func didDecrementRooms() {
+		interactor?.didDecrementRooms()
+	}
+
+	@objc private func didIncrementRooms() {
+		interactor?.didIncrementRooms()
 	}
 }

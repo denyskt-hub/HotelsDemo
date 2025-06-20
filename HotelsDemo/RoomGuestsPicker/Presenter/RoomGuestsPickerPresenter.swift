@@ -9,6 +9,7 @@ import Foundation
 
 protocol RoomGuestsPickerPresentationLogic {
 	func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response)
+	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response)
 }
 
 final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
@@ -16,5 +17,10 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 
 	func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response) {
 		viewController?.applyLimits(response.limits)
+	}
+
+	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response) {
+		let viewModel = RoomGuestsPickerModels.UpdateRooms.ViewModel(rooms: response.rooms)
+		viewController?.displayRooms(viewModel: viewModel)
 	}
 }

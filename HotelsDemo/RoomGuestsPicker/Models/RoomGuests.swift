@@ -10,5 +10,5 @@ import Foundation
 struct RoomGuests {
 	let rooms: Int
 	let adults: Int
-	let children: Int
+	let childrenAge: [Int]
 }

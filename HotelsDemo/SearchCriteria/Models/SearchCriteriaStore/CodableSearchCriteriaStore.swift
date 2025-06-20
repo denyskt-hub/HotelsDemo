@@ -13,7 +13,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		let checkInDate: Date
 		let checkOutDate: Date
 		let adults: Int
-		let childrenAge: String?
+		let childrenAge: [Int]
 		let roomsQuantity: Int
 
 		var model: SearchCriteria {

@@ -46,7 +46,7 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		let dareRange = "\(criteria.checkInDate) - \(criteria.checkOutDate)"
 
 		let adults = "\(criteria.adults) adult(s)"
-		let children = "\(criteria.childrenAge?.components(separatedBy: ",").count ?? 0) child(ren)"
+		let children = "\(criteria.childrenAge.count) child(ren)"
 		let rooms = "\(criteria.roomsQuantity) room(s)"
 		let roomGuests = "\(rooms) for \(adults), \(children)"
 
@@ -63,7 +63,7 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		let viewModel = RoomGuestsPickerModels.ViewModel(
 			rooms: roomGuests.rooms,
 			adults: roomGuests.adults,
-			children: roomGuests.children
+			childrenAge: roomGuests.childrenAge
 		)
 		viewController?.displayRoomGuests(viewModel: viewModel)
 	}

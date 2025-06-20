@@ -12,7 +12,7 @@ struct SearchCriteria {
 	let checkInDate: Date
 	let checkOutDate: Date
 	let adults: Int
-	let childrenAge: String?
+	let childrenAge: [Int]
 	let roomsQuantity: Int
 }
 
@@ -23,7 +23,7 @@ extension SearchCriteria {
 			checkInDate: .now.adding(days: 1),
 			checkOutDate: .now.adding(days: 2),
 			adults: 2,
-			childrenAge: nil,
+			childrenAge: [],
 			roomsQuantity: 1
 		)
 	}

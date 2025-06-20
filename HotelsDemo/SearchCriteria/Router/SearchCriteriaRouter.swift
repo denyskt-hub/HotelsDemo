@@ -35,7 +35,11 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 
 	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		let roomGuestsVC = RoomGuestsPickerViewController()
-		let interactor = RoomGuestsPickerInteractor()
+		let interactor = RoomGuestsPickerInteractor(
+			rooms: viewModel.rooms,
+			adults: viewModel.adults,
+			childrenAge: viewModel.childrenAge
+		)
 		let presenter = RoomGuestsPickerPresenter()
 
 		roomGuestsVC.interactor = interactor

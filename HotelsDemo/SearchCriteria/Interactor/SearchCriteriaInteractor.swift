@@ -44,7 +44,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 				let roomGuests = RoomGuests(
 					rooms: criteria.roomsQuantity,
 					adults: criteria.adults,
-					children: criteria.childrenAge?.count ?? 0
+					childrenAge: criteria.childrenAge
 				)
 				self.presentLoadedRoomGuests(roomGuests)
 			case let .failure(error):

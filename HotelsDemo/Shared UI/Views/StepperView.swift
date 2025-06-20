@@ -39,7 +39,7 @@ public class StepperView: NiblessView {
 		return stack
 	}()
 
-	private let decrementButton: UIButton = {
+	public let decrementButton: UIButton = {
 		let button = UIButton()
 		button.setTitle("-", for: .normal)
 		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
@@ -47,7 +47,7 @@ public class StepperView: NiblessView {
 		return button
 	}()
 
-	private let incrementButton: UIButton = {
+	public let incrementButton: UIButton = {
 		let button = UIButton()
 		button.setTitle("+", for: .normal)
 		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
@@ -100,8 +100,6 @@ public class StepperView: NiblessView {
 		setupAppearance()
 		setupHierarchy()
 		activateConstraints()
-		setupDecrementButton()
-		setupIncrementButton()
 		hierarchyNotReady = false
 	}
 
@@ -115,22 +113,6 @@ public class StepperView: NiblessView {
 
 	private func activateConstraints() {
 		activateConstraintsStack()
-	}
-
-	private func setupDecrementButton() {
-		decrementButton.addTarget(self, action: #selector(decrementValue), for: .touchUpInside)
-	}
-
-	private func setupIncrementButton() {
-		incrementButton.addTarget(self, action: #selector(incrementValue), for: .touchUpInside)
-	}
-
-	@objc private func decrementValue() {
-		setValue(value - stepValue)
-	}
-
-	@objc private func incrementValue() {
-		setValue(value + stepValue)
 	}
 }
 
