@@ -37,15 +37,31 @@ extension SearchCriteriaStore {
 }
 
 final class InMemorySearchCriteriaStore: SearchCriteriaStore {
+	private let queue = DispatchQueue(label: "\(InMemorySearchCriteriaStore.self)Queue")
+
+	private let dispatcher: Dispatcher
+
 	private var criteria: SearchCriteria = .default
 
+	init(dispatcher: Dispatcher) {
+		self.dispatcher = dispatcher
+	}
+
 	func save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
-		self.criteria = criteria
-		completion(nil)
+		queue.async {
+			self.criteria = criteria
+			self.dispatcher.dispatch {
+				completion(nil)
+			}
+		}
 	}
 	
 	func retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
-		completion(.success(criteria))
+		queue.async {
+			self.dispatcher.dispatch {
+				completion(.success(self.criteria))
+			}
+		}
 	}
 }
 
@@ -61,18 +77,18 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	}
 
 	func save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
-		_save(criteria) { [dispatcher] error in
-			dispatcher.dispatch {
+		_save(criteria) { error in
+			self.dispatcher.dispatch {
 				completion(error)
 			}
 		}
 	}
 
 	private func _save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
-		queue.async { [storeURL] in
+		queue.async {
 			do {
 				let data = try JSONEncoder().encode(criteria)
-				try data.write(to: storeURL)
+				try data.write(to: self.storeURL)
 				completion(nil)
 			} catch {
 				completion(error)
@@ -81,21 +97,21 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	}
 
 	func retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
-		_retrieve { [dispatcher] result in
-			dispatcher.dispatch {
+		_retrieve { result in
+			self.dispatcher.dispatch {
 				completion(result)
 			}
 		}
 	}
 
 	func _retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
-		queue.async { [storeURL] in
-			guard FileManager.default.fileExists(atPath: storeURL.path) else {
+		queue.async {
+			guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
 				return completion(.success(.default))
 			}
 
 			do {
-				let data = try Data(contentsOf: storeURL)
+				let data = try Data(contentsOf: self.storeURL)
 				let criteria = try JSONDecoder().decode(SearchCriteria.self, from: data)
 				completion(.success(criteria))
 			} catch {
