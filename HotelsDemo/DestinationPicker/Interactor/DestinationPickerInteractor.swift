@@ -99,25 +99,29 @@ final class Debouncer {
 	}
 }
 
-protocol Dispatcher {
+public protocol Dispatcher {
 	func dispatch(_ action: @escaping () -> Void)
 }
 
-final class QueueDispatcher: Dispatcher {
+public final class ImmediateDispatcher: Dispatcher {
+	public func dispatch(_ action: @escaping () -> Void) {
+		action()
+	}
+}
+
+public final class QueueDispatcher: Dispatcher {
 	private let queue: DispatchQueue
 
 	public init(queue: DispatchQueue) {
 		self.queue = queue
 	}
 
-	public func dispatch(_ completion: @escaping () -> Void) {
-		queue.async {
-			completion()
-		}
+	public func dispatch(_ action: @escaping () -> Void) {
+		queue.async { action() }
 	}
 }
 
-final class MainQueueDispatcher: Dispatcher {
+public final class MainQueueDispatcher: Dispatcher {
 	private let dispatcher = QueueDispatcher(queue: .main)
 
 	public func dispatch(_ completion: @escaping () -> Void) {

@@ -28,7 +28,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	private func makeSearchCriteriaViewController() -> SearchCriteriaViewController {
 		let viewController = SearchCriteriaViewController()
-		let interactor = SearchCriteriaInteractor(store: CodableSearchCriteriaStore())
+		let interactor = SearchCriteriaInteractor(
+			store: CodableSearchCriteriaStore(
+				dispatcher: MainQueueDispatcher()
+			)
+		)
 		let presenter = SearchCriteriaPresenter()
 		let router = SearchCriteriaRouter()
 
