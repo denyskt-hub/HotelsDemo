@@ -8,6 +8,7 @@ final class URLSessionHTTPClient: HTTPClient {
 	}
 
 	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) {
+		print(request.url?.absoluteString ?? "Unknown URL")
 		session.dataTask(with: request) { data, response, error in
 			guard let data = data else {
 				completion(.failure(error ?? URLError(.badServerResponse)))

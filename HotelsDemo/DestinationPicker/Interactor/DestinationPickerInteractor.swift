@@ -14,7 +14,7 @@ protocol DestinationPickerBusinessLogic {
 
 final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
-	private let debouncer = Debouncer(delay: 0.3)
+	private let debouncer = Debouncer(delay: 0.5)
 	private var destinations = [Destination]()
 
 	var presenter: DestinationPickerPresentationLogic?
@@ -62,21 +62,116 @@ protocol DestinationSearchService {
 }
 
 final class DestinationSearchWorker: DestinationSearchService {
+	private let url: URL
+	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
-	init(dispatcher: Dispatcher) {
+	init(
+		url: URL,
+		client: HTTPClient,
+		dispatcher: Dispatcher
+	) {
+		self.url = url
+		self.client = client
 		self.dispatcher = dispatcher
 	}
 
 	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
-			self?.dispatcher.dispatch {
-				completion(.success([
-					Destination(id: 1, type: "city", name: "London", label: "London, United Kingdom", country: "United Kingdom", cityName: "London"),
-					Destination(id: 2, type: "district", name: "Manhattan", label: "New York, Manhattan, USA", country: "USA", cityName: "New York")
-				]))
+		let request = makeRequest(url: url, query: query)
+
+		client.perform(request) { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success((data, response)):
+				do {
+					let destinations = try DestinationsResponseMapper.map(data, response)
+					self.dispatcher.dispatch {
+						completion(.success(destinations))
+					}
+				} catch {
+					self.dispatcher.dispatch {
+						completion(.failure(error))
+					}
+				}
+
+			case let .failure(error):
+				self.dispatcher.dispatch {
+					completion(.failure(error))
+				}
 			}
 		}
+	}
+
+	private func makeRequest(url: URL, query: String) -> URLRequest {
+		let finalURL = url.appending(queryItems: [URLQueryItem(name: "query", value: query)])
+		var request = URLRequest(url: finalURL)
+		request.httpMethod = "GET"
+		request.allHTTPHeaderFields = [
+			"X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
+			"X-RapidAPI-Key": "a4b21b3fb5msh31791a7b625be6fp108a10jsn7cbd1a76c613"
+		]
+		return request
+	}
+}
+
+enum HTTPError: Error {
+	case unexpectedStatusCode(Int)
+}
+
+final class DestinationsResponseMapper {
+	private struct Response: Decodable {
+		private var data: [RemoteDestination]
+
+		var models: [Destination] {
+			data.map {
+				Destination(
+					id: $0.id,
+					type: $0.type,
+					name: $0.name,
+					label: $0.label,
+					country: $0.country,
+					cityName: $0.cityName
+				)
+			}
+		}
+	}
+
+	private struct RemoteDestination: Decodable {
+		enum CodingKeys: String, CodingKey {
+			case id = "dest_id"
+			case type = "dest_type"
+			case name
+			case label
+			case country
+			case cityName = "city_name"
+		}
+
+		let id: Int
+		let type: String
+		let name: String
+		let label: String
+		let country: String
+		let cityName: String
+
+		init(from decoder: Decoder) throws {
+			let container = try decoder.container(keyedBy: CodingKeys.self)
+			self.id = Int(try container.decode(String.self, forKey: .id))!
+			self.type = try container.decode(String.self, forKey: .type)
+			self.name = try container.decode(String.self, forKey: .name)
+			self.label = try container.decode(String.self, forKey: .label)
+			self.country = try container.decode(String.self, forKey: .country)
+			self.cityName = try container.decode(String.self, forKey: .cityName)
+		}
+	}
+
+	static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [Destination] {
+		guard response.isOK else {
+			throw HTTPError.unexpectedStatusCode(response.statusCode)
+		}
+		
+		let result = try JSONDecoder().decode(Response.self, from: data)
+		return result.models
 	}
 }
 
