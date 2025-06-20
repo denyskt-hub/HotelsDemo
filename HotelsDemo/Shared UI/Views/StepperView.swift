@@ -63,14 +63,9 @@ public class StepperView: NiblessView {
 		return label
 	}()
 
-	enum StepperViewError: Error {
-		case invalidRange
-		case invalidStep
-	}
-
-	public func setRange(minimumValue: Int, maximumValue: Int) throws {
+	public func setRange(minimumValue: Int, maximumValue: Int) {
 		guard minimumValue < maximumValue else {
-			throw StepperViewError.invalidRange
+			preconditionFailure("minimumValue must be < maximumValue")
 		}
 		self.minimumValue = minimumValue
 		self.maximumValue = maximumValue
@@ -78,9 +73,9 @@ public class StepperView: NiblessView {
 	private var minimumValue: Int = 0
 	private var maximumValue: Int = 100
 
-	public func setStepValue(_ stepValue: Int) throws {
+	public func setStepValue(_ stepValue: Int) {
 		guard stepValue > 0 else {
-			throw StepperViewError.invalidStep
+			preconditionFailure("stepValue must be > 0")
 		}
 		self.stepValue = stepValue
 	}

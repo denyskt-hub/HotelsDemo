@@ -10,7 +10,7 @@ import UIKit
 public class RoomGuestsPickerRootView: NiblessView {
 	private var hierarchyNotReady = true
 
-	lazy var stack: UIStackView = {
+	public lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
 			roomsStepper,
@@ -50,7 +50,7 @@ public class RoomGuestsPickerRootView: NiblessView {
 
 	public let applyButton: UIButton = {
 		let button = UIButton()
-		button.setTitle("Apply", for: .normal)
+		button.configure(.filled, title: "Apply")
 		return button
 	}()
 

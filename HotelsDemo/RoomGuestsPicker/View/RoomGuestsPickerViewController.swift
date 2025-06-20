@@ -7,15 +7,15 @@
 
 import Foundation
 
-protocol RoomGuestsPickerDelegate: AnyObject {
+public protocol RoomGuestsPickerDelegate: AnyObject {
 
 }
 
-protocol RoomGuestsPickerDisplayLogic: AnyObject {
-
+public protocol RoomGuestsPickerDisplayLogic: AnyObject {
+	func applyLimits(_ limits: RoomGuestsLimits)
 }
 
-final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
+public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
 	private let rootView = RoomGuestsPickerRootView()
 
 	var interactor: RoomGuestsPickerBusinessLogic?
@@ -27,5 +27,13 @@ final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPic
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+
+		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
+	}
+
+	public func applyLimits(_ limits: RoomGuestsLimits) {
+		rootView.roomsStepper.setRange(minimumValue: 1, maximumValue: limits.maxRooms)
+		rootView.adultsStepper.setRange(minimumValue: 1, maximumValue: limits.maxAdults)
+		rootView.childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
 }
