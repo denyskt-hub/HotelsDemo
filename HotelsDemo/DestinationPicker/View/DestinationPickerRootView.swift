@@ -12,7 +12,7 @@ public class DestinationPickerRootView: NiblessView {
 
 	lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
-			title,
+			titleLabel,
 			textField,
 			tableView
 		])
@@ -21,7 +21,7 @@ public class DestinationPickerRootView: NiblessView {
 		return stack
 	}()
 
-	public let title: UILabel = {
+	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Destination"
 		return label
