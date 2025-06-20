@@ -10,6 +10,11 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
 
+	lazy var storeURL: URL = {
+		let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		return documentsURL.appendingPathComponent("search-criteria.store")
+	}()
+
 	func scene(
 		_ scene: UIScene,
 		willConnectTo session: UISceneSession,
@@ -30,6 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let viewController = SearchCriteriaViewController()
 		let interactor = SearchCriteriaInteractor(
 			store: CodableSearchCriteriaStore(
+				storeURL: storeURL,
 				dispatcher: MainQueueDispatcher()
 			)
 		)

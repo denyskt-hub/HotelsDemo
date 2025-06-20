@@ -50,16 +50,13 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 }
 
 final class CodableSearchCriteriaStore: SearchCriteriaStore {
-	private let queue = DispatchQueue(label: "CodableSearchCriteriaStore.queue")
+	private let queue = DispatchQueue(label: "\(CodableSearchCriteriaStore.self)Queue")
 
-	private var storeURL: URL {
-		let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-		return documentsURL.appendingPathComponent("CodableSearchCriteriaStore.store")
-	}
-
+	private let storeURL: URL
 	private let dispatcher: Dispatcher
 
-	init(dispatcher: Dispatcher) {
+	init(storeURL: URL, dispatcher: Dispatcher) {
+		self.storeURL = storeURL
 		self.dispatcher = dispatcher
 	}
 
