@@ -8,6 +8,64 @@
 import Foundation
 
 final class CodableSearchCriteriaStore: SearchCriteriaStore {
+	private struct CodableSearchCriteria: Codable {
+		var destination: CodableDestination?
+		let checkInDate: Date
+		let checkOutDate: Date
+		let adults: Int
+		let childrenAge: String?
+		let roomsQuantity: Int
+
+		var model: SearchCriteria {
+			SearchCriteria(
+				destination: destination?.model,
+				checkInDate: checkInDate,
+				checkOutDate: checkOutDate,
+				adults: adults,
+				childrenAge: childrenAge,
+				roomsQuantity: roomsQuantity
+			)
+		}
+
+		init(model: SearchCriteria) {
+			self.destination = model.destination.map(CodableDestination.init)
+			self.checkInDate = model.checkInDate
+			self.checkOutDate = model.checkOutDate
+			self.adults = model.adults
+			self.childrenAge = model.childrenAge
+			self.roomsQuantity = model.roomsQuantity
+		}
+	}
+
+	private struct CodableDestination: Codable {
+		let id: Int
+		let type: String
+		let name: String
+		let label: String
+		let country: String
+		let cityName: String
+
+		var model: Destination {
+			Destination(
+				id: id,
+				type: type,
+				name: name,
+				label: label,
+				country: country,
+				cityName: cityName
+			)
+		}
+
+		init(model: Destination) {
+			self.id = model.id
+			self.type = model.type
+			self.name = model.name
+			self.label = model.label
+			self.country = model.country
+			self.cityName = model.cityName
+		}
+	}
+
 	private let queue = DispatchQueue(label: "\(CodableSearchCriteriaStore.self)Queue")
 
 	private let storeURL: URL
@@ -29,7 +87,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	private func _save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
-				let data = try JSONEncoder().encode(criteria)
+				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
 				try data.write(to: self.storeURL)
 				completion(nil)
 			} catch {
@@ -54,8 +112,8 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 
 			do {
 				let data = try Data(contentsOf: self.storeURL)
-				let criteria = try JSONDecoder().decode(SearchCriteria.self, from: data)
-				completion(.success(criteria))
+				let criteria = try JSONDecoder().decode(CodableSearchCriteria.self, from: data)
+				completion(.success(criteria.model))
 			} catch {
 				completion(.failure(error))
 			}

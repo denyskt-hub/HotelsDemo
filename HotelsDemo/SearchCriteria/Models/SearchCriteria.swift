@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchCriteria: Codable {
+struct SearchCriteria {
 	var destination: Destination?
 	let checkInDate: Date
 	let checkOutDate: Date
