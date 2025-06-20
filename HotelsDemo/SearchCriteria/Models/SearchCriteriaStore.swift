@@ -48,3 +48,34 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 		completion(.success(criteria))
 	}
 }
+
+final class CodableSearchCriteriaStore: SearchCriteriaStore {
+	var storeURL: URL {
+		let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		return documentsURL.appendingPathComponent("search_criteria.store")
+	}
+
+	func save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
+		do {
+			let data = try JSONEncoder().encode(criteria)
+			FileManager.default.createFile(atPath: storeURL.path, contents: data)
+			completion(nil)
+		} catch {
+			completion(error)
+		}
+	}
+	
+	func retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+		guard FileManager.default.fileExists(atPath: storeURL.path) else {
+			return completion(.success(.default))
+		}
+
+		do {
+			let data = try Data(contentsOf: storeURL)
+			let criteria = try JSONDecoder().decode(SearchCriteria.self, from: data)
+			completion(.success(criteria))
+		} catch {
+			completion(.failure(error))
+		}
+	}
+}

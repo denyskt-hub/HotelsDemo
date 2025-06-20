@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Destination {
+struct Destination: Codable {
 	let id: Int
 	let type: String
 	let name: String
