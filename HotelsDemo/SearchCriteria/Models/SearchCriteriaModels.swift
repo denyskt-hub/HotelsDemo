@@ -20,6 +20,10 @@ enum SearchCriteriaModels {
 			let dateRange: String
 			let roomGuests: String
 		}
+
+		struct ErrorViewModel {
+			let message: String
+		}
 	}
 
 	enum UpdateDestination {
@@ -35,6 +39,10 @@ enum SearchCriteriaModels {
 			let destination: String?
 			let dateRange: String
 			let roomGuests: String
+		}
+
+		struct ErrorViewModel {
+			let message: String
 		}
 	}
 }

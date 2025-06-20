@@ -9,7 +9,10 @@ import Foundation
 
 protocol SearchCriteriaPresentationLogic {
 	func presentCriteria(response: SearchCriteriaModels.Load.Response)
+	func presentLoadError(_ error: Error)
+
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response)
+	func presentUpdateError(_ error: Error)
 }
 
 final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
@@ -19,8 +22,18 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		presentCriteria(response.criteria)
 	}
 
+	func presentLoadError(_ error: Error) {
+		let viewModel = SearchCriteriaModels.Load.ErrorViewModel(message: error.localizedDescription)
+		viewController?.displayLoadError(viewModel: viewModel)
+	}
+
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
 		presentCriteria(response.criteria)
+	}
+
+	func presentUpdateError(_ error: Error) {
+		let viewModel = SearchCriteriaModels.UpdateDestination.ErrorViewModel(message: error.localizedDescription)
+		viewController?.displayUpdateError(viewModel: viewModel)
 	}
 
 	private func presentCriteria(_ criteria: SearchCriteria) {

@@ -29,7 +29,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			case let .success(criteria):
 				self.presentLoadedCriteria(criteria)
 			case let .failure(error):
-				self.presentError(error)
+				self.presentLoadError(error)
 			}
 		}
 	}
@@ -42,7 +42,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			case let .success(criteria):
 				self.presentUpdatedCriteria(criteria)
 			case let .failure(error):
-				self.presentError(error)
+				self.presentUpdateError(error)
 			}
 		}
 	}
@@ -63,11 +63,15 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		presenter?.presentCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
 	}
 
+	private func presentLoadError(_ error: Error) {
+		presenter?.presentLoadError(error)
+	}
+
 	private func presentUpdatedCriteria(_ criteria: SearchCriteria) {
 		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
 	}
 
-	private func presentError(_ error: Error) {
-		print(error)
+	private func presentUpdateError(_ error: Error) {
+		presenter?.presentUpdateError(error)
 	}
 }

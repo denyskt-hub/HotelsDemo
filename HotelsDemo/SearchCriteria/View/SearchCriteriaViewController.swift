@@ -9,6 +9,8 @@ import UIKit
 
 protocol SearchCriteriaDisplayLogic: AnyObject {
 	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel)
+	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel)
+	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel)
 }
 
 final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
@@ -41,5 +43,19 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		rootView.destinationButton.setTitle(viewModel.destination, for: .normal)
 		rootView.datesButton.setTitle(viewModel.dateRange, for: .normal)
 		rootView.roomGuestsButton.setTitle(viewModel.roomGuests, for: .normal)
+	}
+
+	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel) {
+		displayError(message: viewModel.message)
+	}
+
+	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
+		displayError(message: viewModel.message)
+	}
+
+	func displayError(title: String = "Error", message: String) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "OK", style: .default))
+		present(alert, animated: true)
 	}
 }
