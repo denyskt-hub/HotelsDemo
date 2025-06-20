@@ -36,9 +36,7 @@ final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 			switch result {
 			case let .success(destinations):
 				self.destinations = destinations
-				self.presenter?.presentDestinations(
-					response: DestinationPickerModels.Search.Response(destinations: destinations)
-				)
+				self.presentDestinations(destinations)
 			case let .failure(error):
 				self.presentSearchError(error)
 			}
@@ -51,6 +49,12 @@ final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 		let selected = destinations[request.index]
 		presenter?.presentSelectedDestination(
 			response: DestinationPickerModels.Select.Response(selected: selected)
+		)
+	}
+
+	private func presentDestinations(_ destinations: [Destination]) {
+		presenter?.presentDestinations(
+			response: DestinationPickerModels.Search.Response(destinations: destinations)
 		)
 	}
 

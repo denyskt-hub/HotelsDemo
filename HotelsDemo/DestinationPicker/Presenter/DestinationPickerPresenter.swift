@@ -21,6 +21,7 @@ final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 			destinations: response.destinations.map { $0.label }
 		)
 		viewController?.displayDestinations(viewModel: viewModel)
+		viewController?.hideSearchError()
 	}
 
 	func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {

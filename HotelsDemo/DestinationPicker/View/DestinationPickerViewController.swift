@@ -15,6 +15,7 @@ protocol DestinationPickerDisplayLogic: AnyObject {
 	func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel)
 	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel)
 	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel)
+	func hideSearchError()
 }
 
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
@@ -64,6 +65,10 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 
 	public func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel) {
 		rootView.errorLabel.text = viewModel.message
+	}
+
+	public func hideSearchError() {
+		rootView.errorLabel.text = nil
 	}
 }
 
