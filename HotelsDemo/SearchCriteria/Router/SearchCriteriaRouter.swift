@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol SearchCriteriaRoutingLogic {
-	func routeToDestinationPicker()
-	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel)
-}
-
 final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	weak var viewController: UIViewController?
 
