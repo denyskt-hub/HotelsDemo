@@ -16,7 +16,7 @@ public class StepperView: NiblessView {
 			stepperStack
 		])
 		stack.axis = .horizontal
-		stack.spacing = 10
+		stack.spacing = 4
 		return stack
 	}()
 
@@ -59,6 +59,7 @@ public class StepperView: NiblessView {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 17, weight: .medium)
 		label.textColor = .label
+		label.textAlignment = .center
 		label.text = "0"
 		return label
 	}()
@@ -115,6 +116,9 @@ public class StepperView: NiblessView {
 
 	private func activateConstraints() {
 		activateConstraintsStack()
+		activateConstraintsDecrementButton()
+		activateConstraintsValueLabel()
+		activateConstraintsIncrementButton()
 	}
 }
 
@@ -128,5 +132,25 @@ extension StepperView {
 		let top = stack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
 		let bottom = stack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
+	private func activateConstraintsDecrementButton() {
+		decrementButton.translatesAutoresizingMaskIntoConstraints = false
+		let width = decrementButton.widthAnchor.constraint(equalToConstant: 36)
+		let height = decrementButton.heightAnchor.constraint(equalToConstant: 36)
+		NSLayoutConstraint.activate([width, height])
+	}
+
+	private func activateConstraintsValueLabel() {
+		valueLabel.translatesAutoresizingMaskIntoConstraints = false
+		let width = valueLabel.widthAnchor.constraint(equalToConstant: 24)
+		NSLayoutConstraint.activate([width])
+	}
+
+	private func activateConstraintsIncrementButton() {
+		incrementButton.translatesAutoresizingMaskIntoConstraints = false
+		let width = incrementButton.widthAnchor.constraint(equalToConstant: 36)
+		let height = incrementButton.heightAnchor.constraint(equalToConstant: 36)
+		NSLayoutConstraint.activate([width, height])
 	}
 }

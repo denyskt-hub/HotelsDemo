@@ -16,8 +16,8 @@ public class RoomGuestsPickerRootView: NiblessView {
 			roomsStepper,
 			adultsStepper,
 			childrenStepper,
-			applyButton,
-			spacer
+			tableView,
+			applyButton
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
@@ -48,15 +48,15 @@ public class RoomGuestsPickerRootView: NiblessView {
 		return stepper
 	}()
 
+	public let tableView: UITableView = {
+		let tableView = UITableView()
+		return tableView
+	}()
+
 	public let applyButton: UIButton = {
 		let button = UIButton()
 		button.configure(.filled, title: "Apply")
 		return button
-	}()
-
-	private let spacer: UIView = {
-		let view = UIView()
-		return view
 	}()
 
 	override public func didMoveToWindow() {
