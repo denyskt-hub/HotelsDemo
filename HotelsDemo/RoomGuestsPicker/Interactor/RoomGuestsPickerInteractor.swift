@@ -7,25 +7,6 @@
 
 import Foundation
 
-protocol RoomGuestsPickerBusinessLogic {
-	func loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request)
-	func load(request: RoomGuestsPickerModels.Load.Request)
-
-	func didDecrementRooms()
-	func didIncrementRooms()
-
-	func didDecrementAdults()
-	func didIncrementAdults()
-
-	func didDecrementChildrenAge()
-	func didIncrementChildrenAge()
-
-	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request)
-	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request)
-
-	func selectRoomGuests(request: RoomGuestsPickerModels.Select.Request)
-}
-
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	private let limits = RoomGuestsLimits(maxRooms: 30, maxAdults: 30, maxChildren: 10)
 

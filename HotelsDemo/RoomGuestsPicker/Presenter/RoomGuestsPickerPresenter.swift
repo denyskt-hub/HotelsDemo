@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 	weak var viewController: RoomGuestsPickerDisplayLogic?
 
