@@ -7,13 +7,6 @@
 
 import UIKit
 
-protocol SearchCriteriaDisplayLogic: AnyObject {
-	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel)
-	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel)
-	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel)
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
-}
-
 final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
 	var interactor: SearchCriteriaBusinessLogic?
 	var router: SearchCriteriaRouter?
