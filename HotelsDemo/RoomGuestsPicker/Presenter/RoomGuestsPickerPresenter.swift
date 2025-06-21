@@ -21,8 +21,8 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 			childrenAge: response.childrenAge.enumerated().map { (index, age) in
 				RoomGuestsPickerModels.AgeInputViewModel(
 					index: index,
-					title: "Child \(index + 1)",
-					selectedAgeTitle: "\(age)"
+					title: ChildTitleFormatter.title(for: index),
+					selectedAgeTitle: AgeFormatter.string(for: age)
 				)
 			}
 		)
@@ -44,8 +44,8 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 			childrenAge: response.childrenAge.enumerated().map { (index, age) in
 				RoomGuestsPickerModels.AgeInputViewModel(
 					index: index,
-					title: "Child \(index + 1)",
-					selectedAgeTitle: age.map({ "\($0)" }) ?? "Select age",
+					title: ChildTitleFormatter.title(for: index),
+					selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
 				)
 			}
 		)
@@ -56,7 +56,7 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 		let viewModel = RoomGuestsPickerModels.AgeSelection.ViewModel(
 			index: response.index,
 			selectedIndex: response.selectedAge.flatMap({ response.availableAges.firstIndex(of: $0) }),
-			availableAges: response.availableAges.map({ ($0, "\($0)") })
+			availableAges: response.availableAges.map({ ($0, AgeFormatter.string(for: $0)) })
 		)
 		viewController?.displayAgePicker(viewModel: viewModel)
 	}
@@ -66,8 +66,8 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 			childrenAge: response.childrenAge.enumerated().map { (index, age) in
 				RoomGuestsPickerModels.AgeInputViewModel(
 					index: index,
-					title: "Child \(index + 1)",
-					selectedAgeTitle: age.map({ "\($0)" }) ?? "Select age",
+					title: ChildTitleFormatter.title(for: index),
+					selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
 				)
 			}
 		)

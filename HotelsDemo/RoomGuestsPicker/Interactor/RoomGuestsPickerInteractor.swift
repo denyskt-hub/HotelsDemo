@@ -9,6 +9,7 @@ import Foundation
 
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	private let limits = RoomGuestsLimits(maxRooms: 30, maxAdults: 30, maxChildren: 10)
+	private let availableAges = Array(0...17)
 
 	private var rooms: Int
 	private var adults: Int
@@ -68,7 +69,7 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 
 	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request) {
 		let index = request.index
-		let availableAges = Array(1...17)
+		let availableAges = availableAges
 		let selectedAge = index < childrenAge.count ? childrenAge[index] : nil
 
 		presenter?.presentAgePicker(
