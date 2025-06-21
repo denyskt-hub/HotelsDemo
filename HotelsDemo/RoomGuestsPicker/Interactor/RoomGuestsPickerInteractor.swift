@@ -15,9 +15,14 @@ protocol RoomGuestsPickerBusinessLogic {
 
 	func didDecrementAdults()
 	func didIncrementAdults()
+
+	func didDecrementChildrenAge()
+	func didIncrementChildrenAge()
 }
 
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
+	private let limits = RoomGuestsLimits(maxRooms: 30, maxAdults: 30, maxChildren: 10)
+
 	private var rooms: Int
 	private var adults: Int
 	private var childrenAge: [Int]
@@ -31,7 +36,6 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	}
 
 	func loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request) {
-		let limits = RoomGuestsLimits(maxRooms: 30, maxAdults: 30, maxChildren: 10)
 		presenter?.presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response(limits: limits))
 	}
 
@@ -51,13 +55,27 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		updateAdults(adults + 1)
 	}
 
+	func didDecrementChildrenAge() {
+		guard !childrenAge.isEmpty else { return }
+
+		childrenAge.removeLast()
+		presenter?.presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response(childrenAge: childrenAge))
+	}
+
+	func didIncrementChildrenAge() {
+		guard childrenAge.count < limits.maxChildren else { return }
+		
+		childrenAge.append(0)
+		presenter?.presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response(childrenAge: childrenAge))
+	}
+
 	private func updateRooms(_ rooms: Int) {
-		self.rooms = rooms
+		self.rooms = min(max(rooms, 1), limits.maxRooms)
 		presenter?.presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response(rooms: rooms))
 	}
 
 	private func updateAdults(_ adults: Int) {
-		self.adults = adults
+		self.adults = min(max(adults, 1), limits.maxAdults)
 		presenter?.presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response(adults: adults))
 	}
 }

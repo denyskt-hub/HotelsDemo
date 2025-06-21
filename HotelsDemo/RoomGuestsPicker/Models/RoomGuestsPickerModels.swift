@@ -40,13 +40,25 @@ public enum RoomGuestsPickerModels {
 		}
 	}
 
+	public enum UpdateChildrenAge {
+		public struct Request {}
+
+		public struct Response {
+			let childrenAge: [Int]
+		}
+
+		public struct ViewModel {
+			let childrenAge: [Int]
+
+			var children: Int { childrenAge.count }
+		}
+	}
+
 	public struct ViewModel {
 		let rooms: Int
 		let adults: Int
 		let childrenAge: [Int]
 
-		var children: Int {
-			childrenAge.count
-		}
+		var children: Int { childrenAge.count }
 	}
 }

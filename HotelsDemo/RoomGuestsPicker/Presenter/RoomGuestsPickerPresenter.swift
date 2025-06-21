@@ -11,6 +11,7 @@ protocol RoomGuestsPickerPresentationLogic {
 	func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response)
 	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response)
 	func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response)
+	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response)
 }
 
 final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
@@ -28,5 +29,10 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 	func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response) {
 		let viewModel = RoomGuestsPickerModels.UpdateAdults.ViewModel(adults: response.adults)
 		viewController?.displayAdults(viewModel: viewModel)
+	}
+
+	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response) {
+		let viewModel = RoomGuestsPickerModels.UpdateChildrenAge.ViewModel(childrenAge: response.childrenAge)
+		viewController?.displayChildrenAge(viewModel: viewModel)
 	}
 }

@@ -16,6 +16,7 @@ public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
 	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel)
+	func displayChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel)
 }
 
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
@@ -33,6 +34,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 
 		setupRoomsStepper()
 		setupAdultsStepper()
+		setupChildrenStepper()
 
 		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
 	}
@@ -45,6 +47,11 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	private func setupAdultsStepper() {
 		rootView.adultsStepper.decrementButton.addTarget(self, action: #selector(didDecrementAdults), for: .touchUpInside)
 		rootView.adultsStepper.incrementButton.addTarget(self, action: #selector(didIncrementAdults), for: .touchUpInside)
+	}
+
+	private func setupChildrenStepper() {
+		rootView.childrenStepper.decrementButton.addTarget(self, action: #selector(didDecrementChildren), for: .touchUpInside)
+		rootView.childrenStepper.incrementButton.addTarget(self, action: #selector(didIncrementChildren), for: .touchUpInside)
 	}
 
 	public func applyLimits(_ limits: RoomGuestsLimits) {
@@ -67,6 +74,10 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.adultsStepper.setValue(viewModel.adults)
 	}
 
+	public func displayChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
+		rootView.childrenStepper.setValue(viewModel.children)
+	}
+
 	@objc private func didDecrementRooms() {
 		interactor?.didDecrementRooms()
 	}
@@ -81,5 +92,13 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 
 	@objc private func didIncrementAdults() {
 		interactor?.didIncrementAdults()
+	}
+
+	@objc private func didDecrementChildren() {
+		interactor?.didDecrementChildrenAge()
+	}
+
+	@objc private func didIncrementChildren() {
+		interactor?.didIncrementChildrenAge()
 	}
 }
