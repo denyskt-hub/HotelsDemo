@@ -18,13 +18,7 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 		let viewModel = RoomGuestsPickerModels.Load.ViewModel(
 			rooms: response.rooms,
 			adults: response.adults,
-			childrenAge: response.childrenAge.enumerated().map { (index, age) in
-				RoomGuestsPickerModels.AgeInputViewModel(
-					index: index,
-					title: ChildTitleFormatter.title(for: index),
-					selectedAgeTitle: AgeFormatter.string(for: age)
-				)
-			}
+			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
 		viewController?.displayRoomGuests(viewModel: viewModel)
 	}
@@ -41,13 +35,7 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 
 	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response) {
 		let viewModel = RoomGuestsPickerModels.UpdateChildrenAge.ViewModel(
-			childrenAge: response.childrenAge.enumerated().map { (index, age) in
-				RoomGuestsPickerModels.AgeInputViewModel(
-					index: index,
-					title: ChildTitleFormatter.title(for: index),
-					selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
-				)
-			}
+			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
 		viewController?.displayChildrenAge(viewModel: viewModel)
 	}
@@ -63,13 +51,7 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 
 	func presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response) {
 		let viewModel = RoomGuestsPickerModels.AgeSelected.ViewModel(
-			childrenAge: response.childrenAge.enumerated().map { (index, age) in
-				RoomGuestsPickerModels.AgeInputViewModel(
-					index: index,
-					title: ChildTitleFormatter.title(for: index),
-					selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
-				)
-			}
+			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
 		viewController?.displayChildrenAge(viewModel: viewModel)
 	}
@@ -81,5 +63,17 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 			childrenAge: response.childrenAge
 		)
 		viewController?.displaySelectedRoomGuests(viewModel: viewModel)
+	}
+
+	private func makeAgeInputViewModels(_ childrenAge: [Int?]) -> [RoomGuestsPickerModels.AgeInputViewModel] {
+		childrenAge.enumerated().map(makeAgeInputViewModel)
+	}
+
+	private func makeAgeInputViewModel(_ index: Int, age: Int?) -> RoomGuestsPickerModels.AgeInputViewModel {
+		RoomGuestsPickerModels.AgeInputViewModel(
+			index: index,
+			title: ChildTitleFormatter.title(for: index),
+			selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
+		)
 	}
 }
