@@ -18,6 +18,9 @@ protocol RoomGuestsPickerBusinessLogic {
 
 	func didDecrementChildrenAge()
 	func didIncrementChildrenAge()
+
+	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request)
+	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request)
 }
 
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
@@ -25,7 +28,7 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 
 	private var rooms: Int
 	private var adults: Int
-	private var childrenAge: [Int]
+	private var childrenAge: [Int?]
 
 	var presenter: RoomGuestsPickerPresentationLogic?
 
@@ -65,8 +68,27 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	func didIncrementChildrenAge() {
 		guard childrenAge.count < limits.maxChildren else { return }
 		
-		childrenAge.append(0)
+		childrenAge.append(nil)
 		presenter?.presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response(childrenAge: childrenAge))
+	}
+
+	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request) {
+		let index = request.index
+		let availableAges = Array(1...17)
+		let selectedAge = index < childrenAge.count ? childrenAge[index] : nil
+
+		presenter?.presentAgePicker(
+			response: RoomGuestsPickerModels.AgeSelection.Response(
+				index: index,
+				availableAges: availableAges,
+				selectedAge: selectedAge
+			)
+		)
+	}
+
+	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request) {
+		childrenAge[request.index] = request.age
+		presenter?.presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response(childrenAge: childrenAge))
 	}
 
 	private func updateRooms(_ rooms: Int) {

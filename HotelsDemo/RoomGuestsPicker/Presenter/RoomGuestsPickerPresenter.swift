@@ -12,6 +12,8 @@ protocol RoomGuestsPickerPresentationLogic {
 	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response)
 	func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response)
 	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response)
+	func presentAgePicker(response: RoomGuestsPickerModels.AgeSelection.Response)
+	func presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response)
 }
 
 final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
@@ -32,7 +34,37 @@ final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 	}
 
 	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response) {
-		let viewModel = RoomGuestsPickerModels.UpdateChildrenAge.ViewModel(childrenAge: response.childrenAge)
+		let viewModel = RoomGuestsPickerModels.UpdateChildrenAge.ViewModel(
+			childrenAge: response.childrenAge.enumerated().map { (index, age) in
+				RoomGuestsPickerModels.AgeInputViewModel(
+					index: index,
+					title: "Child \(index + 1)",
+					selectedAgeTitle: age.map({ "\($0)" }) ?? "Select age",
+				)
+			}
+		)
+		viewController?.displayChildrenAge(viewModel: viewModel)
+	}
+
+	func presentAgePicker(response: RoomGuestsPickerModels.AgeSelection.Response) {
+		let viewModel = RoomGuestsPickerModels.AgeSelection.ViewModel(
+			index: response.index,
+			selectedIndex: response.selectedAge.flatMap({ response.availableAges.firstIndex(of: $0) }),
+			availableAges: response.availableAges.map({ ($0, "\($0)") })
+		)
+		viewController?.displayAgePicker(viewModel: viewModel)
+	}
+
+	func presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response) {
+		let viewModel = RoomGuestsPickerModels.AgeSelected.ViewModel(
+			childrenAge: response.childrenAge.enumerated().map { (index, age) in
+				RoomGuestsPickerModels.AgeInputViewModel(
+					index: index,
+					title: "Child \(index + 1)",
+					selectedAgeTitle: age.map({ "\($0)" }) ?? "Select age",
+				)
+			}
+		)
 		viewController?.displayChildrenAge(viewModel: viewModel)
 	}
 }

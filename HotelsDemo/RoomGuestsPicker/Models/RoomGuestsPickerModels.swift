@@ -44,12 +44,45 @@ public enum RoomGuestsPickerModels {
 		public struct Request {}
 
 		public struct Response {
-			let childrenAge: [Int]
+			let childrenAge: [Int?]
 		}
 
 		public struct ViewModel {
-			let childrenAge: [Int]
+			let childrenAge: [AgeInputViewModel]
+			var children: Int { childrenAge.count }
+		}
+	}
 
+	public enum AgeSelection {
+		struct Request {
+			let index: Int
+		}
+
+		struct Response {
+			let index: Int
+			let availableAges: [Int]
+			let selectedAge: Int?
+		}
+
+		public struct ViewModel {
+			let index: Int
+			let selectedIndex: Int?
+			let availableAges: [(value: Int, title: String)]
+		}
+	}
+
+	public enum AgeSelected {
+		struct Request {
+			let index: Int
+			let age: Int
+		}
+
+		struct Response {
+			let childrenAge: [Int?]
+		}
+
+		public struct ViewModel {
+			let childrenAge: [AgeInputViewModel]
 			var children: Int { childrenAge.count }
 		}
 	}
@@ -60,5 +93,11 @@ public enum RoomGuestsPickerModels {
 		let childrenAge: [Int]
 
 		var children: Int { childrenAge.count }
+	}
+
+	public struct AgeInputViewModel {
+		let index: Int
+		let title: String
+		let selectedAgeTitle: String
 	}
 }

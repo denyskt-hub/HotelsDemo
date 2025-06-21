@@ -1,24 +1,24 @@
 //
-//  RoomGuestsPickerRootView.swift
+//  ChildAgeCell.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 20/6/25.
+//  Created by Denys Kotenko on 21/6/25.
 //
 
 import UIKit
 
-public class RoomGuestsPickerRootView: NiblessView {
+protocol AgeInputViewDelegate: AnyObject {
+	func ageInputViewDidRequestPicker(_ view: AgeInputView, index: Int)
+}
+
+final class AgeInputView: NiblessView {
+	private let viewModel: RoomGuestsPickerModels.AgeInputViewModel
 	private var hierarchyNotReady = true
 
 	public lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
-			roomsStepper,
-			adultsStepper,
-			childrenStepper,
-			childrenStack,
-			spacer,
-			applyButton
+			selectButton
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
@@ -27,45 +27,24 @@ public class RoomGuestsPickerRootView: NiblessView {
 
 	public let titleLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Select rooms and guests"
 		return label
 	}()
 
-	public let roomsStepper: StepperView = {
-		let stepper = StepperView()
-		stepper.titleLabel.text = "Rooms"
-		return stepper
-	}()
-
-	public let adultsStepper: StepperView = {
-		let stepper = StepperView()
-		stepper.titleLabel.text = "Adults"
-		return stepper
-	}()
-
-	public let childrenStepper: StepperView = {
-		let stepper = StepperView()
-		stepper.titleLabel.text = "Children"
-		return stepper
-	}()
-
-	public let childrenStack: UIStackView = {
-		let stack = UIStackView()
-		stack.axis = .vertical
-		stack.spacing = 10
-		return stack
-	}()
-
-	private let spacer: UIView = {
-		let view = UIView()
-		return view
-	}()
-
-	public let applyButton: UIButton = {
+	public let selectButton: UIButton = {
 		let button = UIButton()
-		button.configure(.filled, title: "Apply")
+		button.configure(.plain)
+		button.tintColor = .label
 		return button
 	}()
+
+	public weak var delegate: AgeInputViewDelegate?
+
+	public init(viewModel: RoomGuestsPickerModels.AgeInputViewModel) {
+		self.viewModel = viewModel
+		super.init(frame: .zero)
+
+		configure(with: viewModel)
+	}
 
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()
@@ -76,6 +55,7 @@ public class RoomGuestsPickerRootView: NiblessView {
 
 		setupAppearance()
 		setupHierarchy()
+		setupSelectButton()
 		activateConstraints()
 		hierarchyNotReady = false
 	}
@@ -88,14 +68,27 @@ public class RoomGuestsPickerRootView: NiblessView {
 		addSubview(stack)
 	}
 
+	private func setupSelectButton() {
+		selectButton.addTarget(self, action: #selector(didRequestPicker), for: .touchUpInside)
+	}
+
 	private func activateConstraints() {
 		activateConstraintsStack()
+	}
+
+	private func configure(with viewModel: RoomGuestsPickerModels.AgeInputViewModel) {
+		titleLabel.text = viewModel.title
+		selectButton.setTitle(viewModel.selectedAgeTitle, for: .normal)
+	}
+
+	@objc private func didRequestPicker() {
+		delegate?.ageInputViewDidRequestPicker(self, index: viewModel.index)
 	}
 }
 
 // MARK: - Layout
 
-extension RoomGuestsPickerRootView {
+extension AgeInputView {
 	private func activateConstraintsStack() {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
