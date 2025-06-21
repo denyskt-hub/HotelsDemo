@@ -15,6 +15,7 @@ public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 	func applyLimits(_ limits: RoomGuestsLimits)
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
+	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel)
 }
 
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
@@ -31,6 +32,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		super.viewDidLoad()
 
 		setupRoomsStepper()
+		setupAdultsStepper()
 
 		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
 	}
@@ -38,6 +40,11 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	private func setupRoomsStepper() {
 		rootView.roomsStepper.decrementButton.addTarget(self, action: #selector(didDecrementRooms), for: .touchUpInside)
 		rootView.roomsStepper.incrementButton.addTarget(self, action: #selector(didIncrementRooms), for: .touchUpInside)
+	}
+
+	private func setupAdultsStepper() {
+		rootView.adultsStepper.decrementButton.addTarget(self, action: #selector(didDecrementAdults), for: .touchUpInside)
+		rootView.adultsStepper.incrementButton.addTarget(self, action: #selector(didIncrementAdults), for: .touchUpInside)
 	}
 
 	public func applyLimits(_ limits: RoomGuestsLimits) {
@@ -56,11 +63,23 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.roomsStepper.setValue(viewModel.rooms)
 	}
 
+	public func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel) {
+		rootView.adultsStepper.setValue(viewModel.adults)
+	}
+
 	@objc private func didDecrementRooms() {
 		interactor?.didDecrementRooms()
 	}
 
 	@objc private func didIncrementRooms() {
 		interactor?.didIncrementRooms()
+	}
+
+	@objc private func didDecrementAdults() {
+		interactor?.didDecrementAdults()
+	}
+
+	@objc private func didIncrementAdults() {
+		interactor?.didIncrementAdults()
 	}
 }

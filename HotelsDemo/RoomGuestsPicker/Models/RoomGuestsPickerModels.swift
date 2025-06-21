@@ -28,6 +28,18 @@ public enum RoomGuestsPickerModels {
 		}
 	}
 
+	public enum UpdateAdults {
+		public struct Request {}
+
+		public struct Response {
+			let adults: Int
+		}
+
+		public struct ViewModel {
+			let adults: Int
+		}
+	}
+
 	public struct ViewModel {
 		let rooms: Int
 		let adults: Int

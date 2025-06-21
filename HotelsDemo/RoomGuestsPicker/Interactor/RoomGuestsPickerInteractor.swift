@@ -12,6 +12,9 @@ protocol RoomGuestsPickerBusinessLogic {
 
 	func didDecrementRooms()
 	func didIncrementRooms()
+
+	func didDecrementAdults()
+	func didIncrementAdults()
 }
 
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
@@ -40,8 +43,21 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		updateRooms(rooms + 1)
 	}
 
+	func didDecrementAdults() {
+		updateAdults(adults - 1)
+	}
+
+	func didIncrementAdults() {
+		updateAdults(adults + 1)
+	}
+
 	private func updateRooms(_ rooms: Int) {
 		self.rooms = rooms
 		presenter?.presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response(rooms: rooms))
+	}
+
+	private func updateAdults(_ adults: Int) {
+		self.adults = adults
+		presenter?.presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response(adults: adults))
 	}
 }
