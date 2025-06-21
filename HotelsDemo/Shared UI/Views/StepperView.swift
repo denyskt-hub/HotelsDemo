@@ -87,6 +87,8 @@ public class StepperView: NiblessView {
 	private var value: Int = 0 {
 		didSet {
 			valueLabel.text = "\(value)"
+			decrementButton.isEnabled = value > minimumValue
+			incrementButton.isEnabled = value < maximumValue
 		}
 	}
 
