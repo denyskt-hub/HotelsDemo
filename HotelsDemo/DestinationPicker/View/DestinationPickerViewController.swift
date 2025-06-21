@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol DestinationPickerDelegate: AnyObject {
-	func didSelectDestination(_ destination: Destination)
-}
-
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	private let rootView = DestinationPickerRootView()
 	private var viewModel: DestinationPickerModels.Search.ViewModel?
