@@ -11,13 +11,6 @@ protocol DestinationPickerDelegate: AnyObject {
 	func didSelectDestination(_ destination: Destination)
 }
 
-protocol DestinationPickerDisplayLogic: AnyObject {
-	func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel)
-	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel)
-	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel)
-	func hideSearchError()
-}
-
 final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	private let rootView = DestinationPickerRootView()
 	private var viewModel: DestinationPickerModels.Search.ViewModel?
