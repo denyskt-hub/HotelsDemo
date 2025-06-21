@@ -11,6 +11,7 @@ protocol SearchCriteriaBusinessLogic {
 	func loadCriteria(request: SearchCriteriaModels.Load.Request)
 	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request)
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request)
+	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request)
 }
 
 final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
@@ -59,7 +60,20 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 
 			switch result {
 			case let .success(criteria):
-				self.presentUpdatedCriteria(criteria)
+				self.presentUpdatedDestinationCriteria(criteria)
+			case let .failure(error):
+				self.presentUpdateError(error)
+			}
+		}
+	}
+
+	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request) {
+		update(request.rooms, request.adults, request.childrenAge) { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentUpdatedRoomGuestsCriteria(criteria)
 			case let .failure(error):
 				self.presentUpdateError(error)
 			}
@@ -70,9 +84,26 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		store.retrieve(completion: completion)
 	}
 
-	private func update(_ destination: Destination, completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+	private func update(
+		_ destination: Destination,
+		completion: @escaping (Result<SearchCriteria, Error>) -> Void
+	) {
 		store.update({ $0.destination = destination }, completion: completion)
 	}
+
+	private func update(
+		_ rooms: Int,
+		_ adults: Int,
+		_ childrenAge: [Int],
+		completion: @escaping (Result<SearchCriteria, Error>) -> Void
+	) {
+		store.update({
+			$0.adults = adults
+			$0.childrenAge = childrenAge
+			$0.roomsQuantity = rooms
+		}, completion: completion)
+	}
+
 
 	private func save(_ criteria: SearchCriteria, _ completion: @escaping (Error?) -> Void) {
 		store.save(criteria, completion: completion)
@@ -90,8 +121,12 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		presenter?.presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
 	}
 
-	private func presentUpdatedCriteria(_ criteria: SearchCriteria) {
+	private func presentUpdatedDestinationCriteria(_ criteria: SearchCriteria) {
 		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+	}
+
+	private func presentUpdatedRoomGuestsCriteria(_ criteria: SearchCriteria) {
+		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria))
 	}
 
 	private func presentUpdateError(_ error: Error) {

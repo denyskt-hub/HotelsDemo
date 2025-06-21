@@ -14,6 +14,7 @@ protocol SearchCriteriaPresentationLogic {
 	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response)
 
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response)
+	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response)
 	func presentUpdateError(_ error: Error)
 }
 
@@ -34,6 +35,10 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 	}
 
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
+		presentCriteria(response.criteria)
+	}
+
+	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
 		presentCriteria(response.criteria)
 	}
 

@@ -44,6 +44,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 
 		roomGuestsVC.interactor = interactor
 		roomGuestsVC.displayRoomGuests(viewModel: viewModel)
+		roomGuestsVC.delegate = self
 		interactor.presenter = presenter
 		presenter.viewController = roomGuestsVC
 
@@ -57,6 +58,20 @@ extension SearchCriteriaRouter: DestinationPickerDelegate {
 
 		source.interactor?.updateDestination(
 			request: SearchCriteriaModels.UpdateDestination.Request(destination: destination)
+		)
+	}
+}
+
+extension SearchCriteriaRouter: RoomGuestsPickerDelegate {
+	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
+		guard let source = self.viewController as? SearchCriteriaViewController else { return }
+
+		source.interactor?.updateRoomGuests(
+			request: SearchCriteriaModels.UpdateRoomGuests.Request(
+				rooms: rooms,
+				adults: adults,
+				childrenAge: childrenAges
+			)
 		)
 	}
 }

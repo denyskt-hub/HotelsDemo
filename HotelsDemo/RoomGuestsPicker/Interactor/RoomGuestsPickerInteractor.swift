@@ -21,6 +21,8 @@ protocol RoomGuestsPickerBusinessLogic {
 
 	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request)
 	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request)
+
+	func selectRoomGuests(request: RoomGuestsPickerModels.Select.Request)
 }
 
 final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
@@ -89,6 +91,16 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request) {
 		childrenAge[request.index] = request.age
 		presenter?.presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response(childrenAge: childrenAge))
+	}
+
+	func selectRoomGuests(request: RoomGuestsPickerModels.Select.Request) {
+		presenter?.presentSelectedRoomGuests(
+			response: RoomGuestsPickerModels.Select.Response(
+				rooms: rooms,
+				adults: adults,
+				childrenAge: childrenAge.compactMap { $0 }
+			)
+		)
 	}
 
 	private func updateRooms(_ rooms: Int) {

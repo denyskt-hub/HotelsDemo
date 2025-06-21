@@ -53,4 +53,16 @@ enum SearchCriteriaModels {
 			let message: String
 		}
 	}
+
+	enum UpdateRoomGuests {
+		struct Request {
+			let rooms: Int
+			let adults: Int
+			let childrenAge: [Int]
+		}
+
+		struct Response {
+			let criteria: SearchCriteria
+		}
+	}
 }

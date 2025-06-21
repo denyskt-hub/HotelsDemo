@@ -11,9 +11,9 @@ struct SearchCriteria {
 	var destination: Destination?
 	let checkInDate: Date
 	let checkOutDate: Date
-	let adults: Int
-	let childrenAge: [Int]
-	let roomsQuantity: Int
+	var adults: Int
+	var childrenAge: [Int]
+	var roomsQuantity: Int
 }
 
 extension SearchCriteria {

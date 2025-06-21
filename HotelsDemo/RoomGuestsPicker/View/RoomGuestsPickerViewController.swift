@@ -8,7 +8,7 @@
 import UIKit
 
 public protocol RoomGuestsPickerDelegate: AnyObject {
-
+	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int])
 }
 
 public protocol RoomGuestsPickerDisplayLogic: AnyObject {
@@ -21,6 +21,8 @@ public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 
 	func displayAgePicker(viewModel: RoomGuestsPickerModels.AgeSelection.ViewModel)
 	func displayChildrenAge(viewModel: RoomGuestsPickerModels.AgeSelected.ViewModel)
+
+	func displaySelectedRoomGuests(viewModel: RoomGuestsPickerModels.Select.ViewModel)
 }
 
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
@@ -39,6 +41,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		setupRoomsStepper()
 		setupAdultsStepper()
 		setupChildrenStepper()
+		setupApplyButton()
 
 		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
 	}
@@ -56,6 +59,10 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	private func setupChildrenStepper() {
 		rootView.childrenStepper.decrementButton.addTarget(self, action: #selector(didDecrementChildren), for: .touchUpInside)
 		rootView.childrenStepper.incrementButton.addTarget(self, action: #selector(didIncrementChildren), for: .touchUpInside)
+	}
+
+	private func setupApplyButton() {
+		rootView.applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
 	}
 
 	public func applyLimits(_ limits: RoomGuestsLimits) {
@@ -120,6 +127,15 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		present(nav, animated: true)
 	}
 
+	public func displaySelectedRoomGuests(viewModel: RoomGuestsPickerModels.Select.ViewModel) {
+		delegate?.didSelectRoomGuests(
+			rooms: viewModel.rooms,
+			adults: viewModel.adults,
+			childrenAges: viewModel.childrenAge
+		)
+		dismiss(animated: true)
+	}
+
 	@objc private func didDecrementRooms() {
 		interactor?.didDecrementRooms()
 	}
@@ -142,6 +158,10 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 
 	@objc private func didIncrementChildren() {
 		interactor?.didIncrementChildrenAge()
+	}
+
+	@objc private func didApply() {
+		interactor?.selectRoomGuests(request: RoomGuestsPickerModels.Select.Request())
 	}
 }
 
