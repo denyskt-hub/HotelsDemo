@@ -7,11 +7,6 @@
 
 import Foundation
 
-protocol DestinationPickerBusinessLogic {
-	func searchDestinations(request: DestinationPickerModels.Search.Request)
-	func selectDestination(request: DestinationPickerModels.Select.Request)
-}
-
 final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
 	private let debouncer = Debouncer(delay: 0.5)
