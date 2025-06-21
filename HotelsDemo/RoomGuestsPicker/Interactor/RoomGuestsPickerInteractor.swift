@@ -8,7 +8,8 @@
 import Foundation
 
 protocol RoomGuestsPickerBusinessLogic {
-	func loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request)
+	func loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request)
+	func load(request: RoomGuestsPickerModels.Load.Request)
 
 	func didDecrementRooms()
 	func didIncrementRooms()
@@ -40,8 +41,18 @@ final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		self.childrenAge = childrenAge
 	}
 
-	func loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request) {
+	func loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request) {
 		presenter?.presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response(limits: limits))
+	}
+
+	func load(request: RoomGuestsPickerModels.Load.Request) {
+		presenter?.presentRoomGuests(
+			response: RoomGuestsPickerModels.Load.Response(
+				rooms: rooms,
+				adults: adults,
+				childrenAge: childrenAge.compactMap { $0 }
+			)
+		)
 	}
 
 	func didDecrementRooms() {

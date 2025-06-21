@@ -43,7 +43,6 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		let presenter = RoomGuestsPickerPresenter()
 
 		roomGuestsVC.interactor = interactor
-		roomGuestsVC.displayRoomGuests(viewModel: viewModel)
 		roomGuestsVC.delegate = self
 		interactor.presenter = presenter
 		presenter.viewController = roomGuestsVC

@@ -8,6 +8,22 @@
 import Foundation
 
 public enum RoomGuestsPickerModels {
+	public enum Load {
+		public struct Request {}
+
+		public struct Response {
+			let rooms: Int
+			let adults: Int
+			let childrenAge: [Int]
+		}
+
+		public struct ViewModel {
+			let rooms: Int
+			let adults: Int
+			let childrenAge: [AgeInputViewModel]
+		}
+	}
+
 	public enum LoadLimits {
 		public struct Request {}
 
@@ -49,7 +65,6 @@ public enum RoomGuestsPickerModels {
 
 		public struct ViewModel {
 			let childrenAge: [AgeInputViewModel]
-			var children: Int { childrenAge.count }
 		}
 	}
 
@@ -83,7 +98,6 @@ public enum RoomGuestsPickerModels {
 
 		public struct ViewModel {
 			let childrenAge: [AgeInputViewModel]
-			var children: Int { childrenAge.count }
 		}
 	}
 
@@ -107,8 +121,6 @@ public enum RoomGuestsPickerModels {
 		let rooms: Int
 		let adults: Int
 		let childrenAge: [Int]
-
-		var children: Int { childrenAge.count }
 	}
 
 	public struct AgeInputViewModel {

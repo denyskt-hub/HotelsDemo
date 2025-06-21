@@ -13,7 +13,7 @@ public protocol RoomGuestsPickerDelegate: AnyObject {
 
 public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 	func applyLimits(_ limits: RoomGuestsLimits)
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel)
 
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
 	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel)
@@ -43,7 +43,8 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		setupChildrenStepper()
 		setupApplyButton()
 
-		interactor?.loadRoomGuestsLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
+		interactor?.loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
+		interactor?.load(request: RoomGuestsPickerModels.Load.Request())
 	}
 
 	private func setupRoomsStepper() {
@@ -71,10 +72,10 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
 
-	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel) {
 		rootView.roomsStepper.setValue(viewModel.rooms)
 		rootView.adultsStepper.setValue(viewModel.adults)
-		rootView.childrenStepper.setValue(viewModel.children)
+		displayChildrenAge(viewModel.childrenAge)
 	}
 
 	public func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel) {
@@ -86,27 +87,21 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	}
 
 	public func displayChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
-		rootView.childrenStepper.setValue(viewModel.children)
-
-		rootView.childrenStack.arrangedSubviews.forEach {
-			$0.removeFromSuperview()
-		}
-
-		for ageViewModel in viewModel.childrenAge {
-			let inputView = AgeInputView(viewModel: ageViewModel)
-			inputView.delegate = self
-			rootView.childrenStack.addArrangedSubview(inputView)
-		}
+		displayChildrenAge(viewModel.childrenAge)
 	}
 
 	public func displayChildrenAge(viewModel: RoomGuestsPickerModels.AgeSelected.ViewModel) {
-		rootView.childrenStepper.setValue(viewModel.children)
+		displayChildrenAge(viewModel.childrenAge)
+	}
+
+	private func displayChildrenAge(_ childrenAge: [RoomGuestsPickerModels.AgeInputViewModel]) {
+		rootView.childrenStepper.setValue(childrenAge.count)
 
 		rootView.childrenStack.arrangedSubviews.forEach {
 			$0.removeFromSuperview()
 		}
 
-		for ageViewModel in viewModel.childrenAge {
+		for ageViewModel in childrenAge {
 			let inputView = AgeInputView(viewModel: ageViewModel)
 			inputView.delegate = self
 			rootView.childrenStack.addArrangedSubview(inputView)
