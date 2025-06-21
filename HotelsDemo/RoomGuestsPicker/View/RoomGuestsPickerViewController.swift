@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol RoomGuestsPickerDelegate: AnyObject {
-	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int])
-}
-
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
 	private let rootView = RoomGuestsPickerRootView()
 
