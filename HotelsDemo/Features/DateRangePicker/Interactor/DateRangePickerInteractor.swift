@@ -72,7 +72,13 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		let now = calendar.startOfDay(for: .now)
 
 		while current <= end {
-			result.append(.init(date: current, isToday: current == now))
+			result.append(
+				.init(
+					date: current,
+					isToday: current == now,
+					isEnabled: current >= now
+				)
+			)
 			current = current.adding(days: 1, calendar: calendar)
 		}
 

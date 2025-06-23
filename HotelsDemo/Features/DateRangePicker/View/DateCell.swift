@@ -37,6 +37,7 @@ final class DateCell: UICollectionViewCell {
 	public func configure(_ viewModel: DateRangePickerModels.CalendarDateViewModel) {
 		button.setTitle(viewModel.date ?? "", for: .normal)
 		button.tintColor = viewModel.isToday ? .blue : .label
+		button.isEnabled = viewModel.isEnabled
 	}
 }
 
