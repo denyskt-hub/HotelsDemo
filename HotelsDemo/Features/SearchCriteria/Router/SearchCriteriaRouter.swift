@@ -28,6 +28,31 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		viewController?.present(destinationVC, animated: true)
 	}
 
+	func routeToDateRangePicker() {
+		let calendar = Calendar(identifier: .gregorian)
+
+		let monthTitleFormatter = DateFormatter()
+		monthTitleFormatter.dateFormat = "LLLL yyyy"
+		monthTitleFormatter.calendar = calendar
+
+		let dayFormatter = DateFormatter()
+		dayFormatter.dateFormat = "d"
+		dayFormatter.calendar = calendar
+
+		let dateRangeVC = DateRangePickerViewController()
+		let interactor = DateRangePickerInteractor(calendar: calendar)
+		let presenter = DataRangePickerPresenter(
+			monthTitleFormatter: monthTitleFormatter,
+			dayFormatter: dayFormatter
+		)
+
+		dateRangeVC.interactor = interactor
+		interactor.presenter = presenter
+		presenter.viewController = dateRangeVC
+
+		viewController?.present(dateRangeVC, animated: true)
+	}
+
 	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		let roomGuestsVC = RoomGuestsPickerViewController()
 		let interactor = RoomGuestsPickerInteractor(

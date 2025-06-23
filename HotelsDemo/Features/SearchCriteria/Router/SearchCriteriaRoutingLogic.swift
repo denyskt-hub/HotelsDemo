@@ -9,5 +9,6 @@ import Foundation
 
 protocol SearchCriteriaRoutingLogic {
 	func routeToDestinationPicker()
+	func routeToDateRangePicker()
 	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel)
 }

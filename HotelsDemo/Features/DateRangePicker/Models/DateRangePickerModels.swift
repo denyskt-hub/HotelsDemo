@@ -8,5 +8,35 @@
 import Foundation
 
 public enum DateRangePickerModels {
-	
+	public enum Load {
+		public struct Request {}
+
+		public struct Response {
+			let weekdays: [String]
+			let sections: [CalendarMonth]
+		}
+
+		public struct ViewModel {
+			let weekdays: [String]
+			let sections: [CalendarMonthViewModel]
+		}
+	}
+
+	public struct CalendarMonth {
+		let month: Date
+		let dates: [CalendarDate]
+	}
+
+	public struct CalendarDate {
+		let date: Date?
+	}
+
+	public struct CalendarMonthViewModel {
+		let title: String
+		let dates: [CalendarDateViewModel]
+	}
+
+	public struct CalendarDateViewModel {
+		let date: String?
+	}
 }
