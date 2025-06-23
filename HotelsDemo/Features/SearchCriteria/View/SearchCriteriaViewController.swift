@@ -44,7 +44,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 	}
 
 	@objc private func datesButtonHandler() {
-		router?.routeToDateRangePicker()
+		interactor?.loadDates(request: SearchCriteriaModels.LoadDates.Request())
 	}
 
 	@objc private func roomGuestsButtonHandler() {
@@ -63,6 +63,10 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 
 	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
 		displayError(message: viewModel.message)
+	}
+
+	func displayDates(viewModel: DateRangePickerModels.ViewModel) {
+		router?.routeToDateRangePicker(viewModel: viewModel)
 	}
 
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {

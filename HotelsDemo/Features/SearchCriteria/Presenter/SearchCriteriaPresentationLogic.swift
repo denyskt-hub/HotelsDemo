@@ -12,6 +12,7 @@ protocol SearchCriteriaPresentationLogic {
 	func presentLoadError(_ error: Error)
 
 	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response)
+	func presentDates(response: SearchCriteriaModels.LoadDates.Response)
 
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response)
 	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response)

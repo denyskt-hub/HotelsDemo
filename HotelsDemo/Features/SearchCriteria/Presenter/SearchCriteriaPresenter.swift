@@ -23,6 +23,10 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		presentRoomGuests(response.roomGuests)
 	}
 
+	func presentDates(response: SearchCriteriaModels.LoadDates.Response) {
+		presentDates(response.checkInDate, response.checkOutDate)
+	}
+
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
 		presentCriteria(response.criteria)
 	}
@@ -60,5 +64,13 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 			childrenAge: roomGuests.childrenAge
 		)
 		viewController?.displayRoomGuests(viewModel: viewModel)
+	}
+
+	private func presentDates(_ checkInDate: Date, _ checkOutDate: Date) {
+		let viewModel = DateRangePickerModels.ViewModel(
+			startDate: checkInDate,
+			endDate: checkOutDate
+		)
+		viewController?.displayDates(viewModel: viewModel)
 	}
 }

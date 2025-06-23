@@ -28,7 +28,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		viewController?.present(destinationVC, animated: true)
 	}
 
-	func routeToDateRangePicker() {
+	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
 		let calendar = Calendar(identifier: .gregorian)
 
 		let monthTitleFormatter = DateFormatter()
@@ -40,7 +40,11 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		dayFormatter.calendar = calendar
 
 		let dateRangeVC = DateRangePickerViewController()
-		let interactor = DateRangePickerInteractor(calendar: calendar)
+		let interactor = DateRangePickerInteractor(
+			startDate: viewModel.startDate,
+			endDate: viewModel.endDate,
+			calendar: calendar
+		)
 		let presenter = DataRangePickerPresenter(
 			monthTitleFormatter: monthTitleFormatter,
 			dayFormatter: dayFormatter

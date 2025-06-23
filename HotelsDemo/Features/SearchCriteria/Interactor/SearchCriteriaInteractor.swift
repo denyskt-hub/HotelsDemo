@@ -46,7 +46,20 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			}
 		}
 	}
-	
+
+	func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
+		load { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
+			case let .failure(error):
+				print(error)
+			}
+		}
+	}
+
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
 		update(request.destination) { [weak self] result in
 			guard let self else { return }
@@ -112,6 +125,15 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 
 	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
 		presenter?.presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
+	}
+
+	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
+		presenter?.presentDates(
+			response: SearchCriteriaModels.LoadDates.Response(
+				checkInDate: checkInDate,
+				checkOutDate: checkOutDate
+			)
+		)
 	}
 
 	private func presentUpdatedDestinationCriteria(_ criteria: SearchCriteria) {

@@ -34,6 +34,15 @@ enum SearchCriteriaModels {
 		}
 	}
 
+	enum LoadDates {
+		struct Request {}
+
+		struct Response {
+			let checkInDate: Date
+			let checkOutDate: Date
+		}
+	}
+
 	enum UpdateDestination {
 		struct Request {
 			let destination: Destination

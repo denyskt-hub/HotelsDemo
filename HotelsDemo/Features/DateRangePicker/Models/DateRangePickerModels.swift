@@ -36,6 +36,11 @@ public enum DateRangePickerModels {
 		}
 	}
 
+	public struct ViewModel {
+		let startDate: Date
+		let endDate: Date
+	}
+
 	public struct CalendarMonth {
 		let month: Date
 		let dates: [CalendarDate]

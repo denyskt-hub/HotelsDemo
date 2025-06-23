@@ -9,8 +9,8 @@ import Foundation
 
 struct SearchCriteria {
 	var destination: Destination?
-	let checkInDate: Date
-	let checkOutDate: Date
+	var checkInDate: Date
+	var checkOutDate: Date
 	var adults: Int
 	var childrenAge: [Int]
 	var roomsQuantity: Int
@@ -18,10 +18,13 @@ struct SearchCriteria {
 
 extension SearchCriteria {
 	static var `default`: SearchCriteria {
-		SearchCriteria(
+		let calendar = Calendar(identifier: .gregorian)
+		let today = calendar.startOfDay(for: .now)
+
+		return SearchCriteria(
 			destination: nil,
-			checkInDate: .now.adding(days: 1),
-			checkOutDate: .now.adding(days: 2),
+			checkInDate: today.adding(days: 1),
+			checkOutDate: today.adding(days: 2),
 			adults: 2,
 			childrenAge: [],
 			roomsQuantity: 1

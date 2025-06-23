@@ -12,39 +12,18 @@ public protocol DateRangePickerBusinessLogic {
 	func selectDate(request: DateRangePickerModels.Select.Request)
 }
 
-struct DateRangeSelection {
-	let startDate: Date?
-	let endDate: Date?
-
-	init(startDate: Date? = nil, endDate: Date? = nil) {
-		self.startDate = startDate
-		self.endDate = endDate
-	}
-
-	func selecting(_ selectedDate: Date) -> DateRangeSelection {
-		switch (startDate, endDate) {
-		case let (start?, nil) where selectedDate < start:
-			return DateRangeSelection(startDate: selectedDate, endDate: nil)
-
-		case let (start?, nil) where selectedDate == start:
-			return DateRangeSelection(startDate: nil, endDate: nil)
-
-		case let (start?, nil) where selectedDate > start:
-			return DateRangeSelection(startDate: start, endDate: selectedDate)
-
-		default:
-			return DateRangeSelection(startDate: selectedDate, endDate: nil)
-		}
-	}
-}
-
 public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
+	private var dateRangeSelection: DateRangeSelection
 	private let calendar: Calendar
-	private var dateRangeSelection = DateRangeSelection()
 
 	public var presenter: DateRangePickerPresentationLogic?
 
-	public init(calendar: Calendar) {
+	public init(
+		startDate: Date,
+		endDate: Date,
+		calendar: Calendar
+	) {
+		self.dateRangeSelection = DateRangeSelection(startDate: startDate, endDate: endDate)
 		self.calendar = calendar
 	}
 
@@ -52,7 +31,12 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		presenter?.present(
 			response: DateRangePickerModels.Load.Response(
 				weekdays: calendar.weekdaySymbols,
-				sections: generateSections(from: .now, selectedStartDate: nil, selectedEndDate: nil, calendar: calendar)
+				sections: generateSections(
+					from: .now,
+					selectedStartDate: dateRangeSelection.startDate,
+					selectedEndDate: dateRangeSelection.endDate,
+					calendar: calendar
+				)
 			)
 		)
 	}
@@ -140,5 +124,31 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		}
 
 		return date >= start && date <= end
+	}
+}
+
+struct DateRangeSelection {
+	let startDate: Date?
+	let endDate: Date?
+
+	init(startDate: Date? = nil, endDate: Date? = nil) {
+		self.startDate = startDate
+		self.endDate = endDate
+	}
+
+	func selecting(_ selectedDate: Date) -> DateRangeSelection {
+		switch (startDate, endDate) {
+		case let (start?, nil) where selectedDate < start:
+			return DateRangeSelection(startDate: selectedDate, endDate: nil)
+
+		case let (start?, nil) where selectedDate == start:
+			return DateRangeSelection(startDate: nil, endDate: nil)
+
+		case let (start?, nil) where selectedDate > start:
+			return DateRangeSelection(startDate: start, endDate: selectedDate)
+
+		default:
+			return DateRangeSelection(startDate: selectedDate, endDate: nil)
+		}
 	}
 }
