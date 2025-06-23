@@ -38,7 +38,13 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 	private func setupCollectionView() {
 		rootView.collectionView.dataSource = self
+		rootView.collectionView.delegate = self
 		rootView.collectionView.register(DateCell.self)
+		rootView.collectionView.register(
+			SectionHeaderView.self,
+			forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+			withReuseIdentifier: SectionHeaderView.reuseIdentifier
+		)
 	}
 
 	public func display(viewModel: DateRangePickerModels.Load.ViewModel) {
@@ -83,6 +89,37 @@ extension DateRangePickerViewController: UICollectionViewDataSource {
 			cell.configure(cellViewModel)
 		}
 		return cell
+	}
+
+	public func collectionView(
+		_ collectionView: UICollectionView,
+		viewForSupplementaryElementOfKind kind: String,
+		at indexPath: IndexPath
+	) -> UICollectionReusableView {
+		guard kind == UICollectionView.elementKindSectionHeader else {
+			fatalError("Unsupported kind")
+		}
+
+		let sectionViewModel = viewModel?.sections[indexPath.section]
+
+		let header = collectionView.dequeueReusableSupplementaryView(
+			ofKind: kind,
+			withReuseIdentifier: SectionHeaderView.reuseIdentifier,
+			for: indexPath
+		) as! SectionHeaderView
+		header.label.text = sectionViewModel?.title
+
+		return header
+	}
+}
+
+extension DateRangePickerViewController: UICollectionViewDelegateFlowLayout {
+	public func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		referenceSizeForHeaderInSection section: Int
+	) -> CGSize {
+		return CGSize(width: collectionView.bounds.width, height: 44)
 	}
 }
 
