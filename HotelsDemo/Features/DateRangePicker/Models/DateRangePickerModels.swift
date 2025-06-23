@@ -17,8 +17,22 @@ public enum DateRangePickerModels {
 		}
 
 		public struct ViewModel {
+			let calendar: CalendarViewModel
+		}
+	}
+
+	public enum Select {
+		public struct Request {
+			let date: Date
+		}
+
+		public struct Response {
 			let weekdays: [String]
-			let sections: [CalendarMonthViewModel]
+			let sections: [CalendarMonth]
+		}
+
+		public struct ViewModel {
+			let calendar: CalendarViewModel
 		}
 	}
 
@@ -31,16 +45,27 @@ public enum DateRangePickerModels {
 		let date: Date?
 		let isToday: Bool
 		let isEnabled: Bool
+		let isSelected: Bool
+		let isInRange: Bool
 
 		init(
 			date: Date?,
 			isToday: Bool = false,
-			isEnabled: Bool = true
+			isEnabled: Bool = true,
+			isSelected: Bool = false,
+			isInRange: Bool = false
 		) {
 			self.date = date
 			self.isToday = isToday
 			self.isEnabled = isEnabled
+			self.isSelected = isSelected
+			self.isInRange = isInRange
 		}
+	}
+
+	public struct CalendarViewModel {
+		let weekdays: [String]
+		let sections: [CalendarMonthViewModel]
 	}
 
 	public struct CalendarMonthViewModel {
@@ -48,9 +73,36 @@ public enum DateRangePickerModels {
 		let dates: [CalendarDateViewModel]
 	}
 
+	public enum CalendarDateID: Hashable{
+		case date(Date)
+		case placeholder(UUID)
+	}
+
 	public struct CalendarDateViewModel {
-		let date: String?
+		let id: CalendarDateID
+		let date: Date?
+		let title: String?
 		let isToday: Bool
 		let isEnabled: Bool
+		let isSelected: Bool
+		let isInRange: Bool
+	}
+}
+
+extension DateRangePickerModels.CalendarMonthViewModel: Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(title)
+	}
+}
+
+extension DateRangePickerModels.CalendarDateViewModel: Equatable {
+	public static func == (lhs: DateRangePickerModels.CalendarDateViewModel, rhs: DateRangePickerModels.CalendarDateViewModel) -> Bool {
+		lhs.id == rhs.id
+	}
+}
+
+extension DateRangePickerModels.CalendarDateViewModel: Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
 	}
 }

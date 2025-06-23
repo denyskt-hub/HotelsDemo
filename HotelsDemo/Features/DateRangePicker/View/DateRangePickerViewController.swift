@@ -9,11 +9,12 @@ import UIKit
 
 public protocol DateRangePickerDisplayLogic: AnyObject {
 	func display(viewModel: DateRangePickerModels.Load.ViewModel)
+	func displaySelectDate(viewModel: DateRangePickerModels.Select.ViewModel)
 }
 
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
 	private let rootView = DateRangePickerRootView()
-	private var viewModel: DateRangePickerModels.Load.ViewModel?
+	private var viewModel: DateRangePickerModels.CalendarViewModel?
 
 	public var interactor: DateRangePickerBusinessLogic?
 
@@ -41,8 +42,13 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	public func display(viewModel: DateRangePickerModels.Load.ViewModel) {
-		self.viewModel = viewModel
+		self.viewModel = viewModel.calendar
 		rootView.weekdaysCollectionView.reloadData()
+		rootView.collectionView.reloadData()
+	}
+
+	public func displaySelectDate(viewModel: DateRangePickerModels.Select.ViewModel) {
+		self.viewModel = viewModel.calendar
 		rootView.collectionView.reloadData()
 	}
 }
@@ -72,9 +78,23 @@ extension DateRangePickerViewController: UICollectionViewDataSource {
 		}
 
 		let cell: DateCell = collectionView.dequeueReusableCell(for: indexPath)
+		cell.delegate = self
 		if let cellViewModel = viewModel?.sections[indexPath.section].dates[indexPath.row] {
 			cell.configure(cellViewModel)
 		}
 		return cell
+	}
+}
+
+extension DateRangePickerViewController: DateCellDelegate {
+	func dateCellDidTap(_ cell: DateCell) {
+		guard let indexPath = rootView.collectionView.indexPath(for: cell) else {
+			return
+		}
+		guard let date = viewModel?.sections[indexPath.section].dates[indexPath.row].date else {
+			return
+		}
+
+		interactor?.selectDate(request: .init(date: date))
 	}
 }

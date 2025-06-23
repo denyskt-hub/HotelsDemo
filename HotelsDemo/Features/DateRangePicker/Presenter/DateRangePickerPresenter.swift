@@ -8,7 +8,8 @@
 import Foundation
 
 public protocol DateRangePickerPresentationLogic {
-	func display(response: DateRangePickerModels.Load.Response)
+	func present(response: DateRangePickerModels.Load.Response)
+	func presentSelectDate(response: DateRangePickerModels.Select.Response)
 }
 
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
@@ -25,22 +26,56 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		self.dayFormatter = dayFormatter
 	}
 
-	public func display(response: DateRangePickerModels.Load.Response) {
+	public func present(response: DateRangePickerModels.Load.Response) {
 		let viewModel = DateRangePickerModels.Load.ViewModel(
-			weekdays: response.weekdays,
-			sections: response.sections.map {
-				DateRangePickerModels.CalendarMonthViewModel(
-					title: monthTitleFormatter.string(from: $0.month),
-					dates: $0.dates.map {
-						DateRangePickerModels.CalendarDateViewModel(
-							date: $0.date.map(dayFormatter.string(from:)),
-							isToday: $0.isToday,
-							isEnabled: $0.isEnabled
-						)
-					}
-				)
-			}
+			calendar: makeCalendarViewModel(
+				weekdays: response.weekdays,
+				sections: response.sections
+			)
 		)
 		viewController?.display(viewModel: viewModel)
+	}
+
+	public func presentSelectDate(response: DateRangePickerModels.Select.Response) {
+		let viewModel = DateRangePickerModels.Select.ViewModel(
+			calendar: makeCalendarViewModel(
+				weekdays: response.weekdays,
+				sections: response.sections
+			)
+		)
+		viewController?.displaySelectDate(viewModel: viewModel)
+	}
+
+	private func makeCalendarViewModel(
+		weekdays: [String],
+		sections: [DateRangePickerModels.CalendarMonth]
+	) -> DateRangePickerModels.CalendarViewModel {
+		.init(
+			weekdays: weekdays,
+			sections: sections.map(makeCalendarMonthViewModel(section:))
+		)
+	}
+
+	private func makeCalendarMonthViewModel(
+		section: DateRangePickerModels.CalendarMonth
+	) -> DateRangePickerModels.CalendarMonthViewModel {
+		.init(
+			title: monthTitleFormatter.string(from: section.month),
+			dates: section.dates.map(makeCalendarDateViewModel(date:))
+		)
+	}
+
+	private func makeCalendarDateViewModel(
+		date: DateRangePickerModels.CalendarDate
+	) -> DateRangePickerModels.CalendarDateViewModel {
+		.init(
+			id: date.date.map({ .date($0) }) ?? .placeholder(UUID()),
+			date: date.date,
+			title: date.date.map(dayFormatter.string(from:)),
+			isToday: date.isToday,
+			isEnabled: date.isEnabled,
+			isSelected: date.isSelected,
+			isInRange: date.isInRange
+		)
 	}
 }
