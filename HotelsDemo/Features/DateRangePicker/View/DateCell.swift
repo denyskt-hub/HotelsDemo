@@ -11,6 +11,7 @@ final class DateCell: UICollectionViewCell {
 	public let button: UIButton = {
 		let button = UIButton()
 		button.configure(.plain)
+		button.tintColor = .label
 		return button
 	}()
 
@@ -33,8 +34,9 @@ final class DateCell: UICollectionViewCell {
 		activateConstraintsButton()
 	}
 
-	public func setTitle(_ text: String) {
-		button.setTitle(text, for: .normal)
+	public func configure(_ viewModel: DateRangePickerModels.CalendarDateViewModel) {
+		button.setTitle(viewModel.date ?? "", for: .normal)
+		button.tintColor = viewModel.isToday ? .blue : .label
 	}
 }
 

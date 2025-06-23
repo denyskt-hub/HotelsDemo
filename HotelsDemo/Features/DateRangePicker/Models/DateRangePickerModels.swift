@@ -29,6 +29,12 @@ public enum DateRangePickerModels {
 
 	public struct CalendarDate {
 		let date: Date?
+		let isToday: Bool
+
+		init(date: Date?, isToday: Bool = false) {
+			self.date = date
+			self.isToday = isToday
+		}
 	}
 
 	public struct CalendarMonthViewModel {
@@ -38,5 +44,6 @@ public enum DateRangePickerModels {
 
 	public struct CalendarDateViewModel {
 		let date: String?
+		let isToday: Bool
 	}
 }

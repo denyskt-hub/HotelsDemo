@@ -72,7 +72,9 @@ extension DateRangePickerViewController: UICollectionViewDataSource {
 		}
 
 		let cell: DateCell = collectionView.dequeueReusableCell(for: indexPath)
-		cell.setTitle(viewModel?.sections[indexPath.section].dates[indexPath.row].date ?? "")
+		if let cellViewModel = viewModel?.sections[indexPath.section].dates[indexPath.row] {
+			cell.configure(cellViewModel)
+		}
 		return cell
 	}
 }

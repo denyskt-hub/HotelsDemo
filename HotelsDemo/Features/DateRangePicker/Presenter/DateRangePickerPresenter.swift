@@ -34,6 +34,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 					dates: $0.dates.map {
 						DateRangePickerModels.CalendarDateViewModel(
 							date: $0.date.map(dayFormatter.string(from:)),
+							isToday: $0.isToday,
 						)
 					}
 				)

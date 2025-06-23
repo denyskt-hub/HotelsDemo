@@ -40,9 +40,7 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		return months.map {
 			DateRangePickerModels.CalendarMonth(
 				month: $0,
-				dates: allMonthDates(start: $0, calendar: calendar).map {
-					DateRangePickerModels.CalendarDate(date: $0)
-				}
+				dates: allMonthDates(start: $0, calendar: calendar)
 			)
 		}
 	}
@@ -59,20 +57,22 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		return result
 	}
 
-	func allMonthDates(start: Date, calendar: Calendar) -> [Date?] {
-		var result: [Date?] = []
+	func allMonthDates(start: Date, calendar: Calendar) -> [DateRangePickerModels.CalendarDate] {
+		var result = [DateRangePickerModels.CalendarDate]()
 
 		let weekday = calendar.component(.weekday, from: start)
 		let leadingEmptyDays = weekday - 1
-		result.append(contentsOf: Array(repeating: nil, count: leadingEmptyDays))
+		result.append(contentsOf: Array(repeating: .init(date: nil), count: leadingEmptyDays))
 
 		var current = start
 		let end = start
 			.adding(months: 1, calendar: calendar)
 			.adding(days: -1, calendar: calendar)
 
+		let now = calendar.startOfDay(for: .now)
+
 		while current <= end {
-			result.append(current)
+			result.append(.init(date: current, isToday: current == now))
 			current = current.adding(days: 1, calendar: calendar)
 		}
 
