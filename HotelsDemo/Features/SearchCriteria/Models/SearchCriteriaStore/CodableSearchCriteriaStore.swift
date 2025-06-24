@@ -76,7 +76,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		self.dispatcher = dispatcher
 	}
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
+	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		_save(criteria) { error in
 			self.dispatcher.dispatch {
 				completion(error)
@@ -84,7 +84,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	private func _save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
+	private func _save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
@@ -96,7 +96,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	func retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		_retrieve { result in
 			self.dispatcher.dispatch {
 				completion(result)
@@ -104,7 +104,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	func _retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+	func _retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
 				return completion(.success(.default))

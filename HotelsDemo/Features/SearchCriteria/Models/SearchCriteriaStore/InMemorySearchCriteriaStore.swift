@@ -18,16 +18,16 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 		self.dispatcher = dispatcher
 	}
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (Error?) -> Void) {
+	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		queue.async {
 			self.criteria = criteria
 			self.dispatcher.dispatch {
-				completion(nil)
+				completion(.none)
 			}
 		}
 	}
 	
-	func retrieve(completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
+	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			self.dispatcher.dispatch {
 				completion(.success(self.criteria))
