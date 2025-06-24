@@ -12,7 +12,7 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 
 	private let dispatcher: Dispatcher
 
-	private var criteria: SearchCriteria = .default
+	private var criteria: SearchCriteria?
 
 	init(dispatcher: Dispatcher) {
 		self.dispatcher = dispatcher
@@ -26,11 +26,14 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 			}
 		}
 	}
-	
+
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			self.dispatcher.dispatch {
-				completion(.success(self.criteria))
+				guard let criteria = self.criteria else {
+					return completion(.failure(SearchCriteriaError.notFound))
+				}
+				completion(.success(criteria))
 			}
 		}
 	}

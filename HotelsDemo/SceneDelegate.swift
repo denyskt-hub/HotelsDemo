@@ -8,19 +8,30 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-	var window: UIWindow?
+	private lazy var calendar: Calendar = {
+		Calendar(identifier: .gregorian)
+	}()
 
-	lazy var storeURL: URL = {
+	private lazy var storeURL: URL = {
 		let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 		return documentsURL.appendingPathComponent("search-criteria.store")
 	}()
 
-	lazy var searchCriteriaStore: SearchCriteriaStore = {
+	private lazy var searchCriteriaStore: SearchCriteriaStore = {
 		CodableSearchCriteriaStore(
 			storeURL: storeURL,
 			dispatcher: MainQueueDispatcher()
 		)
 	}()
+
+	private lazy var defaultSearchCriteriaProvider: SearchCriteriaProvider = {
+		DefaultSearchCriteriaProvider(
+			calendar: calendar,
+			currentDate: Date.init
+		)
+	}()
+
+	var window: UIWindow?
 
 	func scene(
 		_ scene: UIScene,
@@ -41,7 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	private func makeSearchCriteriaViewController() -> SearchCriteriaViewController {
 		let viewController = SearchCriteriaViewController()
 		let interactor = SearchCriteriaInteractor(
-			provider: searchCriteriaStore,
+			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
 			cache: searchCriteriaStore
 		)
 		let presenter = SearchCriteriaPresenter()

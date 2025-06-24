@@ -18,3 +18,7 @@ extension SearchCriteriaProvider {
 		FallbackSearchCriteriaProvider(primary: self, secondary: secondary)
 	}
 }
+
+enum SearchCriteriaError: Swift.Error {
+	case notFound
+}

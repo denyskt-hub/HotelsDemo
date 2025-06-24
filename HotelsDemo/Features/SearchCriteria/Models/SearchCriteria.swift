@@ -15,19 +15,3 @@ public struct SearchCriteria {
 	var childrenAge: [Int]
 	var roomsQuantity: Int
 }
-
-extension SearchCriteria {
-	static var `default`: SearchCriteria {
-		let calendar = Calendar(identifier: .gregorian)
-		let today = calendar.startOfDay(for: .now)
-
-		return SearchCriteria(
-			destination: nil,
-			checkInDate: today.adding(days: 1),
-			checkOutDate: today.adding(days: 2),
-			adults: 2,
-			childrenAge: [],
-			roomsQuantity: 1
-		)
-	}
-}

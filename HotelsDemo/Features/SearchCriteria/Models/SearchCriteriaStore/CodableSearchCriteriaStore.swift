@@ -107,7 +107,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	func _retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
-				return completion(.success(.default))
+				return completion(.failure(SearchCriteriaError.notFound))
 			}
 
 			do {
