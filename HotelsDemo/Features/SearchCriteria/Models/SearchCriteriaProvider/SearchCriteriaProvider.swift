@@ -12,3 +12,9 @@ public protocol SearchCriteriaProvider {
 
 	func retrieve(completion: @escaping (Result) -> Void)
 }
+
+extension SearchCriteriaProvider {
+	func fallback(to secondary: SearchCriteriaProvider) -> FallbackSearchCriteriaProvider {
+		FallbackSearchCriteriaProvider(primary: self, secondary: secondary)
+	}
+}
