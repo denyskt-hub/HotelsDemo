@@ -63,6 +63,17 @@ enum SearchCriteriaModels {
 		}
 	}
 
+	enum UpdateDates {
+		struct Request {
+			let checkInDate: Date
+			let checkOutDate: Date
+		}
+
+		struct Response {
+			let criteria: SearchCriteria
+		}
+	}
+
 	enum UpdateRoomGuests {
 		struct Request {
 			let rooms: Int

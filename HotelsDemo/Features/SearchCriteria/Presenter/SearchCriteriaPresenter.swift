@@ -31,6 +31,10 @@ final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		presentCriteria(response.criteria)
 	}
 
+	func presentCriteria(response: SearchCriteriaModels.UpdateDates.Response) {
+		presentCriteria(response.criteria)
+	}
+
 	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
 		presentCriteria(response.criteria)
 	}

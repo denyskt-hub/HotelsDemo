@@ -7,9 +7,14 @@
 
 import UIKit
 
+public protocol DataRangePickerDelegate: AnyObject {
+	func didSelectDateRange(startDate: Date, endDate: Date)
+}
+
 public protocol DateRangePickerDisplayLogic: AnyObject {
 	func display(viewModel: DateRangePickerModels.Load.ViewModel)
-	func displaySelectDate(viewModel: DateRangePickerModels.Select.ViewModel)
+	func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel)
+	func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel)
 }
 
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
@@ -17,6 +22,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private var viewModel: DateRangePickerModels.CalendarViewModel?
 
 	public var interactor: DateRangePickerBusinessLogic?
+	public weak var delegate: DataRangePickerDelegate?
 
 	public override func loadView() {
 		view = rootView
@@ -27,6 +33,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 		setupWeekdaysCollectionView()
 		setupCollectionView()
+		setupApplyButton()
 
 		interactor?.load(request: DateRangePickerModels.Load.Request())
 	}
@@ -47,15 +54,31 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		)
 	}
 
+	private func setupApplyButton() {
+		rootView.applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
+	}
+
 	public func display(viewModel: DateRangePickerModels.Load.ViewModel) {
 		self.viewModel = viewModel.calendar
 		rootView.weekdaysCollectionView.reloadData()
 		rootView.collectionView.reloadData()
 	}
 
-	public func displaySelectDate(viewModel: DateRangePickerModels.Select.ViewModel) {
+	public func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel) {
 		self.viewModel = viewModel.calendar
 		rootView.collectionView.reloadData()
+	}
+
+	public func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel) {
+		delegate?.didSelectDateRange(
+			startDate: viewModel.startDate,
+			endDate: viewModel.endDate
+		)
+		dismiss(animated: true)
+	}
+
+	@objc private func didApply() {
+		interactor?.selectDateRange(request: DateRangePickerModels.Select.Request())
 	}
 }
 
@@ -132,6 +155,6 @@ extension DateRangePickerViewController: DateCellDelegate {
 			return
 		}
 
-		interactor?.selectDate(request: .init(date: date))
+		interactor?.didSelectDate(request: .init(date: date))
 	}
 }

@@ -51,6 +51,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		)
 
 		dateRangeVC.interactor = interactor
+		dateRangeVC.delegate = self
 		interactor.presenter = presenter
 		presenter.viewController = dateRangeVC
 
@@ -81,6 +82,16 @@ extension SearchCriteriaRouter: DestinationPickerDelegate {
 
 		source.interactor?.updateDestination(
 			request: SearchCriteriaModels.UpdateDestination.Request(destination: destination)
+		)
+	}
+}
+
+extension SearchCriteriaRouter: DataRangePickerDelegate {
+	func didSelectDateRange(startDate: Date, endDate: Date) {
+		guard let source = self.viewController as? SearchCriteriaViewController else { return }
+
+		source.interactor?.updateDates(
+			request: SearchCriteriaModels.UpdateDates.Request(checkInDate: startDate, checkOutDate: endDate)
 		)
 	}
 }

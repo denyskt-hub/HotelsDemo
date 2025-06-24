@@ -9,8 +9,10 @@ import Foundation
 
 protocol SearchCriteriaBusinessLogic {
 	func loadCriteria(request: SearchCriteriaModels.Load.Request)
-	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request)
 	func loadDates(request: SearchCriteriaModels.LoadDates.Request)
+	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request)
+
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request)
+	func updateDates(request: SearchCriteriaModels.UpdateDates.Request)
 	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request)
 }

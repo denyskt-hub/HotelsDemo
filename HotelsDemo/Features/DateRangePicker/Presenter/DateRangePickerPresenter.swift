@@ -9,7 +9,8 @@ import Foundation
 
 public protocol DateRangePickerPresentationLogic {
 	func present(response: DateRangePickerModels.Load.Response)
-	func presentSelectDate(response: DateRangePickerModels.Select.Response)
+	func presentSelectDate(response: DateRangePickerModels.DateSelection.Response)
+	func presentSelectedDateRange(response: DateRangePickerModels.Select.Response)
 }
 
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
@@ -36,14 +37,22 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentSelectDate(response: DateRangePickerModels.Select.Response) {
-		let viewModel = DateRangePickerModels.Select.ViewModel(
+	public func presentSelectDate(response: DateRangePickerModels.DateSelection.Response) {
+		let viewModel = DateRangePickerModels.DateSelection.ViewModel(
 			calendar: makeCalendarViewModel(
 				weekdays: response.weekdays,
 				sections: response.sections
 			)
 		)
 		viewController?.displaySelectDate(viewModel: viewModel)
+	}
+
+	public func presentSelectedDateRange(response: DateRangePickerModels.Select.Response) {
+		let viewModel = DateRangePickerModels.Select.ViewModel(
+			startDate: response.startDate,
+			endDate: response.endDate
+		)
+		viewController?.displaySelectedDateRange(viewModel: viewModel)
 	}
 
 	private func makeCalendarViewModel(

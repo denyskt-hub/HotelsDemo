@@ -9,7 +9,8 @@ import Foundation
 
 public protocol DateRangePickerBusinessLogic {
 	func load(request: DateRangePickerModels.Load.Request)
-	func selectDate(request: DateRangePickerModels.Select.Request)
+	func didSelectDate(request: DateRangePickerModels.DateSelection.Request)
+	func selectDateRange(request: DateRangePickerModels.Select.Request)
 }
 
 public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
@@ -41,11 +42,11 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		)
 	}
 
-	public func selectDate(request: DateRangePickerModels.Select.Request) {
+	public func didSelectDate(request: DateRangePickerModels.DateSelection.Request) {
 		dateRangeSelection = dateRangeSelection.selecting(request.date)
 
 		presenter?.presentSelectDate(
-			response: DateRangePickerModels.Select.Response(
+			response: DateRangePickerModels.DateSelection.Response(
 				weekdays: calendar.weekdaySymbols,
 				sections: generateSections(
 					from: .now,
@@ -53,6 +54,20 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 					selectedEndDate: dateRangeSelection.endDate,
 					calendar: calendar
 				)
+			)
+		)
+	}
+
+	public func selectDateRange(request: DateRangePickerModels.Select.Request) {
+		guard let startDate = dateRangeSelection.startDate,
+			  let endDate = dateRangeSelection.endDate else {
+			preconditionFailure("Can't select date range without start and end date")
+		}
+
+		presenter?.presentSelectedDateRange(
+			response: DateRangePickerModels.Select.Response(
+				startDate: startDate,
+				endDate: endDate
 			)
 		)
 	}

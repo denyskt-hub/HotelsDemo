@@ -21,7 +21,7 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public enum Select {
+	public enum DateSelection {
 		public struct Request {
 			let date: Date
 		}
@@ -33,6 +33,20 @@ public enum DateRangePickerModels {
 
 		public struct ViewModel {
 			let calendar: CalendarViewModel
+		}
+	}
+
+	public enum Select {
+		public struct Request {}
+
+		public struct Response {
+			let startDate: Date
+			let endDate: Date
+		}
+
+		public struct ViewModel {
+			let startDate: Date
+			let endDate: Date
 		}
 	}
 

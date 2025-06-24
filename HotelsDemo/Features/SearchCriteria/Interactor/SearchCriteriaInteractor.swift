@@ -29,6 +29,19 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
+	func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
+		load { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
+			case let .failure(error):
+				print(error)
+			}
+		}
+	}
+
 	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request) {
 		load { [weak self] result in
 			guard let self else { return }
@@ -47,19 +60,6 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
-		load { [weak self] result in
-			guard let self else { return }
-
-			switch result {
-			case let .success(criteria):
-				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
-			case let .failure(error):
-				print(error)
-			}
-		}
-	}
-
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
 		update(request.destination) { [weak self] result in
 			guard let self else { return }
@@ -67,6 +67,19 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			switch result {
 			case let .success(criteria):
 				self.presentUpdatedDestinationCriteria(criteria)
+			case let .failure(error):
+				self.presentUpdateError(error)
+			}
+		}
+	}
+
+	func updateDates(request: SearchCriteriaModels.UpdateDates.Request) {
+		update(request.checkInDate, request.checkOutDate) { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentUpdatedDatesCriteria(criteria)
 			case let .failure(error):
 				self.presentUpdateError(error)
 			}
@@ -95,6 +108,17 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		completion: @escaping (Result<SearchCriteria, Error>) -> Void
 	) {
 		store.update({ $0.destination = destination }, completion: completion)
+	}
+
+	private func update(
+		_ checkInDate: Date,
+		_ checkOutDate: Date,
+		completion: @escaping (Result<SearchCriteria, Error>) -> Void
+	) {
+		store.update({
+			$0.checkInDate = checkInDate
+			$0.checkOutDate = checkOutDate
+		}, completion: completion)
 	}
 
 	private func update(
@@ -138,6 +162,10 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 
 	private func presentUpdatedDestinationCriteria(_ criteria: SearchCriteria) {
 		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+	}
+
+	private func presentUpdatedDatesCriteria(_ criteria: SearchCriteria) {
+		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDates.Response(criteria: criteria))
 	}
 
 	private func presentUpdatedRoomGuestsCriteria(_ criteria: SearchCriteria) {
