@@ -10,6 +10,24 @@ import UIKit
 final class DateRangePickerRootView: NiblessView {
 	private var hierarchyNotReady = true
 
+	public lazy var stack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [
+			titleLabel,
+			weekdaysCollectionView,
+			collectionView,
+			applyButtonContainer
+		])
+		stack.axis = .vertical
+		stack.spacing = 0
+		return stack
+	}()
+
+	public let titleLabel: UILabel = {
+		let label = UILabel()
+		label.text = "Select dates"
+		return label
+	}()
+
 	public let weekdaysCollectionView: UICollectionView = {
 		let collectionView = UICollectionView(
 			frame: .zero,
@@ -24,6 +42,17 @@ final class DateRangePickerRootView: NiblessView {
 			collectionViewLayout: UICollectionViewFlowLayout.calendarLayout
 		)
 		return collectionView
+	}()
+
+	public let applyButtonContainer: UIView = {
+		let view = UIView()
+		return view
+	}()
+
+	public let applyButton: UIButton = {
+		let button = UIButton()
+		button.configure(.filled, title: "Apply")
+		return button
 	}()
 
 	override public func didMoveToWindow() {
@@ -44,34 +73,42 @@ final class DateRangePickerRootView: NiblessView {
 	}
 
 	private func setupHierarchy() {
-		addSubview(weekdaysCollectionView)
-		addSubview(collectionView)
+		applyButtonContainer.addSubview(applyButton)
+		addSubview(stack)
 	}
 
 	private func activateConstraints() {
+		activateConstraintsApplyButton()
 		activateConstraintsWeekdaysCollectionView()
-		activateConstraintsCollectionView()
+		activateConstraintsStack()
 	}
 }
 
 // MARK: - Layout
 
 extension DateRangePickerRootView {
-	private func activateConstraintsWeekdaysCollectionView() {
-		weekdaysCollectionView.translatesAutoresizingMaskIntoConstraints = false
-		let leading = weekdaysCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = weekdaysCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = weekdaysCollectionView.topAnchor.constraint(equalTo: topAnchor)
-		let height = weekdaysCollectionView.heightAnchor.constraint(equalToConstant: 44)
-		NSLayoutConstraint.activate([leading, trailing, top, height])
+	private func activateConstraintsApplyButton() {
+		applyButton.translatesAutoresizingMaskIntoConstraints = false
+		let leading = applyButton.leadingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.leadingAnchor)
+		let trailing = applyButton.trailingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.trailingAnchor)
+		let top = applyButton.topAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.topAnchor)
+		let bottom = applyButton.bottomAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.bottomAnchor)
+		let height = applyButton.heightAnchor.constraint(equalToConstant: 44)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom, height])
 	}
 
-	private func activateConstraintsCollectionView() {
-		collectionView.translatesAutoresizingMaskIntoConstraints = false
-		let leading = collectionView.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = collectionView.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = collectionView.topAnchor.constraint(equalTo: weekdaysCollectionView.bottomAnchor)
-		let bottom = collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+	private func activateConstraintsWeekdaysCollectionView() {
+		weekdaysCollectionView.translatesAutoresizingMaskIntoConstraints = false
+		let height = weekdaysCollectionView.heightAnchor.constraint(equalToConstant: 44)
+		NSLayoutConstraint.activate([height])
+	}
+
+	private func activateConstraintsStack() {
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		let leading = stack.leadingAnchor.constraint(equalTo: leadingAnchor)
+		let trailing = stack.trailingAnchor.constraint(equalTo: trailingAnchor)
+		let top = stack.topAnchor.constraint(equalTo: topAnchor)
+		let bottom = stack.bottomAnchor.constraint(equalTo: bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }
