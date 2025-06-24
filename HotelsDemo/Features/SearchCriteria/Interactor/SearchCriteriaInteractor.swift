@@ -134,7 +134,6 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}, completion: completion)
 	}
 
-
 	private func save(_ criteria: SearchCriteria, _ completion: @escaping (Error?) -> Void) {
 		store.save(criteria, completion: completion)
 	}

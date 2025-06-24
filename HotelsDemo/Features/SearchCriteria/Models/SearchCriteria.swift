@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchCriteria {
+public struct SearchCriteria {
 	var destination: Destination?
 	var checkInDate: Date
 	var checkOutDate: Date
