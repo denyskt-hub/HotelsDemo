@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Destination {
+struct Destination: Equatable {
 	let id: Int
 	let type: String
 	let name: String

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct SearchCriteria {
+public struct SearchCriteria: Equatable {
 	var destination: Destination?
 	var checkInDate: Date
 	var checkOutDate: Date

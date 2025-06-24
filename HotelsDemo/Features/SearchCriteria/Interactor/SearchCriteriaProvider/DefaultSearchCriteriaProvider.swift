@@ -21,13 +21,15 @@ public final class DefaultSearchCriteriaProvider: SearchCriteriaProvider {
 
 	public func retrieve(completion: @escaping (SearchCriteriaProvider.RetrieveResult) -> Void) {
 		let today = calendar.startOfDay(for: currentDate())
+		let minCheckIn = today.adding(days: 1, calendar: calendar)
+		let minCheckOut = minCheckIn.adding(days: 1, calendar: calendar)
 
 		completion(
 			.success(
 				SearchCriteria(
 					destination: nil,
-					checkInDate: today.adding(days: 1),
-					checkOutDate: today.adding(days: 2),
+					checkInDate: minCheckIn,
+					checkOutDate: minCheckOut,
 					adults: 2,
 					childrenAge: [],
 					roomsQuantity: 1

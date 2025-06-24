@@ -42,7 +42,7 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		presenter?.presentSelectDate(
 			response: DateRangePickerModels.DateSelection.Response(
 				calendar: makeCalendarData(),
-				canApply: dateRangeSelection.startDate != nil && dateRangeSelection.endDate != nil
+				canApply: dateRangeSelection.canApply
 			)
 		)
 	}
@@ -166,5 +166,11 @@ struct DateRangeSelection {
 		default:
 			return DateRangeSelection(startDate: selectedDate, endDate: nil)
 		}
+	}
+}
+
+extension DateRangeSelection {
+	var canApply: Bool {
+		startDate != nil && endDate != nil
 	}
 }

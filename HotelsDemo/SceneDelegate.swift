@@ -18,9 +18,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}()
 
 	private lazy var searchCriteriaStore: SearchCriteriaStore = {
-		CodableSearchCriteriaStore(
-			storeURL: storeURL,
-			dispatcher: MainQueueDispatcher()
+		ValidatingSearchCriteriaStore(
+			decoratee: CodableSearchCriteriaStore(
+				storeURL: storeURL,
+				dispatcher: MainQueueDispatcher()
+			),
+			validator: DefaultSearchCriteriaValidator(
+				calendar: calendar,
+				currentDate: Date.init
+			)
 		)
 	}()
 
