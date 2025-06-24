@@ -27,7 +27,7 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 	
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	func retrieve(completion: @escaping (SearchCriteriaStore.Result) -> Void) {
 		queue.async {
 			self.dispatcher.dispatch {
 				completion(.success(self.criteria))

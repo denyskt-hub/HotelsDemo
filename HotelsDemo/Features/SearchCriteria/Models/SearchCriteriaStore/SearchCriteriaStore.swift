@@ -7,18 +7,17 @@
 
 import Foundation
 
-protocol SearchCriteriaStore {
+protocol SearchCriteriaStore: SearchCriteriaProvider {
 	typealias SaveResult = Error?
-	typealias RetrieveResult = Result<SearchCriteria, Error>
 
 	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void)
-	func retrieve(completion: @escaping (RetrieveResult) -> Void)
+	func retrieve(completion: @escaping (Result) -> Void)
 }
 
 extension SearchCriteriaStore {
 	func update(
 		_ transform: @escaping (inout SearchCriteria) -> Void,
-		completion: @escaping ((RetrieveResult) -> Void)
+		completion: @escaping ((Result) -> Void)
 	) {
 		retrieve { result in
 			switch result {
