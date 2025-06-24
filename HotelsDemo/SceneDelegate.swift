@@ -15,6 +15,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		return documentsURL.appendingPathComponent("search-criteria.store")
 	}()
 
+	lazy var searchCriteriaStore: SearchCriteriaStore = {
+		CodableSearchCriteriaStore(
+			storeURL: storeURL,
+			dispatcher: MainQueueDispatcher()
+		)
+	}()
+
 	func scene(
 		_ scene: UIScene,
 		willConnectTo session: UISceneSession,
@@ -34,10 +41,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	private func makeSearchCriteriaViewController() -> SearchCriteriaViewController {
 		let viewController = SearchCriteriaViewController()
 		let interactor = SearchCriteriaInteractor(
-			store: CodableSearchCriteriaStore(
-				storeURL: storeURL,
-				dispatcher: MainQueueDispatcher()
-			)
+			provider: searchCriteriaStore,
+			cache: searchCriteriaStore
 		)
 		let presenter = SearchCriteriaPresenter()
 		let router = SearchCriteriaRouter()

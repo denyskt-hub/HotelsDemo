@@ -8,12 +8,17 @@
 import Foundation
 
 final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
-	private let store: SearchCriteriaStore
+	private let provider: SearchCriteriaProvider
+	private let cache: SearchCriteriaCache
 
 	var presenter: SearchCriteriaPresentationLogic?
 
-	init(store: SearchCriteriaStore) {
-		self.store = store
+	init(
+		provider: SearchCriteriaProvider,
+		cache: SearchCriteriaCache
+	) {
+		self.provider = provider
+		self.cache = cache
 	}
 
 	func loadCriteria(request: SearchCriteriaModels.Load.Request) {
@@ -100,14 +105,40 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	}
 
 	private func load(_ completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
-		store.retrieve(completion: completion)
+		provider.retrieve(completion: completion)
+	}
+
+	private func save(_ criteria: SearchCriteria, _ completion: @escaping (Error?) -> Void) {
+		cache.save(criteria, completion: completion)
+	}
+
+	private func update(
+		_ transform: @escaping (inout SearchCriteria) -> Void,
+		completion: @escaping ((Result<SearchCriteria, Error>) -> Void)
+	) {
+		load { result in
+			switch result {
+			case .success(var criteria):
+				transform(&criteria)
+
+				self.save(criteria) { error in
+					if let error = error {
+						completion(.failure(error))
+					} else {
+						completion(.success(criteria))
+					}
+				}
+			case let .failure(error):
+				completion(.failure(error))
+			}
+		}
 	}
 
 	private func update(
 		_ destination: Destination,
 		completion: @escaping (Result<SearchCriteria, Error>) -> Void
 	) {
-		store.update({ $0.destination = destination }, completion: completion)
+		update({ $0.destination = destination }, completion: completion)
 	}
 
 	private func update(
@@ -115,7 +146,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		_ checkOutDate: Date,
 		completion: @escaping (Result<SearchCriteria, Error>) -> Void
 	) {
-		store.update({
+		update({
 			$0.checkInDate = checkInDate
 			$0.checkOutDate = checkOutDate
 		}, completion: completion)
@@ -127,15 +158,11 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		_ childrenAge: [Int],
 		completion: @escaping (Result<SearchCriteria, Error>) -> Void
 	) {
-		store.update({
+		update({
 			$0.adults = adults
 			$0.childrenAge = childrenAge
 			$0.roomsQuantity = rooms
 		}, completion: completion)
-	}
-
-	private func save(_ criteria: SearchCriteria, _ completion: @escaping (Error?) -> Void) {
-		store.save(criteria, completion: completion)
 	}
 
 	private func presentLoadedCriteria(_ criteria: SearchCriteria) {
