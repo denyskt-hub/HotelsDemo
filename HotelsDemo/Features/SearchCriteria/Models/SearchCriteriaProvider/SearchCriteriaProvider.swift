@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol SearchCriteriaProvider {
-	typealias Result = Swift.Result<SearchCriteria, Error>
+	typealias RetrieveResult = Result<SearchCriteria, Error>
 
-	func retrieve(completion: @escaping (Result) -> Void)
+	func retrieve(completion: @escaping (RetrieveResult) -> Void)
 }
 
 extension SearchCriteriaProvider {

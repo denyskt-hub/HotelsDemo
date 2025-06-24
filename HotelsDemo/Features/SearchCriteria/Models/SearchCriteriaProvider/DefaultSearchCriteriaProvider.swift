@@ -19,7 +19,7 @@ public final class DefaultSearchCriteriaProvider: SearchCriteriaProvider {
 		self.currentDate = currentDate
 	}
 
-	public func retrieve(completion: @escaping (SearchCriteriaProvider.Result) -> Void) {
+	public func retrieve(completion: @escaping (SearchCriteriaProvider.RetrieveResult) -> Void) {
 		let today = calendar.startOfDay(for: currentDate())
 
 		completion(

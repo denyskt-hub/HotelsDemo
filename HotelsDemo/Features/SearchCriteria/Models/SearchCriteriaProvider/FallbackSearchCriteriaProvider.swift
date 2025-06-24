@@ -19,7 +19,7 @@ public final class FallbackSearchCriteriaProvider: SearchCriteriaProvider {
 		self.secondary = secondary
 	}
 
-	public func retrieve(completion: @escaping (SearchCriteriaProvider.Result) -> Void) {
+	public func retrieve(completion: @escaping (SearchCriteriaProvider.RetrieveResult) -> Void) {
 		primary.retrieve { [weak self] result in
 			guard let self else { return }
 			
