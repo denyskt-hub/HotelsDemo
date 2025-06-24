@@ -29,20 +29,15 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 
 	public func present(response: DateRangePickerModels.Load.Response) {
 		let viewModel = DateRangePickerModels.Load.ViewModel(
-			calendar: makeCalendarViewModel(
-				weekdays: response.weekdays,
-				sections: response.sections
-			)
+			calendar: makeCalendarViewModel(response.calendar)
 		)
 		viewController?.display(viewModel: viewModel)
 	}
 
 	public func presentSelectDate(response: DateRangePickerModels.DateSelection.Response) {
 		let viewModel = DateRangePickerModels.DateSelection.ViewModel(
-			calendar: makeCalendarViewModel(
-				weekdays: response.weekdays,
-				sections: response.sections
-			)
+			calendar: makeCalendarViewModel(response.calendar),
+			isApplyEnabled: response.canApply
 		)
 		viewController?.displaySelectDate(viewModel: viewModel)
 	}
@@ -56,12 +51,11 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 	}
 
 	private func makeCalendarViewModel(
-		weekdays: [String],
-		sections: [DateRangePickerModels.CalendarMonth]
+		_ calendar: DateRangePickerModels.CalendarData
 	) -> DateRangePickerModels.CalendarViewModel {
 		.init(
-			weekdays: weekdays,
-			sections: sections.map(makeCalendarMonthViewModel(section:))
+			weekdays: calendar.weekdays,
+			sections: calendar.sections.map(makeCalendarMonthViewModel(section:))
 		)
 	}
 

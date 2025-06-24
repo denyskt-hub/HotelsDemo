@@ -67,6 +67,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	public func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel) {
 		self.viewModel = viewModel.calendar
 		rootView.collectionView.reloadData()
+		rootView.applyButton.isEnabled = viewModel.isApplyEnabled
 	}
 
 	public func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel) {

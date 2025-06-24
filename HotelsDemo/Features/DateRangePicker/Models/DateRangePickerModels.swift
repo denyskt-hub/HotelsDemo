@@ -12,8 +12,7 @@ public enum DateRangePickerModels {
 		public struct Request {}
 
 		public struct Response {
-			let weekdays: [String]
-			let sections: [CalendarMonth]
+			let calendar: CalendarData
 		}
 
 		public struct ViewModel {
@@ -27,12 +26,13 @@ public enum DateRangePickerModels {
 		}
 
 		public struct Response {
-			let weekdays: [String]
-			let sections: [CalendarMonth]
+			let calendar: CalendarData
+			let canApply: Bool
 		}
 
 		public struct ViewModel {
 			let calendar: CalendarViewModel
+			let isApplyEnabled: Bool
 		}
 	}
 
@@ -53,6 +53,11 @@ public enum DateRangePickerModels {
 	public struct ViewModel {
 		let startDate: Date
 		let endDate: Date
+	}
+
+	public struct CalendarData {
+		let weekdays: [String]
+		let sections: [CalendarMonth]
 	}
 
 	public struct CalendarMonth {

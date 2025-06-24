@@ -31,13 +31,7 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	public func load(request: DateRangePickerModels.Load.Request) {
 		presenter?.present(
 			response: DateRangePickerModels.Load.Response(
-				weekdays: calendar.weekdaySymbols,
-				sections: generateSections(
-					from: .now,
-					selectedStartDate: dateRangeSelection.startDate,
-					selectedEndDate: dateRangeSelection.endDate,
-					calendar: calendar
-				)
+				calendar: makeCalendarData()
 			)
 		)
 	}
@@ -47,13 +41,8 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 
 		presenter?.presentSelectDate(
 			response: DateRangePickerModels.DateSelection.Response(
-				weekdays: calendar.weekdaySymbols,
-				sections: generateSections(
-					from: .now,
-					selectedStartDate: dateRangeSelection.startDate,
-					selectedEndDate: dateRangeSelection.endDate,
-					calendar: calendar
-				)
+				calendar: makeCalendarData(),
+				canApply: dateRangeSelection.startDate != nil && dateRangeSelection.endDate != nil
 			)
 		)
 	}
@@ -68,6 +57,18 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 			response: DateRangePickerModels.Select.Response(
 				startDate: startDate,
 				endDate: endDate
+			)
+		)
+	}
+
+	private func makeCalendarData() -> DateRangePickerModels.CalendarData {
+		.init(
+			weekdays: calendar.weekdaySymbols,
+			sections: generateSections(
+				from: .now,
+				selectedStartDate: dateRangeSelection.startDate,
+				selectedEndDate: dateRangeSelection.endDate,
+				calendar: calendar
 			)
 		)
 	}
