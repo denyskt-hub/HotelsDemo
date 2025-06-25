@@ -8,24 +8,7 @@
 import Foundation
 
 final class DestinationsResponseMapper {
-	private struct Response: Decodable {
-		private var data: [RemoteDestination]
-
-		var models: [Destination] {
-			data.map {
-				Destination(
-					id: $0.id,
-					type: $0.type,
-					name: $0.name,
-					label: $0.label,
-					country: $0.country,
-					cityName: $0.cityName
-				)
-			}
-		}
-	}
-
-	private struct RemoteDestination: Decodable {
+	struct RemoteDestination: Decodable {
 		enum CodingKeys: String, CodingKey {
 			case id = "dest_id"
 			case type = "dest_type"
@@ -57,10 +40,34 @@ final class DestinationsResponseMapper {
 		guard response.isOK else {
 			throw HTTPError.unexpectedStatusCode(response.statusCode)
 		}
-		
-		let result = try JSONDecoder().decode(Response.self, from: data)
-		return result.models
+
+		let apiResponse = try JSONDecoder().decode(APIResponse<[RemoteDestination]>.self, from: data)
+
+		guard apiResponse.status else {
+			throw APIError.message(apiResponse.message)
+		}
+
+		return apiResponse.data.models
 	}
+}
+
+extension Array where Element == DestinationsResponseMapper.RemoteDestination {
+	var models: [Destination] {
+		map {
+			Destination(
+				id: $0.id,
+				type: $0.type,
+				name: $0.name,
+				label: $0.label,
+				country: $0.country,
+				cityName: $0.cityName
+			)
+		}
+	}
+}
+
+enum APIError: Error {
+	case message(String)
 }
 
 enum HTTPError: Error {
