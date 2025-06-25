@@ -8,7 +8,13 @@
 import UIKit
 
 final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
+	private let calendar: Calendar
+
 	weak var viewController: UIViewController?
+
+	init(calendar: Calendar) {
+		self.calendar = calendar
+	}
 
 	func routeToDestinationPicker() {
 		let destinationVC = DestinationPickerViewController()
@@ -29,16 +35,6 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	}
 
 	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
-		let calendar = Calendar(identifier: .gregorian)
-
-		let monthTitleFormatter = DateFormatter()
-		monthTitleFormatter.dateFormat = "LLLL yyyy"
-		monthTitleFormatter.calendar = calendar
-
-		let dayFormatter = DateFormatter()
-		dayFormatter.dateFormat = "d"
-		dayFormatter.calendar = calendar
-
 		let dateRangeVC = DateRangePickerViewController()
 		let interactor = DateRangePickerInteractor(
 			startDate: viewModel.startDate,
@@ -46,8 +42,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 			calendar: calendar
 		)
 		let presenter = DataRangePickerPresenter(
-			monthTitleFormatter: monthTitleFormatter,
-			dayFormatter: dayFormatter
+			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
 		)
 
 		dateRangeVC.interactor = interactor

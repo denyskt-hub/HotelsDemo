@@ -9,7 +9,9 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	private lazy var calendar: Calendar = {
-		Calendar(identifier: .gregorian)
+		var calendar = Calendar(identifier: .gregorian)
+		calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+		return calendar
 	}()
 
 	private lazy var storeURL: URL = {
@@ -62,7 +64,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			cache: searchCriteriaStore
 		)
 		let presenter = SearchCriteriaPresenter()
-		let router = SearchCriteriaRouter()
+		let router = SearchCriteriaRouter(calendar: calendar)
 
 		viewController.interactor = interactor
 		viewController.router = router

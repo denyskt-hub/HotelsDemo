@@ -14,17 +14,12 @@ public protocol DateRangePickerPresentationLogic {
 }
 
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
-	private let monthTitleFormatter: DateFormatter
-	private let dayFormatter: DateFormatter
+	private let dateFormatter: CalendarDateFormatter
 
 	public weak var viewController: DateRangePickerDisplayLogic?
 
-	public init(
-		monthTitleFormatter: DateFormatter,
-		dayFormatter: DateFormatter
-	) {
-		self.monthTitleFormatter = monthTitleFormatter
-		self.dayFormatter = dayFormatter
+	public init(dateFormatter: CalendarDateFormatter) {
+		self.dateFormatter = dateFormatter
 	}
 
 	public func present(response: DateRangePickerModels.Load.Response) {
@@ -63,7 +58,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		section: DateRangePickerModels.CalendarMonth
 	) -> DateRangePickerModels.CalendarMonthViewModel {
 		.init(
-			title: monthTitleFormatter.string(from: section.month),
+			title: dateFormatter.formatMonth(from: section.month),
 			dates: section.dates.map(makeCalendarDateViewModel(date:))
 		)
 	}
@@ -74,7 +69,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		.init(
 			id: date.date.map({ .date($0) }) ?? .placeholder(UUID()),
 			date: date.date,
-			title: date.date.map(dayFormatter.string(from:)),
+			title: date.date.map(dateFormatter.formatDay),
 			isToday: date.isToday,
 			isEnabled: date.isEnabled,
 			isSelected: date.isSelected,
