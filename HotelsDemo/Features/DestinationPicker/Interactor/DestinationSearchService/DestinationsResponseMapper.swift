@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DestinationsResponseMapper {
+public enum DestinationsResponseMapper {
 	struct RemoteDestination: Decodable {
 		enum CodingKeys: String, CodingKey {
 			case id = "dest_id"
@@ -34,42 +34,21 @@ final class DestinationsResponseMapper {
 			self.country = try container.decode(String.self, forKey: .country)
 			self.cityName = try container.decode(String.self, forKey: .cityName)
 		}
-	}
 
-	static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [Destination] {
-		guard response.isOK else {
-			throw HTTPError.unexpectedStatusCode(response.statusCode)
-		}
-
-		let apiResponse = try JSONDecoder().decode(APIResponse<[RemoteDestination]>.self, from: data)
-
-		guard apiResponse.status else {
-			throw APIError.message(apiResponse.message)
-		}
-
-		return apiResponse.data.models
-	}
-}
-
-extension Array where Element == DestinationsResponseMapper.RemoteDestination {
-	var models: [Destination] {
-		map {
+		func toDomain() -> Destination {
 			Destination(
-				id: $0.id,
-				type: $0.type,
-				name: $0.name,
-				label: $0.label,
-				country: $0.country,
-				cityName: $0.cityName
+				id: id,
+				type: type,
+				name: name,
+				label: label,
+				country: country,
+				cityName: cityName
 			)
 		}
 	}
-}
 
-enum APIError: Error {
-	case message(String)
-}
-
-enum HTTPError: Error {
-	case unexpectedStatusCode(Int)
+	static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [Destination] {
+		let destinations: [RemoteDestination] = try APIResponseMapper.map(data, response)
+		return destinations.map { $0.toDomain() }
+	}
 }
