@@ -36,6 +36,18 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 		expect(sut, toRetrieve: .success(criteria))
 	}
 
+	func test_save_overridesPreviouslySavedCriteria() {
+		let sut = makeSUT()
+		
+		let firstCriteria = anySearchCriteria()
+		let latestCriteria = anySearchCriteria()
+
+		save(firstCriteria, to: sut)
+		save(latestCriteria, to: sut)
+
+		expect(sut, toRetrieve: .success(latestCriteria))
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> CodableSearchCriteriaStore {
