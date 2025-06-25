@@ -1,0 +1,65 @@
+//
+//  CodableSearchCriteriaStoreTests.swift
+//  HotelsDemoTests
+//
+//  Created by Denys Kotenko on 25/6/25.
+//
+
+import XCTest
+import HotelsDemo
+
+final class CodableSearchCriteriaStoreTests: XCTestCase {
+	func test_retrieve_deliversNotFoundErrorOnEmptyStore() {
+		let sut = makeSUT()
+
+		expect(sut, toRetrieve: .failure(SearchCriteriaError.notFound))
+	}
+
+	// MARK: - Helpers
+
+	private func makeSUT() -> CodableSearchCriteriaStore {
+		CodableSearchCriteriaStore(
+			storeURL: testSpecificStoreURL(),
+			dispatcher: ImmediateDispatcher()
+		)
+	}
+
+	private func expect(_ sut: CodableSearchCriteriaStore, toRetrieve expectedResult: SearchCriteriaProvider.RetrieveResult) {
+		let retrievedResult = retrieve(from: sut)
+
+		switch (retrievedResult, expectedResult) {
+		case let (.success(retrievedCriteria), .success(expectedCritera)):
+			XCTAssertEqual(retrievedCriteria, expectedCritera)
+		case let (.failure(retreivedError as NSError), .failure(expectedError as NSError)):
+			XCTAssertEqual(expectedError.domain, retreivedError.domain)
+			XCTAssertEqual(expectedError.code, retreivedError.code)
+		default:
+			XCTFail("Unexpected combination: \(retrievedResult), \(expectedResult)")
+		}
+	}
+
+	private func retrieve(from sut: CodableSearchCriteriaStore) -> SearchCriteriaProvider.RetrieveResult {
+		let exp = expectation(description: "Wait for retrieve")
+
+		var retrievedResult: SearchCriteriaProvider.RetrieveResult!
+		sut.retrieve { result in
+			retrievedResult = result
+			exp.fulfill()
+		}
+
+		wait(for: [exp], timeout: 1.0)
+		return retrievedResult
+	}
+
+	private func deleteStoreArtifacts() {
+		try? FileManager.default.removeItem(at: testSpecificStoreURL())
+	}
+
+	private func testSpecificStoreURL() -> URL {
+		cachesDirectory().appendingPathComponent("\(type(of: self)).store")
+	}
+
+	private func cachesDirectory() -> URL {
+		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+	}
+}

@@ -12,6 +12,8 @@ public protocol Dispatcher {
 }
 
 public final class ImmediateDispatcher: Dispatcher {
+	public init() {}
+	
 	public func dispatch(_ action: @escaping () -> Void) {
 		action()
 	}

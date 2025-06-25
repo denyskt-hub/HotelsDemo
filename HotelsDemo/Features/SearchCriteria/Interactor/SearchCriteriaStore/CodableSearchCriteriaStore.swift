@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CodableSearchCriteriaStore: SearchCriteriaStore {
+public final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	private struct CodableSearchCriteria: Codable {
 		var destination: CodableDestination?
 		let checkInDate: Date
@@ -71,12 +71,12 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 	private let storeURL: URL
 	private let dispatcher: Dispatcher
 
-	init(storeURL: URL, dispatcher: Dispatcher) {
+	public init(storeURL: URL, dispatcher: Dispatcher) {
 		self.storeURL = storeURL
 		self.dispatcher = dispatcher
 	}
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		_save(criteria) { error in
 			self.dispatcher.dispatch {
 				completion(error)
@@ -96,7 +96,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		_retrieve { result in
 			self.dispatcher.dispatch {
 				completion(result)
@@ -104,7 +104,7 @@ final class CodableSearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	func _retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	private func _retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
 				return completion(.failure(SearchCriteriaError.notFound))
