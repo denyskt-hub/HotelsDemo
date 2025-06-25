@@ -9,6 +9,18 @@ import XCTest
 import HotelsDemo
 
 final class CodableSearchCriteriaStoreTests: XCTestCase {
+	override func setUp() {
+		super.setUp()
+
+		setupEmptyStoreState()
+	}
+
+	override func tearDown() {
+		super.tearDown()
+
+		undoStoreSideEffects()
+	}
+
 	func test_retrieve_deliversNotFoundErrorOnEmptyStore() {
 		let sut = makeSUT()
 
@@ -68,6 +80,14 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 		}
 		
 		wait(for: [exp], timeout: 1.0)
+	}
+
+	private func setupEmptyStoreState() {
+		deleteStoreArtifacts()
+	}
+
+	private func undoStoreSideEffects() {
+		deleteStoreArtifacts()
 	}
 
 	private func deleteStoreArtifacts() {
