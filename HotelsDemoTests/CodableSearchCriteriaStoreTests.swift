@@ -15,6 +15,15 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 		expect(sut, toRetrieve: .failure(SearchCriteriaError.notFound))
 	}
 
+	func test_retrieve_deliversSavedCriteria() {
+		let sut = makeSUT()
+		
+		let criteria = anySearchCriteria()
+		save(criteria, to: sut)
+
+		expect(sut, toRetrieve: .success(criteria))
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> CodableSearchCriteriaStore {
@@ -51,6 +60,16 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 		return retrievedResult
 	}
 
+	private func save(_ criteria: SearchCriteria, to sut: CodableSearchCriteriaStore) {
+		let exp = expectation(description: "Wait for save")
+		
+		sut.save(criteria) { _ in
+			exp.fulfill()
+		}
+		
+		wait(for: [exp], timeout: 1.0)
+	}
+
 	private func deleteStoreArtifacts() {
 		try? FileManager.default.removeItem(at: testSpecificStoreURL())
 	}
@@ -61,5 +80,16 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 
 	private func cachesDirectory() -> URL {
 		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+	}
+
+	private func anySearchCriteria() -> SearchCriteria {
+		SearchCriteria(
+			destination: nil,
+			checkInDate: .now,
+			checkOutDate: .now,
+			adults: 2,
+			childrenAge: [],
+			roomsQuantity: 1
+		)
 	}
 }

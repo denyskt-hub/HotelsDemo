@@ -7,11 +7,27 @@
 
 import Foundation
 
-struct Destination: Equatable {
-	let id: Int
-	let type: String
-	let name: String
-	let label: String
-	let country: String
-	let cityName: String
+public struct Destination: Equatable {
+	public let id: Int
+	public let type: String
+	public let name: String
+	public let label: String
+	public let country: String
+	public let cityName: String
+
+	public init(
+		id: Int,
+		type: String,
+		name: String,
+		label: String,
+		country: String,
+		cityName: String
+	) {
+		self.id = id
+		self.type = type
+		self.name = name
+		self.label = label
+		self.country = country
+		self.cityName = cityName
+	}
 }
