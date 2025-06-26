@@ -37,7 +37,7 @@ public enum SearchCriteriaModels {
 			public init() {}
 		}
 
-		public struct Response {
+		public struct Response: Equatable {
 			public let roomGuests: RoomGuests
 
 			public init(roomGuests: RoomGuests) {
