@@ -41,6 +41,25 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 		XCTAssertEqual(result, expectedCriteria)
 	}
 
+	func test_validate_returnsFixedCriteria_whenCheckOutDateIsLessThanCheckInDate() {
+		let currentDate = "26.06.2025".date()
+		let calendar = Calendar.gregorian()
+		let invalidCriteria = makeSearchCriteria(
+			checkInDate: currentDate.adding(days: 1, calendar: calendar),
+			checkOutDate: currentDate
+		)
+		let expectedCriteria = makeSearchCriteria(
+			checkInDate: currentDate.adding(days: 1, calendar: calendar),
+			checkOutDate: currentDate.adding(days: 2, calendar: calendar)
+		)
+
+		let sut = makeSUT(calendar: calendar, currentDate: { currentDate })
+
+		let result = sut.validate(invalidCriteria)
+
+		XCTAssertEqual(result, expectedCriteria)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(
