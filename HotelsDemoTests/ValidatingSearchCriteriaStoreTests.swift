@@ -112,6 +112,31 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		wait(for: [exp], timeout: 1.0)
 	}
 
+	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() {
+		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
+		let (sut, store, validator) = makeSUT()
+		validator.stubbedResult = valid
+
+		let exp = expectation(description: "Wait for completion")
+
+		sut.retrieve { result in
+			switch result {
+			case let .success(retrieved):
+				XCTAssertEqual(retrieved, valid)
+				XCTAssertEqual(store.messages, [.retrieve])
+
+			case let .failure(error):
+				XCTFail("Expected success, got \(error) instead")
+			}
+			exp.fulfill()
+		}
+
+		store.completeRetrieve(with: .success(valid))
+
+		wait(for: [exp], timeout: 1.0)
+	}
+
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
