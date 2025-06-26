@@ -161,6 +161,17 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
+	func test_updateRoomGuests_presentUpdateErrorOnCacheError() {
+		let cacheError = anyNSError()
+		let (sut, provider, cache, presenter) = makeSUT()
+
+		sut.updateRoomGuests(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
+		provider.completeRetrieve(with: .success(anySearchCriteria()))
+		cache.completeSave(with: cacheError)
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
