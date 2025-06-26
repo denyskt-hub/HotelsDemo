@@ -92,12 +92,21 @@ public enum SearchCriteriaModels {
 
 	public enum UpdateDates {
 		public struct Request {
-			let checkInDate: Date
-			let checkOutDate: Date
+			public let checkInDate: Date
+			public let checkOutDate: Date
+
+			public init(checkInDate: Date, checkOutDate: Date) {
+				self.checkInDate = checkInDate
+				self.checkOutDate = checkOutDate
+			}
 		}
 
-		public struct Response {
-			let criteria: SearchCriteria
+		public struct Response: Equatable {
+			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
 		}
 	}
 

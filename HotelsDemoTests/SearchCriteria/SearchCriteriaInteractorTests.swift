@@ -114,6 +114,16 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
 	}
 
+	func test_updateDates_presentUpdateErrorOnProviderError() {
+		let providerError = anyNSError()
+		let (sut, provider, _, presenter) = makeSUT()
+		
+		sut.updateDates(request: .init(checkInDate: Date(), checkOutDate: Date()))
+		provider.completeRetrieve(with: .failure(providerError))
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
