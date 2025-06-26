@@ -42,7 +42,7 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 			case let .success(criteria):
 				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
 			case let .failure(error):
-				print(error)
+				self.presentLoadError(error)
 			}
 		}
 	}

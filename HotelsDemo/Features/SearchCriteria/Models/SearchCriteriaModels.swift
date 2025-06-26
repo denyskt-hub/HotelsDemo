@@ -41,7 +41,9 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum LoadDates {
-		public struct Request {}
+		public struct Request {
+			public init() {}
+		}
 
 		public struct Response {
 			let checkInDate: Date
