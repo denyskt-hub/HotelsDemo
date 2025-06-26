@@ -13,10 +13,14 @@ public enum SearchCriteriaModels {
 			public init() {}
 		}
 
-		public struct Response {
-			let criteria: SearchCriteria
+		public struct Response: Equatable {
+			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
 		}
-		
+
 		public struct ViewModel {
 			let destination: String?
 			let dateRange: String

@@ -19,6 +19,16 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
+	func test_loadCriteria_presentCriteriaOnProviderSuccess() {
+		let criteria = anySearchCriteria()
+		let (sut, provider, _, presenter) = makeSUT()
+
+		sut.loadCriteria(request: .init())
+		provider.completeRetrieve(with: .success(criteria))
+
+		XCTAssertEqual(presenter.messages, [.presentCriteria(.init(criteria: criteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -59,13 +69,14 @@ final class SearchCriteriaCacheSpy: SearchCriteriaCache {
 
 final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	enum Message: Equatable {
+		case presentCriteria(SearchCriteriaModels.Load.Response)
 		case presentLoadError(NSError)
 	}
 
 	private(set) var messages = [Message]()
 
 	func presentCriteria(response: SearchCriteriaModels.Load.Response) {
-
+		messages.append(.presentCriteria(response))
 	}
 	
 	func presentLoadError(_ error: Error) {
