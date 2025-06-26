@@ -24,6 +24,22 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		XCTAssertEqual(store.messages, [.save(criteria)])
 	}
 
+	func test_save_deliversErrorOnStoreError() {
+		let storeError = anyNSError()
+		let (sut, store, _) = makeSUT()
+
+		let exp = expectation(description: "Wait for completion")
+
+		sut.save(anySearchCriteria()) { error in
+			XCTAssertEqual(error as? NSError, storeError)
+			exp.fulfill()
+		}
+
+		store.completeSave(with: storeError)
+
+		wait(for: [exp], timeout: 1.0)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
@@ -34,6 +50,10 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 			validator: validator
 		)
 		return (sut, store, validator)
+	}
+
+	private func anyNSError() -> NSError {
+		NSError(domain: "test", code: 1)
 	}
 }
 
