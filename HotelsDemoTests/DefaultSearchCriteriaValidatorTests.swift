@@ -71,28 +71,4 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 			checkOutDate: checkOutDate.date()
 		)
 	}
-
-	private func makeValidSearchCriteria(
-		calendar: Calendar,
-		currentDate: Date
-	) -> SearchCriteria {
-		makeSearchCriteria(
-			checkInDate: currentDate,
-			checkOutDate: currentDate.adding(days: 1, calendar: calendar)
-		)
-	}
-
-	private func makeSearchCriteria(
-		checkInDate: Date,
-		checkOutDate: Date
-	) -> SearchCriteria {
-		SearchCriteria(
-			destination: nil,
-			checkInDate: checkInDate,
-			checkOutDate: checkOutDate,
-			adults: 2,
-			childrenAge: [],
-			roomsQuantity: 1
-		)
-	}
 }

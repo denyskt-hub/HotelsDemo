@@ -11,13 +11,9 @@ import HotelsDemo
 final class DefaultSearchCriteriaProviderTests: XCTestCase {
 	func test_retrieve_deliversDefaultSearchCriteria() {
 		let currentDate = "26.06.2025".date()
-		let defaultCriteria = SearchCriteria(
-			destination: nil,
-			checkInDate: "27.06.2025".date(),
-			checkOutDate: "28.06.2025".date(),
-			adults: 2,
-			childrenAge: [],
-			roomsQuantity: 1
+		let expectedCriteria = SearchCriteriaDefaults.make(
+			calendar: .gregorian(),
+			currentDate: { currentDate }
 		)
 		let sut = makeSUT(calendar: .gregorian(), currentDate: { currentDate })
 
@@ -26,7 +22,7 @@ final class DefaultSearchCriteriaProviderTests: XCTestCase {
 		sut.retrieve { result in
 			switch result {
 			case let .success(criteria):
-				XCTAssertEqual(criteria, defaultCriteria)
+				XCTAssertEqual(criteria, expectedCriteria)
 			case let .failure(error):
 				XCTFail("Expected success, got \(error) instead")
 			}
