@@ -51,6 +51,21 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		wait(for: [exp], timeout: 1.0)
 	}
 
+	func test_save_deliversNoErrorOnSuccess() {
+		let (sut, store, _) = makeSUT()
+
+		let exp = expectation(description: "Wait for completion")
+		
+		sut.save(anySearchCriteria()) { error in
+			XCTAssertNil(error, "Expected no error on successful save")
+			exp.fulfill()
+		}
+
+		store.completeSave(with: nil)
+
+		wait(for: [exp], timeout: 1.0)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
