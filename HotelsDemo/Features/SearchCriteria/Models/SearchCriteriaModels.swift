@@ -45,9 +45,14 @@ public enum SearchCriteriaModels {
 			public init() {}
 		}
 
-		public struct Response {
-			let checkInDate: Date
-			let checkOutDate: Date
+		public struct Response: Equatable {
+			public let checkInDate: Date
+			public let checkOutDate: Date
+
+			public init(checkInDate: Date, checkOutDate: Date) {
+				self.checkInDate = checkInDate
+				self.checkOutDate = checkOutDate
+			}
 		}
 	}
 

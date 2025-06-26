@@ -39,6 +39,18 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
+	func test_loadDates_presentDatesOnProviderSuccess() {
+		let checkInDate = "27.06.2025".date()
+		let checkOutDate = "28.06.2025".date()
+		let criteria = makeSearchCriteria(checkInDate: checkInDate, checkOutDate: checkOutDate)
+		let (sut, provider, _, presenter) = makeSUT()
+		
+		sut.loadDates(request: .init())
+		provider.completeRetrieve(with: .success(criteria))
+
+		XCTAssertEqual(presenter.messages, [.presentDates(.init(checkInDate: checkInDate, checkOutDate: checkOutDate))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -81,6 +93,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	enum Message: Equatable {
 		case presentCriteria(SearchCriteriaModels.Load.Response)
 		case presentLoadError(NSError)
+		case presentDates(SearchCriteriaModels.LoadDates.Response)
 	}
 
 	private(set) var messages = [Message]()
@@ -98,7 +111,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	}
 	
 	func presentDates(response: SearchCriteriaModels.LoadDates.Response) {
-
+		messages.append(.presentDates(response))
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
