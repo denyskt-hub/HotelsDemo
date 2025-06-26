@@ -51,6 +51,16 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentDates(.init(checkInDate: checkInDate, checkOutDate: checkOutDate))])
 	}
 
+	func test_loadRoomGuests_presentLoadErrorOnProviderError() {
+		let providerError = anyNSError()
+		let (sut, provider, _, presenter) = makeSUT()
+		
+		sut.loadRoomGuests(request: .init())
+		provider.completeRetrieve(with: .failure(providerError))
+
+		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -105,13 +115,13 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	func presentLoadError(_ error: Error) {
 		messages.append(.presentLoadError(error as NSError))
 	}
-	
-	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response) {
 
-	}
-	
 	func presentDates(response: SearchCriteriaModels.LoadDates.Response) {
 		messages.append(.presentDates(response))
+	}
+
+	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response) {
+		
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {

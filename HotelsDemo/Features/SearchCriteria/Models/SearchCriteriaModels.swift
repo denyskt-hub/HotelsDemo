@@ -33,10 +33,16 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum LoadRoomGuests {
-		public struct Request {}
+		public struct Request {
+			public init() {}
+		}
 
 		public struct Response {
-			let roomGuests: RoomGuests
+			public let roomGuests: RoomGuests
+
+			public init(roomGuests: RoomGuests) {
+				self.roomGuests = roomGuests
+			}
 		}
 	}
 

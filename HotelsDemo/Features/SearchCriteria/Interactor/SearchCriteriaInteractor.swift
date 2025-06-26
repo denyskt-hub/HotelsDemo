@@ -60,7 +60,7 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 				)
 				self.presentLoadedRoomGuests(roomGuests)
 			case let .failure(error):
-				print(error)
+				self.presentLoadError(error)
 			}
 		}
 	}

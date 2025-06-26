@@ -7,8 +7,18 @@
 
 import Foundation
 
-struct RoomGuests {
-	let rooms: Int
-	let adults: Int
-	let childrenAge: [Int]
+public struct RoomGuests {
+	public let rooms: Int
+	public let adults: Int
+	public let childrenAge: [Int]
+
+	public init(
+		rooms: Int,
+		adults: Int,
+		childrenAge: [Int]
+	) {
+		self.rooms = rooms
+		self.adults = adults
+		self.childrenAge = childrenAge
+	}
 }
