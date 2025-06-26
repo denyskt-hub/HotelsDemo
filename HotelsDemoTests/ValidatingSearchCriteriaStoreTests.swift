@@ -35,15 +35,6 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		XCTAssertEqual(store.messages, [.save(valid)])
 	}
 
-	func test_save_delegatesToStore() {
-		let criteria = anySearchCriteria()
-		let (sut, store, _) = makeSUT()
-		
-		sut.save(criteria) { _ in }
-
-		XCTAssertEqual(store.messages, [.save(criteria)])
-	}
-
 	func test_save_deliversErrorOnStoreError() {
 		let storeError = anyNSError()
 		let (sut, store, _) = makeSUT()
