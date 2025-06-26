@@ -24,6 +24,17 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		XCTAssertEqual(validator.validated, [criteria])
 	}
 
+	func test_save_usesValidatedCriteriaForSaving() {
+		let invalid = anySearchCriteria()
+		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
+		let (sut, store, validator) = makeSUT()
+		validator.stubbedResult = valid
+
+		sut.save(invalid) { _ in }
+
+		XCTAssertEqual(store.messages, [.save(valid)])
+	}
+
 	func test_save_delegatesToStore() {
 		let criteria = anySearchCriteria()
 		let (sut, store, _) = makeSUT()
