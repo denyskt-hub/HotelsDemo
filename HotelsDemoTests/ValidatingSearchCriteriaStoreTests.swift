@@ -66,6 +66,27 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		wait(for: [exp], timeout: 1.0)
 	}
 
+	func test_retrieve_deliversErrorOnStoreError() {
+		let storeError = anyNSError()
+		let (sut, store, _) = makeSUT()
+
+		let exp = expectation(description: "Wait for completion")
+
+		sut.retrieve { result in
+			switch result {
+			case .success:
+				XCTFail("Expected failure")
+			case let .failure(error):
+				XCTAssertEqual(error as NSError, storeError)
+			}
+			exp.fulfill()
+		}
+
+		store.completeRetrieve(with: .failure(storeError))
+
+		wait(for: [exp], timeout: 1.0)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
@@ -76,10 +97,6 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 			validator: validator
 		)
 		return (sut, store, validator)
-	}
-
-	private func anyNSError() -> NSError {
-		NSError(domain: "test", code: 1)
 	}
 }
 

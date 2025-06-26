@@ -8,6 +8,10 @@
 import Foundation
 import HotelsDemo
 
+func anyNSError() -> NSError {
+	NSError(domain: "any", code: 1)
+}
+
 func anySearchCriteria() -> SearchCriteria {
 	SearchCriteria(
 		destination: nil,
