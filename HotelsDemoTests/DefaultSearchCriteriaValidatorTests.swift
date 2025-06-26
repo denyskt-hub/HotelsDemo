@@ -23,41 +23,31 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 		XCTAssertEqual(result, validCriteria)
 	}
 
-	func test_validate_returnsFixedCriteria_whenCheckInDateIsInPast() {
+	func test_validate_fixesInvalidDateCombinations() {
 		let currentDate = "26.06.2025".date()
 		let calendar = Calendar.gregorian()
-		let invalidCriteria = makeSearchCriteria(
-			checkInDate: currentDate.adding(seconds: -1),
-			checkOutDate: currentDate.adding(days: 1, calendar: calendar)
-		)
-		let expectedCriteria = makeSearchCriteria(
-			checkInDate: currentDate.adding(days: 1, calendar: calendar),
-			checkOutDate: currentDate.adding(days: 2, calendar: calendar)
-		)
-		let sut = makeSUT(calendar: calendar, currentDate: { currentDate })
-
-		let result = sut.validate(invalidCriteria)
-
-		XCTAssertEqual(result, expectedCriteria)
-	}
-
-	func test_validate_returnsFixedCriteria_whenCheckOutDateIsLessThanCheckInDate() {
-		let currentDate = "26.06.2025".date()
-		let calendar = Calendar.gregorian()
-		let invalidCriteria = makeSearchCriteria(
-			checkInDate: currentDate.adding(days: 1, calendar: calendar),
-			checkOutDate: currentDate
-		)
-		let expectedCriteria = makeSearchCriteria(
-			checkInDate: currentDate.adding(days: 1, calendar: calendar),
-			checkOutDate: currentDate.adding(days: 2, calendar: calendar)
-		)
+		let invalidCriterias: [(invalid: SearchCriteria, expected: SearchCriteria)] = [
+			(
+				invalid: make(in: "25.06.2025", out: "27.06.2025"),
+				expected: make(in: "27.06.2025", out: "28.06.2025")
+			),
+			(
+				invalid: make(in: "27.06.2025", out: "26.06.2025"),
+				expected: make(in: "27.06.2025", out: "28.06.2025")
+			),
+			(
+				invalid: make(in: "27.06.2025", out: "27.06.2025"),
+				expected: make(in: "27.06.2025", out: "28.06.2025")
+			)
+		]
 
 		let sut = makeSUT(calendar: calendar, currentDate: { currentDate })
 
-		let result = sut.validate(invalidCriteria)
+		for (inputCriteria, expectedCriteria) in invalidCriterias {
+			let result = sut.validate(inputCriteria)
 
-		XCTAssertEqual(result, expectedCriteria)
+			XCTAssertEqual(result, expectedCriteria, "Failed for input: \(inputCriteria)")
+		}
 	}
 
 	// MARK: - Helpers
@@ -69,6 +59,13 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 		DefaultSearchCriteriaValidator(
 			calendar: calendar,
 			currentDate: currentDate
+		)
+	}
+
+	private func make(in checkInDate: String, out checkOutDate: String) -> SearchCriteria {
+		makeSearchCriteria(
+			checkInDate: checkInDate.date(),
+			checkOutDate: checkOutDate.date()
 		)
 	}
 
