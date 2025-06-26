@@ -64,11 +64,19 @@ public enum SearchCriteriaModels {
 
 	public enum UpdateDestination {
 		public struct Request {
-			let destination: Destination
+			public let destination: Destination
+
+			public init(destination: Destination) {
+				self.destination = destination
+			}
 		}
 
-		public struct Response {
-			let criteria: SearchCriteria
+		public struct Response: Equatable {
+			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
 		}
 
 		public struct ViewModel {

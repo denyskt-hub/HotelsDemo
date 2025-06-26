@@ -79,6 +79,16 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		])
 	}
 
+	func test_updateDestination_presentUpdateErrorOnProviderError() {
+		let providerError = anyNSError()
+		let (sut, provider, _, presenter) = makeSUT()
+
+		sut.updateDestination(request: .init(destination: anyDestination()))
+		provider.completeRetrieve(with: .failure(providerError))
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -96,6 +106,17 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		)
 		sut.presenter = presenter
 		return (sut, provider, cache, presenter)
+	}
+
+	private func anyDestination() -> Destination {
+		Destination(
+			id: 1,
+			type: "country",
+			name: "any",
+			label: "any label",
+			country: "any",
+			cityName: "any"
+		)
 	}
 }
 
@@ -123,6 +144,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		case presentLoadError(NSError)
 		case presentDates(SearchCriteriaModels.LoadDates.Response)
 		case presentRoomGuests(SearchCriteriaModels.LoadRoomGuests.Response)
+		case presentUpdateError(NSError)
 	}
 
 	private(set) var messages = [Message]()
@@ -156,6 +178,6 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	}
 	
 	func presentUpdateError(_ error: Error) {
-
+		messages.append(.presentUpdateError(error as NSError))
 	}
 }
