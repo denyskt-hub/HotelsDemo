@@ -89,6 +89,17 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
+	func test_updateDestination_presentUpdateErrorOnCacheError() {
+		let cacheError = anyNSError()
+		let (sut, provider, cache, presenter) = makeSUT()
+		
+		sut.updateDestination(request: .init(destination: anyDestination()))
+		provider.completeRetrieve(with: .success(anySearchCriteria()))
+		cache.completeSave(with: cacheError)
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -133,8 +144,14 @@ final class SearchCriteriaProviderSpy: SearchCriteriaProvider {
 }
 
 final class SearchCriteriaCacheSpy: SearchCriteriaCache {
-	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	private var saveCompletions: [((SaveResult) -> Void)] = []
 
+	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+		saveCompletions.append(completion)
+	}
+
+	func completeSave(with result: SaveResult, at index: Int = 0) {
+		saveCompletions[index](result)
 	}
 }
 
