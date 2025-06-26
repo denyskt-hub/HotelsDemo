@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SearchCriteriaPresentationLogic {
+public protocol SearchCriteriaPresentationLogic {
 	func presentCriteria(response: SearchCriteriaModels.Load.Response)
 	func presentLoadError(_ error: Error)
 

@@ -7,81 +7,83 @@
 
 import Foundation
 
-enum SearchCriteriaModels {
-	enum Load {
-		struct Request {}
-		
-		struct Response {
+public enum SearchCriteriaModels {
+	public enum Load {
+		public struct Request {
+			public init() {}
+		}
+
+		public struct Response {
 			let criteria: SearchCriteria
 		}
 		
-		struct ViewModel {
+		public struct ViewModel {
 			let destination: String?
 			let dateRange: String
 			let roomGuests: String
 		}
 
-		struct ErrorViewModel {
+		public struct ErrorViewModel {
 			let message: String
 		}
 	}
 
-	enum LoadRoomGuests {
-		struct Request {}
+	public enum LoadRoomGuests {
+		public struct Request {}
 
-		struct Response {
+		public struct Response {
 			let roomGuests: RoomGuests
 		}
 	}
 
-	enum LoadDates {
-		struct Request {}
+	public enum LoadDates {
+		public struct Request {}
 
-		struct Response {
+		public struct Response {
 			let checkInDate: Date
 			let checkOutDate: Date
 		}
 	}
 
-	enum UpdateDestination {
-		struct Request {
+	public enum UpdateDestination {
+		public struct Request {
 			let destination: Destination
 		}
 
-		struct Response {
+		public struct Response {
 			let criteria: SearchCriteria
 		}
 
-		struct ViewModel {
+		public struct ViewModel {
 			let destination: String?
 			let dateRange: String
 			let roomGuests: String
 		}
 
-		struct ErrorViewModel {
+		public struct ErrorViewModel {
 			let message: String
 		}
 	}
 
-	enum UpdateDates {
-		struct Request {
+	public enum UpdateDates {
+		public struct Request {
 			let checkInDate: Date
 			let checkOutDate: Date
 		}
 
-		struct Response {
+		public struct Response {
 			let criteria: SearchCriteria
 		}
 	}
 
-	enum UpdateRoomGuests {
-		struct Request {
+	public enum UpdateRoomGuests {
+		public struct Request {
 			let rooms: Int
 			let adults: Int
 			let childrenAge: [Int]
 		}
 
-		struct Response {
+		public struct Response {
 			let criteria: SearchCriteria
 		}
 	}

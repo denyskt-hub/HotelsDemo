@@ -7,13 +7,13 @@
 
 import Foundation
 
-final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
+public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	private let provider: SearchCriteriaProvider
 	private let cache: SearchCriteriaCache
 
-	var presenter: SearchCriteriaPresentationLogic?
+	public var presenter: SearchCriteriaPresentationLogic?
 
-	init(
+	public init(
 		provider: SearchCriteriaProvider,
 		cache: SearchCriteriaCache
 	) {
@@ -21,7 +21,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		self.cache = cache
 	}
 
-	func loadCriteria(request: SearchCriteriaModels.Load.Request) {
+	public func loadCriteria(request: SearchCriteriaModels.Load.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -34,7 +34,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
+	public func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -47,7 +47,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request) {
+	public func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -65,7 +65,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
+	public func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
 		update(request.destination) { [weak self] result in
 			guard let self else { return }
 
@@ -78,7 +78,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func updateDates(request: SearchCriteriaModels.UpdateDates.Request) {
+	public func updateDates(request: SearchCriteriaModels.UpdateDates.Request) {
 		update(request.checkInDate, request.checkOutDate) { [weak self] result in
 			guard let self else { return }
 
@@ -91,7 +91,7 @@ final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
-	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request) {
+	public func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request) {
 		update(request.rooms, request.adults, request.childrenAge) { [weak self] result in
 			guard let self else { return }
 
