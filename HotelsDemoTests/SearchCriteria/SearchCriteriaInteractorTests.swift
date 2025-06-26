@@ -172,6 +172,24 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
+	func test_updateRoomGuests_presentUpdateRoomGuestsOnSuccess() {
+		let rooms = 2
+		let adults = 2
+		let childrenAge = [1]
+		let criteria = anySearchCriteria()
+		var expectedCriteria = criteria
+		expectedCriteria.roomsQuantity = rooms
+		expectedCriteria.adults = adults
+		expectedCriteria.childrenAge = childrenAge
+		let (sut, provider, cache, presenter) = makeSUT()
+		
+		sut.updateRoomGuests(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
+		provider.completeRetrieve(with: .success(criteria))
+		cache.completeSave(with: .none)
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -235,6 +253,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		case presentRoomGuests(SearchCriteriaModels.LoadRoomGuests.Response)
 		case presentUpdateDestination(SearchCriteriaModels.UpdateDestination.Response)
 		case presentUpdateDates(SearchCriteriaModels.UpdateDates.Response)
+		case presentUpdateRoomGuests(SearchCriteriaModels.UpdateRoomGuests.Response)
 		case presentUpdateError(NSError)
 	}
 
@@ -265,7 +284,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
-
+		messages.append(.presentUpdateRoomGuests(response))
 	}
 	
 	func presentUpdateError(_ error: Error) {

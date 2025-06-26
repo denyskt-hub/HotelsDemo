@@ -125,6 +125,10 @@ public enum SearchCriteriaModels {
 
 		public struct Response: Equatable {
 			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
 		}
 	}
 }
