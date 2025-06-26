@@ -100,6 +100,20 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
+	func test_updateDestination_presentUpdateDestinationOnSucess() {
+		let destination = anyDestination()
+		let criteria = anySearchCriteria()
+		var expectedCriteria = criteria
+		expectedCriteria.destination = destination
+		let (sut, provider, cache, presenter) = makeSUT()
+
+		sut.updateDestination(request: .init(destination: destination))
+		provider.completeRetrieve(with: .success(criteria))
+		cache.completeSave(with: .none)
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -161,6 +175,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		case presentLoadError(NSError)
 		case presentDates(SearchCriteriaModels.LoadDates.Response)
 		case presentRoomGuests(SearchCriteriaModels.LoadRoomGuests.Response)
+		case presentUpdateDestination(SearchCriteriaModels.UpdateDestination.Response)
 		case presentUpdateError(NSError)
 	}
 
@@ -183,7 +198,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
-
+		messages.append(.presentUpdateDestination(response))
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateDates.Response) {
