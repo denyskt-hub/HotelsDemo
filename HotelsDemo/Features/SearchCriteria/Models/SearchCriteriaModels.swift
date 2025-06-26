@@ -112,13 +112,19 @@ public enum SearchCriteriaModels {
 
 	public enum UpdateRoomGuests {
 		public struct Request {
-			let rooms: Int
-			let adults: Int
-			let childrenAge: [Int]
+			public let rooms: Int
+			public let adults: Int
+			public let childrenAge: [Int]
+
+			public init(rooms: Int, adults: Int, childrenAge: [Int]) {
+				self.rooms = rooms
+				self.adults = adults
+				self.childrenAge = childrenAge
+			}
 		}
 
-		public struct Response {
-			let criteria: SearchCriteria
+		public struct Response: Equatable {
+			public let criteria: SearchCriteria
 		}
 	}
 }
