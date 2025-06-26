@@ -135,6 +135,22 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
+	func test_updateDates_presentUpdateDatesOnSucess() {
+		let checkInDate = "27.06.2025".date()
+		let checkOutDate = "28.06.2025".date()
+		let criteria = anySearchCriteria()
+		var expectedCriteria = criteria
+		expectedCriteria.checkInDate = checkInDate
+		expectedCriteria.checkOutDate = checkOutDate
+		let (sut, provider, cache, presenter) = makeSUT()
+
+		sut.updateDates(request: .init(checkInDate: checkInDate, checkOutDate: checkOutDate))
+		provider.completeRetrieve(with: .success(criteria))
+		cache.completeSave(with: .none)
+
+		XCTAssertEqual(presenter.messages, [.presentUpdateDates(.init(criteria: expectedCriteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -197,6 +213,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		case presentDates(SearchCriteriaModels.LoadDates.Response)
 		case presentRoomGuests(SearchCriteriaModels.LoadRoomGuests.Response)
 		case presentUpdateDestination(SearchCriteriaModels.UpdateDestination.Response)
+		case presentUpdateDates(SearchCriteriaModels.UpdateDates.Response)
 		case presentUpdateError(NSError)
 	}
 
@@ -223,7 +240,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateDates.Response) {
-
+		messages.append(.presentUpdateDates(response))
 	}
 	
 	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
