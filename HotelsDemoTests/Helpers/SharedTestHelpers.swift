@@ -8,6 +8,17 @@
 import Foundation
 import HotelsDemo
 
+func anySearchCriteria() -> SearchCriteria {
+	SearchCriteria(
+		destination: nil,
+		checkInDate: .now,
+		checkOutDate: .now,
+		adults: 2,
+		childrenAge: [],
+		roomsQuantity: 1
+	)
+}
+
 func makeValidSearchCriteria(
 	calendar: Calendar,
 	currentDate: Date

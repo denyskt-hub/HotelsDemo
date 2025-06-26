@@ -15,6 +15,15 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 		XCTAssertTrue(store.messages.isEmpty)
 	}
 
+	func test_save_delegatesToStore() {
+		let criteria = anySearchCriteria()
+		let (sut, store, _) = makeSUT()
+		
+		sut.save(criteria) { _ in }
+
+		XCTAssertEqual(store.messages, [.save(criteria)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
@@ -29,7 +38,7 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 }
 
 final class SearchCriteriaStoreSpy: SearchCriteriaStore {
-	enum Message {
+	enum Message: Equatable {
 		case save(SearchCriteria)
 		case retrieve
 	}

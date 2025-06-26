@@ -140,15 +140,4 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 	private func cachesDirectory() -> URL {
 		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 	}
-
-	private func anySearchCriteria() -> SearchCriteria {
-		SearchCriteria(
-			destination: nil,
-			checkInDate: .now,
-			checkOutDate: .now,
-			adults: 2,
-			childrenAge: [],
-			roomsQuantity: 1
-		)
-	}
 }
