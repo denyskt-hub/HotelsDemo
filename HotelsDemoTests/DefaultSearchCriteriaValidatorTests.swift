@@ -26,16 +26,19 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 	func test_validate_fixesInvalidDateCombinations() {
 		let currentDate = "26.06.2025".date()
 		let calendar = Calendar.gregorian()
-		let invalidCriterias: [(invalid: SearchCriteria, expected: SearchCriteria)] = [
+		let cases: [(name: String, invalid: SearchCriteria, expected: SearchCriteria)] = [
 			(
+				name: "check-in before today",
 				invalid: make(in: "25.06.2025", out: "27.06.2025"),
 				expected: make(in: "27.06.2025", out: "28.06.2025")
 			),
 			(
+				name: "check-out before check-in",
 				invalid: make(in: "27.06.2025", out: "26.06.2025"),
 				expected: make(in: "27.06.2025", out: "28.06.2025")
 			),
 			(
+				name: "check-in equals check-out",
 				invalid: make(in: "27.06.2025", out: "27.06.2025"),
 				expected: make(in: "27.06.2025", out: "28.06.2025")
 			)
@@ -43,10 +46,10 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 
 		let sut = makeSUT(calendar: calendar, currentDate: { currentDate })
 
-		for (inputCriteria, expectedCriteria) in invalidCriterias {
-			let result = sut.validate(inputCriteria)
+		for testCase in cases {
+			let result = sut.validate(testCase.invalid)
 
-			XCTAssertEqual(result, expectedCriteria, "Failed for input: \(inputCriteria)")
+			XCTAssertEqual(result, testCase.expected, "Failed: \(testCase.name)")
 		}
 	}
 
