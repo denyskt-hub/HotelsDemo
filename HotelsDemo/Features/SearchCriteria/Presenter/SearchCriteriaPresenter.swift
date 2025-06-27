@@ -36,7 +36,7 @@ public final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		presentDates(response.checkInDate, response.checkOutDate)
 	}
 
-	public func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
+	public func presentUpdateDestination(response: SearchCriteriaModels.UpdateDestination.Response) {
 		presentCriteria(response.criteria)
 	}
 

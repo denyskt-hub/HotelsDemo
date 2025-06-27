@@ -208,17 +208,6 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		sut.presenter = presenter
 		return (sut, provider, cache, presenter)
 	}
-
-	private func anyDestination() -> Destination {
-		Destination(
-			id: 1,
-			type: "country",
-			name: "any",
-			label: "any label",
-			country: "any",
-			cityName: "any"
-		)
-	}
 }
 
 final class SearchCriteriaProviderSpy: SearchCriteriaProvider {
@@ -275,7 +264,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		messages.append(.presentRoomGuests(response))
 	}
 	
-	func presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response) {
+	func presentUpdateDestination(response: SearchCriteriaModels.UpdateDestination.Response) {
 		messages.append(.presentUpdateDestination(response))
 	}
 	

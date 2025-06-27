@@ -187,7 +187,7 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	}
 
 	private func presentUpdatedDestinationCriteria(_ criteria: SearchCriteria) {
-		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+		presenter?.presentUpdateDestination(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
 	}
 
 	private func presentUpdatedDatesCriteria(_ criteria: SearchCriteria) {
