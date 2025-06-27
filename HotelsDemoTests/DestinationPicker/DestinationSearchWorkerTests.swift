@@ -19,41 +19,20 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let clientError = anyNSError()
 		let (sut, client) = makeSUT()
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.search(query: "any") { result in
-			switch result {
-			case .success:
-				XCTFail("Expected failure, got success instead")
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, clientError)
-			}
-			exp.fulfill()
-		}
-
-		client.completeWithResult(.failure(clientError))
-
-		wait(for: [exp], timeout: 0.1)
+		expect(sut, toCompleteWith: .failure(clientError), when: {
+			client.completeWithResult(.failure(clientError))
+		})
 	}
 
 	func test_search_deliversErrorOnNon200HTTPResponse() {
+		let samples = [199, 300, 350, 404, 500]
 		let (sut, client) = makeSUT()
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.search(query: "any") { result in
-			switch result {
-			case .success:
-				XCTFail("Expected failure, got success instead")
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, HTTPError.unexpectedStatusCode(404) as NSError)
-			}
-			exp.fulfill()
+		for (index, statusCode) in samples.enumerated() {
+			expect(sut, toCompleteWith: .failure(HTTPError.unexpectedStatusCode(statusCode)), when: {
+				client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: statusCode))), at: index)
+			})
 		}
-
-		client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: 404))))
-
-		wait(for: [exp], timeout: 0.1)
 	}
 
 	// MARK: - Helpers
@@ -68,16 +47,30 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		return (sut, client)
 	}
 
-	func anyData() -> Data {
-		Data("any".utf8)
-	}
+	private func expect(
+		_ sut: DestinationSearchWorker,
+		toCompleteWith expectedResult: DestinationSearchService.Result,
+		when action: () -> Void,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		let exp = expectation(description: "Wait for completion")
 
-	func anyHTTPURLResponse() -> HTTPURLResponse {
-		HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-	}
+		sut.search(query: "any") { receivedResult in
+			switch (receivedResult, expectedResult) {
+			case let (.success(received), .success(expected)):
+				XCTAssertEqual(received, expected, file: file, line: line)
+			case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
+				XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+			default:
+				XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+			}
+			exp.fulfill()
+		}
 
-	func makeHTTPURLResponse(statusCode: Int) -> HTTPURLResponse {
-		HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
+		action()
+
+		wait(for: [exp], timeout: 0.1)
 	}
 }
 

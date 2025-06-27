@@ -16,6 +16,18 @@ func anyNSError() -> NSError {
 	NSError(domain: "any", code: 1)
 }
 
+func anyData() -> Data {
+	Data("any".utf8)
+}
+
+func anyHTTPURLResponse() -> HTTPURLResponse {
+	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+}
+
+func makeHTTPURLResponse(statusCode: Int) -> HTTPURLResponse {
+	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
+}
+
 func anySearchCriteria() -> SearchCriteria {
 	SearchCriteria(
 		destination: nil,
@@ -24,17 +36,6 @@ func anySearchCriteria() -> SearchCriteria {
 		adults: 2,
 		childrenAge: [],
 		roomsQuantity: 1
-	)
-}
-
-func anyDestination() -> Destination {
-	Destination(
-		id: 1,
-		type: "country",
-		name: "any",
-		label: "any label",
-		country: "any",
-		cityName: "any"
 	)
 }
 
@@ -63,6 +64,17 @@ func makeSearchCriteria(
 		adults: adults,
 		childrenAge: childrenAge,
 		roomsQuantity: roomsQuantity
+	)
+}
+
+func anyDestination() -> Destination {
+	Destination(
+		id: 1,
+		type: "country",
+		name: "any",
+		label: "any label",
+		country: "any",
+		cityName: "any"
 	)
 }
 
