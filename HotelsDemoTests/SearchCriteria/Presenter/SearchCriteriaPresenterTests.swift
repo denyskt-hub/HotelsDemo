@@ -93,7 +93,28 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
-	
+
+	func test_presentUpdateDates_displaysCorrectViewModel() {
+		let criteria = makeSearchCriteria(
+			destination: nil,
+			checkInDate: "10.07.2025".date(),
+			checkOutDate: "15.07.2025".date(),
+			adults: 3,
+			childrenAge: [],
+			roomsQuantity: 2
+		)
+		let expectedViewModel = SearchCriteriaModels.Load.ViewModel(
+			destination: nil,
+			dateRange: "10 Jul – 15 Jul",
+			roomGuests: "2 rooms for 3 adults"
+		)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentUpdateDates(response: SearchCriteriaModels.UpdateDates.Response(criteria: criteria))
+
+		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (

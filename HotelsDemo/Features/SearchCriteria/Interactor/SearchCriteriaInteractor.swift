@@ -191,7 +191,7 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	}
 
 	private func presentUpdatedDatesCriteria(_ criteria: SearchCriteria) {
-		presenter?.presentCriteria(response: SearchCriteriaModels.UpdateDates.Response(criteria: criteria))
+		presenter?.presentUpdateDates(response: SearchCriteriaModels.UpdateDates.Response(criteria: criteria))
 	}
 
 	private func presentUpdatedRoomGuestsCriteria(_ criteria: SearchCriteria) {
