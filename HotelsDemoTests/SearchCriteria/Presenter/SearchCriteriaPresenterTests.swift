@@ -29,7 +29,17 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
-	
+
+	func test_presentLoadError_displaysCorrectErrorViewModel() {
+		let errorMessage = "Some error"
+		let expectedViewModel = SearchCriteriaModels.Load.ErrorViewModel(message: errorMessage)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentLoadError(TestError(errorMessage))
+
+		XCTAssertEqual(viewController.messages, [.displayLoadError(expectedViewModel)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -43,9 +53,22 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 	}
 }
 
+struct TestError: Error {
+	let message: String
+
+	init(_ message: String) {
+		self.message = message
+	}
+}
+
+extension TestError: LocalizedError {
+	var errorDescription: String? { message }
+}
+
 final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(SearchCriteriaModels.Load.ViewModel)
+		case displayLoadError(SearchCriteriaModels.Load.ErrorViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -55,7 +78,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	}
 	
 	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel) {
-
+		messages.append(.displayLoadError(viewModel))
 	}
 	
 	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
