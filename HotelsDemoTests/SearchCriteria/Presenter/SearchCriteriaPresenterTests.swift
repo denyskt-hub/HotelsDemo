@@ -40,6 +40,20 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 		XCTAssertEqual(viewController.messages, [.displayLoadError(expectedViewModel)])
 	}
 
+	func test_presentRoomGuests_displaysCorrectViewModel() {
+		let roomGuests = RoomGuests(rooms: 1, adults: 2, childrenAge: [])
+		let expectedViewModel = RoomGuestsPickerModels.ViewModel(
+			rooms: roomGuests.rooms,
+			adults: roomGuests.adults,
+			childrenAge: roomGuests.childrenAge
+		)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
+
+		XCTAssertEqual(viewController.messages, [.displayRoomGuests(expectedViewModel)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -69,6 +83,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(SearchCriteriaModels.Load.ViewModel)
 		case displayLoadError(SearchCriteriaModels.Load.ErrorViewModel)
+		case displayRoomGuests(RoomGuestsPickerModels.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -90,6 +105,6 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	}
 	
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
-
+		messages.append(.displayRoomGuests(viewModel))
 	}
 }

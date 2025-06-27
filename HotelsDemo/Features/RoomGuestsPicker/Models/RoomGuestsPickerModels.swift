@@ -117,10 +117,16 @@ public enum RoomGuestsPickerModels {
 		}
 	}
 
-	public struct ViewModel {
-		let rooms: Int
-		let adults: Int
-		let childrenAge: [Int]
+	public struct ViewModel: Equatable {
+		public let rooms: Int
+		public let adults: Int
+		public let childrenAge: [Int]
+
+		public init(rooms: Int, adults: Int, childrenAge: [Int]) {
+			self.rooms = rooms
+			self.adults = adults
+			self.childrenAge = childrenAge
+		}
 	}
 
 	public struct AgeInputViewModel {
