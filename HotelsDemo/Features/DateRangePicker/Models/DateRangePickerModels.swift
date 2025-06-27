@@ -50,9 +50,14 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public struct ViewModel {
-		let startDate: Date
-		let endDate: Date
+	public struct ViewModel: Equatable {
+		public let startDate: Date
+		public let endDate: Date
+
+		public init(startDate: Date, endDate: Date) {
+			self.startDate = startDate
+			self.endDate = endDate
+		}
 	}
 
 	public struct CalendarData {

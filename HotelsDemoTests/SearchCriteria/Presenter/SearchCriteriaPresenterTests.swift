@@ -40,6 +40,25 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 		XCTAssertEqual(viewController.messages, [.displayLoadError(expectedViewModel)])
 	}
 
+	func test_presentDates_displaysCorrectViewModel() {
+		let checkInDate = "27.06.2025".date()
+		let checkOutDate = "28.06.2025".date()
+		let expectedViewModel = DateRangePickerModels.ViewModel(
+			startDate: checkInDate,
+			endDate: checkOutDate
+		)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentDates(
+			response: SearchCriteriaModels.LoadDates.Response(
+				checkInDate: checkInDate,
+				checkOutDate: checkOutDate
+			)
+		)
+
+		XCTAssertEqual(viewController.messages, [.displayDates(expectedViewModel)])
+	}
+
 	func test_presentRoomGuests_displaysCorrectViewModel() {
 		let roomGuests = RoomGuests(rooms: 1, adults: 2, childrenAge: [])
 		let expectedViewModel = RoomGuestsPickerModels.ViewModel(
@@ -83,6 +102,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(SearchCriteriaModels.Load.ViewModel)
 		case displayLoadError(SearchCriteriaModels.Load.ErrorViewModel)
+		case displayDates(DateRangePickerModels.ViewModel)
 		case displayRoomGuests(RoomGuestsPickerModels.ViewModel)
 	}
 
@@ -101,7 +121,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	}
 	
 	func displayDates(viewModel: DateRangePickerModels.ViewModel) {
-
+		messages.append(.displayDates(viewModel))
 	}
 	
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
