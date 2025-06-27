@@ -25,7 +25,8 @@ public enum APIResponseMapper {
 
 			return apiResponse.data
 		} catch {
-			throw APIError.decoding(error)
+			print(error)
+			throw APIError.decoding
 		}
 	}
 }
