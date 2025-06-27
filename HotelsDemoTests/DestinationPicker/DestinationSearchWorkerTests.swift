@@ -36,6 +36,26 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		wait(for: [exp], timeout: 0.1)
 	}
 
+	func test_search_deliversErrorOnNon200HTTPResponse() {
+		let (sut, client) = makeSUT()
+
+		let exp = expectation(description: "Wait for completion")
+
+		sut.search(query: "any") { result in
+			switch result {
+			case .success:
+				XCTFail("Expected failure, got success instead")
+			case let .failure(error):
+				XCTAssertEqual(error as NSError, HTTPError.unexpectedStatusCode(404) as NSError)
+			}
+			exp.fulfill()
+		}
+
+		client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: 404))))
+
+		wait(for: [exp], timeout: 0.1)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL = anyURL()) -> (sut: DestinationSearchWorker, client: HTTPClientSpy) {
@@ -46,6 +66,18 @@ final class DestinationSearchWorkerTests: XCTestCase {
 			dispatcher: ImmediateDispatcher()
 		)
 		return (sut, client)
+	}
+
+	func anyData() -> Data {
+		Data("any".utf8)
+	}
+
+	func anyHTTPURLResponse() -> HTTPURLResponse {
+		HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+	}
+
+	func makeHTTPURLResponse(statusCode: Int) -> HTTPURLResponse {
+		HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
 	}
 }
 
