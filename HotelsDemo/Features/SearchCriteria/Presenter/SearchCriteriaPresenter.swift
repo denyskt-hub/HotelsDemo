@@ -44,7 +44,7 @@ public final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		presentCriteria(response.criteria)
 	}
 
-	public func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
+	public func presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
 		presentCriteria(response.criteria)
 	}
 

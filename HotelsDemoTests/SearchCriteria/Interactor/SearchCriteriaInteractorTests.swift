@@ -272,7 +272,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		messages.append(.presentUpdateDates(response))
 	}
 	
-	func presentCriteria(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
+	func presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
 	}
 	
