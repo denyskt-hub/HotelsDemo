@@ -32,14 +32,6 @@ public enum SearchCriteriaModels {
 				self.roomGuests = roomGuests
 			}
 		}
-
-		public struct ErrorViewModel: Equatable {
-			public let message: String
-
-			public init(message: String) {
-				self.message = message
-			}
-		}
 	}
 
 	public enum LoadRoomGuests {
@@ -88,10 +80,6 @@ public enum SearchCriteriaModels {
 				self.criteria = criteria
 			}
 		}
-
-		public struct ErrorViewModel {
-			let message: String
-		}
 	}
 
 	public enum UpdateDates {
@@ -133,6 +121,14 @@ public enum SearchCriteriaModels {
 			public init(criteria: SearchCriteria) {
 				self.criteria = criteria
 			}
+		}
+	}
+
+	public struct ErrorViewModel: Equatable {
+		public let message: String
+
+		public init(message: String) {
+			self.message = message
 		}
 	}
 }

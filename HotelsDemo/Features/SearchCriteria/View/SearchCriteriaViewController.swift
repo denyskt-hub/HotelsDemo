@@ -57,11 +57,11 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		rootView.roomGuestsButton.setTitle(viewModel.roomGuests, for: .normal)
 	}
 
-	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel) {
+	func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
 		displayError(message: viewModel.message)
 	}
 
-	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
+	func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
 		displayError(message: viewModel.message)
 	}
 

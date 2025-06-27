@@ -32,12 +32,22 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 
 	func test_presentLoadError_displaysCorrectErrorViewModel() {
 		let errorMessage = "Some error"
-		let expectedViewModel = SearchCriteriaModels.Load.ErrorViewModel(message: errorMessage)
+		let expectedViewModel = SearchCriteriaModels.ErrorViewModel(message: errorMessage)
 		let (sut, viewController) = makeSUT()
 
 		sut.presentLoadError(TestError(errorMessage))
 
 		XCTAssertEqual(viewController.messages, [.displayLoadError(expectedViewModel)])
+	}
+
+	func test_presentUpdateError_displaysCorrectErrorViewModel() {
+		let errorMessage = "Some error"
+		let expectedViewModel = SearchCriteriaModels.ErrorViewModel(message: errorMessage)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentUpdateError(TestError(errorMessage))
+
+		XCTAssertEqual(viewController.messages, [.displayUpdateError(expectedViewModel)])
 	}
 
 	func test_presentDates_displaysCorrectViewModel() {
@@ -164,7 +174,8 @@ extension TestError: LocalizedError {
 final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(SearchCriteriaModels.Load.ViewModel)
-		case displayLoadError(SearchCriteriaModels.Load.ErrorViewModel)
+		case displayLoadError(SearchCriteriaModels.ErrorViewModel)
+		case displayUpdateError(SearchCriteriaModels.ErrorViewModel)
 		case displayDates(DateRangePickerModels.ViewModel)
 		case displayRoomGuests(RoomGuestsPickerModels.ViewModel)
 	}
@@ -175,12 +186,12 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 		messages.append(.displayCriteria(viewModel))
 	}
 
-	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel) {
+	func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
 		messages.append(.displayLoadError(viewModel))
 	}
 
-	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel) {
-
+	func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
+		messages.append(.displayUpdateError(viewModel))
 	}
 
 	func displayDates(viewModel: DateRangePickerModels.ViewModel) {

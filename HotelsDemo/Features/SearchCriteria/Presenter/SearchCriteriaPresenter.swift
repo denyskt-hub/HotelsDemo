@@ -24,7 +24,7 @@ public final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 	}
 
 	public func presentLoadError(_ error: Error) {
-		let viewModel = SearchCriteriaModels.Load.ErrorViewModel(message: error.localizedDescription)
+		let viewModel = SearchCriteriaModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displayLoadError(viewModel: viewModel)
 	}
 
@@ -49,7 +49,7 @@ public final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 	}
 
 	public func presentUpdateError(_ error: Error) {
-		let viewModel = SearchCriteriaModels.UpdateDestination.ErrorViewModel(message: error.localizedDescription)
+		let viewModel = SearchCriteriaModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displayUpdateError(viewModel: viewModel)
 	}
 
