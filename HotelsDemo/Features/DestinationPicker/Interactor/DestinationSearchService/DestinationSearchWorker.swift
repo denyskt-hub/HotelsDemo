@@ -7,12 +7,12 @@
 
 import Foundation
 
-final class DestinationSearchWorker: DestinationSearchService {
+public final class DestinationSearchWorker: DestinationSearchService {
 	private let url: URL
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
-	init(
+	public init(
 		url: URL,
 		client: HTTPClient,
 		dispatcher: Dispatcher
@@ -22,7 +22,7 @@ final class DestinationSearchWorker: DestinationSearchService {
 		self.dispatcher = dispatcher
 	}
 
-	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
+	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
 		let request = makeRequest(url: url, query: query)
 
 		client.perform(request) { [weak self] result in

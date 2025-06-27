@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DestinationSearchService {
+public protocol DestinationSearchService {
 	typealias Result = Swift.Result<[Destination], Error>
 
 	func search(query: String, completion: @escaping (Result) -> Void)

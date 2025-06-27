@@ -8,6 +8,10 @@
 import Foundation
 import HotelsDemo
 
+func anyURL() -> URL {
+	URL(string: "https://any.com")!
+}
+
 func anyNSError() -> NSError {
 	NSError(domain: "any", code: 1)
 }
