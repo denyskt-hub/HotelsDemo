@@ -17,6 +17,9 @@ extension String {
 		formatter.dateFormat = format
 		formatter.timeZone = timeZone
 		formatter.locale = locale
-		return formatter.date(from: self)!
+		guard let date = formatter.date(from: self) else {
+			preconditionFailure("Invalid date string: \(self)")
+		}
+		return date
 	}
 }

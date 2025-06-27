@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SearchCriteriaDisplayLogic: AnyObject {
+public protocol SearchCriteriaDisplayLogic: AnyObject {
 	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel)
 	func displayLoadError(viewModel: SearchCriteriaModels.Load.ErrorViewModel)
 	func displayUpdateError(viewModel: SearchCriteriaModels.UpdateDestination.ErrorViewModel)

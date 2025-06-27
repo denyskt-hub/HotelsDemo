@@ -259,7 +259,7 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 
 	private(set) var messages = [Message]()
 
-	func presentCriteria(response: SearchCriteriaModels.Load.Response) {
+	func presentLoadCriteria(response: SearchCriteriaModels.Load.Response) {
 		messages.append(.presentCriteria(response))
 	}
 	

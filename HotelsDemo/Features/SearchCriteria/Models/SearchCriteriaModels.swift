@@ -21,10 +21,16 @@ public enum SearchCriteriaModels {
 			}
 		}
 
-		public struct ViewModel {
-			let destination: String?
-			let dateRange: String
-			let roomGuests: String
+		public struct ViewModel: Equatable {
+			public let destination: String?
+			public let dateRange: String
+			public let roomGuests: String
+
+			public init(destination: String?, dateRange: String, roomGuests: String) {
+				self.destination = destination
+				self.dateRange = dateRange
+				self.roomGuests = roomGuests
+			}
 		}
 
 		public struct ErrorViewModel {
@@ -77,12 +83,6 @@ public enum SearchCriteriaModels {
 			public init(criteria: SearchCriteria) {
 				self.criteria = criteria
 			}
-		}
-
-		public struct ViewModel {
-			let destination: String?
-			let dateRange: String
-			let roomGuests: String
 		}
 
 		public struct ErrorViewModel {

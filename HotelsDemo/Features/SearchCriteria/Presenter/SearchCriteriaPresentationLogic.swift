@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol SearchCriteriaPresentationLogic {
-	func presentCriteria(response: SearchCriteriaModels.Load.Response)
+	func presentLoadCriteria(response: SearchCriteriaModels.Load.Response)
 	func presentLoadError(_ error: Error)
 
 	func presentDates(response: SearchCriteriaModels.LoadDates.Response)

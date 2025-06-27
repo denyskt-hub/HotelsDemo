@@ -166,7 +166,7 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 	}
 
 	private func presentLoadedCriteria(_ criteria: SearchCriteria) {
-		presenter?.presentCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
+		presenter?.presentLoadCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
 	}
 
 	private func presentLoadError(_ error: Error) {

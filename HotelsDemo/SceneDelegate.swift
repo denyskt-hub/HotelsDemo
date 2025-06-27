@@ -63,7 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
 			cache: searchCriteriaStore
 		)
-		let presenter = SearchCriteriaPresenter()
+		let presenter = SearchCriteriaPresenter(calendar: calendar)
 		let router = SearchCriteriaRouter(calendar: calendar)
 
 		viewController.interactor = interactor
