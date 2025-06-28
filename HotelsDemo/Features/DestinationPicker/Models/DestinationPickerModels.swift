@@ -36,7 +36,11 @@ public enum DestinationPickerModels {
 
 	public enum Select {
 		public struct Request {
-			let index: Int
+			public let index: Int
+
+			public init(index: Int) {
+				self.index = index
+			}
 		}
 
 		public struct Response: Equatable {
