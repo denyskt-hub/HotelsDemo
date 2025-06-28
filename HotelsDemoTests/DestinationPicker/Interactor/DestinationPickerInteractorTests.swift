@@ -15,6 +15,16 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		XCTAssertTrue(service.queries.isEmpty)
 	}
 
+	func test_searchDestinations_presentSearchErrorOnServiceError() {
+		let serviceError = anyNSError()
+		let (sut, service, presenter) = makeSUT()
+
+		sut.searchDestinations(request: .init(query: "any"))
+		service.completeWithResult(.failure(serviceError))
+
+		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
