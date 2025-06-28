@@ -10,11 +10,19 @@ import Foundation
 public enum DestinationPickerModels {
 	public enum Search {
 		public struct Request {
-			let query: String
+			public let query: String
+
+			public init(query: String) {
+				self.query = query
+			}
 		}
 
-		public struct Response {
-			let destinations: [Destination]
+		public struct Response: Equatable {
+			public let destinations: [Destination]
+
+			public init(destinations: [Destination]) {
+				self.destinations = destinations
+			}
 		}
 
 		public struct ViewModel {
@@ -31,8 +39,12 @@ public enum DestinationPickerModels {
 			let index: Int
 		}
 
-		public struct Response {
-			let selected: Destination
+		public struct Response: Equatable {
+			public let selected: Destination
+
+			public init(selected: Destination) {
+				self.selected = selected
+			}
 		}
 
 		public struct ViewModel {

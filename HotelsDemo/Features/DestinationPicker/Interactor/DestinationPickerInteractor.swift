@@ -9,13 +9,17 @@ import Foundation
 
 public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
-	private let debouncer = Debouncer(delay: 0.5)
+	private let debouncer: Debouncer
 	private var destinations = [Destination]()
 
 	public var presenter: DestinationPickerPresentationLogic?
 
-	public init(worker: DestinationSearchService) {
+	public init(
+		worker: DestinationSearchService,
+		debouncer: Debouncer
+	) {
 		self.worker = worker
+		self.debouncer = debouncer
 	}
 
 	public func searchDestinations(request: DestinationPickerModels.Search.Request) {

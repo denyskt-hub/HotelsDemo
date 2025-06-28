@@ -23,7 +23,10 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 			client: URLSessionHTTPClient(),
 			dispatcher: MainQueueDispatcher()
 		)
-		let interactor = DestinationPickerInteractor(worker: worker)
+		let interactor = DestinationPickerInteractor(
+			worker: worker,
+			debouncer: DefaultDebouncer(delay: 0.5)
+		)
 		let presenter = DestinationPickerPresenter()
 
 		destinationVC.interactor = interactor
