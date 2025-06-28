@@ -33,8 +33,12 @@ public enum DestinationPickerModels {
 			}
 		}
 
-		public struct ErrorViewModel {
-			let message: String
+		public struct ErrorViewModel: Equatable {
+			public let message: String
+
+			public init(message: String) {
+				self.message = message
+			}
 		}
 	}
 
