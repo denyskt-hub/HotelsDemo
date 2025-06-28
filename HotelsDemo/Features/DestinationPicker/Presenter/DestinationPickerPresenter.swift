@@ -7,10 +7,12 @@
 
 import Foundation
 
-final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
-	weak var viewController: DestinationPickerDisplayLogic?
+public final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
+	public weak var viewController: DestinationPickerDisplayLogic?
 
-	func presentDestinations(response: DestinationPickerModels.Search.Response) {
+	public init() {}
+
+	public func presentDestinations(response: DestinationPickerModels.Search.Response) {
 		let viewModel = DestinationPickerModels.Search.ViewModel(
 			destinations: response.destinations.map { $0.label }
 		)
@@ -18,12 +20,12 @@ final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 		viewController?.hideSearchError()
 	}
 
-	func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {
+	public func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {
 		let viewModel = DestinationPickerModels.Select.ViewModel(selected: response.selected)
 		viewController?.displaySelectedDestination(viewModel: viewModel)
 	}
 
-	func presentSearchError(_ error: any Error) {
+	public func presentSearchError(_ error: Error) {
 		let viewModel = DestinationPickerModels.Search.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displaySearchError(viewModel: viewModel)
 	}

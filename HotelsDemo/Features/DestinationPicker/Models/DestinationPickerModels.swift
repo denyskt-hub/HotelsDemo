@@ -25,8 +25,12 @@ public enum DestinationPickerModels {
 			}
 		}
 
-		public struct ViewModel {
-			let destinations: [String]
+		public struct ViewModel: Equatable {
+			public let destinations: [String]
+
+			public init(destinations: [String]) {
+				self.destinations = destinations
+			}
 		}
 
 		public struct ErrorViewModel {
