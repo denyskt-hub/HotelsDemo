@@ -9,8 +9,8 @@ import XCTest
 import HotelsDemo
 
 final class DefaultDebouncerTests: XCTestCase {
-	func test_debounce_callsActionAfterDelay() {
-		let sut = makeSUT(delay: 0.05)
+	func test_execute_callsActionAfterDelay() {
+		let sut = makeSUT(delay: 0.01)
 
 		let exp = expectation(description: "Wait for debounce")
 
@@ -20,8 +20,27 @@ final class DefaultDebouncerTests: XCTestCase {
 			exp.fulfill()
 		}
 
-		wait(for: [exp], timeout: 0.2)
+		wait(for: [exp], timeout: 0.1)
 		XCTAssertTrue(called)
+	}
+
+	func test_execute_cancelsPreviousCall() {
+		let sut = makeSUT(delay: 0.01)
+
+		let exp = expectation(description: "Wait for debounce")
+
+		var callsCount = 0
+		sut.execute {
+			callsCount += 1
+		}
+
+		sut.execute {
+			callsCount += 1
+			exp.fulfill()
+		}
+
+		wait(for: [exp], timeout: 0.1)
+		XCTAssertEqual(callsCount, 1)
 	}
 
 	// MARK: - Helpers
