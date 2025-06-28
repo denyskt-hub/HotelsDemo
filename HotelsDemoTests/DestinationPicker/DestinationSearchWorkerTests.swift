@@ -48,6 +48,77 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		}
 	}
 
+	func test_search_deliversResultOn200HTTPResponseWithValidJSON() throws {
+		let item1 = makeDestinationJSON(
+			id: 929,
+			type: "district",
+			name: "Manhattan",
+			label: "Manhattan, New York, New York State, United States",
+			country: "United States",
+			cityName: "New York"
+		)
+		let item2 = makeDestinationJSON(
+			id: 20079942,
+			type: "city",
+			name: "Manchester",
+			label: "Manchester, New Hampshire, United States",
+			country: "United States",
+			cityName: "Manchester"
+		)
+		let destinationsJSON = makeAPIResponseJSON(data: [item1.json, item2.json])
+		let data = makeJSONData(destinationsJSON)
+		let (sut, client) = makeSUT()
+
+		expect(sut, toCompleteWith: .success([item1.model, item2.model]), when: {
+			client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))))
+		})
+	}
+
+	private func makeDestinationJSON(
+		id: Int,
+		type: String,
+		name: String,
+		label: String,
+		country: String,
+		cityName: String
+	) -> (model: Destination, json: [String: Any]) {
+		let model = Destination(
+			id: id,
+			type: type,
+			name: name,
+			label: label,
+			country: country,
+			cityName: cityName
+		)
+
+		let json = [
+			"dest_id": "\(id)",
+			"dest_type": type,
+			"name": name,
+			"label": label,
+			"country": country,
+			"city_name": cityName
+		] as [String: Any]
+
+		return (model, json)
+	}
+
+	private func makeAPIResponseJSON(
+		status: Bool = true,
+		message: String = "success",
+		data: [[String: Any]]
+	) -> [String: Any] {
+		[
+			"status": status,
+			"message": message,
+			"data": data
+		]
+	}
+
+	private func makeJSONData(_ json: [String: Any]) -> Data {
+		try! JSONSerialization.data(withJSONObject: json)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL = anyURL()) -> (sut: DestinationSearchWorker, client: HTTPClientSpy) {
