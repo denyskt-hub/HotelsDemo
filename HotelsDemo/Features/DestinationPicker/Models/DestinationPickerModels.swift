@@ -7,35 +7,35 @@
 
 import Foundation
 
-enum DestinationPickerModels {
-	enum Search {
-		struct Request {
+public enum DestinationPickerModels {
+	public enum Search {
+		public struct Request {
 			let query: String
 		}
 
-		struct Response {
+		public struct Response {
 			let destinations: [Destination]
 		}
 
-		struct ViewModel {
+		public struct ViewModel {
 			let destinations: [String]
 		}
 
-		struct ErrorViewModel {
+		public struct ErrorViewModel {
 			let message: String
 		}
 	}
 
-	enum Select {
-		struct Request {
+	public enum Select {
+		public struct Request {
 			let index: Int
 		}
 
-		struct Response {
+		public struct Response {
 			let selected: Destination
 		}
 
-		struct ViewModel {
+		public struct ViewModel {
 			let selected: Destination
 		}
 	}
