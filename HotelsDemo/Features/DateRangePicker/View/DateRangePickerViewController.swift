@@ -11,12 +11,6 @@ public protocol DataRangePickerDelegate: AnyObject {
 	func didSelectDateRange(startDate: Date, endDate: Date)
 }
 
-public protocol DateRangePickerDisplayLogic: AnyObject {
-	func display(viewModel: DateRangePickerModels.Load.ViewModel)
-	func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel)
-	func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel)
-}
-
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
 	private let rootView = DateRangePickerRootView()
 	private var viewModel: DateRangePickerModels.CalendarViewModel?

@@ -7,11 +7,7 @@
 
 import Foundation
 
-public protocol DateRangePickerPresentationLogic {
-	func present(response: DateRangePickerModels.Load.Response)
-	func presentSelectDate(response: DateRangePickerModels.DateSelection.Response)
-	func presentSelectedDateRange(response: DateRangePickerModels.Select.Response)
-}
+
 
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 	private let dateFormatter: CalendarDateFormatter

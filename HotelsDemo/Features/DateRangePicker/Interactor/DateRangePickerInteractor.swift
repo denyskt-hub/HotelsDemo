@@ -7,12 +7,6 @@
 
 import Foundation
 
-public protocol DateRangePickerBusinessLogic {
-	func load(request: DateRangePickerModels.Load.Request)
-	func didSelectDate(request: DateRangePickerModels.DateSelection.Request)
-	func selectDateRange(request: DateRangePickerModels.Select.Request)
-}
-
 public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	private var dateRangeSelection: DateRangeSelection
 	private let calendar: Calendar
