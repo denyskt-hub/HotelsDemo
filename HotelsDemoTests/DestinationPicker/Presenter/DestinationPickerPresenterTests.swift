@@ -15,7 +15,17 @@ final class DestinationPickerPresenterTests: XCTestCase {
 
 		sut.presentDestinations(response: .init(destinations: [destination]))
 
-		XCTAssertEqual(viewController.messages, [.displayDestinations(.init(destinations: ["Mexico City"]))])
+		XCTAssertTrue(viewController.messages.contains(where: {
+			$0 == .displayDestinations(.init(destinations: ["Mexico City"]))
+		}))
+	}
+
+	func test_presentDestinations_hideSearchError() {
+		let (sut, viewController) = makeSUT()
+
+		sut.presentDestinations(response: .init(destinations: [anyDestination()]))
+
+		XCTAssertTrue(viewController.messages.contains(where: { $0 == .hideSearchError }))
 	}
 
 	func test_presentSelectedDestination_displaySelectedDestination() {
@@ -54,6 +64,7 @@ final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 		case displayDestinations(DestinationPickerModels.Search.ViewModel)
 		case displaySelectedDestination(DestinationPickerModels.Select.ViewModel)
 		case displaySearchError(DestinationPickerModels.Search.ErrorViewModel)
+		case hideSearchError
 	}
 
 	private(set) var messages = [Message]()
@@ -71,6 +82,6 @@ final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 	}
 	
 	func hideSearchError() {
-
+		messages.append(.hideSearchError)
 	}
 }
