@@ -25,6 +25,16 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
 	}
 
+	func test_searchDestinations_presentDestinationsOnServiceSuccess() {
+		let destinations = [anyDestination()]
+		let (sut, service, presenter) = makeSUT()
+
+		sut.searchDestinations(request: .init(query: "any"))
+		service.completeWithResult(.success(destinations))
+
+		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
