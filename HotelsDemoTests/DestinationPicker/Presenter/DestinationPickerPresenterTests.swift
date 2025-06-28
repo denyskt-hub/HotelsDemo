@@ -17,7 +17,16 @@ final class DestinationPickerPresenterTests: XCTestCase {
 
 		XCTAssertEqual(viewController.messages, [.displayDestinations(.init(destinations: ["Mexico City"]))])
 	}
-	
+
+	func test_presentSelectedDestination_displaySelectedDestination() {
+		let destination = makeDestination(label: "Mexico City")
+		let (sut, viewController) = makeSUT()
+
+		sut.presentSelectedDestination(response: .init(selected: destination))
+
+		XCTAssertEqual(viewController.messages, [.displaySelectedDestination(.init(selected: destination))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -34,6 +43,7 @@ final class DestinationPickerPresenterTests: XCTestCase {
 final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 	enum Message: Equatable {
 		case displayDestinations(DestinationPickerModels.Search.ViewModel)
+		case displaySelectedDestination(DestinationPickerModels.Select.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -43,7 +53,7 @@ final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 	}
 	
 	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel) {
-
+		messages.append(.displaySelectedDestination(viewModel))
 	}
 	
 	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel) {

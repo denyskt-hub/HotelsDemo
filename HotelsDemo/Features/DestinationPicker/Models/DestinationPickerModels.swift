@@ -55,8 +55,12 @@ public enum DestinationPickerModels {
 			}
 		}
 
-		public struct ViewModel {
-			let selected: Destination
+		public struct ViewModel: Equatable {
+			public let selected: Destination
+
+			public init(selected: Destination) {
+				self.selected = selected
+			}
 		}
 	}
 }
