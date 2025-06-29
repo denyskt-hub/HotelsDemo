@@ -47,6 +47,20 @@ final class DataRangePickerPresenterTests: XCTestCase {
 		XCTAssertEqual(viewController.messages, [.displaySelectDate(expectedViewModel)])
 	}
 
+	func test_presentSelectedDateRange_displaysSelectedDateRange() {
+		let startDate = "29.06.2025".date()
+		let endDate = "30.06.2025".date()
+		let expectedViewModel = DateRangePickerModels.Select.ViewModel(
+			startDate: startDate,
+			endDate: endDate
+		)
+		let (sut, viewController) = makeSUT()
+
+		sut.presentSelectedDateRange(response: .init(startDate: startDate, endDate: endDate))
+
+		XCTAssertEqual(viewController.messages, [.displaySelectedDateRange(expectedViewModel)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
