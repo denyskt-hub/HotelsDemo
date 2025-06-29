@@ -65,35 +65,3 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 		)
 	}
 }
-
-struct DateRangeSelection {
-	let startDate: Date?
-	let endDate: Date?
-
-	init(startDate: Date? = nil, endDate: Date? = nil) {
-		self.startDate = startDate
-		self.endDate = endDate
-	}
-
-	func selecting(_ selectedDate: Date) -> DateRangeSelection {
-		switch (startDate, endDate) {
-		case let (start?, nil) where selectedDate < start:
-			return DateRangeSelection(startDate: selectedDate, endDate: nil)
-
-		case let (start?, nil) where selectedDate == start:
-			return DateRangeSelection(startDate: nil, endDate: nil)
-
-		case let (start?, nil) where selectedDate > start:
-			return DateRangeSelection(startDate: start, endDate: selectedDate)
-
-		default:
-			return DateRangeSelection(startDate: selectedDate, endDate: nil)
-		}
-	}
-}
-
-extension DateRangeSelection {
-	var canApply: Bool {
-		startDate != nil && endDate != nil
-	}
-}
