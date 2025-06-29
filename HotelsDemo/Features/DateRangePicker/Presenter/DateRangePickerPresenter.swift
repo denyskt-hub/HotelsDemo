@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 	private let dateFormatter: CalendarDateFormatter
 

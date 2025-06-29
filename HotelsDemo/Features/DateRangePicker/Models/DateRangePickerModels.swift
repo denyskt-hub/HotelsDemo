@@ -9,9 +9,11 @@ import Foundation
 
 public enum DateRangePickerModels {
 	public enum Load {
-		public struct Request {}
+		public struct Request {
+			public init() {}
+		}
 
-		public struct Response {
+		public struct Response: Equatable {
 			public let calendar: CalendarData
 
 			public init(calendar: CalendarData) {
