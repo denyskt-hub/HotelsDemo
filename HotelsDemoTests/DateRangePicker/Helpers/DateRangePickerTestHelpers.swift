@@ -8,13 +8,13 @@
 import Foundation
 import HotelsDemo
 
-func weekdays() -> [String] {
+func anyWeekdays() -> [String] {
 	["S", "M", "T", "W", "T", "F", "S"]
 }
 
 func anyCalendarData() -> DateRangePickerModels.CalendarData {
 	.init(
-		weekdays: weekdays(),
+		weekdays: anyWeekdays(),
 		sections: [anyCalendarMonth()]
 	)
 }
