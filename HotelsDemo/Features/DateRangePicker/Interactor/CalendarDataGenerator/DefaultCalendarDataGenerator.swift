@@ -8,13 +8,16 @@
 import Foundation
 
 public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
+	private let monthsCount: Int
 	private let calendar: Calendar
 	private let currentDate: () -> Date
 
 	public init(
+		monthsCount: Int = 12,
 		calendar: Calendar,
 		currentDate: @escaping () -> Date
 	) {
+		self.monthsCount = monthsCount
 		self.calendar = calendar
 		self.currentDate = currentDate
 	}
@@ -26,7 +29,8 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		.init(
 			weekdays: calendar.weekdaySymbols,
 			sections: generateSections(
-				from: currentDate(),
+				monthsCount: monthsCount,
+				currentDate: currentDate(),
 				selectedStartDate: selectedStartDate,
 				selectedEndDate: selectedEndDate,
 				calendar: calendar
@@ -35,14 +39,15 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 	}
 
 	private func generateSections(
-		from date: Date,
+		monthsCount: Int,
+		currentDate: Date,
 		selectedStartDate: Date?,
 		selectedEndDate: Date?,
 		calendar: Calendar
 	) -> [DateRangePickerModels.CalendarMonth] {
-		let start = date.firstDateOfMonth(calendar: calendar)
+		let start = currentDate.firstDateOfMonth(calendar: calendar)
 		let end = start
-			.adding(months: 12, calendar: calendar)
+			.adding(months: monthsCount, calendar: calendar)
 			.adding(days: -1, calendar: calendar)
 
 		let months = monthsBetween(
@@ -56,6 +61,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 				month: $0,
 				dates: allMonthDates(
 					start: $0,
+					currentDate: currentDate,
 					selectedStartDate: selectedStartDate,
 					selectedEndDate: selectedEndDate,
 					calendar: calendar
@@ -80,8 +86,9 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		return result
 	}
 
-	func allMonthDates(
+	private func allMonthDates(
 		start: Date,
+		currentDate: Date,
 		selectedStartDate: Date?,
 		selectedEndDate: Date?,
 		calendar: Calendar
@@ -97,7 +104,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 			.adding(months: 1, calendar: calendar)
 			.adding(days: -1, calendar: calendar)
 
-		let now = calendar.startOfDay(for: .now)
+		let today = calendar.startOfDay(for: currentDate)
 
 		while current <= end {
 			let isSelected = current == selectedStartDate || current == selectedEndDate
@@ -106,8 +113,8 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 			result.append(
 				.init(
 					date: current,
-					isToday: current == now,
-					isEnabled: current >= now,
+					isToday: current == today,
+					isEnabled: current >= today,
 					isSelected: isSelected,
 					isInRange: isInRange
 				)
