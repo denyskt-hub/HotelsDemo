@@ -40,8 +40,8 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
 		let dateRangeVC = DateRangePickerViewController()
 		let interactor = DateRangePickerInteractor(
-					selectedStartDate: viewModel.startDate,
-					selectedEndDate: viewModel.endDate,
+			selectedStartDate: viewModel.startDate,
+			selectedEndDate: viewModel.endDate,
 			generator: DefaultCalendarDataGenerator(
 				calendar: calendar,
 				currentDate: Date.init

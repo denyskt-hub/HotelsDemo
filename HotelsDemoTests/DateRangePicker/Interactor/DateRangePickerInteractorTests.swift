@@ -10,7 +10,7 @@ import HotelsDemo
 
 final class DateRangePickerInteractorTests: XCTestCase {
 	func test_load_presentCalendarData() {
-		let calendarData = anyCalendarDate()
+		let calendarData = anyCalendarData()
 		let expectedResponse = DateRangePickerModels.Load.Response(
 			calendar: calendarData
 		)
@@ -22,7 +22,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 	}
 
 	func test_didSelectDate_presentSelectDate() {
-		let calendarData = anyCalendarDate()
+		let calendarData = anyCalendarData()
 		let expectedResponse = DateRangePickerModels.DateSelection.Response(
 			calendar: calendarData,
 			canApply: false
@@ -35,7 +35,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 	}
 
 	func test_selectDateRange_presentSelectedDateRange() {
-		let calendarData = anyCalendarDate()
+		let calendarData = anyCalendarData()
 		let selectedStartDate = "29.06.2025".date()
 		let selectedEndDate = "30.06.2025".date()
 		let expectedResponse = DateRangePickerModels.Select.Response(
@@ -73,24 +73,6 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		)
 		sut.presenter = presenter
 		return (sut, generator, presenter)
-	}
-
-	private func anyCalendarDate() -> DateRangePickerModels.CalendarData {
-		.init(
-			weekdays: weekdays(),
-			sections: [anyCalendarMonth()]
-		)
-	}
-
-	private func weekdays() -> [String] {
-		["S", "M", "T", "W", "T", "F", "S"]
-	}
-
-	private func anyCalendarMonth() -> DateRangePickerModels.CalendarMonth {
-		.init(
-			month: "01.06.2025".date(),
-			dates: [.init(date: "01.06.2025".date())]
-		)
 	}
 }
 

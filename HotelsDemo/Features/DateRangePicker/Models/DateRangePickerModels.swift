@@ -21,7 +21,7 @@ public enum DateRangePickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let calendar: CalendarViewModel
 
 			public init(calendar: CalendarViewModel) {
@@ -49,9 +49,14 @@ public enum DateRangePickerModels {
 			}
 		}
 
-		public struct ViewModel {
-			let calendar: CalendarViewModel
-			let isApplyEnabled: Bool
+		public struct ViewModel: Equatable {
+			public let calendar: CalendarViewModel
+			public let isApplyEnabled: Bool
+
+			public init(calendar: CalendarViewModel, isApplyEnabled: Bool) {
+				self.calendar = calendar
+				self.isApplyEnabled = isApplyEnabled
+			}
 		}
 	}
 
@@ -70,7 +75,7 @@ public enum DateRangePickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let startDate: Date
 			public let endDate: Date
 
@@ -133,29 +138,57 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public struct CalendarViewModel {
-		let weekdays: [String]
-		let sections: [CalendarMonthViewModel]
+	public struct CalendarViewModel: Equatable {
+		public let weekdays: [String]
+		public let sections: [CalendarMonthViewModel]
+
+		public init(weekdays: [String], sections: [CalendarMonthViewModel]) {
+			self.weekdays = weekdays
+			self.sections = sections
+		}
 	}
 
-	public struct CalendarMonthViewModel {
-		let title: String
-		let dates: [CalendarDateViewModel]
+	public struct CalendarMonthViewModel: Equatable {
+		public let title: String
+		public let dates: [CalendarDateViewModel]
+
+		public init(title: String, dates: [CalendarDateViewModel]) {
+			self.title = title
+			self.dates = dates
+		}
 	}
 
-	public enum CalendarDateID: Hashable{
+	public enum CalendarDateID: Hashable {
 		case date(Date)
 		case placeholder(UUID)
 	}
 
 	public struct CalendarDateViewModel {
-		let id: CalendarDateID
-		let date: Date?
-		let title: String?
-		let isToday: Bool
-		let isEnabled: Bool
-		let isSelected: Bool
-		let isInRange: Bool
+		public let id: CalendarDateID
+		public let date: Date?
+		public let title: String?
+		public let isToday: Bool
+		public let isEnabled: Bool
+		public let isSelected: Bool
+		public let isInRange: Bool
+
+		public init(
+			id: CalendarDateID,
+			date: Date?,
+			title: String?,
+			isToday: Bool = false,
+			isEnabled: Bool = true,
+			isSelected: Bool = false,
+			isInRange: Bool = false
+		) {
+			self.id = id
+			self.date = date
+			self.title = title
+			self.isToday = isToday
+			self.isEnabled = isEnabled
+			self.isSelected = isSelected
+			self.isInRange = isInRange
+		}
 	}
 }
 
