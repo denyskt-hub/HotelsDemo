@@ -32,12 +32,21 @@ public enum DateRangePickerModels {
 
 	public enum DateSelection {
 		public struct Request {
-			let date: Date
+			public let date: Date
+
+			public init(date: Date) {
+				self.date = date
+			}
 		}
 
-		public struct Response {
-			let calendar: CalendarData
-			let canApply: Bool
+		public struct Response: Equatable {
+			public let calendar: CalendarData
+			public let canApply: Bool
+
+			public init(calendar: CalendarData, canApply: Bool) {
+				self.calendar = calendar
+				self.canApply = canApply
+			}
 		}
 
 		public struct ViewModel {
