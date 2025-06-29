@@ -34,9 +34,32 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentSelectDate(expectedResponse)])
 	}
 
+	func test_selectDateRange_presentSelectedDateRange() {
+		let calendarData = anyCalendarDate()
+		let selectedStartDate = "29.06.2025".date()
+		let selectedEndDate = "30.06.2025".date()
+		let expectedResponse = DateRangePickerModels.Select.Response(
+			startDate: selectedStartDate,
+			endDate: selectedEndDate
+		)
+		let (sut, _, presenter) = makeSUT(
+			stub: calendarData,
+			selectedStartDate: selectedStartDate,
+			selectedEndDate: selectedEndDate
+		)
+
+		sut.selectDateRange(request: .init())
+
+		XCTAssertEqual(presenter.messages, [.presentSelectedDateRange(expectedResponse)])
+	}
+
 	// MARK: - Helpers
 
-	private func makeSUT(stub: DateRangePickerModels.CalendarData) -> (
+	private func makeSUT(
+		stub: DateRangePickerModels.CalendarData,
+		selectedStartDate: Date = .now,
+		selectedEndDate: Date = .now,
+	) -> (
 		sut: DateRangePickerInteractor,
 		generator: CalendarDataGeneratorStub,
 		presenter: DateRangePickerPresentationLogicSpy
@@ -44,8 +67,8 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		let generator = CalendarDataGeneratorStub(stub: stub)
 		let presenter = DateRangePickerPresentationLogicSpy()
 		let sut = DateRangePickerInteractor(
-			startDate: .now,
-			endDate: .now,
+			selectedStartDate: selectedStartDate,
+			selectedEndDate: selectedEndDate,
 			generator: generator
 		)
 		sut.presenter = presenter
@@ -90,6 +113,7 @@ final class DateRangePickerPresentationLogicSpy: DateRangePickerPresentationLogi
 	enum Message: Equatable {
 		case present(DateRangePickerModels.Load.Response)
 		case presentSelectDate(DateRangePickerModels.DateSelection.Response)
+		case presentSelectedDateRange(DateRangePickerModels.Select.Response)
 	}
 
 	private(set) var messages = [Message]()
@@ -103,6 +127,6 @@ final class DateRangePickerPresentationLogicSpy: DateRangePickerPresentationLogi
 	}
 
 	func presentSelectedDateRange(response: DateRangePickerModels.Select.Response) {
-
+		messages.append(.presentSelectedDateRange(response))
 	}
 }

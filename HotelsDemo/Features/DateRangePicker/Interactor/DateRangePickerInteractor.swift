@@ -14,11 +14,14 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	public var presenter: DateRangePickerPresentationLogic?
 
 	public init(
-		startDate: Date,
-		endDate: Date,
+		selectedStartDate: Date,
+		selectedEndDate: Date,
 		generator: CalendarDataGenerator
 	) {
-		self.dateRangeSelection = DateRangeSelection(startDate: startDate, endDate: endDate)
+		self.dateRangeSelection = DateRangeSelection(
+			startDate: selectedStartDate,
+			endDate: selectedEndDate
+		)
 		self.generator = generator
 	}
 

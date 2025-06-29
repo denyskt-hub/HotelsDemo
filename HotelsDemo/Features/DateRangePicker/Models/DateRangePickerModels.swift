@@ -56,16 +56,28 @@ public enum DateRangePickerModels {
 	}
 
 	public enum Select {
-		public struct Request {}
+		public struct Request {
+			public init() {}
+		}
 
-		public struct Response {
-			let startDate: Date
-			let endDate: Date
+		public struct Response: Equatable {
+			public let startDate: Date
+			public let endDate: Date
+
+			public init(startDate: Date, endDate: Date) {
+				self.startDate = startDate
+				self.endDate = endDate
+			}
 		}
 
 		public struct ViewModel {
-			let startDate: Date
-			let endDate: Date
+			public let startDate: Date
+			public let endDate: Date
+
+			public init(startDate: Date, endDate: Date) {
+				self.startDate = startDate
+				self.endDate = endDate
+			}
 		}
 	}
 
