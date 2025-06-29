@@ -12,11 +12,19 @@ public enum DateRangePickerModels {
 		public struct Request {}
 
 		public struct Response {
-			let calendar: CalendarData
+			public let calendar: CalendarData
+
+			public init(calendar: CalendarData) {
+				self.calendar = calendar
+			}
 		}
 
 		public struct ViewModel {
-			let calendar: CalendarViewModel
+			public let calendar: CalendarViewModel
+
+			public init(calendar: CalendarViewModel) {
+				self.calendar = calendar
+			}
 		}
 	}
 
@@ -60,24 +68,34 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public struct CalendarData {
-		let weekdays: [String]
-		let sections: [CalendarMonth]
+	public struct CalendarData: Equatable {
+		public let weekdays: [String]
+		public let sections: [CalendarMonth]
+
+		public init(weekdays: [String], sections: [CalendarMonth]) {
+			self.weekdays = weekdays
+			self.sections = sections
+		}
 	}
 
-	public struct CalendarMonth {
-		let month: Date
-		let dates: [CalendarDate]
+	public struct CalendarMonth: Equatable {
+		public let month: Date
+		public let dates: [CalendarDate]
+
+		public init(month: Date, dates: [CalendarDate]) {
+			self.month = month
+			self.dates = dates
+		}
 	}
 
-	public struct CalendarDate {
-		let date: Date?
-		let isToday: Bool
-		let isEnabled: Bool
-		let isSelected: Bool
-		let isInRange: Bool
+	public struct CalendarDate: Equatable {
+		public let date: Date?
+		public let isToday: Bool
+		public let isEnabled: Bool
+		public let isSelected: Bool
+		public let isInRange: Bool
 
-		init(
+		public init(
 			date: Date?,
 			isToday: Bool = false,
 			isEnabled: Bool = true,

@@ -42,7 +42,10 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		let interactor = DateRangePickerInteractor(
 			startDate: viewModel.startDate,
 			endDate: viewModel.endDate,
-			calendar: calendar
+			generator: DefaultCalendarDataGenerator(
+				calendar: calendar,
+				currentDate: Date.init
+			)
 		)
 		let presenter = DataRangePickerPresenter(
 			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
