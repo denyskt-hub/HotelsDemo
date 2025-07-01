@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol RoomGuestsPickerPresentationLogic {
+public protocol RoomGuestsPickerPresentationLogic {
 	func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response)
 	func presentRoomGuests(response: RoomGuestsPickerModels.Load.Response)
 

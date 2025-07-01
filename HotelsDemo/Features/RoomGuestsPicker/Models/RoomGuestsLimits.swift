@@ -7,8 +7,18 @@
 
 import Foundation
 
-public struct RoomGuestsLimits {
-	let maxRooms: Int
-	let maxAdults: Int
-	let maxChildren: Int
+public struct RoomGuestsLimits: Equatable {
+	public let maxRooms: Int
+	public let maxAdults: Int
+	public let maxChildren: Int
+
+	public init(
+		maxRooms: Int,
+		maxAdults: Int,
+		maxChildren: Int
+	) {
+		self.maxRooms = maxRooms
+		self.maxAdults = maxAdults
+		self.maxChildren = maxChildren
+	}
 }
