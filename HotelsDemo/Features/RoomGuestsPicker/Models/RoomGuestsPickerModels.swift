@@ -25,10 +25,16 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
-			let rooms: Int
-			let adults: Int
-			let childrenAge: [AgeInputViewModel]
+		public struct ViewModel: Equatable {
+			public let rooms: Int
+			public let adults: Int
+			public let childrenAge: [AgeInputViewModel]
+
+			public init(rooms: Int, adults: Int, childrenAge: [AgeInputViewModel]) {
+				self.rooms = rooms
+				self.adults = adults
+				self.childrenAge = childrenAge
+			}
 		}
 	}
 
@@ -59,7 +65,7 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let rooms: Int
 
 			public init(rooms: Int) {
@@ -81,7 +87,7 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let adults: Int
 
 			public init(adults: Int) {
@@ -103,7 +109,7 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let childrenAge: [AgeInputViewModel]
 
 			public init(childrenAge: [AgeInputViewModel]) {
@@ -133,15 +139,25 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let index: Int
 			public let selectedIndex: Int?
-			public let availableAges: [(value: Int, title: String)]
+			public let availableAges: [AgeViewModel]
 
-			public init(index: Int, selectedIndex: Int?, availableAges: [(value: Int, title: String)]) {
+			public init(index: Int, selectedIndex: Int?, availableAges: [AgeViewModel]) {
 				self.index = index
 				self.selectedIndex = selectedIndex
 				self.availableAges = availableAges
+			}
+		}
+
+		public struct AgeViewModel: Equatable {
+			public let value: Int
+			public let title: String
+
+			public init(value: Int, title: String) {
+				self.value = value
+				self.title = title
 			}
 		}
 	}
@@ -165,7 +181,7 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let childrenAge: [AgeInputViewModel]
 
 			public init(childrenAge: [AgeInputViewModel]) {
@@ -191,7 +207,7 @@ public enum RoomGuestsPickerModels {
 			}
 		}
 
-		public struct ViewModel {
+		public struct ViewModel: Equatable {
 			public let rooms: Int
 			public let adults: Int
 			public let childrenAge: [Int]
@@ -216,9 +232,15 @@ public enum RoomGuestsPickerModels {
 		}
 	}
 
-	public struct AgeInputViewModel {
-		let index: Int
-		let title: String
-		let selectedAgeTitle: String
+	public struct AgeInputViewModel: Equatable {
+		public let index: Int
+		public let title: String
+		public let selectedAgeTitle: String
+
+		public init(index: Int, title: String, selectedAgeTitle: String) {
+			self.index = index
+			self.title = title
+			self.selectedAgeTitle = selectedAgeTitle
+		}
 	}
 }

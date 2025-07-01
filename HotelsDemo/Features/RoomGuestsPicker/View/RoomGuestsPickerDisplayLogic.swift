@@ -13,7 +13,7 @@ public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
 	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel)
-	func displayChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel)
+	func displayUpdateChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel)
 
 	func displayAgePicker(viewModel: RoomGuestsPickerModels.AgeSelection.ViewModel)
 	func displayChildrenAge(viewModel: RoomGuestsPickerModels.AgeSelected.ViewModel)

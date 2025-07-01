@@ -68,7 +68,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		rootView.adultsStepper.setValue(viewModel.adults)
 	}
 
-	public func displayChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
+	public func displayUpdateChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
 		displayChildrenAge(viewModel.childrenAge)
 	}
 
