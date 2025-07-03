@@ -10,8 +10,9 @@ import Foundation
 public final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 	public weak var viewController: DestinationPickerDisplayLogic?
 
-	// Exposed for testability
-	public init() {}
+	public init() {
+		// Required for initialization in tests
+	}
 
 	public func presentDestinations(response: DestinationPickerModels.Search.Response) {
 		let viewModel = DestinationPickerModels.Search.ViewModel(
