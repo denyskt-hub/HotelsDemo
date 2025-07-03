@@ -35,6 +35,29 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
 	}
 
+	func test_searchDestinations_doesNotMessageServiceOnEmptyQuery() {
+		let (sut, service, _) = makeSUT()
+
+		sut.searchDestinations(request: .init(query: ""))
+		XCTAssertTrue(service.queries.isEmpty)
+
+		sut.searchDestinations(request: .init(query: "  "))
+		XCTAssertTrue(service.queries.isEmpty)
+	}
+
+	func test_searchDestinations_presentEmptyDestinationsOnEmptyQuery() {
+		let (sut, _, presenter) = makeSUT()
+
+		sut.searchDestinations(request: .init(query: ""))
+		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: []))])
+
+		sut.searchDestinations(request: .init(query: "  "))
+		XCTAssertEqual(presenter.messages, [
+			.presentDestinations(.init(destinations: [])),
+			.presentDestinations(.init(destinations: []))
+		])
+	}
+
 	func test_selectDestination_presentSelectedDestination() {
 		let destination = anyDestination()
 		let (sut, service, presenter) = makeSUT()

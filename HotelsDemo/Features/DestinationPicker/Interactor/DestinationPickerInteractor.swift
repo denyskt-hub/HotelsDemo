@@ -38,6 +38,13 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	}
 
 	private func performSearch(query: String) {
+		let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+		guard !trimmedQuery.isEmpty else {
+			destinations = []
+			presentDestinations([])
+			return
+		}
+
 		worker.search(query: query) { [weak self] result in
 			guard let self = self else { return }
 

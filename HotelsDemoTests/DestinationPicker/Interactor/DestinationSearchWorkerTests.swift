@@ -74,6 +74,44 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		})
 	}
 
+	// MARK: - Helpers
+
+	private func makeSUT(url: URL = anyURL()) -> (sut: DestinationSearchWorker, client: HTTPClientSpy) {
+		let client = HTTPClientSpy()
+		let sut = DestinationSearchWorker(
+			url: url,
+			client: client,
+			dispatcher: ImmediateDispatcher()
+		)
+		return (sut, client)
+	}
+
+	private func expect(
+		_ sut: DestinationSearchWorker,
+		toCompleteWith expectedResult: DestinationSearchService.Result,
+		when action: () -> Void,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		let exp = expectation(description: "Wait for completion")
+
+		sut.search(query: "any") { receivedResult in
+			switch (receivedResult, expectedResult) {
+			case let (.success(received), .success(expected)):
+				XCTAssertEqual(received, expected, file: file, line: line)
+			case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
+				XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+			default:
+				XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+			}
+			exp.fulfill()
+		}
+
+		action()
+
+		wait(for: [exp], timeout: 0.1)
+	}
+
 	private func makeDestinationJSON(
 		id: Int,
 		type: String,
@@ -117,44 +155,6 @@ final class DestinationSearchWorkerTests: XCTestCase {
 
 	private func makeJSONData(_ json: [String: Any]) -> Data {
 		try! JSONSerialization.data(withJSONObject: json)
-	}
-
-	// MARK: - Helpers
-
-	private func makeSUT(url: URL = anyURL()) -> (sut: DestinationSearchWorker, client: HTTPClientSpy) {
-		let client = HTTPClientSpy()
-		let sut = DestinationSearchWorker(
-			url: url,
-			client: client,
-			dispatcher: ImmediateDispatcher()
-		)
-		return (sut, client)
-	}
-
-	private func expect(
-		_ sut: DestinationSearchWorker,
-		toCompleteWith expectedResult: DestinationSearchService.Result,
-		when action: () -> Void,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let exp = expectation(description: "Wait for completion")
-
-		sut.search(query: "any") { receivedResult in
-			switch (receivedResult, expectedResult) {
-			case let (.success(received), .success(expected)):
-				XCTAssertEqual(received, expected, file: file, line: line)
-			case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
-				XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-			default:
-				XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
-			}
-			exp.fulfill()
-		}
-
-		action()
-
-		wait(for: [exp], timeout: 0.1)
 	}
 }
 

@@ -23,6 +23,8 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	}
 
 	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
+		precondition(!query.trimmingCharacters(in: .whitespaces).isEmpty, "Query must not be empty")
+
 		let request = makeRequest(url: url, query: query)
 
 		client.perform(request) { [weak self] result in
