@@ -157,18 +157,3 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		try! JSONSerialization.data(withJSONObject: json)
 	}
 }
-
-final class HTTPClientSpy: HTTPClient {
-	private(set) var requests = [URLRequest]()
-
-	private var completions = [(HTTPClient.Result) -> Void]()
-
-	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) {
-		requests.append(request)
-		completions.append(completion)
-	}
-
-	func completeWithResult(_ result: HTTPClient.Result, at index: Int = 0) {
-		completions[index](result)
-	}
-}

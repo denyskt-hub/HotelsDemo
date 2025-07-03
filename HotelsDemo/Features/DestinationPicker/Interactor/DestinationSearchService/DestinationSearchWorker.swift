@@ -55,13 +55,6 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		let finalURL = url.appending(queryItems: [URLQueryItem(name: "query", value: query)])
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
-		request.setValue(Environment.apiHost, forHTTPHeaderField: Headers.rapidAPIHost)
-		request.setValue(Environment.apiKey, forHTTPHeaderField: Headers.rapidAPIKey)
 		return request
 	}
-}
-
-private enum Headers {
-	static let rapidAPIHost = "X-RapidAPI-Host"
-	static let rapidAPIKey = "X-RapidAPI-Key"
 }

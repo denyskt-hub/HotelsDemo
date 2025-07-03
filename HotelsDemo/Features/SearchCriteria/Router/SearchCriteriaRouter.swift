@@ -20,7 +20,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		let destinationVC = DestinationPickerViewController()
 		let worker = DestinationSearchWorker(
 			url: URL(string: "https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination")!,
-			client: URLSessionHTTPClient(),
+			client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
 			dispatcher: MainQueueDispatcher()
 		)
 		let interactor = DestinationPickerInteractor(
