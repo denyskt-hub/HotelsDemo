@@ -10,6 +10,7 @@ import Foundation
 public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
 	public weak var viewController: RoomGuestsPickerDisplayLogic?
 
+	// Exposed for testability
 	public init() {}
 
 	public func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response) {

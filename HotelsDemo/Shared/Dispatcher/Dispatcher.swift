@@ -12,6 +12,8 @@ public protocol Dispatcher {
 }
 
 public final class ImmediateDispatcher: Dispatcher {
+	
+	// Exposed for testability
 	public init() {}
 	
 	public func dispatch(_ action: @escaping () -> Void) {

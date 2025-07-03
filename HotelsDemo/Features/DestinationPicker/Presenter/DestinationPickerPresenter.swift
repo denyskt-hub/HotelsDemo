@@ -10,6 +10,7 @@ import Foundation
 public final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
 	public weak var viewController: DestinationPickerDisplayLogic?
 
+	// Exposed for testability
 	public init() {}
 
 	public func presentDestinations(response: DestinationPickerModels.Search.Response) {

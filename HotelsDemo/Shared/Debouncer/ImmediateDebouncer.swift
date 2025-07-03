@@ -8,6 +8,8 @@
 import Foundation
 
 public final class ImmediateDebouncer: Debouncer {
+	
+	// Exposed for testability
 	public init() {}
 	
 	public func execute(_ action: @escaping () -> Void) {
