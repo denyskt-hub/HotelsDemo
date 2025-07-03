@@ -11,6 +11,7 @@ public enum Environment {
 	enum Keys {
 		static let apiKey = "API_KEY"
 		static let apiHost = "API_HOST"
+		static let baseURL = "BASE_URL"
 	}
 
 	private static let infoDictionary: [String: Any] = {
@@ -32,5 +33,15 @@ public enum Environment {
 			fatalError("API host not found in info.plist")
 		}
 		return apiHost
+	}()
+
+	public static let baseURL: URL = {
+		guard let urlString = infoDictionary[Keys.baseURL] as? String else {
+			fatalError("Base URL not found in info.plist")
+		}
+		guard let url = URL(string: urlString) else {
+			fatalError("Invalid URL string: \(urlString)")
+		}
+		return url
 	}()
 }
