@@ -19,7 +19,9 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	func routeToDestinationPicker() {
 		let destinationVC = DestinationPickerViewController()
 		let worker = DestinationSearchWorker(
-			url: DestinationsEndpoint.searchDestination.url(Environment.baseURL),
+			factory: DefaultDestinationRequestFactory(
+				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
+			),
 			client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
 			dispatcher: MainQueueDispatcher()
 		)

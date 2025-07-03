@@ -79,7 +79,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	private func makeSUT(url: URL = anyURL()) -> (sut: DestinationSearchWorker, client: HTTPClientSpy) {
 		let client = HTTPClientSpy()
 		let sut = DestinationSearchWorker(
-			url: url,
+			factory: DestinationRequestFactoryStub(url: url),
 			client: client,
 			dispatcher: ImmediateDispatcher()
 		)
@@ -155,5 +155,17 @@ final class DestinationSearchWorkerTests: XCTestCase {
 
 	private func makeJSONData(_ json: [String: Any]) -> Data {
 		try! JSONSerialization.data(withJSONObject: json)
+	}
+}
+
+final class DestinationRequestFactoryStub: DestinationRequestFactory {
+	let url: URL
+
+	init(url: URL) {
+		self.url = url
+	}
+
+	func makeSearchRequest(query: String) -> URLRequest {
+		URLRequest(url: url)
 	}
 }
