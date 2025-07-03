@@ -4,6 +4,8 @@
 <dict>
 	<key>RAPIDAPI_KEY</key>
 	<string>$(RAPIDAPI_KEY)</string>
+	<key>RAPIDAPI_HOST</key>
+	<string>$(RAPIDAPI_HOST)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

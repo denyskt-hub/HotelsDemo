@@ -50,6 +50,9 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	}
 
 	private func makeRequest(url: URL, query: String) -> URLRequest {
+		guard let apiHost = Bundle.main.infoDictionary?["RAPIDAPI_HOST"] as? String else {
+			preconditionFailure("Invalid configuration: Missing RAPIDAPI_HOST")
+		}
 		guard let apiKey = Bundle.main.infoDictionary?["RAPIDAPI_KEY"] as? String else {
 			preconditionFailure("Invalid configuration: Missing RAPIDAPI_KEY")
 		}
@@ -58,7 +61,7 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
 		request.allHTTPHeaderFields = [
-			"X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
+			"X-RapidAPI-Host": apiHost,
 			"X-RapidAPI-Key": apiKey
 		]
 		return request
