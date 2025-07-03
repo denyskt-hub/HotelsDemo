@@ -1,6 +1,9 @@
 # macOS system file used to store folder-specific metadata. Safe to ignore.
 .DS_Store
 
+# Secrets
+Secrets.xcconfig
+
 # Created by https://www.toptal.com/developers/gitignore/api/xcode,swift
 # Edit at https://www.toptal.com/developers/gitignore?templates=xcode,swift
 
