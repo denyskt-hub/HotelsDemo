@@ -64,7 +64,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			cache: searchCriteriaStore
 		)
 		let presenter = SearchCriteriaPresenter(calendar: calendar)
-		let router = SearchCriteriaRouter(calendar: calendar)
+		let router = SearchCriteriaRouter(
+			calendar: calendar,
+			destinationPickerFactory: DestinationPickerComposer(),
+			dateRangePickerFactory: DateRangePickerComposer(),
+			roomGuestsPickerFactory: RoomGuestsPickerComposer()
+		)
 
 		viewController.interactor = interactor
 		viewController.router = router

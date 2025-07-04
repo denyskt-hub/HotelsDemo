@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DestinationPickerBusinessLogic {
+public protocol DestinationPickerBusinessLogic {
 	func searchDestinations(request: DestinationPickerModels.Search.Request)
 	func selectDestination(request: DestinationPickerModels.Select.Request)
 }

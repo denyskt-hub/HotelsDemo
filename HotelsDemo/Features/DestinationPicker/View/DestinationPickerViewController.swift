@@ -7,12 +7,12 @@
 
 import UIKit
 
-final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
+public final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	private let rootView = DestinationPickerRootView()
 	private var viewModel: DestinationPickerModels.Search.ViewModel?
 
-	var interactor: DestinationPickerBusinessLogic?
-	weak var delegate: DestinationPickerDelegate?
+	public var interactor: DestinationPickerBusinessLogic?
+	public weak var delegate: DestinationPickerDelegate?
 
 	public override func loadView() {
 		view = rootView
@@ -62,11 +62,11 @@ final class DestinationPickerViewController: NiblessViewController, DestinationP
 }
 
 extension DestinationPickerViewController: UITableViewDataSource {
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		viewModel?.destinations.count ?? 0
 	}
 
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = UITableViewCell()
 		cell.textLabel?.text = viewModel?.destinations[indexPath.row]
 		return cell
@@ -74,13 +74,13 @@ extension DestinationPickerViewController: UITableViewDataSource {
 }
 
 extension DestinationPickerViewController: UITableViewDelegate {
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		interactor?.selectDestination(request: DestinationPickerModels.Select.Request(index: indexPath.row))
 	}
 }
 
 extension DestinationPickerViewController: UITextFieldDelegate {
-	func textField(
+	public func textField(
 		_ textField: UITextField,
 		shouldChangeCharactersIn range: NSRange,
 		replacementString string: String
@@ -94,11 +94,11 @@ extension DestinationPickerViewController: UITextFieldDelegate {
 		return true
 	}
 
-	func textFieldShouldClear(_ textField: UITextField) -> Bool {
+	public func textFieldShouldClear(_ textField: UITextField) -> Bool {
 		return true
 	}
 
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+	public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		textField.resignFirstResponder()
 		return true
 	}

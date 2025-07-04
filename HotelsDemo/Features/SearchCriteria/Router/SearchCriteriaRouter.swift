@@ -9,72 +9,46 @@ import UIKit
 
 final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	private let calendar: Calendar
+	private let destinationPickerFactory: DestinationPickerFactory
+	private let dateRangePickerFactory: DateRangePickerFactory
+	private let roomGuestsPickerFactory: RoomGuestsPickerFactory
 
 	weak var viewController: UIViewController?
 
-	init(calendar: Calendar) {
+	init(
+		calendar: Calendar,
+		destinationPickerFactory: DestinationPickerFactory,
+		dateRangePickerFactory: DateRangePickerFactory,
+		roomGuestsPickerFactory: RoomGuestsPickerFactory
+	) {
 		self.calendar = calendar
+		self.destinationPickerFactory = destinationPickerFactory
+		self.dateRangePickerFactory = dateRangePickerFactory
+		self.roomGuestsPickerFactory = roomGuestsPickerFactory
 	}
 
 	func routeToDestinationPicker() {
-		let destinationVC = DestinationPickerViewController()
-		let worker = DestinationSearchWorker(
-			factory: DefaultDestinationRequestFactory(
-				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
-			),
-			client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
-			dispatcher: MainQueueDispatcher()
-		)
-		let interactor = DestinationPickerInteractor(
-			worker: worker,
-			debouncer: DefaultDebouncer(delay: 0.5)
-		)
-		let presenter = DestinationPickerPresenter()
-
-		destinationVC.interactor = interactor
-		destinationVC.delegate = self
-		interactor.presenter = presenter
-		presenter.viewController = destinationVC
-
+		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: self)
 		viewController?.present(destinationVC, animated: true)
 	}
 
 	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
-		let dateRangeVC = DateRangePickerViewController()
-		let interactor = DateRangePickerInteractor(
+		let dateRangeVC = dateRangePickerFactory.makeDateRangePicker(
+			delegate: self,
 			selectedStartDate: viewModel.startDate,
 			selectedEndDate: viewModel.endDate,
-			generator: DefaultCalendarDataGenerator(
-				calendar: calendar,
-				currentDate: Date.init
-			)
+			calendar: calendar
 		)
-		let presenter = DataRangePickerPresenter(
-			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
-		)
-
-		dateRangeVC.interactor = interactor
-		dateRangeVC.delegate = self
-		interactor.presenter = presenter
-		presenter.viewController = dateRangeVC
-
 		viewController?.present(dateRangeVC, animated: true)
 	}
 
 	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
-		let roomGuestsVC = RoomGuestsPickerViewController()
-		let interactor = RoomGuestsPickerInteractor(
+		let roomGuestsVC = roomGuestsPickerFactory.makeRoomGuestsPicker(
+			delegate: self,
 			rooms: viewModel.rooms,
 			adults: viewModel.adults,
 			childrenAge: viewModel.childrenAge
 		)
-		let presenter = RoomGuestsPickerPresenter()
-
-		roomGuestsVC.interactor = interactor
-		roomGuestsVC.delegate = self
-		interactor.presenter = presenter
-		presenter.viewController = roomGuestsVC
-
 		viewController?.present(roomGuestsVC, animated: true)
 	}
 }

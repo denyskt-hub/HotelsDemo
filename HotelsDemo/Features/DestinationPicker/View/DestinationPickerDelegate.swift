@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol DestinationPickerDelegate: AnyObject {
+public protocol DestinationPickerDelegate: AnyObject {
 	func didSelectDestination(_ destination: Destination)
 }
