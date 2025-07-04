@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
-	var interactor: SearchCriteriaBusinessLogic?
-	var router: SearchCriteriaRouter?
+public final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
+	public var interactor: SearchCriteriaBusinessLogic?
+	public var router: SearchCriteriaRouter?
 
 	private let rootView = SearchCriteriaRootView()
 
@@ -17,7 +17,7 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		view = rootView
 	}
 
-	override func viewDidLoad() {
+	public override func viewDidLoad() {
 		super.viewDidLoad()
 
 		setupDestionationButton()
@@ -51,29 +51,29 @@ final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaD
 		interactor?.loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request())
 	}
 
-	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
+	public func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
 		rootView.destinationButton.setTitle(viewModel.destination, for: .normal)
 		rootView.datesButton.setTitle(viewModel.dateRange, for: .normal)
 		rootView.roomGuestsButton.setTitle(viewModel.roomGuests, for: .normal)
 	}
 
-	func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
+	public func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
 		displayError(message: viewModel.message)
 	}
 
-	func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
+	public func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
 		displayError(message: viewModel.message)
 	}
 
-	func displayDates(viewModel: DateRangePickerModels.ViewModel) {
+	public func displayDates(viewModel: DateRangePickerModels.ViewModel) {
 		router?.routeToDateRangePicker(viewModel: viewModel)
 	}
 
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
 		router?.routeToRoomGuestsPicker(viewModel: viewModel)
 	}
 
-	func displayError(title: String = "Error", message: String) {
+	public func displayError(title: String = "Error", message: String) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default))
 		present(alert, animated: true)

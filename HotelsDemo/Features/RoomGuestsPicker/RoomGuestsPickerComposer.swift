@@ -14,7 +14,7 @@ public protocol RoomGuestsPickerFactory {
 		rooms: Int,
 		adults: Int,
 		childrenAge: [Int]
-	) -> RoomGuestsPickerViewController
+	) -> UIViewController
 }
 
 public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
@@ -23,7 +23,7 @@ public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
 		rooms: Int,
 		adults: Int,
 		childrenAge: [Int]
-	) -> RoomGuestsPickerViewController {
+	) -> UIViewController {
 		let viewController = RoomGuestsPickerViewController()
 		let interactor = RoomGuestsPickerInteractor(
 			rooms: rooms,

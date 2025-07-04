@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SearchCriteriaBusinessLogic {
+public protocol SearchCriteriaBusinessLogic {
 	func loadCriteria(request: SearchCriteriaModels.Load.Request)
 	func loadDates(request: SearchCriteriaModels.LoadDates.Request)
 	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request)

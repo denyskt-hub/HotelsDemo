@@ -9,11 +9,11 @@ import UIKit
 import Foundation
 
 public protocol DestinationPickerFactory {
-	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> DestinationPickerViewController 
+	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController
 }
 
 public final class DestinationPickerComposer: DestinationPickerFactory {
-	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> DestinationPickerViewController {
+	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
 		let viewController = DestinationPickerViewController()
 		let worker = DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(

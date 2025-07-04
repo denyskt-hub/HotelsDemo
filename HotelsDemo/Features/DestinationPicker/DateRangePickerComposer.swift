@@ -14,7 +14,7 @@ public protocol DateRangePickerFactory {
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
-	) -> DateRangePickerViewController
+	) -> UIViewController
 }
 
 public final class DateRangePickerComposer: DateRangePickerFactory {
@@ -23,7 +23,7 @@ public final class DateRangePickerComposer: DateRangePickerFactory {
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
-	) -> DateRangePickerViewController {
+	) -> UIViewController {
 		let viewController = DateRangePickerViewController()
 		let interactor = DateRangePickerInteractor(
 			selectedStartDate: selectedStartDate,

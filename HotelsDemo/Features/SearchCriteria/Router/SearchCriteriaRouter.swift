@@ -7,15 +7,15 @@
 
 import UIKit
 
-final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
+public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	private let calendar: Calendar
 	private let destinationPickerFactory: DestinationPickerFactory
 	private let dateRangePickerFactory: DateRangePickerFactory
 	private let roomGuestsPickerFactory: RoomGuestsPickerFactory
 
-	weak var viewController: UIViewController?
+	public weak var viewController: UIViewController?
 
-	init(
+	public init(
 		calendar: Calendar,
 		destinationPickerFactory: DestinationPickerFactory,
 		dateRangePickerFactory: DateRangePickerFactory,
@@ -27,12 +27,12 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		self.roomGuestsPickerFactory = roomGuestsPickerFactory
 	}
 
-	func routeToDestinationPicker() {
+	public func routeToDestinationPicker() {
 		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: self)
 		viewController?.present(destinationVC, animated: true)
 	}
 
-	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
+	public func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
 		let dateRangeVC = dateRangePickerFactory.makeDateRangePicker(
 			delegate: self,
 			selectedStartDate: viewModel.startDate,
@@ -42,7 +42,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 		viewController?.present(dateRangeVC, animated: true)
 	}
 
-	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
+	public func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		let roomGuestsVC = roomGuestsPickerFactory.makeRoomGuestsPicker(
 			delegate: self,
 			rooms: viewModel.rooms,
@@ -54,7 +54,7 @@ final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 }
 
 extension SearchCriteriaRouter: DestinationPickerDelegate {
-	func didSelectDestination(_ destination: Destination) {
+	public func didSelectDestination(_ destination: Destination) {
 		guard let source = self.viewController as? SearchCriteriaViewController else { return }
 
 		source.interactor?.updateDestination(
@@ -64,7 +64,7 @@ extension SearchCriteriaRouter: DestinationPickerDelegate {
 }
 
 extension SearchCriteriaRouter: DataRangePickerDelegate {
-	func didSelectDateRange(startDate: Date, endDate: Date) {
+	public func didSelectDateRange(startDate: Date, endDate: Date) {
 		guard let source = self.viewController as? SearchCriteriaViewController else { return }
 
 		source.interactor?.updateDates(
@@ -74,7 +74,7 @@ extension SearchCriteriaRouter: DataRangePickerDelegate {
 }
 
 extension SearchCriteriaRouter: RoomGuestsPickerDelegate {
-	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
+	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
 		guard let source = self.viewController as? SearchCriteriaViewController else { return }
 
 		source.interactor?.updateRoomGuests(
