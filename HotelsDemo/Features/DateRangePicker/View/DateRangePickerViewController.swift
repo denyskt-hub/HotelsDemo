@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol DataRangePickerDelegate: AnyObject {
+public protocol DateRangePickerDelegate: AnyObject {
 	func didSelectDateRange(startDate: Date, endDate: Date)
 }
 
@@ -16,7 +16,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private var viewModel: DateRangePickerModels.CalendarViewModel?
 
 	public var interactor: DateRangePickerBusinessLogic?
-	public weak var delegate: DataRangePickerDelegate?
+	public weak var delegate: DateRangePickerDelegate?
 
 	public override func loadView() {
 		view = rootView

@@ -79,3 +79,27 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 		present(alert, animated: true)
 	}
 }
+
+extension SearchCriteriaViewController: SearchCriteriaScene {
+	public func didSelectDestination(_ destination: Destination) {
+		interactor?.updateDestination(
+			request: SearchCriteriaModels.UpdateDestination.Request(destination: destination)
+		)
+	}
+
+	public func didSelectDateRange(startDate: Date, endDate: Date) {
+		interactor?.updateDates(
+			request: SearchCriteriaModels.UpdateDates.Request(checkInDate: startDate, checkOutDate: endDate)
+		)
+	}
+
+	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
+		interactor?.updateRoomGuests(
+			request: SearchCriteriaModels.UpdateRoomGuests.Request(
+				rooms: rooms,
+				adults: adults,
+				childrenAge: childrenAges
+			)
+		)
+	}
+}

@@ -13,7 +13,7 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	private let dateRangePickerFactory: DateRangePickerFactory
 	private let roomGuestsPickerFactory: RoomGuestsPickerFactory
 
-	public weak var viewController: UIViewController?
+	public weak var viewController: SearchCriteriaScene?
 
 	public init(
 		calendar: Calendar,
@@ -28,13 +28,13 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 	}
 
 	public func routeToDestinationPicker() {
-		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: self)
+		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: viewController)
 		viewController?.present(destinationVC, animated: true)
 	}
 
 	public func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
 		let dateRangeVC = dateRangePickerFactory.makeDateRangePicker(
-			delegate: self,
+			delegate: viewController,
 			selectedStartDate: viewModel.startDate,
 			selectedEndDate: viewModel.endDate,
 			calendar: calendar
@@ -44,45 +44,11 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 
 	public func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		let roomGuestsVC = roomGuestsPickerFactory.makeRoomGuestsPicker(
-			delegate: self,
+			delegate: viewController,
 			rooms: viewModel.rooms,
 			adults: viewModel.adults,
 			childrenAge: viewModel.childrenAge
 		)
 		viewController?.present(roomGuestsVC, animated: true)
-	}
-}
-
-extension SearchCriteriaRouter: DestinationPickerDelegate {
-	public func didSelectDestination(_ destination: Destination) {
-		guard let source = self.viewController as? SearchCriteriaViewController else { return }
-
-		source.interactor?.updateDestination(
-			request: SearchCriteriaModels.UpdateDestination.Request(destination: destination)
-		)
-	}
-}
-
-extension SearchCriteriaRouter: DataRangePickerDelegate {
-	public func didSelectDateRange(startDate: Date, endDate: Date) {
-		guard let source = self.viewController as? SearchCriteriaViewController else { return }
-
-		source.interactor?.updateDates(
-			request: SearchCriteriaModels.UpdateDates.Request(checkInDate: startDate, checkOutDate: endDate)
-		)
-	}
-}
-
-extension SearchCriteriaRouter: RoomGuestsPickerDelegate {
-	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
-		guard let source = self.viewController as? SearchCriteriaViewController else { return }
-
-		source.interactor?.updateRoomGuests(
-			request: SearchCriteriaModels.UpdateRoomGuests.Request(
-				rooms: rooms,
-				adults: adults,
-				childrenAge: childrenAges
-			)
-		)
 	}
 }

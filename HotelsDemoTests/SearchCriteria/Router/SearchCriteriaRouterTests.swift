@@ -17,12 +17,39 @@ final class SearchCriteriaRouterTests: XCTestCase {
 		XCTAssertEqual(container.viewController.presentedVC, container.destinationPickerFactory.stub)
 	}
 
+	func test_routeToDestinationPicker_buildsPickerWithExpectedDelegate() {
+		let container = makeSUT()
+		
+		container.sut.routeToDestinationPicker()
+		
+		XCTAssertEqual(container.destinationPickerFactory.messages, [
+			.makeDestinationPicker(objectID(container.viewController))
+		])
+	}
+
 	func test_routeToDateRangePicker_presentsDateRangeVC() {
 		let container = makeSUT()
 		
 		container.sut.routeToDateRangePicker(viewModel: .init(startDate: .init(), endDate: .init()))
 		
 		XCTAssertEqual(container.viewController.presentedVC, container.dateRangePickerFactory.stub)
+	}
+
+	func test_routeToDateRangePicker_buildsPickerWithExpectedDelegateAndParameters() {
+		let startDate = "05.07.2025".date()
+		let endDate = "06.07.2025".date()
+		let container = makeSUT()
+
+		container.sut.routeToDateRangePicker(viewModel: .init(startDate: startDate, endDate: endDate))
+
+		XCTAssertEqual(container.dateRangePickerFactory.messages, [
+			.makeDateRangePicker(
+				objectID(container.viewController),
+				startDate,
+				endDate,
+				container.calendar
+			)
+		])
 	}
 
 	func test_routeToRoomGuestsPicker_presentsRoomGuestsVC() {
@@ -33,23 +60,43 @@ final class SearchCriteriaRouterTests: XCTestCase {
 		XCTAssertEqual(container.viewController.presentedVC, container.roomGuestsPickerFactory.stub)
 	}
 
+	func test_routeToRoomGuestsPicker_buildsPickerWithExpectedDelegateAndParameters() {
+		let (rooms, adults, childrenAge) = (1, 2, [1])
+		let container = makeSUT()
+
+		container.sut.routeToRoomGuestsPicker(
+			viewModel: .init(rooms: rooms, adults: adults, childrenAge: childrenAge)
+		)
+
+		XCTAssertEqual(container.roomGuestsPickerFactory.messages, [
+			.makeRoomGuestsPicker(
+				objectID(container.viewController),
+				rooms,
+				adults,
+				childrenAge
+			)
+		])
+	}
+
 	// MARK: - Helpers
 
 	private struct SUTContainer {
 		let sut: SearchCriteriaRouter
-		let viewController: ViewControllerSpy
+		let calendar: Calendar
 		let destinationPickerFactory: DestinationPickerFactoryStub
 		let dateRangePickerFactory: DateRangePickerFactoryStub
 		let roomGuestsPickerFactory: RoomGuestsPickerFactoryStub
+		let viewController: ViewControllerSpy
 	}
 
 	private func makeSUT() -> SUTContainer {
-		let viewController = ViewControllerSpy()
+		let calendar = Calendar.gregorian()
 		let destinationPickerFactory = DestinationPickerFactoryStub()
 		let dateRangePickerFactory = DateRangePickerFactoryStub()
 		let roomGuestsPickerFactory = RoomGuestsPickerFactoryStub()
+		let viewController = ViewControllerSpy()
 		let sut = SearchCriteriaRouter(
-			calendar: .gregorian(),
+			calendar: calendar,
 			destinationPickerFactory: destinationPickerFactory,
 			dateRangePickerFactory: dateRangePickerFactory,
 			roomGuestsPickerFactory: roomGuestsPickerFactory
@@ -58,15 +105,24 @@ final class SearchCriteriaRouterTests: XCTestCase {
 
 		return SUTContainer(
 			sut: sut,
-			viewController: viewController,
+			calendar: calendar,
 			destinationPickerFactory: destinationPickerFactory,
 			dateRangePickerFactory: dateRangePickerFactory,
-			roomGuestsPickerFactory: roomGuestsPickerFactory
+			roomGuestsPickerFactory: roomGuestsPickerFactory,
+			viewController: viewController
 		)
+	}
+
+	private func delegateID(_ object: AnyObject) -> ObjectIdentifier {
+		ObjectIdentifier(object)
 	}
 }
 
-final class ViewControllerSpy: UIViewController {
+func objectID(_ object: AnyObject?) -> ObjectIdentifier? {
+	object.map { ObjectIdentifier($0) }
+}
+
+final class ViewControllerSpy: UIViewController, SearchCriteriaScene {
 	var didPresent = false
 	var presentedVC: UIViewController?
 
@@ -74,31 +130,70 @@ final class ViewControllerSpy: UIViewController {
 		didPresent = true
 		presentedVC = viewControllerToPresent
 	}
+
+	func didSelectDestination(_ destination: Destination) {
+		// No-op — not needed in this test case
+	}
+
+	func didSelectDateRange(startDate: Date, endDate: Date) {
+		// No-op — not needed in this test case
+	}
+
+	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
+		// No-op — not needed in this test case
+	}
 }
 
 final class DestinationPickerFactoryStub: DestinationPickerFactory {
+	enum Message: Equatable {
+		case makeDestinationPicker(ObjectIdentifier?)
+	}
+
 	var stub = UIViewController()
 
+	private(set) var messages = [Message]()
+
 	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
-		stub
+		messages.append(.makeDestinationPicker(objectID(delegate)))
+		return stub
 	}
 }
 
 final class DateRangePickerFactoryStub: DateRangePickerFactory {
+	enum Message: Equatable {
+		case makeDateRangePicker(ObjectIdentifier?, Date, Date, Calendar)
+	}
+
 	var stub = UIViewController()
 
+	private(set) var messages = [Message]()
+
 	func makeDateRangePicker(
-		delegate: DataRangePickerDelegate?,
+		delegate: DateRangePickerDelegate?,
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
 	) -> UIViewController {
-		stub
+		messages.append(
+			.makeDateRangePicker(
+				objectID(delegate),
+				selectedStartDate,
+				selectedEndDate,
+				calendar
+			)
+		)
+		return stub
 	}
 }
 
 final class RoomGuestsPickerFactoryStub: RoomGuestsPickerFactory {
+	enum Message: Equatable {
+		case makeRoomGuestsPicker(ObjectIdentifier?, Int, Int, [Int])
+	}
+
 	var stub = UIViewController()
+
+	private(set) var messages = [Message]()
 
 	func makeRoomGuestsPicker(
 		delegate: RoomGuestsPickerDelegate?,
@@ -106,6 +201,14 @@ final class RoomGuestsPickerFactoryStub: RoomGuestsPickerFactory {
 		adults: Int,
 		childrenAge: [Int]
 	) -> UIViewController {
-		stub
+		messages.append(
+			.makeRoomGuestsPicker(
+				objectID(delegate),
+				rooms,
+				adults,
+				childrenAge
+			)
+		)
+		return stub
 	}
 }

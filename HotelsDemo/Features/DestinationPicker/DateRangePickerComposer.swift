@@ -10,7 +10,7 @@ import Foundation
 
 public protocol DateRangePickerFactory {
 	func makeDateRangePicker(
-		delegate: DataRangePickerDelegate?,
+		delegate: DateRangePickerDelegate?,
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
@@ -19,7 +19,7 @@ public protocol DateRangePickerFactory {
 
 public final class DateRangePickerComposer: DateRangePickerFactory {
 	public func makeDateRangePicker(
-		delegate: DataRangePickerDelegate?,
+		delegate: DateRangePickerDelegate?,
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
