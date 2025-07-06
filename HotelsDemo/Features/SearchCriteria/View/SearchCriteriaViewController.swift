@@ -9,9 +9,13 @@ import UIKit
 
 public final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
 	public var interactor: SearchCriteriaBusinessLogic?
-	public var router: SearchCriteriaRouter?
+	public var router: SearchCriteriaRoutingLogic?
 
 	private let rootView = SearchCriteriaRootView()
+
+	public var destinationButton: UIButton { rootView.destinationButton }
+	public var datesButton: UIButton { rootView.datesButton }
+	public var roomGuestsButton: UIButton { rootView.roomGuestsButton }
 
 	public override func loadView() {
 		view = rootView
@@ -28,7 +32,7 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 	}
 
 	private func setupDestionationButton() {
-		rootView.destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
+		destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
 	}
 
 	private func setupDatesButton() {
@@ -73,7 +77,7 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 		router?.routeToRoomGuestsPicker(viewModel: viewModel)
 	}
 
-	public func displayError(title: String = "Error", message: String) {
+	private func displayError(title: String = "Error", message: String) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default))
 		present(alert, animated: true)

@@ -9,7 +9,7 @@ import Foundation
 
 public enum SearchCriteriaModels {
 	public enum Load {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
@@ -35,7 +35,7 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum LoadRoomGuests {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
@@ -49,7 +49,7 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum LoadDates {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
@@ -65,7 +65,7 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum UpdateDestination {
-		public struct Request {
+		public struct Request: Equatable {
 			public let destination: Destination
 
 			public init(destination: Destination) {
@@ -83,7 +83,7 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum UpdateDates {
-		public struct Request {
+		public struct Request: Equatable {
 			public let checkInDate: Date
 			public let checkOutDate: Date
 
@@ -103,7 +103,7 @@ public enum SearchCriteriaModels {
 	}
 
 	public enum UpdateRoomGuests {
-		public struct Request {
+		public struct Request: Equatable {
 			public let rooms: Int
 			public let adults: Int
 			public let childrenAge: [Int]
