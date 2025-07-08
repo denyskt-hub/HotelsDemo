@@ -9,7 +9,7 @@ import UIKit
 
 public final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	private let rootView = DestinationPickerRootView()
-	private var viewModel: DestinationPickerModels.Search.ViewModel?
+	private var viewModel = DestinationPickerModels.Search.ViewModel(destinations: [])
 
 	public var interactor: DestinationPickerBusinessLogic?
 	public weak var delegate: DestinationPickerDelegate?
@@ -42,6 +42,7 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	private func setupTableView() {
 		tableView.delegate = self
 		tableView.dataSource = self
+		tableView.register(DestinationCell.self)
 
 		tableView.tableHeaderView = rootView.errorContainer
 	}
@@ -67,12 +68,12 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 
 extension DestinationPickerViewController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		viewModel?.destinations.count ?? 0
+		viewModel.destinations.count
 	}
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = UITableViewCell()
-		cell.textLabel?.text = viewModel?.destinations[indexPath.row]
+		let cell: DestinationCell = tableView.dequeueReusableCell()
+		cell.label.text = viewModel.destinations[indexPath.row]
 		return cell
 	}
 }

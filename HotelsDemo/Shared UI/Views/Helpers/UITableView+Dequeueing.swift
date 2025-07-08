@@ -16,5 +16,3 @@ extension UITableView {
 		return cell
 	}
 }
-
-
