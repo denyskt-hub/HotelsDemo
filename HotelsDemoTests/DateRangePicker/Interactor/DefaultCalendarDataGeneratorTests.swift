@@ -68,32 +68,36 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		})
 	}
 
-	func test_generate_doesNotAddLeadingEmptyDaysWhenMonthStartsOnFirstDayOfWeek() {
-		var calendar = Calendar.gregorian()
-		calendar.firstWeekday = 1 // Sunday
-		let today = "01.09.2024".date() // September 2024 starts on Sunday
-		let sut = makeSUT(calendar: calendar, currentDate: { today })
-
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
-
-		let firstMonthDates = data.sections.first!.dates
-		let leadingEmptyDays = firstMonthDates.prefix { $0.date == nil }
-
-		XCTAssertTrue(leadingEmptyDays.isEmpty)
+	func test_generate_doesNotAddLeadingEmptyDaysWhenMonthStartsOnFirstDayOfWeek_sunday() {
+		assertLeadingEmptyDaysCount(
+			startDate: "01.09.2024".date(), // September 2024 starts on Sunday
+			firstWeekday: 1, // Sunday
+			expectedEmptyCount: 0 // Sunday is the first day of the week → no empty days needed
+		)
 	}
 
-	func test_generate_addsLeadingEmptyDaysWhenMonthDoesNotStartOnFirstDayOfWeek() {
-		var calendar = Calendar.gregorian()
-		calendar.firstWeekday = 1 // Sunday
-		let today = "01.08.2024".date() // August 2024 starts on Thursday
-		let sut = makeSUT(calendar: calendar, currentDate: { today })
+	func test_generate_addsLeadingEmptyDaysWhenMonthDoesNotStartOnFirstDayOfWeek_sunday() {
+		assertLeadingEmptyDaysCount(
+			startDate: "01.08.2024".date(), // August 2024 starts on Thursday
+			firstWeekday: 1, // Sunday
+			expectedEmptyCount: 4 // Week: Sun(1), Mon(2), Tue(3), Wed(4), Thu(5) → need 4 empty cells before Thursday
+		)
+	}
 
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+	func test_generate_doesNotAddLeadingEmptyDaysWhenMonthStartsOnFirstDayOfWeek_monday() {
+		assertLeadingEmptyDaysCount(
+			startDate: "01.07.2024".date(), // July 2024 starts on Monday
+			firstWeekday: 2, // Monday
+			expectedEmptyCount: 0 // Monday is the first day of the week → no empty days
+		)
+	}
 
-		let firstMonthDates = data.sections.first!.dates
-		let leadingEmptyDays = firstMonthDates.prefix { $0.date == nil }
-
-		XCTAssertEqual(leadingEmptyDays.count, 4)
+	func test_generate_addsLeadingEmptyDaysWhenMonthDoesNotStartOnFirstDayOfWeek_monday() {
+		assertLeadingEmptyDaysCount(
+			startDate: "01.08.2024".date(), // August 2024 starts on Thursday
+			firstWeekday: 2, // Monday
+			expectedEmptyCount: 3 // Week: Mon(2), Tue(3), Wed(4), Thu(5) → need 3 empty cells before Thursday
+		)
 	}
 
 	// MARK: - Helperes
@@ -108,5 +112,24 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 			calendar: calendar,
 			currentDate: currentDate
 		)
+	}
+
+	private func assertLeadingEmptyDaysCount(
+		startDate: Date,
+		firstWeekday: Int,
+		expectedEmptyCount: Int,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		var calendar = Calendar.gregorian()
+		calendar.firstWeekday = firstWeekday
+
+		let sut = makeSUT(calendar: calendar, currentDate: { startDate })
+		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+
+		let firstMonthDates = data.sections.first!.dates
+		let leadingEmptyDays = firstMonthDates.prefix { $0.date == nil }
+
+		XCTAssertEqual(leadingEmptyDays.count, expectedEmptyCount, "Wrong number of leading empty days", file: file, line: line)
 	}
 }

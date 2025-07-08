@@ -76,7 +76,10 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		calendar: Calendar
 	) -> [Date] {
 		var result: [Date] = []
-		var current = calendar.date(from: calendar.dateComponents([.year, .month], from: start))!
+
+		guard var current = calendar.date(from: calendar.dateComponents([.year, .month], from: start)) else {
+			return result
+		}
 
 		while current <= end {
 			result.append(current)
@@ -96,7 +99,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		var result = [DateRangePickerModels.CalendarDate]()
 
 		let weekday = calendar.component(.weekday, from: start)
-		let leadingEmptyDays = weekday - 1
+		let leadingEmptyDays = (weekday - calendar.firstWeekday + 7) % 7
 		result.append(contentsOf: Array(repeating: .init(date: nil), count: leadingEmptyDays))
 
 		var current = start
