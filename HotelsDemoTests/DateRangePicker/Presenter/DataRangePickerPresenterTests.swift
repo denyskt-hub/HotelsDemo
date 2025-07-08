@@ -84,7 +84,6 @@ final class DataRangePickerPresenterTests: XCTestCase {
 					title: fixtures.monthTitle,
 					dates: [
 						.init(
-							id: .date(fixtures.date),
 							date: fixtures.date,
 							title: fixtures.dateTitle
 						)

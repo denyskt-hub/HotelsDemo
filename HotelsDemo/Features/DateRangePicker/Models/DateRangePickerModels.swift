@@ -162,13 +162,7 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public enum CalendarDateID: Hashable {
-		case date(Date)
-		case placeholder(UUID)
-	}
-
 	public struct CalendarDateViewModel: Equatable {
-		public let id: CalendarDateID
 		public let date: Date?
 		public let title: String?
 		public let isToday: Bool
@@ -177,7 +171,6 @@ public enum DateRangePickerModels {
 		public let isInRange: Bool
 
 		public init(
-			id: CalendarDateID,
 			date: Date?,
 			title: String?,
 			isToday: Bool = false,
@@ -185,7 +178,6 @@ public enum DateRangePickerModels {
 			isSelected: Bool = false,
 			isInRange: Bool = false
 		) {
-			self.id = id
 			self.date = date
 			self.title = title
 			self.isToday = isToday

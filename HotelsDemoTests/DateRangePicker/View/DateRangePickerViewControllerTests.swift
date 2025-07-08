@@ -97,7 +97,8 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 
 	private func makeCalendarViewModel(_ date: Date = .now) -> DateRangePickerModels.CalendarViewModel {
 		let dateViewModel = DateRangePickerModels.CalendarDateViewModel(
-			id: .date(date), date: date, title: "07"
+			date: date,
+			title: "date title"
 		)
 		let monthViewModel = DateRangePickerModels.CalendarMonthViewModel(
 			title: "month title",

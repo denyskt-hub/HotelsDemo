@@ -62,7 +62,6 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		date: DateRangePickerModels.CalendarDate
 	) -> DateRangePickerModels.CalendarDateViewModel {
 		.init(
-			id: date.date.map({ .date($0) }) ?? .placeholder(UUID()),
 			date: date.date,
 			title: date.date.map(dateFormatter.formatDay),
 			isToday: date.isToday,
