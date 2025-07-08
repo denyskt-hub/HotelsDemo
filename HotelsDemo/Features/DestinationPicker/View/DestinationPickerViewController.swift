@@ -14,6 +14,10 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	public var interactor: DestinationPickerBusinessLogic?
 	public weak var delegate: DestinationPickerDelegate?
 
+	public var tableView: UITableView { rootView.tableView }
+	public var textField: UITextField { rootView.textField }
+	public var errorLabel: UILabel { rootView.errorLabel }
+
 	public override func loadView() {
 		view = rootView
 	}
@@ -28,23 +32,23 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	public override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 
-		rootView.tableView.sizeTableHeaderToFit()
+		tableView.sizeTableHeaderToFit()
 	}
 
 	private func setupTextField() {
-		rootView.textField.delegate = self
+		textField.delegate = self
 	}
 
 	private func setupTableView() {
-		rootView.tableView.delegate = self
-		rootView.tableView.dataSource = self
+		tableView.delegate = self
+		tableView.dataSource = self
 
-		rootView.tableView.tableHeaderView = rootView.errorContainer
+		tableView.tableHeaderView = rootView.errorContainer
 	}
 
 	public func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel) {
 		self.viewModel = viewModel
-		rootView.tableView.reloadData()
+		tableView.reloadData()
 	}
 
 	public func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel) {
@@ -53,11 +57,11 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	}
 
 	public func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel) {
-		rootView.errorLabel.text = viewModel.message
+		errorLabel.text = viewModel.message
 	}
 
 	public func hideSearchError() {
-		rootView.errorLabel.text = nil
+		errorLabel.text = nil
 	}
 }
 

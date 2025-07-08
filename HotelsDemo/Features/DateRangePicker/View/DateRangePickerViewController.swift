@@ -131,10 +131,15 @@ extension DateRangePickerViewController: UICollectionViewDataSource {
 			ofKind: kind,
 			withReuseIdentifier: SectionHeaderView.reuseIdentifier,
 			for: indexPath
-		) as! SectionHeaderView
-		header.label.text = sectionViewModel?.title
+		)
 
-		return header
+		guard let sectionHeader = header as? SectionHeaderView else {
+			fatalError("Could not dequeue SectionHeaderView")
+		}
+
+		sectionHeader.label.text = sectionViewModel?.title
+
+		return sectionHeader
 	}
 }
 
