@@ -18,7 +18,8 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 
 	public func present(response: DateRangePickerModels.Load.Response) {
 		let viewModel = DateRangePickerModels.Load.ViewModel(
-			calendar: makeCalendarViewModel(response.calendar)
+			calendar: makeCalendarViewModel(response.calendar),
+			isApplyEnabled: response.canApply
 		)
 		viewController?.display(viewModel: viewModel)
 	}

@@ -28,7 +28,8 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	public func load(request: DateRangePickerModels.Load.Request) {
 		presenter?.present(
 			response: DateRangePickerModels.Load.Response(
-				calendar: makeCalendarData()
+				calendar: makeCalendarData(),
+				canApply: dateRangeSelection.canApply
 			)
 		)
 	}

@@ -7,18 +7,18 @@
 
 import UIKit
 
-class SectionHeaderView: UICollectionReusableView {
+public class SectionHeaderView: UICollectionReusableView {
 	static let reuseIdentifier = "SectionHeaderView"
 
-	let label = UILabel()
+	public let label = UILabel()
 
-	override init(frame: CGRect) {
+	public override init(frame: CGRect) {
 		super.init(frame: frame)
 		setupHierarchy()
 		activateConstraints()
 	}
 
-	required init?(coder: NSCoder) {
+	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 

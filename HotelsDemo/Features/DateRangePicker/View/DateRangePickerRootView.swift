@@ -52,6 +52,7 @@ final class DateRangePickerRootView: NiblessView {
 	public let applyButton: UIButton = {
 		let button = UIButton()
 		button.configure(.filled, title: "Apply")
+		button.isEnabled = false
 		return button
 	}()
 

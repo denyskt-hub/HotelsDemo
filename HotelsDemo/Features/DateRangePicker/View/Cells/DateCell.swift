@@ -7,25 +7,30 @@
 
 import UIKit
 
-protocol DateCellDelegate: AnyObject {
-	func dateCellDidTap(_ cell: DateCell)
+public protocol DateCellDelegate: AnyObject {
+	func dateCellDidTap(_ cell: DateCell, at indexPath: IndexPath)
 }
 
-final class DateCell: UICollectionViewCell {
-	private let button: UIButton = {
+public final class DateCell: UICollectionViewCell {
+	public let button: UIButton = {
 		let button = UIButton()
 		button.configure(.plain)
 		button.tintColor = .label
 		return button
 	}()
 
-	public weak var delegate: DateCellDelegate?
+	private(set) public var isToday: Bool = false
+	private(set) public var isSelectedDate: Bool = false
+	private(set) public var isInRange: Bool = false
 
-	required init?(coder: NSCoder) {
+	public weak var delegate: DateCellDelegate?
+	public var indexPath: IndexPath?
+
+	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	override init(frame: CGRect = .zero) {
+	public override init(frame: CGRect = .zero) {
 		super.init(frame: frame)
 
 		setupHierarchy()
@@ -46,14 +51,19 @@ final class DateCell: UICollectionViewCell {
 	}
 
 	public func configure(_ viewModel: DateRangePickerModels.CalendarDateViewModel) {
+		isToday = viewModel.isToday
+		isSelectedDate = viewModel.isSelected
+		isInRange = viewModel.isInRange
+
 		button.setTitle(viewModel.title ?? "", for: .normal)
-		button.tintColor = viewModel.isToday ? .blue : .label
 		button.isEnabled = viewModel.isEnabled
+		button.tintColor = viewModel.isToday ? .blue : .label
 		button.backgroundColor = viewModel.isSelected ? .cyan : (viewModel.isInRange ? .lightGray : .clear)
 	}
 
 	@objc private func buttonHandler() {
-		delegate?.dateCellDidTap(self)
+		guard let indexPath = indexPath else { return }
+		delegate?.dateCellDidTap(self, at: indexPath)
 	}
 }
 

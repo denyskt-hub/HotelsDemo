@@ -22,11 +22,12 @@ final class DataRangePickerPresenterTests: XCTestCase {
 			sections: [makeCalendarMonth(date: fixtures.date)]
 		)
 		let expectedViewModel = DateRangePickerModels.Load.ViewModel(
-			calendar: makeCalendarViewModel(fixtures)
+			calendar: makeCalendarViewModel(fixtures),
+			isApplyEnabled: false
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.present(response: .init(calendar: calendarData))
+		sut.present(response: .init(calendar: calendarData, canApply: false))
 
 		XCTAssertEqual(viewController.messages, [.display(expectedViewModel)])
 	}

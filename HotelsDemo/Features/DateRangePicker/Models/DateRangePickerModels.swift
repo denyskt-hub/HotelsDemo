@@ -9,29 +9,33 @@ import Foundation
 
 public enum DateRangePickerModels {
 	public enum Load {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
 		public struct Response: Equatable {
 			public let calendar: CalendarData
+			public let canApply: Bool
 
-			public init(calendar: CalendarData) {
+			public init(calendar: CalendarData, canApply: Bool) {
 				self.calendar = calendar
+				self.canApply = canApply
 			}
 		}
 
 		public struct ViewModel: Equatable {
 			public let calendar: CalendarViewModel
+			public let isApplyEnabled: Bool
 
-			public init(calendar: CalendarViewModel) {
+			public init(calendar: CalendarViewModel, isApplyEnabled: Bool) {
 				self.calendar = calendar
+				self.isApplyEnabled = isApplyEnabled
 			}
 		}
 	}
 
 	public enum DateSelection {
-		public struct Request {
+		public struct Request: Equatable {
 			public let date: Date
 
 			public init(date: Date) {
@@ -61,7 +65,7 @@ public enum DateRangePickerModels {
 	}
 
 	public enum Select {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 

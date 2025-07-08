@@ -62,8 +62,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 
 	func test_displayLoadError_presentsAlertWithCorrectMessage() {
 		let (sut, _, _) = makeSUT()
-		putInWindow(sut)
-		sut.simulateAppearance()
+		sut.simulateAppearanceInWindow()
 
 		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
 		sut.displayLoadError(viewModel: viewModel)
@@ -73,8 +72,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 
 	func test_displayUpdateError_presentsAlertWithCorrectMessage() {
 		let (sut, _, _) = makeSUT()
-		putInWindow(sut)
-		sut.simulateAppearance()
+		sut.simulateAppearanceInWindow()
 
 		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
 		sut.displayUpdateError(viewModel: viewModel)
@@ -150,19 +148,6 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 		sut.interactor = interactor
 		sut.router = router
 		return (sut, interactor, router)
-	}
-
-	@discardableResult
-	func putInWindow(_ viewController: UIViewController) -> UIWindow {
-		let window = UIWindow()
-		window.rootViewController = viewController
-		window.isHidden = false
-		waitForPresentation()
-		return window
-	}
-
-	func waitForPresentation(timeout: TimeInterval = 0.1) {
-		RunLoop.current.run(until: Date().addingTimeInterval(timeout))
 	}
 }
 
@@ -255,6 +240,24 @@ extension UIViewController {
 
 		beginAppearanceTransition(true, animated: false)
 		endAppearanceTransition()
+	}
+
+	func simulateAppearanceInWindow() {
+		putInWindow(self)
+		simulateAppearance()
+	}
+
+	@discardableResult
+	func putInWindow(_ viewController: UIViewController) -> UIWindow {
+		let window = UIWindow(frame: .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+		window.rootViewController = viewController
+		window.isHidden = false
+		waitForPresentation()
+		return window
+	}
+
+	func waitForPresentation(timeout: TimeInterval = 0.1) {
+		RunLoop.current.run(until: Date().addingTimeInterval(timeout))
 	}
 }
 

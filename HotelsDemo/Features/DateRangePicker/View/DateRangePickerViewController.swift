@@ -18,6 +18,10 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	public var interactor: DateRangePickerBusinessLogic?
 	public weak var delegate: DateRangePickerDelegate?
 
+	public var weekdaysCollectionView: UICollectionView { rootView.weekdaysCollectionView }
+	public var collectionView: UICollectionView { rootView.collectionView }
+	public var applyButton: UIButton { rootView.applyButton }
+
 	public override func loadView() {
 		view = rootView
 	}
@@ -33,15 +37,15 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	private func setupWeekdaysCollectionView() {
-		rootView.weekdaysCollectionView.dataSource = self
-		rootView.weekdaysCollectionView.register(WeekdayCell.self)
+		weekdaysCollectionView.dataSource = self
+		weekdaysCollectionView.register(WeekdayCell.self)
 	}
 
 	private func setupCollectionView() {
-		rootView.collectionView.dataSource = self
-		rootView.collectionView.delegate = self
-		rootView.collectionView.register(DateCell.self)
-		rootView.collectionView.register(
+		collectionView.dataSource = self
+		collectionView.delegate = self
+		collectionView.register(DateCell.self)
+		collectionView.register(
 			SectionHeaderView.self,
 			forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
 			withReuseIdentifier: SectionHeaderView.reuseIdentifier
@@ -49,19 +53,21 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	private func setupApplyButton() {
-		rootView.applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
+		applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
 	}
 
 	public func display(viewModel: DateRangePickerModels.Load.ViewModel) {
 		self.viewModel = viewModel.calendar
-		rootView.weekdaysCollectionView.reloadData()
-		rootView.collectionView.reloadData()
+		weekdaysCollectionView.reloadData()
+		collectionView.reloadData()
+		applyButton.isEnabled = viewModel.isApplyEnabled
 	}
 
 	public func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel) {
 		self.viewModel = viewModel.calendar
-		rootView.collectionView.reloadData()
-		rootView.applyButton.isEnabled = viewModel.isApplyEnabled
+		weekdaysCollectionView.reloadData()
+		collectionView.reloadData()
+		applyButton.isEnabled = viewModel.isApplyEnabled
 	}
 
 	public func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel) {
@@ -103,6 +109,7 @@ extension DateRangePickerViewController: UICollectionViewDataSource {
 
 		let cell: DateCell = collectionView.dequeueReusableCell(for: indexPath)
 		cell.delegate = self
+		cell.indexPath = indexPath
 		if let cellViewModel = viewModel?.sections[indexPath.section].dates[indexPath.row] {
 			cell.configure(cellViewModel)
 		}
@@ -137,15 +144,12 @@ extension DateRangePickerViewController: UICollectionViewDelegateFlowLayout {
 		layout collectionViewLayout: UICollectionViewLayout,
 		referenceSizeForHeaderInSection section: Int
 	) -> CGSize {
-		return CGSize(width: collectionView.bounds.width, height: 44)
+		CGSize(width: collectionView.bounds.width, height: 44)
 	}
 }
 
 extension DateRangePickerViewController: DateCellDelegate {
-	func dateCellDidTap(_ cell: DateCell) {
-		guard let indexPath = rootView.collectionView.indexPath(for: cell) else {
-			return
-		}
+	public func dateCellDidTap(_ cell: DateCell, at indexPath: IndexPath) {
 		guard let date = viewModel?.sections[indexPath.section].dates[indexPath.row].date else {
 			return
 		}

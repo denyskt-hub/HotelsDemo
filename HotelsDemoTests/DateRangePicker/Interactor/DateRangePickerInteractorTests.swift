@@ -12,7 +12,8 @@ final class DateRangePickerInteractorTests: XCTestCase {
 	func test_load_presentCalendarData() {
 		let calendarData = anyCalendarData()
 		let expectedResponse = DateRangePickerModels.Load.Response(
-			calendar: calendarData
+			calendar: calendarData,
+			canApply: true
 		)
 		let (sut, _, presenter) = makeSUT(stub: calendarData)
 

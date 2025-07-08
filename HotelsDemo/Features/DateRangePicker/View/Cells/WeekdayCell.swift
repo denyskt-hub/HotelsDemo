@@ -7,18 +7,18 @@
 
 import UIKit
 
-final class WeekdayCell: UICollectionViewCell {
+public final class WeekdayCell: UICollectionViewCell {
 	public let label: UILabel = {
 		let label = UILabel()
 		label.textAlignment = .center
 		return label
 	}()
 
-	required init?(coder: NSCoder) {
-	  fatalError("init(coder:) has not been implemented")
+	public required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
 	}
 
-	override init(frame: CGRect = .zero) {
+	public override init(frame: CGRect = .zero) {
 		super.init(frame: frame)
 
 		setupHierarchy()
