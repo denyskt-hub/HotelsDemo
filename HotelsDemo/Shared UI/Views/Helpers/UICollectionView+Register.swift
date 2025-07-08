@@ -12,4 +12,9 @@ extension UICollectionView {
 		let identifier = String(describing: cellType)
 		register(cellType, forCellWithReuseIdentifier: identifier)
 	}
+
+	func register<T: UICollectionReusableView>(_ viewType: T.Type, kind: String) {
+		let identifier = String(describing: viewType)
+		register(viewType, forSupplementaryViewOfKind: kind, withReuseIdentifier: identifier)
+	}
 }
