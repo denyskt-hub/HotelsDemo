@@ -167,7 +167,7 @@ public enum DateRangePickerModels {
 		case placeholder(UUID)
 	}
 
-	public struct CalendarDateViewModel {
+	public struct CalendarDateViewModel: Equatable {
 		public let id: CalendarDateID
 		public let date: Date?
 		public let title: String?
@@ -193,23 +193,5 @@ public enum DateRangePickerModels {
 			self.isSelected = isSelected
 			self.isInRange = isInRange
 		}
-	}
-}
-
-extension DateRangePickerModels.CalendarMonthViewModel: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(title)
-	}
-}
-
-extension DateRangePickerModels.CalendarDateViewModel: Equatable {
-	public static func == (lhs: DateRangePickerModels.CalendarDateViewModel, rhs: DateRangePickerModels.CalendarDateViewModel) -> Bool {
-		lhs.id == rhs.id
-	}
-}
-
-extension DateRangePickerModels.CalendarDateViewModel: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(id)
 	}
 }
