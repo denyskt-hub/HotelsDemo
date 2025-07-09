@@ -120,13 +120,6 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 		}
 	}
 
-	private func anyChildrenAgeInputViewModels() -> [RoomGuestsPickerModels.AgeInputViewModel] {
-		[
-			.init(index: 0, title: "Child 1", selectedAgeTitle: "2"),
-			.init(index: 0, title: "Child 2", selectedAgeTitle: "5")
-		]
-	}
-
 	func test_displaySelectedRoomGuests_notifiesDelegateWithSelectedRoomGuests() {
 		let (rooms, adults, childrenAge) = (1, 2, [2])
 		let (sut, _, delegate) = makeSUT()
@@ -307,14 +300,18 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 		}
 	}
 
+	private func anyChildrenAgeInputViewModels() -> [RoomGuestsPickerModels.AgeInputViewModel] {
+		[
+			.init(index: 0, title: "Child 1", selectedAgeTitle: "2"),
+			.init(index: 0, title: "Child 2", selectedAgeTitle: "5")
+		]
+	}
+
 	private func anyRoomGuestsLoadViewModel() -> RoomGuestsPickerModels.Load.ViewModel {
 		.init(
 			rooms: 1,
 			adults: 2,
-			childrenAge: [
-				.init(index: 0, title: "Child 1", selectedAgeTitle: "1"),
-				.init(index: 1, title: "Child 2", selectedAgeTitle: "4")
-			]
+			childrenAge: anyChildrenAgeInputViewModels()
 		)
 	}
 

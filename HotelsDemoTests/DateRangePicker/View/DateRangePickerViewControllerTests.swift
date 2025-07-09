@@ -116,6 +116,8 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
+		sut.view.enforceLayoutCycle()
+
 		guard sut.numberOfRenderedWeekdays() == viewModel.weekdays.count else {
 			return XCTFail("Expect \(viewModel.weekdays.count) images, got \(sut.numberOfRenderedWeekdays()) instead", file: file, line: line)
 		}
@@ -133,7 +135,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 		}
 	}
 
-	func assertThat(
+	private func assertThat(
 		_ sut: DateRangePickerViewController,
 		hasMonthViewConfiguredFor monthViewModel: DateRangePickerModels.CalendarMonthViewModel,
 		section: Int,
@@ -156,7 +158,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 		}
 	}
 
-	func assertThat(
+	private func assertThat(
 		_ sut: DateRangePickerViewController,
 		hasWeekdayViewConfiguredFor weekday: String,
 		item: Int,
@@ -171,7 +173,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 		XCTAssertEqual(cell.label.text, weekday, "Expected title to be \(weekday) for weekday view at item (\(item))", file: file, line: line)
 	}
 
-	func assertThat(
+	private func assertThat(
 		_ sut: DateRangePickerViewController,
 		hasDateViewConfiguredFor dateViewModel: DateRangePickerModels.CalendarDateViewModel,
 		item: Int,
