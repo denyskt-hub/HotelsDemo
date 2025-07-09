@@ -57,8 +57,17 @@ public final class DateCell: UICollectionViewCell {
 
 		button.setTitle(viewModel.title ?? "", for: .normal)
 		button.isEnabled = viewModel.isEnabled
+
+		button.backgroundColor = .clear
 		button.tintColor = viewModel.isToday ? .blue : .label
-		button.backgroundColor = viewModel.isSelected ? .cyan : (viewModel.isInRange ? .lightGray : .clear)
+
+		if viewModel.isSelected {
+			button.backgroundColor = .systemBlue
+			button.tintColor = .white
+		}
+		else if viewModel.isInRange {
+			button.backgroundColor = .lightGray
+		}
 	}
 
 	@objc private func buttonHandler() {
