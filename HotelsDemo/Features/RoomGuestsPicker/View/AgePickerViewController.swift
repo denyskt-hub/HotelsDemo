@@ -7,14 +7,20 @@
 
 import UIKit
 
-final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-	private let options: [String]
-	private var selectedIndex: Int?
-	private let onSelect: (Int) -> Void
+public final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+	public let options: [String]
+	private(set) public var selectedIndex: Int?
+	public let onSelect: (Int) -> Void
 
-	private let pickerView = UIPickerView()
+	public let pickerView = UIPickerView()
 
-	init(
+	public let doneButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.setTitle("Done", for: .normal)
+		return button
+	}()
+
+	public init(
 		options: [String],
 		selectedIndex: Int?,
 		onSelect: @escaping (Int) -> Void
@@ -25,7 +31,7 @@ final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate
 		super.init()
 	}
 
-	override func viewDidLoad() {
+	public override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .systemBackground
 
@@ -42,11 +48,9 @@ final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate
 			pickerView.selectRow(selectedIndex, inComponent: 0, animated: false)
 		}
 
-		navigationItem.rightBarButtonItem = UIBarButtonItem(
-			barButtonSystemItem: .done,
-			target: self,
-			action: #selector(doneTapped)
-		)
+		doneButton.addTarget(self, action: #selector(doneTapped), for: .touchUpInside)
+
+		navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton)
 	}
 
 	@objc private func doneTapped() {
@@ -55,13 +59,13 @@ final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate
 		dismiss(animated: true)
 	}
 
-	func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
+	public func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
 
-	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+	public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		options.count
 	}
 
-	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+	public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		options[row]
 	}
 }

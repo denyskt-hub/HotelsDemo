@@ -10,8 +10,14 @@ import UIKit
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
 	private let rootView = RoomGuestsPickerRootView()
 
-	var interactor: RoomGuestsPickerBusinessLogic?
-	weak var delegate: RoomGuestsPickerDelegate?
+	public var interactor: RoomGuestsPickerBusinessLogic?
+	public weak var delegate: RoomGuestsPickerDelegate?
+
+	public var roomsStepper: StepperView { rootView.roomsStepper }
+	public var adultsStepper: StepperView { rootView.adultsStepper }
+	public var childrenStepper: StepperView { rootView.childrenStepper }
+	public var childrenViews: [UIView] { rootView.childrenStack.arrangedSubviews }
+	public var applyButton: UIButton { rootView.applyButton }
 
 	public override func loadView() {
 		view = rootView
@@ -30,42 +36,42 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	}
 
 	private func setupRoomsStepper() {
-		rootView.roomsStepper.decrementButton.addTarget(self, action: #selector(didDecrementRooms), for: .touchUpInside)
-		rootView.roomsStepper.incrementButton.addTarget(self, action: #selector(didIncrementRooms), for: .touchUpInside)
+		roomsStepper.decrementButton.addTarget(self, action: #selector(didDecrementRooms), for: .touchUpInside)
+		roomsStepper.incrementButton.addTarget(self, action: #selector(didIncrementRooms), for: .touchUpInside)
 	}
 
 	private func setupAdultsStepper() {
-		rootView.adultsStepper.decrementButton.addTarget(self, action: #selector(didDecrementAdults), for: .touchUpInside)
-		rootView.adultsStepper.incrementButton.addTarget(self, action: #selector(didIncrementAdults), for: .touchUpInside)
+		adultsStepper.decrementButton.addTarget(self, action: #selector(didDecrementAdults), for: .touchUpInside)
+		adultsStepper.incrementButton.addTarget(self, action: #selector(didIncrementAdults), for: .touchUpInside)
 	}
 
 	private func setupChildrenStepper() {
-		rootView.childrenStepper.decrementButton.addTarget(self, action: #selector(didDecrementChildren), for: .touchUpInside)
-		rootView.childrenStepper.incrementButton.addTarget(self, action: #selector(didIncrementChildren), for: .touchUpInside)
+		childrenStepper.decrementButton.addTarget(self, action: #selector(didDecrementChildren), for: .touchUpInside)
+		childrenStepper.incrementButton.addTarget(self, action: #selector(didIncrementChildren), for: .touchUpInside)
 	}
 
 	private func setupApplyButton() {
-		rootView.applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
+		applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
 	}
 
 	public func applyLimits(_ limits: RoomGuestsLimits) {
-		rootView.roomsStepper.setRange(minimumValue: 1, maximumValue: limits.maxRooms)
-		rootView.adultsStepper.setRange(minimumValue: 1, maximumValue: limits.maxAdults)
-		rootView.childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
+		roomsStepper.setRange(minimumValue: 1, maximumValue: limits.maxRooms)
+		adultsStepper.setRange(minimumValue: 1, maximumValue: limits.maxAdults)
+		childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
 
 	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel) {
-		rootView.roomsStepper.setValue(viewModel.rooms)
-		rootView.adultsStepper.setValue(viewModel.adults)
+		roomsStepper.setValue(viewModel.rooms)
+		adultsStepper.setValue(viewModel.adults)
 		displayChildrenAge(viewModel.childrenAge)
 	}
 
 	public func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel) {
-		rootView.roomsStepper.setValue(viewModel.rooms)
+		roomsStepper.setValue(viewModel.rooms)
 	}
 
 	public func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel) {
-		rootView.adultsStepper.setValue(viewModel.adults)
+		adultsStepper.setValue(viewModel.adults)
 	}
 
 	public func displayUpdateChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
@@ -77,7 +83,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	}
 
 	private func displayChildrenAge(_ childrenAge: [RoomGuestsPickerModels.AgeInputViewModel]) {
-		rootView.childrenStepper.setValue(childrenAge.count)
+		childrenStepper.setValue(childrenAge.count)
 
 		rootView.childrenStack.arrangedSubviews.forEach {
 			$0.removeFromSuperview()
@@ -143,8 +149,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 }
 
 extension RoomGuestsPickerViewController: AgeInputViewDelegate {
-	func ageInputViewDidRequestPicker(_ view: AgeInputView, index: Int) {
+	public func ageInputViewDidRequestPicker(_ view: AgeInputView, index: Int) {
 		interactor?.didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request(index: index))
 	}
 }
-

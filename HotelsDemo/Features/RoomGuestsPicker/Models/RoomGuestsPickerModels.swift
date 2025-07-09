@@ -9,7 +9,7 @@ import Foundation
 
 public enum RoomGuestsPickerModels {
 	public enum Load {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
@@ -39,7 +39,7 @@ public enum RoomGuestsPickerModels {
 	}
 
 	public enum LoadLimits {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 
@@ -119,7 +119,7 @@ public enum RoomGuestsPickerModels {
 	}
 
 	public enum AgeSelection {
-		public struct Request {
+		public struct Request: Equatable {
 			public let index: Int
 
 			public init(index: Int) {
@@ -163,7 +163,7 @@ public enum RoomGuestsPickerModels {
 	}
 
 	public enum AgeSelected {
-		public struct Request {
+		public struct Request: Equatable {
 			public let index: Int
 			public let age: Int
 
@@ -191,7 +191,7 @@ public enum RoomGuestsPickerModels {
 	}
 
 	public enum Select {
-		public struct Request {
+		public struct Request: Equatable {
 			public init() {}
 		}
 

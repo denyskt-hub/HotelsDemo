@@ -71,8 +71,8 @@ public class StepperView: NiblessView {
 		self.minimumValue = minimumValue
 		self.maximumValue = maximumValue
 	}
-	private var minimumValue: Int = 0
-	private var maximumValue: Int = 100
+	private(set) public var minimumValue: Int = 0
+	private(set) public var maximumValue: Int = 100
 
 	public func setStepValue(_ stepValue: Int) {
 		guard stepValue > 0 else {
@@ -85,7 +85,7 @@ public class StepperView: NiblessView {
 	public func setValue(_ value: Int) {
 		self.value = min(max(value, minimumValue), maximumValue)
 	}
-	private var value: Int = 0 {
+	private(set) public var value: Int = 0 {
 		didSet {
 			valueLabel.text = "\(value)"
 			decrementButton.isEnabled = value > minimumValue

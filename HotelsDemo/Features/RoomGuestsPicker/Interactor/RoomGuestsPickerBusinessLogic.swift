@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol RoomGuestsPickerBusinessLogic {
+public protocol RoomGuestsPickerBusinessLogic {
 	func loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request)
 	func load(request: RoomGuestsPickerModels.Load.Request)
 

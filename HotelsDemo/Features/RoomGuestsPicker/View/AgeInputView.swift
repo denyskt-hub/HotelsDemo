@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol AgeInputViewDelegate: AnyObject {
+public protocol AgeInputViewDelegate: AnyObject {
 	func ageInputViewDidRequestPicker(_ view: AgeInputView, index: Int)
 }
 
-final class AgeInputView: NiblessView {
+public final class AgeInputView: NiblessView {
 	private let viewModel: RoomGuestsPickerModels.AgeInputViewModel
 	private var hierarchyNotReady = true
 
