@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class CodableSearchCriteriaStoreTests: XCTestCase {
+final class CodableSearchCriteriaStoreTests: XCTestCase, SearchCriteriaStoreSpecs {
 	override func setUp() {
 		super.setUp()
 
@@ -82,43 +82,6 @@ final class CodableSearchCriteriaStoreTests: XCTestCase {
 			storeURL: testSpecificStoreURL(),
 			dispatcher: ImmediateDispatcher()
 		)
-	}
-
-	private func expect(_ sut: CodableSearchCriteriaStore, toRetrieve expectedResult: SearchCriteriaProvider.RetrieveResult) {
-		let retrievedResult = retrieve(from: sut)
-
-		switch (retrievedResult, expectedResult) {
-		case let (.success(retrievedCriteria), .success(expectedCritera)):
-			XCTAssertEqual(retrievedCriteria, expectedCritera)
-		case let (.failure(retreivedError as NSError), .failure(expectedError as NSError)):
-			XCTAssertEqual(expectedError.domain, retreivedError.domain)
-			XCTAssertEqual(expectedError.code, retreivedError.code)
-		default:
-			XCTFail("Unexpected combination: \(retrievedResult), \(expectedResult)")
-		}
-	}
-
-	private func retrieve(from sut: CodableSearchCriteriaStore) -> SearchCriteriaProvider.RetrieveResult {
-		let exp = expectation(description: "Wait for retrieve")
-
-		var retrievedResult: SearchCriteriaProvider.RetrieveResult!
-		sut.retrieve { result in
-			retrievedResult = result
-			exp.fulfill()
-		}
-
-		wait(for: [exp], timeout: 1.0)
-		return retrievedResult
-	}
-
-	private func save(_ criteria: SearchCriteria, to sut: CodableSearchCriteriaStore) {
-		let exp = expectation(description: "Wait for save")
-		
-		sut.save(criteria) { _ in
-			exp.fulfill()
-		}
-		
-		wait(for: [exp], timeout: 1.0)
 	}
 
 	private func setupEmptyStoreState() {

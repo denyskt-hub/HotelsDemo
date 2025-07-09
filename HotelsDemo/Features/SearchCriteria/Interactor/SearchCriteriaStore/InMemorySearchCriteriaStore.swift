@@ -7,18 +7,18 @@
 
 import Foundation
 
-final class InMemorySearchCriteriaStore: SearchCriteriaStore {
+public final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 	private let queue = DispatchQueue(label: "\(InMemorySearchCriteriaStore.self)Queue")
 
 	private let dispatcher: Dispatcher
 
 	private var criteria: SearchCriteria?
 
-	init(dispatcher: Dispatcher) {
+	public init(dispatcher: Dispatcher) {
 		self.dispatcher = dispatcher
 	}
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		queue.async {
 			self.criteria = criteria
 			self.dispatcher.dispatch {
@@ -27,7 +27,7 @@ final class InMemorySearchCriteriaStore: SearchCriteriaStore {
 		}
 	}
 
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			self.dispatcher.dispatch {
 				guard let criteria = self.criteria else {
