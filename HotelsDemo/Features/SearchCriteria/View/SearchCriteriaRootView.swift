@@ -12,33 +12,41 @@ public class SearchCriteriaRootView: NiblessView {
 
 	lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
-			destinationButton,
-			datesButton,
-			roomGuestsButton
+			destinationControl,
+			datesControl,
+			roomGuestsControl,
+			searchButton
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
 		return stack
 	}()
 
-	public let destinationButton: UIButton = {
-		let button = UIButton(type: .system)
-		button.tintColor = .darkText
-		button.setTitle("destination", for: .normal)
-		return button
+	public let destinationControl: IconTitleControl = {
+		let control = IconTitleControl()
+		control.setImage(UIImage(systemName: "magnifyingglass"))
+		control.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		return control
 	}()
 
-	public let datesButton: UIButton = {
-		let button = UIButton(type: .system)
-		button.tintColor = .darkText
-		button.setTitle("dates", for: .normal)
-		return button
+	public let datesControl: IconTitleControl = {
+		let control = IconTitleControl()
+		control.setImage(UIImage(systemName: "calendar"))
+		control.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		return control
 	}()
 
-	public let roomGuestsButton: UIButton = {
+	public let roomGuestsControl: IconTitleControl = {
+		let control = IconTitleControl()
+		control.setImage(UIImage(systemName: "person"))
+		control.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		return control
+	}()
+
+	public let searchButton: UIButton = {
 		let button = UIButton(type: .system)
-		button.tintColor = .darkText
-		button.setTitle("room guests", for: .normal)
+		button.configure(.filled, title: "Search")
+		button.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return button
 	}()
 

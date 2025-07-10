@@ -55,9 +55,9 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 			)
 		)
 
-		XCTAssertEqual(sut.destinationButton.title(for: .normal), "destination")
-		XCTAssertEqual(sut.datesButton.title(for: .normal), "Jul 10 – Jul 20")
-		XCTAssertEqual(sut.roomGuestsButton.title(for: .normal), "2 Adults, 1 Room")
+		XCTAssertEqual(sut.destinationControlTitle, "destination")
+		XCTAssertEqual(sut.datesControlTitle, "Jul 10 – Jul 20")
+		XCTAssertEqual(sut.roomGuestsControlTitle, "2 Adults, 1 Room")
 	}
 
 	func test_displayLoadError_presentsAlertWithCorrectMessage() {
@@ -160,16 +160,28 @@ extension SearchCriteriaViewController {
 		errorView?.message
 	}
 
+	var destinationControlTitle: String? {
+		destinationControl.title()
+	}
+
+	var datesControlTitle: String? {
+		datesControl.title()
+	}
+
+	var roomGuestsControlTitle: String? {
+		roomGuestsControl.title()
+	}
+
 	func simulateDestinationButtonTap() {
-		destinationButton.simulateTap()
+		destinationControl.simulateTap()
 	}
 
 	func simulateDatesButtonTap() {
-		datesButton.simulateTap()
+		datesControl.simulateTap()
 	}
 
 	func simulateRoomGuestsButtonTap() {
-		roomGuestsButton.simulateTap()
+		roomGuestsControl.simulateTap()
 	}
 }
 
@@ -261,13 +273,11 @@ extension UIViewController {
 	}
 }
 
-extension UIButton {
+extension UIControl {
 	func simulateTap() {
 		simulate(event: .touchUpInside)
 	}
-}
 
-extension UIControl {
 	func simulate(event: UIControl.Event) {
 		allTargets.forEach { target in
 			actions(forTarget: target, forControlEvent: event)?.forEach {

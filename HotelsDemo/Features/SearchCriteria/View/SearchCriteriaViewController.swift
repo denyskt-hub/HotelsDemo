@@ -13,9 +13,9 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 
 	private let rootView = SearchCriteriaRootView()
 
-	public var destinationButton: UIButton { rootView.destinationButton }
-	public var datesButton: UIButton { rootView.datesButton }
-	public var roomGuestsButton: UIButton { rootView.roomGuestsButton }
+	public var destinationControl: IconTitleControl { rootView.destinationControl }
+	public var datesControl: IconTitleControl { rootView.datesControl }
+	public var roomGuestsControl: IconTitleControl { rootView.roomGuestsControl }
 
 	public override func loadView() {
 		view = rootView
@@ -32,33 +32,33 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 	}
 
 	private func setupDestionationButton() {
-		destinationButton.addTarget(self, action: #selector(destinationButtonHandler), for: .touchUpInside)
+		destinationControl.addTarget(self, action: #selector(destinationTapHandler), for: .touchUpInside)
 	}
 
 	private func setupDatesButton() {
-		rootView.datesButton.addTarget(self, action: #selector(datesButtonHandler), for: .touchUpInside)
+		datesControl.addTarget(self, action: #selector(datesTapHandler), for: .touchUpInside)
 	}
 
 	private func setupRoomGuestsButton() {
-		rootView.roomGuestsButton.addTarget(self, action: #selector(roomGuestsButtonHandler), for: .touchUpInside)
+		roomGuestsControl.addTarget(self, action: #selector(roomGuestsTapHandler), for: .touchUpInside)
 	}
 
-	@objc private func destinationButtonHandler() {
+	@objc private func destinationTapHandler() {
 		router?.routeToDestinationPicker()
 	}
 
-	@objc private func datesButtonHandler() {
+	@objc private func datesTapHandler() {
 		interactor?.loadDates(request: SearchCriteriaModels.LoadDates.Request())
 	}
 
-	@objc private func roomGuestsButtonHandler() {
+	@objc private func roomGuestsTapHandler() {
 		interactor?.loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request())
 	}
 
 	public func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
-		rootView.destinationButton.setTitle(viewModel.destination, for: .normal)
-		rootView.datesButton.setTitle(viewModel.dateRange, for: .normal)
-		rootView.roomGuestsButton.setTitle(viewModel.roomGuests, for: .normal)
+		rootView.destinationControl.setTitle(viewModel.destination)
+		rootView.datesControl.setTitle(viewModel.dateRange)
+		rootView.roomGuestsControl.setTitle(viewModel.roomGuests)
 	}
 
 	public func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
