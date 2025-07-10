@@ -39,6 +39,12 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 			selectedEndDate: viewModel.endDate,
 			calendar: calendar
 		)
+
+		if let sheet = dateRangeVC.sheetPresentationController {
+			sheet.detents = [.large()]
+			sheet.prefersGrabberVisible = true
+		}
+
 		viewController?.present(dateRangeVC, animated: true)
 	}
 
@@ -49,6 +55,12 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 			adults: viewModel.adults,
 			childrenAge: viewModel.childrenAge
 		)
+
+		if let sheet = roomGuestsVC.sheetPresentationController {
+			sheet.detents = [.medium(), .large()]
+			sheet.prefersGrabberVisible = true
+		}
+
 		viewController?.present(roomGuestsVC, animated: true)
 	}
 }

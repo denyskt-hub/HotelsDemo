@@ -52,6 +52,7 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 	func test_displayAgePicker_presentsAgePickerWithCorrectOptions() {
 		let viewModel = makeRoomGuestsAgeSelectionViewModel(
 			index: 0,
+			title: "Child 1",
 			selectedIndex: 1,
 			options: [(value: 0, title: "0"), (value: 1, title: "1")]
 		)
@@ -69,6 +70,7 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 	func test_agePickerSelection_didSelectAge() {
 		let viewModel = makeRoomGuestsAgeSelectionViewModel(
 			index: 0,
+			title: "Child 1",
 			selectedIndex: 0,
 			options: [(value: 0, title: "0"), (value: 1, title: "1"), (value: 2, title: "2")]
 		)
@@ -274,8 +276,8 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 			return XCTFail("Expected \(AgeInputView.self) instance, got \(String(describing: view)) instead", file: file, line: line)
 		}
 
-		XCTAssertEqual(ageInputView.titleLabel.text, viewModel.title, file: file, line: line)
-		XCTAssertEqual(ageInputView.selectButton.title(for: .normal), viewModel.selectedAgeTitle, file: file, line: line)
+		XCTAssertEqual(ageInputView.title, viewModel.title, file: file, line: line)
+		XCTAssertEqual(ageInputView.selectedAgeTitle, viewModel.selectedAgeTitle, file: file, line: line)
 	}
 
 	private func assertPresented<T: UIViewController>(
@@ -317,14 +319,26 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 
 	private func makeRoomGuestsAgeSelectionViewModel(
 		index: Int,
+		title: String,
 		selectedIndex: Int,
 		options: [(value: Int, title: String)]
 	) -> RoomGuestsPickerModels.AgeSelection.ViewModel {
 		.init(
 			index: index,
+			title: title,
 			selectedIndex: selectedIndex,
 			availableAges: options.map({ .init(value: $0.value, title: $0.title) })
 		)
+	}
+}
+
+extension AgeInputView {
+	var title: String? {
+		titleLabel.text
+	}
+
+	var selectedAgeTitle: String? {
+		selectControl.title()
 	}
 }
 
@@ -359,12 +373,11 @@ extension RoomGuestsPickerViewController {
 
 	func simulateSelectAgeButtonTap(at index: Int) {
 		let ageInputView = ageInputView(at: index) as? AgeInputView
-		ageInputView?.selectButton.simulateTap()
+		ageInputView?.selectControl.simulateTap()
 	}
 
 	func simulateAgeSelection(at index: Int) {
-		let nav = presentedViewController as? UINavigationController
-		let agePicker = nav?.viewControllers.first as? AgePickerViewController
+		let agePicker = presentedViewController as? AgePickerViewController
 		agePicker?.pickerView.selectRow(index, inComponent: 0, animated: false)
 		agePicker?.doneButton.simulateTap()
 	}

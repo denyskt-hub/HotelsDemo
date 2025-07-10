@@ -13,11 +13,7 @@ public class RoomGuestsPickerRootView: NiblessView {
 	public lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
-			roomsStepper,
-			adultsStepper,
-			childrenStepper,
-			childrenStack,
-			spacer,
+			scrollView,
 			applyButton
 		])
 		stack.axis = .vertical
@@ -28,7 +24,26 @@ public class RoomGuestsPickerRootView: NiblessView {
 	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Select rooms and guests"
+		label.font = .systemFont(ofSize: 24, weight: .bold)
 		return label
+	}()
+
+	public let scrollView: UIScrollView = {
+		let scrollView = UIScrollView()
+		scrollView.alwaysBounceVertical = true
+		return scrollView
+	}()
+
+	public lazy var contentStack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [
+			roomsStepper,
+			adultsStepper,
+			childrenStepper,
+			childrenStack
+		])
+		stack.axis = .vertical
+		stack.spacing = 10
+		return stack
 	}()
 
 	public let roomsStepper: StepperView = {
@@ -56,14 +71,10 @@ public class RoomGuestsPickerRootView: NiblessView {
 		return stack
 	}()
 
-	private let spacer: UIView = {
-		let view = UIView()
-		return view
-	}()
-
 	public let applyButton: UIButton = {
 		let button = UIButton()
 		button.configure(.filled, title: "Apply")
+		button.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return button
 	}()
 
@@ -85,11 +96,13 @@ public class RoomGuestsPickerRootView: NiblessView {
 	}
 
 	private func setupHierarchy() {
+		scrollView.addSubview(contentStack)
 		addSubview(stack)
 	}
 
 	private func activateConstraints() {
 		activateConstraintsStack()
+		activateConstraintsContentStack()
 	}
 }
 
@@ -100,8 +113,18 @@ extension RoomGuestsPickerRootView {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
 		let trailing = stack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
-		let top = stack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
-		let bottom = stack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
+		let top = stack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30)
+		let bottom = stack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
+	private func activateConstraintsContentStack() {
+		contentStack.translatesAutoresizingMaskIntoConstraints = false
+		let leading = contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor)
+		let trailing = contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+		let top = contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor)
+		let bottom = contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+		let width = contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom, width])
 	}
 }

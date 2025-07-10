@@ -82,6 +82,7 @@ final class RoomGuestsPickerPresenterTests: XCTestCase {
 		let availableAges = [1, 2, 3]
 		let expectedViewModel = RoomGuestsPickerModels.AgeSelection.ViewModel(
 			index: index,
+			title: "Child 1",
 			selectedIndex: 1,
 			availableAges: [
 				.init(value: 1, title: "1 year old"),

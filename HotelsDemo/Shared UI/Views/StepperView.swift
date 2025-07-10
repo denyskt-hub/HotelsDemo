@@ -10,7 +10,7 @@ import UIKit
 public class StepperView: NiblessView {
 	private var hierarchyNotReady = true
 
-	lazy var stack: UIStackView = {
+	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
 			stepperStack
@@ -39,19 +39,13 @@ public class StepperView: NiblessView {
 		return stack
 	}()
 
-	public let decrementButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("-", for: .normal)
-		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-		button.setTitleColor(.label, for: .normal)
+	public let decrementButton: StepperButton = {
+		let button = StepperButton(systemImageName: "minus")
 		return button
 	}()
 
-	public let incrementButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("+", for: .normal)
-		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-		button.setTitleColor(.label, for: .normal)
+	public let incrementButton: StepperButton = {
+		let button = StepperButton(systemImageName: "plus")
 		return button
 	}()
 

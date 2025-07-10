@@ -8,17 +8,15 @@
 import UIKit
 
 public final class AgePickerViewController: NiblessViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+	private let rootView = AgePickerRootView()
+
 	public let options: [String]
 	private(set) public var selectedIndex: Int?
 	public let onSelect: (Int) -> Void
 
-	public let pickerView = UIPickerView()
-
-	public let doneButton: UIButton = {
-		let button = UIButton(type: .system)
-		button.setTitle("Done", for: .normal)
-		return button
-	}()
+	public var titleLabel: UILabel { rootView.titleLabel }
+	public var pickerView: UIPickerView { rootView.pickerView }
+	public var doneButton: UIButton { rootView.doneButton }
 
 	public init(
 		options: [String],
@@ -31,26 +29,23 @@ public final class AgePickerViewController: NiblessViewController, UIPickerViewD
 		super.init()
 	}
 
+	public override func loadView() {
+		view = rootView
+	}
+
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .systemBackground
 
+		titleLabel.text = title
+		
 		pickerView.dataSource = self
 		pickerView.delegate = self
-		view.addSubview(pickerView)
-		pickerView.translatesAutoresizingMaskIntoConstraints = false
-		NSLayoutConstraint.activate([
-			pickerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			pickerView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-		])
 
 		if let selectedIndex {
 			pickerView.selectRow(selectedIndex, inComponent: 0, animated: false)
 		}
 
 		doneButton.addTarget(self, action: #selector(doneTapped), for: .touchUpInside)
-
-		navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton)
 	}
 
 	@objc private func doneTapped() {

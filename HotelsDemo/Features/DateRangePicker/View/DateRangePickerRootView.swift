@@ -25,6 +25,7 @@ final class DateRangePickerRootView: NiblessView {
 	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Select dates"
+		label.font = .systemFont(ofSize: 24, weight: .bold)
 		return label
 	}()
 
@@ -108,8 +109,8 @@ extension DateRangePickerRootView {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: leadingAnchor)
 		let trailing = stack.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = stack.topAnchor.constraint(equalTo: topAnchor)
-		let bottom = stack.bottomAnchor.constraint(equalTo: bottomAnchor)
+		let top = stack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30)
+		let bottom = stack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }

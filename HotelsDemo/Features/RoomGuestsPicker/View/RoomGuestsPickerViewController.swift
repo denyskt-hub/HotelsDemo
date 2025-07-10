@@ -105,9 +105,14 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 			let age = viewModel.availableAges[selectedIndex].value
 			self?.interactor?.didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request(index: index, age: age))
 		}
+		vc.title = viewModel.title
 
-		let nav = UINavigationController(rootViewController: vc)
-		present(nav, animated: true)
+		if let sheet = vc.sheetPresentationController {
+			sheet.detents = [.custom(resolver: { _ in 300 })]
+			sheet.prefersGrabberVisible = true
+		}
+
+		present(vc, animated: true)
 	}
 
 	public func displaySelectedRoomGuests(viewModel: RoomGuestsPickerModels.Select.ViewModel) {

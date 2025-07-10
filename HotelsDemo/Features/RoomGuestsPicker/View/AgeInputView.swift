@@ -18,23 +18,23 @@ public final class AgeInputView: NiblessView {
 	public lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
-			selectButton
+			selectControl
 		])
 		stack.axis = .vertical
-		stack.spacing = 10
+		stack.spacing = 6
 		return stack
 	}()
 
 	public let titleLabel: UILabel = {
 		let label = UILabel()
+		label.font = .systemFont(ofSize: 16)
 		return label
 	}()
 
-	public let selectButton: UIButton = {
-		let button = UIButton()
-		button.configure(.plain)
-		button.tintColor = .label
-		return button
+	public let selectControl: SelectControl = {
+		let control = SelectControl()
+		control.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		return control
 	}()
 
 	public weak var delegate: AgeInputViewDelegate?
@@ -69,7 +69,7 @@ public final class AgeInputView: NiblessView {
 	}
 
 	private func setupSelectButton() {
-		selectButton.addTarget(self, action: #selector(didRequestPicker), for: .touchUpInside)
+		selectControl.addTarget(self, action: #selector(didRequestPicker), for: .touchUpInside)
 	}
 
 	private func activateConstraints() {
@@ -78,7 +78,7 @@ public final class AgeInputView: NiblessView {
 
 	private func configure(with viewModel: RoomGuestsPickerModels.AgeInputViewModel) {
 		titleLabel.text = viewModel.title
-		selectButton.setTitle(viewModel.selectedAgeTitle, for: .normal)
+		selectControl.setTitle(viewModel.selectedAgeTitle)
 	}
 
 	@objc private func didRequestPicker() {

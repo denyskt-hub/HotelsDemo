@@ -141,11 +141,13 @@ public enum RoomGuestsPickerModels {
 
 		public struct ViewModel: Equatable {
 			public let index: Int
+			public let title: String
 			public let selectedIndex: Int?
 			public let availableAges: [AgeViewModel]
 
-			public init(index: Int, selectedIndex: Int?, availableAges: [AgeViewModel]) {
+			public init(index: Int, title: String, selectedIndex: Int?, availableAges: [AgeViewModel]) {
 				self.index = index
+				self.title = title
 				self.selectedIndex = selectedIndex
 				self.availableAges = availableAges
 			}

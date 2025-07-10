@@ -47,6 +47,7 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 	public func presentAgePicker(response: RoomGuestsPickerModels.AgeSelection.Response) {
 		let viewModel = RoomGuestsPickerModels.AgeSelection.ViewModel(
 			index: response.index,
+			title: ChildTitleFormatter.title(for: response.index),
 			selectedIndex: response.selectedAge.flatMap({
 				response.availableAges.firstIndex(of: $0)
 			}),
