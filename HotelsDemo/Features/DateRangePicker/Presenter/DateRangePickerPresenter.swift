@@ -64,6 +64,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		.init(
 			date: date.date,
 			title: date.date.map(dateFormatter.formatDay),
+			rangePosition: date.rangePosition,
 			isToday: date.isToday,
 			isEnabled: date.isEnabled,
 			isSelected: date.isSelected,

@@ -122,23 +122,26 @@ public enum DateRangePickerModels {
 
 	public struct CalendarDate: Equatable {
 		public let date: Date?
+		public let rangePosition: DateRangePosition
 		public let isToday: Bool
 		public let isEnabled: Bool
-		public let isSelected: Bool
-		public let isInRange: Bool
+		public var isSelected: Bool {
+			rangePosition == .start || rangePosition == .end || rangePosition == .single
+		}
+		public var isInRange: Bool {
+			rangePosition == .middle
+		}
 
 		public init(
 			date: Date?,
+			rangePosition: DateRangePosition = .none,
 			isToday: Bool = false,
-			isEnabled: Bool = true,
-			isSelected: Bool = false,
-			isInRange: Bool = false
+			isEnabled: Bool = true
 		) {
 			self.date = date
+			self.rangePosition = rangePosition
 			self.isToday = isToday
 			self.isEnabled = isEnabled
-			self.isSelected = isSelected
-			self.isInRange = isInRange
 		}
 	}
 
@@ -165,6 +168,7 @@ public enum DateRangePickerModels {
 	public struct CalendarDateViewModel: Equatable {
 		public let date: Date?
 		public let title: String?
+		public let rangePosition: DateRangePosition
 		public let isToday: Bool
 		public let isEnabled: Bool
 		public let isSelected: Bool
@@ -173,6 +177,7 @@ public enum DateRangePickerModels {
 		public init(
 			date: Date?,
 			title: String?,
+			rangePosition: DateRangePosition = .none,
 			isToday: Bool = false,
 			isEnabled: Bool = true,
 			isSelected: Bool = false,
@@ -180,6 +185,7 @@ public enum DateRangePickerModels {
 		) {
 			self.date = date
 			self.title = title
+			self.rangePosition = rangePosition
 			self.isToday = isToday
 			self.isEnabled = isEnabled
 			self.isSelected = isSelected

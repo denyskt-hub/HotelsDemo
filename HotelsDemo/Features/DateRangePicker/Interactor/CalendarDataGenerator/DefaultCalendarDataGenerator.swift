@@ -110,16 +110,26 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		let today = calendar.startOfDay(for: currentDate)
 
 		while current <= end {
-			let isSelected = current == selectedStartDate || current == selectedEndDate
-			let isInRange = isDateInSelectedRange(current, selectedStartDate, selectedEndDate)
+			var rangePosition = DateRangePosition.none
+			if current == selectedStartDate && selectedEndDate == nil {
+				rangePosition = .single
+			}
+			else if current == selectedStartDate && selectedEndDate != nil {
+				rangePosition = .start
+			}
+			else if current == selectedEndDate {
+				rangePosition = .end
+			}
+			else if isDateInSelectedRange(current, selectedStartDate, selectedEndDate) {
+				rangePosition = .middle
+			}
 
 			result.append(
 				.init(
 					date: current,
+					rangePosition: rangePosition,
 					isToday: current == today,
-					isEnabled: current >= today,
-					isSelected: isSelected,
-					isInRange: isInRange
+					isEnabled: current >= today
 				)
 			)
 			current = current.adding(days: 1, calendar: calendar)

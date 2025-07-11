@@ -13,7 +13,10 @@ public protocol DateRangePickerDelegate: AnyObject {
 
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
 	private let rootView = DateRangePickerRootView()
+
 	private let weekdaysDataSource = WeekdaysDataSource()
+	private let weekdaysLayoutDelegate = WeekdaysLayoutDelegate()
+
 	private let calendarDataSource = CalendarDataSource()
 	private let calendarLayoutDelegate = CalendarLayoutDelegate()
 
@@ -40,6 +43,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 	private func setupWeekdaysCollectionView() {
 		weekdaysCollectionView.dataSource = weekdaysDataSource
+		weekdaysCollectionView.delegate = weekdaysLayoutDelegate
 		weekdaysCollectionView.register(WeekdayCell.self)
 	}
 
@@ -108,6 +112,18 @@ final class WeekdaysDataSource: NSObject, UICollectionViewDataSource {
 	}
 }
 
+final class WeekdaysLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		sizeForItemAt indexPath: IndexPath
+	) -> CGSize {
+		let numberOfColumns = CGFloat(7)
+		let itemWidth = collectionView.bounds.width / numberOfColumns
+		return CGSize(width: itemWidth, height: 34)
+	}
+}
+
 final class CalendarDataSource: NSObject, UICollectionViewDataSource {
 	var sections = [DateRangePickerModels.CalendarMonthViewModel]()
 	weak var cellDelegate: DateCellDelegate?
@@ -169,6 +185,16 @@ final class CalendarLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout
 		referenceSizeForHeaderInSection section: Int
 	) -> CGSize {
 		CGSize(width: collectionView.bounds.width, height: 44)
+	}
+
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		sizeForItemAt indexPath: IndexPath
+	) -> CGSize {
+		let numberOfColumns = CGFloat(7)
+		let itemWidth = collectionView.bounds.width / numberOfColumns
+		return CGSize(width: itemWidth, height: itemWidth)
 	}
 }
 

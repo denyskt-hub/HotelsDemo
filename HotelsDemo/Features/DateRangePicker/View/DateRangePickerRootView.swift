@@ -18,7 +18,7 @@ final class DateRangePickerRootView: NiblessView {
 			applyButtonContainer
 		])
 		stack.axis = .vertical
-		stack.spacing = 0
+		stack.spacing = 8
 		return stack
 	}()
 
@@ -30,17 +30,25 @@ final class DateRangePickerRootView: NiblessView {
 	}()
 
 	public let weekdaysCollectionView: UICollectionView = {
+		let layout = UICollectionViewFlowLayout()
+		layout.minimumInteritemSpacing = 0
+		layout.minimumLineSpacing = 0
+
 		let collectionView = UICollectionView(
 			frame: .zero,
-			collectionViewLayout: UICollectionViewFlowLayout.calendarLayout
+			collectionViewLayout: layout
 		)
 		return collectionView
 	}()
 
 	public let collectionView: UICollectionView = {
+		let layout = UICollectionViewFlowLayout()
+		layout.minimumInteritemSpacing = 0
+		layout.minimumLineSpacing = 0
+
 		let collectionView = UICollectionView(
 			frame: .zero,
-			collectionViewLayout: UICollectionViewFlowLayout.calendarLayout
+			collectionViewLayout: layout
 		)
 		return collectionView
 	}()
@@ -107,24 +115,10 @@ extension DateRangePickerRootView {
 
 	private func activateConstraintsStack() {
 		stack.translatesAutoresizingMaskIntoConstraints = false
-		let leading = stack.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = stack.trailingAnchor.constraint(equalTo: trailingAnchor)
+		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
+		let trailing = stack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
 		let top = stack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30)
 		let bottom = stack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
-	}
-}
-
-extension UICollectionViewFlowLayout {
-	static var calendarLayout: UICollectionViewFlowLayout {
-		let layout = UICollectionViewFlowLayout()
-		layout.minimumInteritemSpacing = 0
-		layout.minimumLineSpacing = 4
-
-		let numberOfColumns = CGFloat(7)
-		let availableWidth = UIScreen.main.bounds.width
-		let itemWidth = floor(availableWidth / numberOfColumns)
-		layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
-		return layout
 	}
 }

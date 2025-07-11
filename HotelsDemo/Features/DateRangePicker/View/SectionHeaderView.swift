@@ -10,7 +10,11 @@ import UIKit
 public class SectionHeaderView: UICollectionReusableView {
 	static let reuseIdentifier = "SectionHeaderView"
 
-	public let label = UILabel()
+	public let label: UILabel = {
+		let label = UILabel()
+		label.font = .systemFont(ofSize: 17, weight: .semibold)
+		return label
+	}()
 
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -36,7 +40,7 @@ public class SectionHeaderView: UICollectionReusableView {
 extension SectionHeaderView {
 	private func activateConstraintsLabel() {
 		label.translatesAutoresizingMaskIntoConstraints = false
-		let leading = label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 18)
+		let leading = label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
 		let trailing = label.trailingAnchor.constraint(equalTo: trailingAnchor)
 		let top = label.topAnchor.constraint(equalTo: topAnchor)
 		let bottom = label.bottomAnchor.constraint(equalTo: bottomAnchor)
