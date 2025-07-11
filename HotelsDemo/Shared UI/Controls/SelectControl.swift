@@ -5,7 +5,6 @@
 //  Created by Denys Kotenko on 10/7/25.
 //
 
-
 import UIKit
 
 public final class SelectControl: UIControl {

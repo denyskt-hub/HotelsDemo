@@ -40,8 +40,8 @@ public class DestinationPickerRootView: NiblessView {
 		textField.layer.cornerRadius = 8
 		textField.layer.borderWidth = 1
 		textField.layer.borderColor = UIColor.systemGray4.cgColor
-		textField.setLeftPaddingPoints(12)
-		textField.setRightPaddingPoints(12)
+		textField.setLeftPadding(12)
+		textField.setRightPadding(12)
 		textField.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return textField
 	}()
@@ -100,19 +100,5 @@ extension DestinationPickerRootView {
 		let top = stack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30)
 		let bottom = stack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
-	}
-}
-
-extension UITextField {
-	func setLeftPaddingPoints(_ amount: CGFloat) {
-		let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: frame.height))
-		leftView = paddingView
-		leftViewMode = .always
-	}
-
-	func setRightPaddingPoints(_ amount: CGFloat) {
-		let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: frame.height))
-		rightView = paddingView
-		rightViewMode = .always
 	}
 }

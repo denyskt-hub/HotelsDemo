@@ -58,17 +58,15 @@ public final class DateCell: UICollectionViewCell {
 		button.setTitle(viewModel.title ?? "", for: .normal)
 		button.isEnabled = viewModel.isEnabled
 
-		let radius: CGFloat = 8
-
 		switch viewModel.rangePosition {
 		case .none:
 			button.backgroundColor = .clear
-			button.tintColor = viewModel.isToday ? .blue : .label
+			button.tintColor = viewModel.isToday ? .systemBlue : .label
 			button.clearCornerRadius()
 		case .start:
 			button.backgroundColor = .systemBlue
 			button.tintColor = .white
-			button.roundCorners([.topLeft, .bottomLeft], radius: radius)
+			button.roundCorners([.topLeft, .bottomLeft])
 		case .middle:
 			button.backgroundColor = .systemGray5
 			button.tintColor = .label
@@ -76,11 +74,11 @@ public final class DateCell: UICollectionViewCell {
 		case .end:
 			button.backgroundColor = .systemBlue
 			button.tintColor = .white
-			button.roundCorners([.topRight, .bottomRight], radius: radius)
+			button.roundCorners([.topRight, .bottomRight])
 		case .single:
 			button.backgroundColor = .systemBlue
 			button.tintColor = .white
-			button.roundAllCorners(radius: radius)
+			button.roundAllCorners()
 		}
 	}
 
@@ -100,45 +98,5 @@ extension DateCell {
 		let top = button.topAnchor.constraint(equalTo: topAnchor)
 		let bottom = button.bottomAnchor.constraint(equalTo: bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
-	}
-}
-
-
-enum Corner {
-	case topLeft
-	case topRight
-	case bottomLeft
-	case bottomRight
-}
-
-extension UIView {
-	func roundCorners(_ corners: [Corner], radius: CGFloat) {
-		layer.cornerRadius = radius
-		layer.maskedCorners = CACornerMask(from: corners)
-		layer.masksToBounds = true
-	}
-
-	func roundAllCorners(radius: CGFloat) {
-		roundCorners([.topLeft, .topRight, .bottomLeft, .bottomRight], radius: radius)
-	}
-
-	func clearCornerRadius() {
-		layer.cornerRadius = 0
-		layer.maskedCorners = []
-	}
-}
-
-private extension CACornerMask {
-	init(from corners: [Corner]) {
-		self = []
-
-		for corner in corners {
-			switch corner {
-			case .topLeft: self.insert(.layerMinXMinYCorner)
-			case .topRight: self.insert(.layerMaxXMinYCorner)
-			case .bottomLeft: self.insert(.layerMinXMaxYCorner)
-			case .bottomRight: self.insert(.layerMaxXMaxYCorner)
-			}
-		}
 	}
 }
