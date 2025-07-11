@@ -56,9 +56,9 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 	}
 
 	public func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
-		rootView.destinationControl.setTitle(viewModel.destination)
-		rootView.datesControl.setTitle(viewModel.dateRange)
-		rootView.roomGuestsControl.setTitle(viewModel.roomGuests)
+		destinationControl.setTitle(viewModel.destination)
+		datesControl.setTitle(viewModel.dateRange)
+		roomGuestsControl.setTitle(viewModel.roomGuests)
 	}
 
 	public func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
