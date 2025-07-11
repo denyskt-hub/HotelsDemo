@@ -39,6 +39,7 @@ final class DateRangePickerRootView: NiblessView {
 			frame: .zero,
 			collectionViewLayout: layout
 		)
+		collectionView.heightAnchor.constraint(equalToConstant: 34).isActive = true
 		return collectionView
 	}()
 
@@ -63,6 +64,7 @@ final class DateRangePickerRootView: NiblessView {
 		let button = UIButton()
 		button.configure(.filled, title: "Apply")
 		button.isEnabled = false
+		button.heightAnchor.constraint(equalToConstant: 48).isActive = true
 		return button
 	}()
 
@@ -90,7 +92,6 @@ final class DateRangePickerRootView: NiblessView {
 
 	private func activateConstraints() {
 		activateConstraintsApplyButton()
-		activateConstraintsWeekdaysCollectionView()
 		activateConstraintsStack()
 	}
 }
@@ -103,15 +104,8 @@ extension DateRangePickerRootView {
 		let leading = applyButton.leadingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.leadingAnchor)
 		let trailing = applyButton.trailingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.trailingAnchor)
 		let top = applyButton.topAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.topAnchor)
-		let bottom = applyButton.bottomAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.bottomAnchor)
-		let height = applyButton.heightAnchor.constraint(equalToConstant: 44)
-		NSLayoutConstraint.activate([leading, trailing, top, bottom, height])
-	}
-
-	private func activateConstraintsWeekdaysCollectionView() {
-		weekdaysCollectionView.translatesAutoresizingMaskIntoConstraints = false
-		let height = weekdaysCollectionView.heightAnchor.constraint(equalToConstant: 44)
-		NSLayoutConstraint.activate([height])
+		let bottom = applyButton.bottomAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.bottomAnchor, constant: -10)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 
 	private func activateConstraintsStack() {

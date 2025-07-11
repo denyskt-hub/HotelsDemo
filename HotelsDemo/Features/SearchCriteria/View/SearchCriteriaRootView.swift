@@ -46,7 +46,7 @@ public class SearchCriteriaRootView: NiblessView {
 	public let searchButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.configure(.filled, title: "Search")
-		button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		button.heightAnchor.constraint(equalToConstant: 48).isActive = true
 		return button
 	}()
 

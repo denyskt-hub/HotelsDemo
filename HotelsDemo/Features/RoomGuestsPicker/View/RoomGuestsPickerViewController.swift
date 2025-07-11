@@ -108,7 +108,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		vc.title = viewModel.title
 
 		if let sheet = vc.sheetPresentationController {
-			sheet.detents = [.custom(resolver: { _ in 300 })]
+			sheet.detents = [.custom(resolver: { _ in 344 })]
 			sheet.prefersGrabberVisible = true
 		}
 

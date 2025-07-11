@@ -14,7 +14,7 @@ public class AgePickerRootView: NiblessView {
 		let stack = UIStackView(arrangedSubviews: [
 			titleLabel,
 			pickerView,
-			doneButton
+			doneButtonContainer
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
@@ -30,6 +30,11 @@ public class AgePickerRootView: NiblessView {
 	}()
 
 	public let pickerView = UIPickerView()
+
+	private let doneButtonContainer: UIView = {
+		let view = UIView()
+		return view
+	}()
 
 	public let doneButton: UIButton = {
 		let button = UIButton()
@@ -56,10 +61,12 @@ public class AgePickerRootView: NiblessView {
 	}
 
 	private func setupHierarchy() {
+		doneButtonContainer.addSubview(doneButton)
 		addSubview(stack)
 	}
 
 	private func activateConstraints() {
+		activateConstraintsDoneButton()
 		activateConstraintsStack()
 	}
 }
@@ -67,6 +74,15 @@ public class AgePickerRootView: NiblessView {
 // MARK: - Layout
 
 extension AgePickerRootView {
+	private func activateConstraintsDoneButton() {
+		doneButton.translatesAutoresizingMaskIntoConstraints = false
+		let leading = doneButton.leadingAnchor.constraint(equalTo: doneButtonContainer.layoutMarginsGuide.leadingAnchor)
+		let trailing = doneButton.trailingAnchor.constraint(equalTo: doneButtonContainer.layoutMarginsGuide.trailingAnchor)
+		let top = doneButton.topAnchor.constraint(equalTo: doneButtonContainer.layoutMarginsGuide.topAnchor)
+		let bottom = doneButton.bottomAnchor.constraint(equalTo: doneButtonContainer.layoutMarginsGuide.bottomAnchor, constant: -10)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
 	private func activateConstraintsStack() {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
