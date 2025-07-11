@@ -161,15 +161,10 @@ final class CalendarDataSource: NSObject, UICollectionViewDataSource {
 			fatalError("Unsupported kind")
 		}
 
-		let header = collectionView.dequeueReusableSupplementaryView(
+		let sectionHeader: SectionHeaderView = collectionView.dequeueReusableSupplementaryView(
 			ofKind: kind,
-			withReuseIdentifier: SectionHeaderView.reuseIdentifier,
 			for: indexPath
 		)
-
-		guard let sectionHeader = header as? SectionHeaderView else {
-			fatalError("Could not dequeue SectionHeaderView")
-		}
 
 		let sectionViewModel = sections[indexPath.section]
 		sectionHeader.label.text = sectionViewModel.title

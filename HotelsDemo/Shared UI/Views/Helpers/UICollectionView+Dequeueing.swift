@@ -15,4 +15,12 @@ extension UICollectionView {
 		}
 		return cell
 	}
+
+	func dequeueReusableSupplementaryView<T: UICollectionReusableView>(ofKind kind: String, for indexPath: IndexPath) -> T {
+		let identifier = String(describing: T.self)
+		guard let view = dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: identifier, for: indexPath) as? T else {
+			preconditionFailure("Failed to dequeue view with identifier \(identifier) as \(T.self)")
+		}
+		return view
+	}
 }
