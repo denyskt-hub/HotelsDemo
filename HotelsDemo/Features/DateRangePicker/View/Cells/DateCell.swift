@@ -93,10 +93,10 @@ public final class DateCell: UICollectionViewCell {
 extension DateCell {
 	private func activateConstraintsButton() {
 		button.translatesAutoresizingMaskIntoConstraints = false
-		let leading = button.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = button.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = button.topAnchor.constraint(equalTo: topAnchor)
-		let bottom = button.bottomAnchor.constraint(equalTo: bottomAnchor)
+		let leading = button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
+		let trailing = button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+		let top = button.topAnchor.constraint(equalTo: contentView.topAnchor)
+		let bottom = button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }

@@ -39,10 +39,10 @@ public final class WeekdayCell: UICollectionViewCell {
 extension WeekdayCell {
 	private func activateConstraintsLabel() {
 		label.translatesAutoresizingMaskIntoConstraints = false
-		let leading = label.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = label.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = label.topAnchor.constraint(equalTo: topAnchor)
-		let bottom = label.bottomAnchor.constraint(equalTo: bottomAnchor)
+		let leading = label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
+		let trailing = label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+		let top = label.topAnchor.constraint(equalTo: contentView.topAnchor)
+		let bottom = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }
