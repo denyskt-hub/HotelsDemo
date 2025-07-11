@@ -25,6 +25,7 @@ public class RoomGuestsPickerRootView: NiblessView {
 		let label = UILabel()
 		label.text = "Select rooms and guests"
 		label.font = .systemFont(ofSize: 24, weight: .bold)
+		label.textColor = .label
 		return label
 	}()
 

@@ -27,14 +27,14 @@ public final class IconTitleControl: UIControl {
 		imageView.contentMode = .scaleAspectFit
 		imageView.setContentHuggingPriority(.required, for: .horizontal)
 		imageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
-		imageView.tintColor = .darkText
+		imageView.tintColor = .label
 		return imageView
 	}()
 
 	private let titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 17)
-		label.textColor = .darkText
+		label.textColor = .label
 		return label
 	}()
 

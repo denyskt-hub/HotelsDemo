@@ -32,7 +32,9 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 	}
 
 	func test_displayDestinations_rendersDestinations() {
-		let destinations = ["London", "Boston"]
+		let destinations: [DestinationPickerModels.Search.DestinationViewModel] = [
+			.init(title: "London", subtitle: "United Kingdom")
+		]
 		let (sut, _, _) = makeSUT()
 
 		sut.simulateAppearanceInWindow()
@@ -45,7 +47,9 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 	func test_destinationCellDidTap_selectsDestination() {
 		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
-		sut.displayDestinations(viewModel: .init(destinations: ["London"]))
+		sut.displayDestinations(
+			viewModel: .init(destinations: [.init(title: "London", subtitle: "United Kingdom")])
+		)
 
 		sut.simulateTapOnDestination(at: 0)
 
@@ -96,7 +100,7 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 
 	private func assertThat(
 		_ sut: DestinationPickerViewController,
-		isRendering destinations: [String],
+		isRendering destinations: [DestinationPickerModels.Search.DestinationViewModel],
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -111,7 +115,7 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 
 	private func assertThat(
 		_ sut: DestinationPickerViewController,
-		hasViewConfiguredFor destination: String,
+		hasViewConfiguredFor destination: DestinationPickerModels.Search.DestinationViewModel,
 		at index: Int,
 		file: StaticString = #filePath,
 		line: UInt = #line
@@ -122,7 +126,9 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 			return XCTFail("Expected \(DestinationCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
 		}
 
-		XCTAssertEqual(cell.label.text, destination, "Expected label to be \(destination), for destination view at index (\(index))", file: file, line: line)
+		XCTAssertEqual(cell.titleLabel.text, destination.title, "Expected titleLabel to be \(destination.title), for destination view at index (\(index))", file: file, line: line)
+
+		XCTAssertEqual(cell.subtitleLabel.text, destination.subtitle, "Expected subtitleLabel to be \(destination.subtitle), for destination view at index (\(index))", file: file, line: line)
 	}
 }
 

@@ -10,13 +10,17 @@ import HotelsDemo
 
 final class DestinationPickerPresenterTests: XCTestCase {
 	func test_presentDestinations_displayDestinations() {
-		let destination = makeDestination(label: "Mexico City")
+		let destination = makeDestination(
+			name: "New York",
+			country: "United States",
+			cityName: "New York"
+		)
 		let (sut, viewController) = makeSUT()
 
 		sut.presentDestinations(response: .init(destinations: [destination]))
 
 		XCTAssertTrue(viewController.messages.contains(where: {
-			$0 == .displayDestinations(.init(destinations: ["Mexico City"]))
+			$0 == .displayDestinations(.init(destinations: [.init(title: "New York", subtitle: "New York, United States")]))
 		}))
 	}
 
@@ -29,7 +33,7 @@ final class DestinationPickerPresenterTests: XCTestCase {
 	}
 
 	func test_presentSelectedDestination_displaySelectedDestination() {
-		let destination = makeDestination(label: "Mexico City")
+		let destination = anyDestination()
 		let (sut, viewController) = makeSUT()
 
 		sut.presentSelectedDestination(response: .init(selected: destination))

@@ -29,6 +29,12 @@ public final class SearchCriteriaRouter: SearchCriteriaRoutingLogic {
 
 	public func routeToDestinationPicker() {
 		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: viewController)
+
+		if let sheet = destinationVC.sheetPresentationController {
+			sheet.detents = [.large()]
+			sheet.prefersGrabberVisible = true
+		}
+
 		viewController?.present(destinationVC, animated: true)
 	}
 

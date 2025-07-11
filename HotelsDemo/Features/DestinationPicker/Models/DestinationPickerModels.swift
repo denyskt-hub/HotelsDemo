@@ -26,10 +26,20 @@ public enum DestinationPickerModels {
 		}
 
 		public struct ViewModel: Equatable {
-			public let destinations: [String]
+			public let destinations: [DestinationViewModel]
 
-			public init(destinations: [String]) {
+			public init(destinations: [DestinationViewModel]) {
 				self.destinations = destinations
+			}
+		}
+
+		public struct DestinationViewModel: Equatable {
+			public let title: String
+			public let subtitle: String
+
+			public init(title: String, subtitle: String) {
+				self.title = title
+				self.subtitle = subtitle
 			}
 		}
 

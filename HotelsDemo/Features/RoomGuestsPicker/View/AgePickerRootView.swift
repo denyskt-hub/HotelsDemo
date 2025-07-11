@@ -24,6 +24,7 @@ public class AgePickerRootView: NiblessView {
 	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 24, weight: .bold)
+		label.textColor = .label
 		label.heightAnchor.constraint(equalToConstant: 28).isActive = true
 		return label
 	}()

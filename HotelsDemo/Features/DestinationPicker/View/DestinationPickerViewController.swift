@@ -17,6 +17,7 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	public var tableView: UITableView { rootView.tableView }
 	public var textField: UITextField { rootView.textField }
 	public var errorLabel: UILabel { rootView.errorLabel }
+	private var errorContainer: UIView { rootView.errorContainer }
 
 	public override func loadView() {
 		view = rootView
@@ -73,7 +74,9 @@ extension DestinationPickerViewController: UITableViewDataSource {
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: DestinationCell = tableView.dequeueReusableCell()
-		cell.label.text = viewModel.destinations[indexPath.row]
+		let viewModel = viewModel.destinations[indexPath.row]
+		cell.titleLabel.text = viewModel.title
+		cell.subtitleLabel.text = viewModel.subtitle
 		return cell
 	}
 }

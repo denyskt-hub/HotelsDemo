@@ -26,6 +26,7 @@ final class DateRangePickerRootView: NiblessView {
 		let label = UILabel()
 		label.text = "Select dates"
 		label.font = .systemFont(ofSize: 24, weight: .bold)
+		label.textColor = .label
 		return label
 	}()
 

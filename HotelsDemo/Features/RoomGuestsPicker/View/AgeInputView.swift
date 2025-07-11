@@ -28,6 +28,7 @@ public final class AgeInputView: NiblessView {
 	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16)
+		label.textColor = .label
 		return label
 	}()
 

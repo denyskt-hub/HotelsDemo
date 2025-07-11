@@ -16,7 +16,14 @@ public final class DestinationPickerPresenter: DestinationPickerPresentationLogi
 
 	public func presentDestinations(response: DestinationPickerModels.Search.Response) {
 		let viewModel = DestinationPickerModels.Search.ViewModel(
-			destinations: response.destinations.map { $0.label }
+			destinations: response.destinations.map {
+				.init(
+					title: $0.name,
+					subtitle: [$0.cityName, $0.country]
+						.filter { !$0.isEmpty }
+						.joined(separator: ", ")
+				)
+			}
 		)
 		viewController?.displayDestinations(viewModel: viewModel)
 		viewController?.hideSearchError()
