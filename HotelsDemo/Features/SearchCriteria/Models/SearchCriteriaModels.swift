@@ -124,6 +124,28 @@ public enum SearchCriteriaModels {
 		}
 	}
 
+	public enum Search {
+		public struct Request: Equatable {
+			public init() {}
+		}
+
+		public struct Response: Equatable {
+			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let criteria: SearchCriteria
+
+			public init(criteria: SearchCriteria) {
+				self.criteria = criteria
+			}
+		}
+	}
+
 	public struct ErrorViewModel: Equatable {
 		public let message: String
 

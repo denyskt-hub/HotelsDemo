@@ -53,6 +53,11 @@ public final class SearchCriteriaPresenter: SearchCriteriaPresentationLogic {
 		viewController?.displayUpdateError(viewModel: viewModel)
 	}
 
+	public func presentSearch(response: SearchCriteriaModels.Search.Response) {
+		let viewModel = SearchCriteriaModels.Search.ViewModel(criteria: response.criteria)
+		viewController?.displaySearch(viewModel: viewModel)
+	}
+
 	private func presentCriteria(_ criteria: SearchCriteria) {
 		let checkIn = dateFormatter.string(from: criteria.checkInDate)
 		let checkOut = dateFormatter.string(from: criteria.checkOutDate)

@@ -15,4 +15,6 @@ public protocol SearchCriteriaBusinessLogic {
 	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request)
 	func updateDates(request: SearchCriteriaModels.UpdateDates.Request)
 	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request)
+
+	func search(request: SearchCriteriaModels.Search.Request)
 }

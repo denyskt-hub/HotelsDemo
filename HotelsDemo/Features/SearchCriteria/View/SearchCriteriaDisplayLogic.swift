@@ -13,4 +13,5 @@ public protocol SearchCriteriaDisplayLogic: AnyObject {
 	func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel)
 	func displayDates(viewModel: DateRangePickerModels.ViewModel)
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel)
+	func displaySearch(viewModel: SearchCriteriaModels.Search.ViewModel)
 }

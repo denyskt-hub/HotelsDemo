@@ -18,4 +18,6 @@ public protocol SearchCriteriaPresentationLogic {
 	func presentUpdateDates(response: SearchCriteriaModels.UpdateDates.Response)
 	func presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response)
 	func presentUpdateError(_ error: Error)
+
+	func presentSearch(response: SearchCriteriaModels.Search.Response)
 }

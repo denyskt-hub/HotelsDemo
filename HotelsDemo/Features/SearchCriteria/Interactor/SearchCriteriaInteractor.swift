@@ -104,6 +104,19 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 		}
 	}
 
+	public func search(request: SearchCriteriaModels.Search.Request) {
+		load { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentSearch(criteria)
+			case let .failure(error):
+				self.presentLoadError(error)
+			}
+		}
+	}
+
 	private func load(_ completion: @escaping (Result<SearchCriteria, Error>) -> Void) {
 		provider.retrieve(completion: completion)
 	}
@@ -200,5 +213,9 @@ public final class SearchCriteriaInteractor: SearchCriteriaBusinessLogic {
 
 	private func presentUpdateError(_ error: Error) {
 		presenter?.presentUpdateError(error)
+	}
+
+	private func presentSearch(_ criteria: SearchCriteria) {
+		presenter?.presentSearch(response: SearchCriteriaModels.Search.Response(criteria: criteria))
 	}
 }
