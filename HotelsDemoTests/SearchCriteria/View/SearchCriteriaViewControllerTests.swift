@@ -193,6 +193,7 @@ final class SearchCriteriaInteractorSpy: SearchCriteriaBusinessLogic {
 		case updateDestination(SearchCriteriaModels.UpdateDestination.Request)
 		case updateDates(SearchCriteriaModels.UpdateDates.Request)
 		case updateRoomGuests(SearchCriteriaModels.UpdateRoomGuests.Request)
+		case search(SearchCriteriaModels.Search.Request)
 	}
 
 	private(set) var messages = [Message]()
@@ -219,6 +220,10 @@ final class SearchCriteriaInteractorSpy: SearchCriteriaBusinessLogic {
 
 	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request) {
 		messages.append(.updateRoomGuests(request))
+	}
+
+	func search(request: SearchCriteriaModels.Search.Request) {
+		messages.append(.search(request))
 	}
 }
 

@@ -244,16 +244,13 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 		case presentUpdateDates(SearchCriteriaModels.UpdateDates.Response)
 		case presentUpdateRoomGuests(SearchCriteriaModels.UpdateRoomGuests.Response)
 		case presentUpdateError(NSError)
+		case presentSearch(SearchCriteriaModels.Search.Response)
 	}
 
 	private(set) var messages = [Message]()
 
 	func presentLoadCriteria(response: SearchCriteriaModels.Load.Response) {
 		messages.append(.presentCriteria(response))
-	}
-	
-	func presentLoadError(_ error: Error) {
-		messages.append(.presentLoadError(error as NSError))
 	}
 
 	func presentDates(response: SearchCriteriaModels.LoadDates.Response) {
@@ -275,7 +272,15 @@ final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
 	func presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
 	}
-	
+
+	func presentSearch(response: SearchCriteriaModels.Search.Response) {
+		messages.append(.presentSearch(response))
+	}
+
+	func presentLoadError(_ error: Error) {
+		messages.append(.presentLoadError(error as NSError))
+	}
+
 	func presentUpdateError(_ error: Error) {
 		messages.append(.presentUpdateError(error as NSError))
 	}

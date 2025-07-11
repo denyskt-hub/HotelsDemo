@@ -178,6 +178,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 		case displayUpdateError(SearchCriteriaModels.ErrorViewModel)
 		case displayDates(DateRangePickerModels.ViewModel)
 		case displayRoomGuests(RoomGuestsPickerModels.ViewModel)
+		case displaySearch(SearchCriteriaModels.Search.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -200,5 +201,9 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
 		messages.append(.displayRoomGuests(viewModel))
+	}
+
+	func displaySearch(viewModel: SearchCriteriaModels.Search.ViewModel) {
+		messages.append(.displaySearch(viewModel))
 	}
 }
