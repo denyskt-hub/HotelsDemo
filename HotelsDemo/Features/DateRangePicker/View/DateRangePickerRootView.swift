@@ -15,7 +15,7 @@ final class DateRangePickerRootView: NiblessView {
 			titleLabel,
 			weekdaysCollectionView,
 			collectionView,
-			applyButtonContainer
+			applyButtonView
 		])
 		stack.axis = .vertical
 		stack.spacing = 8
@@ -55,18 +55,16 @@ final class DateRangePickerRootView: NiblessView {
 		return collectionView
 	}()
 
-	public let applyButtonContainer: UIView = {
-		let view = UIView()
+	private let applyButtonView: ActionButtonView = {
+		let view = ActionButtonView()
+		view.setTitle("Apply")
+		view.button.isEnabled = false
 		return view
 	}()
 
-	public let applyButton: UIButton = {
-		let button = UIButton()
-		button.configure(.filled, title: "Apply")
-		button.isEnabled = false
-		button.heightAnchor.constraint(equalToConstant: 48).isActive = true
-		return button
-	}()
+	public var applyButton: UIButton {
+		applyButtonView.button
+	}
 
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()
@@ -86,12 +84,10 @@ final class DateRangePickerRootView: NiblessView {
 	}
 
 	private func setupHierarchy() {
-		applyButtonContainer.addSubview(applyButton)
 		addSubview(stack)
 	}
 
 	private func activateConstraints() {
-		activateConstraintsApplyButton()
 		activateConstraintsStack()
 	}
 }
@@ -99,15 +95,6 @@ final class DateRangePickerRootView: NiblessView {
 // MARK: - Layout
 
 extension DateRangePickerRootView {
-	private func activateConstraintsApplyButton() {
-		applyButton.translatesAutoresizingMaskIntoConstraints = false
-		let leading = applyButton.leadingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.leadingAnchor)
-		let trailing = applyButton.trailingAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.trailingAnchor)
-		let top = applyButton.topAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.topAnchor)
-		let bottom = applyButton.bottomAnchor.constraint(equalTo: applyButtonContainer.layoutMarginsGuide.bottomAnchor, constant: -10)
-		NSLayoutConstraint.activate([leading, trailing, top, bottom])
-	}
-
 	private func activateConstraintsStack() {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
