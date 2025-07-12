@@ -39,6 +39,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		)
 	}()
 
+	private var searchCriteriaFactory: SearchCriteriaFactory {
+		SearchCriteriaComposer()
+	}
+
 	var window: UIWindow?
 
 	func scene(
@@ -53,23 +57,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	func configureWindow() {
-		window?.rootViewController = makeSearchCriteriaViewController()
+		window?.rootViewController = makeMainViewController().embeddedInNavigationController()
 		window?.makeKeyAndVisible()
 	}
 
-	private func makeSearchCriteriaViewController() -> SearchCriteriaViewController {
-		let viewController = SearchCriteriaViewController()
-		let interactor = SearchCriteriaInteractor(
-			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
-			cache: searchCriteriaStore
+	private func makeMainViewController() -> UIViewController {
+		let delegateProxy = WeakRefVirtualProxy<MainViewController>()
+		let searchCriteriaViewController = makeSearchCriteriaViewController(
+			delegate: delegateProxy
 		)
-		let presenter = SearchCriteriaPresenter(calendar: calendar)
-		let router = SearchCriteriaRouter(
-			calendar: calendar,
-			destinationPickerFactory: DestinationPickerComposer(),
-			dateRangePickerFactory: DateRangePickerComposer(),
-			roomGuestsPickerFactory: RoomGuestsPickerComposer()
+		let viewController = MainViewController(
+			searchCriteriaViewController: searchCriteriaViewController
 		)
+		let interactor = MainInteractor()
+		let presenter = MainPresenter()
+		let router = MainRouter()
 
 		viewController.interactor = interactor
 		viewController.router = router
@@ -77,6 +79,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		presenter.viewController = viewController
 		router.viewController = viewController
 
+		delegateProxy.object = viewController
 		return viewController
+	}
+
+	private func makeSearchCriteriaViewController(delegate: SearchCriteriaDelegate) -> UIViewController {
+		searchCriteriaFactory.makeSearchCriteria(
+			delegate: delegate,
+			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
+			cache: searchCriteriaStore,
+			calendar: calendar
+		)
 	}
 }

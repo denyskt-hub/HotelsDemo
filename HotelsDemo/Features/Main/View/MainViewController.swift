@@ -7,6 +7,37 @@
 
 import UIKit
 
-public final class MainViewController: NiblessViewController {
-	
+public final class MainViewController: NiblessViewController, MainDisplayLogic {
+	private let rootView = MainRootView()
+	private let searchCriteriaViewController: UIViewController
+
+	private var searchCriteriaContainerView: UIView { rootView.searchCriteriaContainerView }
+
+	public var interactor: MainBusinessLogic?
+	public var router: MainRoutingLogic?
+
+	public init(searchCriteriaViewController: UIViewController) {
+		self.searchCriteriaViewController = searchCriteriaViewController
+		super.init()
+	}
+
+	public override func loadView() {
+		view = rootView
+	}
+
+	public override func viewDidLoad() {
+		super.viewDidLoad()
+
+		addChild(searchCriteriaViewController, to: searchCriteriaContainerView)
+	}
+
+	public func displaySearch(viewModel: MainModels.Search.ViewModel) {
+		router?.routeToSearch(viewModel: viewModel)
+	}
+}
+
+extension MainViewController: SearchCriteriaDelegate {
+	public func didRequestSearch(with searchCriteria: SearchCriteria) {
+		interactor?.search(request: MainModels.Search.Request(criteria: searchCriteria))
+	}
 }
