@@ -57,13 +57,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	func configureWindow() {
-		window?.rootViewController = makeSearchCriteriaViewController()
+		window?.rootViewController = makeMainViewController()
 		window?.makeKeyAndVisible()
 	}
 
-	private func makeSearchCriteriaViewController() -> UIViewController {
+	private func makeMainViewController() -> UIViewController {
+		let delegateProxy = WeakRefVirtualProxy<MainViewController>()
+		let searchCriteriaViewController = makeSearchCriteriaViewController(
+			delegate: delegateProxy
+		)
+		let mainViewController = MainViewController(
+			searchCriteriaViewController: searchCriteriaViewController
+		)
+		delegateProxy.object = mainViewController
+		return mainViewController
+	}
+
+	private func makeSearchCriteriaViewController(delegate: SearchCriteriaDelegate) -> UIViewController {
 		searchCriteriaFactory.makeSearchCriteria(
-			delegate: nil,
+			delegate: delegate,
 			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
 			cache: searchCriteriaStore,
 			calendar: calendar

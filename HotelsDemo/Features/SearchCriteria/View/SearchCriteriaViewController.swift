@@ -14,7 +14,7 @@ public protocol SearchCriteriaDelegate: AnyObject {
 public final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
 	public var interactor: SearchCriteriaBusinessLogic?
 	public var router: SearchCriteriaRoutingLogic?
-	public weak var delegate: SearchCriteriaDelegate?
+	public var delegate: SearchCriteriaDelegate?
 
 	private let rootView = SearchCriteriaRootView()
 

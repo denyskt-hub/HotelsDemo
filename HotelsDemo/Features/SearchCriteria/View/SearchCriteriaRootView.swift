@@ -10,7 +10,7 @@ import UIKit
 public class SearchCriteriaRootView: NiblessView {
 	private var hierarchyNotReady = true
 
-	lazy var stack: UIStackView = {
+	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			destinationControl,
 			datesControl,
@@ -84,6 +84,7 @@ extension SearchCriteriaRootView {
 		let leading = stack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
 		let trailing = stack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
 		let top = stack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
-		NSLayoutConstraint.activate([leading, trailing, top])
+		let bottom = stack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }

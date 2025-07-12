@@ -9,7 +9,7 @@ import UIKit
 
 public protocol SearchCriteriaFactory {
 	func makeSearchCriteria(
-		delegate: SearchCriteriaDelegate?,
+		delegate: SearchCriteriaDelegate,
 		provider: SearchCriteriaProvider,
 		cache: SearchCriteriaCache,
 		calendar: Calendar
@@ -18,7 +18,7 @@ public protocol SearchCriteriaFactory {
 
 public final class SearchCriteriaComposer: SearchCriteriaFactory {
 	public func makeSearchCriteria(
-		delegate: SearchCriteriaDelegate?,
+		delegate: SearchCriteriaDelegate,
 		provider: SearchCriteriaProvider,
 		cache: SearchCriteriaCache,
 		calendar: Calendar
