@@ -146,6 +146,15 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
 
+	func test_presentSearch_displaysSearch() {
+		let criteria = anySearchCriteria()
+		let (sut, viewController) = makeSUT()
+
+		sut.presentSearch(response: .init(criteria: criteria))
+
+		XCTAssertEqual(viewController.messages, [.displaySearch(.init(criteria: criteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (

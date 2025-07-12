@@ -190,6 +190,26 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
 	}
 
+	func test_search_presentLoadErrorOnProviderError() {
+		let providerError = anyNSError()
+		let (sut, provider, _, presenter) = makeSUT()
+		
+		sut.search(request: .init())
+		provider.completeRetrieve(with: .failure(providerError))
+		
+		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
+	}
+
+	func test_search_presentSearchOnSuccess() {
+		let criteria = anySearchCriteria()
+		let (sut, provider, _, presenter) = makeSUT()
+
+		sut.search(request: .init())
+		provider.completeRetrieve(with: .success(criteria))
+
+		XCTAssertEqual(presenter.messages, [.presentSearch(.init(criteria: criteria))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (

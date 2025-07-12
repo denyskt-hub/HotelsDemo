@@ -10,15 +10,15 @@ import HotelsDemo
 
 final class SearchCriteriaViewControllerTests: XCTestCase {
 	func test_viewDidLoad_loadInitialData() {
-		let (sut, interactor, _) = makeSUT()
-		
+		let (sut, interactor, _, _) = makeSUT()
+
 		sut.simulateAppearance()
 
 		XCTAssertEqual(interactor.messages, [.loadCriteria(.init())])
 	}
 
 	func test_destinationButtonTap_routesToDestinationPicker() {
-		let (sut, _, router) = makeSUT()
+		let (sut, _, router, _) = makeSUT()
 		sut.simulateAppearance()
 
 		sut.simulateDestinationButtonTap()
@@ -27,7 +27,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	}
 
 	func test_datesButtonTap_loadsDates() {
-		let (sut, interactor, _) = makeSUT()
+		let (sut, interactor, _, _) = makeSUT()
 		sut.simulateAppearance()
 
 		sut.simulateDatesButtonTap()
@@ -36,7 +36,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	}
 
 	func test_roomGuestsButtonTap_loadsRoomGuests() {
-		let (sut, interactor, _) = makeSUT()
+		let (sut, interactor, _, _) = makeSUT()
 		sut.simulateAppearance()
 		
 		sut.simulateRoomGuestsButtonTap()
@@ -44,8 +44,17 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 		XCTAssertEqual(interactor.messages.last, .loadRoomGuests(.init()))
 	}
 
+	func test_searchButtonTap_requestsSearch() {
+		let (sut, interactor, _, _) = makeSUT()
+		sut.simulateAppearance()
+
+		sut.simulateSearchButtonTap()
+
+		XCTAssertEqual(interactor.messages.last, .search(.init()))
+	}
+
 	func test_displayCriteria_rendersCriteria() {
-		let (sut, _, _) = makeSUT()
+		let (sut, _, _, _) = makeSUT()
 
 		sut.displayCriteria(
 			viewModel: .init(
@@ -61,7 +70,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	}
 
 	func test_displayLoadError_presentsAlertWithCorrectMessage() {
-		let (sut, _, _) = makeSUT()
+		let (sut, _, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
 		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
@@ -71,7 +80,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	}
 
 	func test_displayUpdateError_presentsAlertWithCorrectMessage() {
-		let (sut, _, _) = makeSUT()
+		let (sut, _, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
 		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
@@ -85,7 +94,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 			startDate: "06.07.2025".date(),
 			endDate: "07.07.2025".date()
 		)
-		let (sut, _, router) = makeSUT()
+		let (sut, _, router, _) = makeSUT()
 
 		sut.displayDates(viewModel: expectedViewModel)
 
@@ -98,16 +107,25 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 			adults: 2,
 			childrenAge: [1]
 		)
-		let (sut, _, router) = makeSUT()
+		let (sut, _, router, _) = makeSUT()
 
 		sut.displayRoomGuests(viewModel: expectedViewModel)
 
 		XCTAssertEqual(router.messages, [.routeToRoomGuestsPicker(expectedViewModel)])
 	}
 
+	func test_displaySearch_notifiesDelegateWithSearchCriteria() {
+		let criteria = anySearchCriteria()
+		let (sut, _, _, delegate) = makeSUT()
+
+		sut.displaySearch(viewModel: .init(criteria: criteria))
+
+		XCTAssertEqual(delegate.messages, [.didRequestSearch(criteria)])
+	}
+
 	func test_didSelectDestination_updatesDestination() {
 		let destination = anyDestination()
-		let (sut, interactor, _) = makeSUT()
+		let (sut, interactor, _, _) = makeSUT()
 
 		sut.didSelectDestination(destination)
 
@@ -117,7 +135,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	func test_didSelectDateRange_updatesDates() {
 		let startDate = "07.07.2025".date()
 		let endDate = "08.07.2025".date()
-		let (sut, interactor, _) = makeSUT()
+		let (sut, interactor, _, _) = makeSUT()
 
 		sut.didSelectDateRange(startDate: startDate, endDate: endDate)
 
@@ -126,7 +144,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 
 	func test_didSelectRoomGuests_updateRoomGuests() {
 		let (rooms, adults, childrenAges) = (1, 2, [1])
-		let (sut, interactor, _) = makeSUT()
+		let (sut, interactor, _, _) = makeSUT()
 
 		sut.didSelectRoomGuests(rooms: rooms, adults: adults, childrenAges: childrenAges)
 
@@ -140,14 +158,17 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	private func makeSUT() -> (
 		sut: SearchCriteriaViewController,
 		interactor: SearchCriteriaInteractorSpy,
-		router: SearchCriteriaRouterSpy
+		router: SearchCriteriaRouterSpy,
+		delegate: SearchCriteriaDelegateSpy
 	) {
 		let interactor = SearchCriteriaInteractorSpy()
 		let router = SearchCriteriaRouterSpy()
+		let delegate = SearchCriteriaDelegateSpy()
 		let sut = SearchCriteriaViewController()
 		sut.interactor = interactor
 		sut.router = router
-		return (sut, interactor, router)
+		sut.delegate = delegate
+		return (sut, interactor, router, delegate)
 	}
 }
 
@@ -182,6 +203,10 @@ extension SearchCriteriaViewController {
 
 	func simulateRoomGuestsButtonTap() {
 		roomGuestsControl.simulateTap()
+	}
+
+	func simulateSearchButtonTap() {
+		searchButton.simulateTap()
 	}
 }
 
@@ -246,6 +271,18 @@ final class SearchCriteriaRouterSpy: SearchCriteriaRoutingLogic {
 
 	func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		messages.append(.routeToRoomGuestsPicker(viewModel))
+	}
+}
+
+final class SearchCriteriaDelegateSpy: SearchCriteriaDelegate {
+	enum Message: Equatable {
+		case didRequestSearch(SearchCriteria)
+	}
+
+	private(set) var messages = [Message]()
+
+	func didRequestSearch(with searchCriteria: SearchCriteria) {
+		messages.append(.didRequestSearch(searchCriteria))
 	}
 }
 
