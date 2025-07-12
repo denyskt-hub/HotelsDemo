@@ -30,10 +30,14 @@ public final class MainViewController: NiblessViewController, MainDisplayLogic {
 
 		addChild(searchCriteriaViewController, to: searchCriteriaContainerView)
 	}
+
+	public func displaySearch(viewModel: MainModels.Search.ViewModel) {
+		router?.routeToSearch(viewModel: viewModel)
+	}
 }
 
 extension MainViewController: SearchCriteriaDelegate {
 	public func didRequestSearch(with searchCriteria: SearchCriteria) {
-		
+		interactor?.search(request: MainModels.Search.Request(criteria: searchCriteria))
 	}
 }

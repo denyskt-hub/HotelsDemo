@@ -57,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	func configureWindow() {
-		window?.rootViewController = makeMainViewController()
+		window?.rootViewController = makeMainViewController().embeddedInNavigationController()
 		window?.makeKeyAndVisible()
 	}
 
@@ -66,11 +66,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let searchCriteriaViewController = makeSearchCriteriaViewController(
 			delegate: delegateProxy
 		)
-		let mainViewController = MainViewController(
+		let viewController = MainViewController(
 			searchCriteriaViewController: searchCriteriaViewController
 		)
-		delegateProxy.object = mainViewController
-		return mainViewController
+		let interactor = MainInteractor()
+		let presenter = MainPresenter()
+		let router = MainRouter()
+
+		viewController.interactor = interactor
+		viewController.router = router
+		interactor.presenter = presenter
+		presenter.viewController = viewController
+		router.viewController = viewController
+
+		delegateProxy.object = viewController
+		return viewController
 	}
 
 	private func makeSearchCriteriaViewController(delegate: SearchCriteriaDelegate) -> UIViewController {

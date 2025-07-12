@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol MainDisplayLogic: AnyObject {
-	
+	func displaySearch(viewModel: MainModels.Search.ViewModel)
 }

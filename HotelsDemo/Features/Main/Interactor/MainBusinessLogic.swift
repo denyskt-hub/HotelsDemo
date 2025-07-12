@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol MainBusinessLogic {
-
+	func search(request: MainModels.Search.Request)
 }

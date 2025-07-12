@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol MainPresentationLogic {
-
+	func presentSearch(response: MainModels.Search.Response)
 }

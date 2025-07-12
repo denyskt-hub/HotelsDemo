@@ -9,4 +9,8 @@ import Foundation
 
 public final class MainInteractor: MainBusinessLogic {
 	public var presenter: MainPresentationLogic?
+
+	public func search(request: MainModels.Search.Request) {
+		presenter?.presentSearch(response: .init(criteria: request.criteria))
+	}
 }
