@@ -39,6 +39,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		)
 	}()
 
+	private var searchCriteriaFactory: SearchCriteriaFactory {
+		SearchCriteriaComposer()
+	}
+
 	var window: UIWindow?
 
 	func scene(
@@ -57,26 +61,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		window?.makeKeyAndVisible()
 	}
 
-	private func makeSearchCriteriaViewController() -> SearchCriteriaViewController {
-		let viewController = SearchCriteriaViewController()
-		let interactor = SearchCriteriaInteractor(
+	private func makeSearchCriteriaViewController() -> UIViewController {
+		searchCriteriaFactory.makeSearchCriteria(
+			delegate: nil,
 			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
-			cache: searchCriteriaStore
+			cache: searchCriteriaStore,
+			calendar: calendar
 		)
-		let presenter = SearchCriteriaPresenter(calendar: calendar)
-		let router = SearchCriteriaRouter(
-			calendar: calendar,
-			destinationPickerFactory: DestinationPickerComposer(),
-			dateRangePickerFactory: DateRangePickerComposer(),
-			roomGuestsPickerFactory: RoomGuestsPickerComposer()
-		)
-
-		viewController.interactor = interactor
-		viewController.router = router
-		interactor.presenter = presenter
-		presenter.viewController = viewController
-		router.viewController = viewController
-
-		return viewController
 	}
 }

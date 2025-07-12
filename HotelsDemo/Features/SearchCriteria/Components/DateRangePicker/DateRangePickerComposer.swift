@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Foundation
 
 public protocol DateRangePickerFactory {
 	func makeDateRangePicker(
