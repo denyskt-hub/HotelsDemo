@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "1B06E408-2B04-4AEA-8BFD-83536F1A0B18",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:HotelsDemo.xcodeproj",
+          "identifier" : "92806D442E03DBD6005263A8",
+          "name" : "HotelsDemo"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:HotelsDemo.xcodeproj",
+      "identifier" : "92806D442E03DBD6005263A8",
+      "name" : "HotelsDemo"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:HotelsDemo.xcodeproj",
+        "identifier" : "92A3EB392E0C524F009FC429",
+        "name" : "HotelsDemoTests"
+      }
+    }
+  ],
+  "version" : 1
+}
