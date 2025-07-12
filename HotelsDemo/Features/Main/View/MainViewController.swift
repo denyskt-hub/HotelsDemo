@@ -8,11 +8,13 @@
 import UIKit
 
 public final class MainViewController: NiblessViewController, MainDisplayLogic {
+	private let rootView = MainRootView()
 	private let searchCriteriaViewController: UIViewController
 
-	private let rootView = MainRootView()
-
 	private var searchCriteriaContainerView: UIView { rootView.searchCriteriaContainerView }
+
+	public var interactor: MainBusinessLogic?
+	public var router: MainRoutingLogic?
 
 	public init(searchCriteriaViewController: UIViewController) {
 		self.searchCriteriaViewController = searchCriteriaViewController

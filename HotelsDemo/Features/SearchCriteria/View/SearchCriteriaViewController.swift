@@ -12,11 +12,11 @@ public protocol SearchCriteriaDelegate: AnyObject {
 }
 
 public final class SearchCriteriaViewController: NiblessViewController, SearchCriteriaDisplayLogic {
+	private let rootView = SearchCriteriaRootView()
+
 	public var interactor: SearchCriteriaBusinessLogic?
 	public var router: SearchCriteriaRoutingLogic?
 	public var delegate: SearchCriteriaDelegate?
-
-	private let rootView = SearchCriteriaRootView()
 
 	public var destinationControl: IconTitleControl { rootView.destinationControl }
 	public var datesControl: IconTitleControl { rootView.datesControl }
