@@ -8,5 +8,6 @@
 import Foundation
 
 public protocol SearchPresentationLogic {
-	
+	func presentSearch(response: SearchModels.Search.Response)
+	func presentSearchError(_ error: Error)
 }

@@ -77,11 +77,11 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 	}
 
 	public func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
-		displayError(message: viewModel.message)
+		displayErrorMessage(viewModel.message)
 	}
 
 	public func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
-		displayError(message: viewModel.message)
+		displayErrorMessage(viewModel.message)
 	}
 
 	public func displayDates(viewModel: DateRangePickerModels.ViewModel) {
@@ -94,12 +94,6 @@ public final class SearchCriteriaViewController: NiblessViewController, SearchCr
 
 	public func displaySearch(viewModel: SearchCriteriaModels.Search.ViewModel) {
 		delegate?.didRequestSearch(with: viewModel.criteria)
-	}
-
-	private func displayError(message: String) {
-		let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: "OK", style: .default))
-		present(alert, animated: true)
 	}
 }
 

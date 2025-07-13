@@ -12,6 +12,16 @@ public final class MainRouter: MainRoutingLogic {
 
 	public func routeToSearch(viewModel: MainModels.Search.ViewModel) {
 		let searchVC = SearchViewController()
+		let interactor = SearchInteractor(
+			criteria: viewModel.criteria,
+			worker: HotelsSearchWorker()
+		)
+		let presenter = SearchPresenter()
+
+		searchVC.interactor = interactor
+		interactor.presenter = presenter
+		presenter.viewController = searchVC
+
 		viewController?.show(searchVC, sender: nil)
 	}
 }
