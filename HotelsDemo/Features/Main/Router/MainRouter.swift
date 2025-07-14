@@ -8,19 +8,16 @@
 import UIKit
 
 public final class MainRouter: MainRoutingLogic {
+	private let searchFactory: SearchFactory
+
 	public weak var viewController: UIViewController?
 
-	public func routeToSearch(viewModel: MainModels.Search.ViewModel) {
-		let searchVC = SearchViewController()
-		let interactor = SearchInteractor(
-			criteria: viewModel.criteria,
-			worker: HotelsSearchWorker()
-		)
-		let presenter = SearchPresenter()
+	public init(searchFactory: SearchFactory) {
+		self.searchFactory = searchFactory
+	}
 
-		searchVC.interactor = interactor
-		interactor.presenter = presenter
-		presenter.viewController = searchVC
+	public func routeToSearch(viewModel: MainModels.Search.ViewModel) {
+		let searchVC = searchFactory.makeSearch(with: viewModel.criteria)
 
 		viewController?.show(searchVC, sender: nil)
 	}

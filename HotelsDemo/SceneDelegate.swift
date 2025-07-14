@@ -71,7 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		)
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
-		let router = MainRouter()
+		let router = MainRouter(searchFactory: SearchComposer())
 
 		viewController.interactor = interactor
 		viewController.router = router
