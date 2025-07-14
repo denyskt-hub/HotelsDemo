@@ -17,7 +17,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 				starRating: 5,
 				reviewsCount: 203,
 				reviewScore: 8.4,
-				photoURLs: [],
+				photoURLs: [URL(string: "https://cf.bstatic.com/xdata/images/hotel/square500/31204963.jpg?k=90c11832231c37a814e9631123bd28820e8ad8cd983b78ad529ea139791653d1&o=")!],
 				price: .init(grossPrice: 324.23, currency: "USD")
 			),
 			Hotel(
@@ -27,7 +27,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 				starRating: 4,
 				reviewsCount: 33,
 				reviewScore: 4.4,
-				photoURLs: [],
+				photoURLs: [URL(string: "https://cf.bstatic.com/xdata/images/hotel/square500/604298804.jpg?k=cce8e6992a6c78904e7a67b9611da9a34ed490aada9e82aa865b70f308200755&o=")!],
 				price: .init(grossPrice: 50.0, currency: "USD")
 			)
 		]))

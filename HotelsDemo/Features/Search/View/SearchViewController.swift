@@ -29,6 +29,7 @@ public final class SearchViewController: NiblessViewController, SearchDisplayLog
 
 	private func setupTableView() {
 		tableView.dataSource = self
+		tableView.register(HotelCell.self)
 	}
 
 	public func displaySearch(viewModel: SearchModels.Search.ViewModel) {
@@ -47,9 +48,9 @@ extension SearchViewController: UITableViewDataSource {
 	}
 	
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = UITableViewCell()
-		let hotel = viewModel.hotels[indexPath.row]
-		cell.textLabel?.text = hotel.name
+		let cell: HotelCell = tableView.dequeueReusableCell()
+		let cellViewModel = viewModel.hotels[indexPath.row]
+		cell.configure(with: cellViewModel)
 		return cell
 	}
 }

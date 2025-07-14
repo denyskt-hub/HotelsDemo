@@ -13,7 +13,15 @@ public final class SearchPresenter: SearchPresentationLogic {
 	public func presentSearch(response: SearchModels.Search.Response) {
 		let viewModel = SearchModels.Search.ViewModel(
 			hotels: response.hotels.map {
-				.init(name: $0.name, position: $0.position)
+				.init(
+					position: $0.position,
+					starRating: $0.starRating,
+					name: $0.name,
+					score: "\($0.reviewScore)",
+					reviews: "\($0.reviewsCount) reviews",
+					price: "\($0.price.currency) \($0.price.grossPrice)",
+					priceDetails: "Includes taxes and fees"
+				)
 			}
 		)
 		viewController?.displaySearch(viewModel: viewModel)

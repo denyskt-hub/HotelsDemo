@@ -31,12 +31,30 @@ public enum SearchModels {
 	}
 
 	public struct HotelViewModel: Equatable {
-		public let name: String
 		public let position: Int
+		public let starRating: Int
+		public let name: String
+		public let score: String
+		public let reviews: String
+		public let price: String
+		public let priceDetails: String
 
-		public init(name: String, position: Int) {
-			self.name = name
+		public init(
+			position: Int,
+			starRating: Int,
+			name: String,
+			score: String,
+			reviews: String,
+			price: String,
+			priceDetails: String
+		) {
 			self.position = position
+			self.starRating = starRating
+			self.name = name
+			self.score = score
+			self.reviews = reviews
+			self.price = price
+			self.priceDetails = priceDetails
 		}
 	}
 
