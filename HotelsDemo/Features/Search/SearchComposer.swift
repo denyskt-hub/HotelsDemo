@@ -16,7 +16,7 @@ public final class SearchComposer: SearchFactory {
 		let viewController = SearchViewController()
 		let viewControllerAdapter = SearchDisplayLogicAdapter(
 			viewController: viewController,
-			imageLoader: RemoteDataImageLoader(client: URLSessionHTTPClient())
+			imageLoader: RemoteImageDataLoader(client: URLSessionHTTPClient())
 		)
 		let interactor = SearchInteractor(
 			criteria: criteria,
