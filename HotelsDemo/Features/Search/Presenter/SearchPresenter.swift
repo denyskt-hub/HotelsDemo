@@ -8,7 +8,7 @@
 import Foundation
 
 public final class SearchPresenter: SearchPresentationLogic {
-	public weak var viewController: SearchDisplayLogic?
+	public var viewController: SearchDisplayLogic?
 
 	public func presentSearch(response: SearchModels.Search.Response) {
 		let viewModel = SearchModels.Search.ViewModel(
@@ -20,7 +20,8 @@ public final class SearchPresenter: SearchPresentationLogic {
 					score: "\($0.reviewScore)",
 					reviews: "\($0.reviewsCount) reviews",
 					price: "\($0.price.currency) \($0.price.grossPrice)",
-					priceDetails: "Includes taxes and fees"
+					priceDetails: "Includes taxes and fees",
+					photoURL: $0.photoURLs.first
 				)
 			}
 		)

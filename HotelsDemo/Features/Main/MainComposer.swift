@@ -26,7 +26,9 @@ public final class MainComposer: MainFactory {
 		)
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
-		let router = MainRouter(searchFactory: SearchComposer())
+		let router = MainRouter(
+			searchFactory: SearchComposer()
+		)
 
 		viewController.interactor = interactor
 		viewController.router = router

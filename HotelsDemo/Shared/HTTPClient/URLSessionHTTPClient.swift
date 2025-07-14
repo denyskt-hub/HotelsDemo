@@ -7,8 +7,16 @@ public final class URLSessionHTTPClient: HTTPClient {
 		self.session = session
 	}
 
-	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) {
-		session.dataTask(with: request) { data, response, error in
+	private struct URLSessionTaskWrapper: HTTPClientTask {
+		let wrapped: URLSessionTask
+
+		func cancel() {
+			wrapped.cancel()
+		}
+	}
+
+	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
+		let task = session.dataTask(with: request) { data, response, error in
 			guard let data = data else {
 				completion(.failure(error ?? URLError(.badServerResponse)))
 				return
@@ -20,6 +28,8 @@ public final class URLSessionHTTPClient: HTTPClient {
 			}
 
 			completion(.success((data, httpResponse)))
-		}.resume()
+		}
+		task.resume()
+		return URLSessionTaskWrapper(wrapped: task)
 	}
 }

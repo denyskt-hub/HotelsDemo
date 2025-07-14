@@ -14,6 +14,10 @@ public protocol SearchFactory {
 public final class SearchComposer: SearchFactory {
 	public func makeSearch(with criteria: SearchCriteria) -> UIViewController {
 		let viewController = SearchViewController()
+		let viewControllerAdapter = SearchDisplayLogicAdapter(
+			viewController: viewController,
+			imageLoader: RemoteDataImageLoader(client: URLSessionHTTPClient())
+		)
 		let interactor = SearchInteractor(
 			criteria: criteria,
 			worker: HotelsSearchWorker()
@@ -22,7 +26,7 @@ public final class SearchComposer: SearchFactory {
 
 		viewController.interactor = interactor
 		interactor.presenter = presenter
-		presenter.viewController = viewController
+		presenter.viewController = viewControllerAdapter
 
 		return viewController
 	}

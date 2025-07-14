@@ -20,6 +20,7 @@ public final class HotelCell: UITableViewCell {
 
 	public let photoImageView: UIImageView = {
 		let imageView = UIImageView()
+		imageView.clipsToBounds = true
 		imageView.contentMode = .scaleAspectFill
 		imageView.backgroundColor = .systemBlue
 		imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true

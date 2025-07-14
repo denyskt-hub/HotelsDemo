@@ -38,6 +38,7 @@ public enum SearchModels {
 		public let reviews: String
 		public let price: String
 		public let priceDetails: String
+		public let photoURL: URL?
 
 		public init(
 			position: Int,
@@ -46,7 +47,8 @@ public enum SearchModels {
 			score: String,
 			reviews: String,
 			price: String,
-			priceDetails: String
+			priceDetails: String,
+			photoURL: URL?
 		) {
 			self.position = position
 			self.starRating = starRating
@@ -55,6 +57,7 @@ public enum SearchModels {
 			self.reviews = reviews
 			self.price = price
 			self.priceDetails = priceDetails
+			self.photoURL = photoURL
 		}
 	}
 
