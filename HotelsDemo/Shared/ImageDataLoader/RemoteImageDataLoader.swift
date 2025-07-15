@@ -38,6 +38,7 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 				completion(.failure(error))
 			}
 		}
+		
 		return HTTPClientTaskWrapper(wrapped: task)
 	}
 

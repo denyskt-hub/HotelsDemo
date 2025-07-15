@@ -1,3 +1,12 @@
+//
+//  CachingImageDataLoader.swift
+//  HotelsDemo
+//
+//  Created by Denys Kotenko on 15/7/25.
+//
+
+import Foundation
+
 public final class CachingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader
 	private let cache: ImageDataCache
@@ -10,11 +19,13 @@ public final class CachingImageDataLoader: ImageDataLoader {
 		self.cache = cache
 	}
 
-	public func load(url: URL) async throws -> Data {
-		let data = try await loader.load(url: url)
+	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+		loader.load(url: url) { [weak self] result in
+			if case let .success(data) = result {
+				self?.cache.save(data, forKey: url.absoluteString) { _ in }
+			}
 
-		try? await cache.save(data, for: url)
-
-		return data
+			completion(result)
+		}
 	}
 }

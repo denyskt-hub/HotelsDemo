@@ -31,4 +31,3 @@ public final class SearchComposer: SearchFactory {
 		return viewController
 	}
 }
-
