@@ -24,6 +24,7 @@ public final class HotelCell: UITableViewCell {
 		imageView.contentMode = .scaleAspectFill
 		imageView.backgroundColor = .systemBlue
 		imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+		imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return imageView
 	}()
 
@@ -41,8 +42,7 @@ public final class HotelCell: UITableViewCell {
 		let stack = UIStackView(arrangedSubviews: [
 			nameLabel,
 			starRatingView,
-			reviewsView,
-			UIView()
+			reviewsView
 		])
 		stack.axis = .vertical
 		stack.alignment = .leading
@@ -122,6 +122,11 @@ public final class HotelCell: UITableViewCell {
 
 	required public init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+
+	override public func prepareForReuse() {
+		super.prepareForReuse()
+		photoImageView.image = nil
 	}
 
 	override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
