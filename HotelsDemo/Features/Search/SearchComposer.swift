@@ -12,11 +12,24 @@ public protocol SearchFactory {
 }
 
 public final class SearchComposer: SearchFactory {
+	private let imageDataCache: ImageDataCache
+
+	public init(imageDataCache: ImageDataCache) {
+		self.imageDataCache = imageDataCache
+	}
+
 	public func makeSearch(with criteria: SearchCriteria) -> UIViewController {
 		let viewController = SearchViewController()
+
+		let localImageDataLoader = LocalImageDataLoader(cache: imageDataCache)
+		let remoteImageDataLoader = RemoteImageDataLoader(client: URLSessionHTTPClient())
+		let cachingImageDataLoader = CachingImageDataLoader(
+			loader: remoteImageDataLoader,
+			cache: imageDataCache
+		)
 		let viewControllerAdapter = SearchDisplayLogicAdapter(
 			viewController: viewController,
-			imageLoader: RemoteImageDataLoader(client: URLSessionHTTPClient())
+			imageLoader: localImageDataLoader.fallback(to: cachingImageDataLoader)
 		)
 		let interactor = SearchInteractor(
 			criteria: criteria,

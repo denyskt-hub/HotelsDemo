@@ -39,7 +39,7 @@ public final class FallbackImageDataLoader: ImageDataLoader {
 	}
 
 	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
-		var task = FallbackImageDataLoaderTaskWrapper()
+		let task = FallbackImageDataLoaderTaskWrapper()
 
 		task.primaryTask = primary.load(url: url) { [weak self] result in
 			guard let self else { return }

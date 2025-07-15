@@ -27,7 +27,9 @@ public final class MainComposer: MainFactory {
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
 		let router = MainRouter(
-			searchFactory: SearchComposer()
+			searchFactory: SearchComposer(
+				imageDataCache: InMemoryImageDataCache()
+			)
 		)
 
 		viewController.interactor = interactor
