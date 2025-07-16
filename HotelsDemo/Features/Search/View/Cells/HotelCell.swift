@@ -54,6 +54,7 @@ public final class HotelCell: UITableViewCell {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .semibold)
 		label.textColor = .label
+		label.numberOfLines = 2
 		return label
 	}()
 

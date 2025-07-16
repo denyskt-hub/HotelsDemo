@@ -40,7 +40,10 @@ public final class SearchComposer: SearchFactory {
 		)
 		let interactor = SearchInteractor(
 			criteria: criteria,
-			worker: HotelsSearchWorker()
+			worker: HotelsSearchWorker(
+				client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
+				dispatcher: MainQueueDispatcher()
+			)
 		)
 		let presenter = SearchPresenter()
 

@@ -12,7 +12,7 @@ public struct Hotel: Equatable {
 	let position: Int
 	let name: String
 	let starRating: Int
-	let reviewsCount: Int
+	let reviewCount: Int
 	let reviewScore: Decimal
 	let photoURLs: [URL]
 	let price: Price

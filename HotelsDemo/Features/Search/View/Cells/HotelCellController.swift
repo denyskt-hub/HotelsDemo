@@ -29,17 +29,14 @@ extension HotelCellController: UITableViewDataSource {
 	}
 	
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		cell = tableView.dequeueReusableCell()
-		cell?.configure(with: viewModel)
-		return cell!
+		let cell: HotelCell = tableView.dequeueReusableCell()
+		cell.configure(with: viewModel)
+		self.cell = cell
+		return cell
 	}
 }
 
 extension HotelCellController: UITableViewDelegate {
-	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-	}
-
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		self.cell = cell as? HotelCell
 		if let url = viewModel.photoURL {
