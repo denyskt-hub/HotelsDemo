@@ -30,23 +30,17 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		client.perform(request) { [weak self] result in
 			guard let self else { return }
 
-			switch result {
-			case let .success((data, response)):
-				do {
-					let destinations = try DestinationsResponseMapper.map(data, response)
-					self.dispatcher.dispatch {
-						completion(.success(destinations))
-					}
-				} catch {
-					self.dispatcher.dispatch {
-						completion(.failure(error))
-					}
+			let searchResult = DestinationSearchService.Result {
+				switch result {
+				case let .success((data, response)):
+					return try DestinationsResponseMapper.map(data, response)
+				case let .failure(error):
+					throw error
 				}
+			}
 
-			case let .failure(error):
-				self.dispatcher.dispatch {
-					completion(.failure(error))
-				}
+			self.dispatcher.dispatch {
+				completion(searchResult)
 			}
 		}
 	}
