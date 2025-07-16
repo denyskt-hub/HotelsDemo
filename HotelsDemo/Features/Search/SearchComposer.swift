@@ -41,6 +41,9 @@ public final class SearchComposer: SearchFactory {
 		let interactor = SearchInteractor(
 			criteria: criteria,
 			worker: HotelsSearchWorker(
+				factory: DefaultHotelsRequestFactory(
+					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
+				),
 				client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
 				dispatcher: MainQueueDispatcher()
 			)

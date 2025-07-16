@@ -8,19 +8,22 @@
 import Foundation
 
 public final class HotelsSearchWorker: HotelsSearchService {
+	private let factory: HotelsRequestFactory
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
 	public init(
+		factory: HotelsRequestFactory,
 		client: HTTPClient,
 		dispatcher: Dispatcher
 	) {
+		self.factory = factory
 		self.client = client
 		self.dispatcher = dispatcher
 	}
 
 	public func search(criteria: SearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
-		let request = makeSearchRequest(criteria: criteria)
+		let request = factory.makeSearchRequest(criteria: criteria)
 
 		client.perform(request) { [weak self] result in
 			guard let self else { return }
@@ -38,27 +41,5 @@ public final class HotelsSearchWorker: HotelsSearchService {
 				completion(searchResult)
 			}
 		}
-	}
-
-	private func makeSearchRequest(criteria: SearchCriteria) -> URLRequest {
-		guard let destination = criteria.destination else {
-			preconditionFailure("Destination is required")
-		}
-
-		let url = URL(string: "https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels")!
-
-		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-
-		let checkInDate = dateFormatter.string(from: criteria.checkInDate)
-		let checkOutDate = dateFormatter.string(from: criteria.checkOutDate)
-		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")
-
-		let urlString = url.absoluteString.appending("?dest_id=\(destination.id)&search_type=\(destination.type)&arrival_date=\(checkInDate)&departure_date=\(checkOutDate)&adults=\(criteria.adults)&children_age=\(childrenAge)&room_qty=\(criteria.roomsQuantity)")
-		let finalURL = URL(string: urlString)!
-
-		var request = URLRequest(url: finalURL)
-		request.httpMethod = "GET"
-		return request
 	}
 }

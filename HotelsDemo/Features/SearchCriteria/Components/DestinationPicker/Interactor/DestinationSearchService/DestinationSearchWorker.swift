@@ -8,12 +8,12 @@
 import Foundation
 
 public final class DestinationSearchWorker: DestinationSearchService {
-	private let factory: DestinationRequestFactory
+	private let factory: DestinationsRequestFactory
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
 	public init(
-		factory: DestinationRequestFactory,
+		factory: DestinationsRequestFactory,
 		client: HTTPClient,
 		dispatcher: Dispatcher
 	) {

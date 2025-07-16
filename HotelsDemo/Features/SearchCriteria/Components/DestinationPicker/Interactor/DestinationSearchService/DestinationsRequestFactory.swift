@@ -1,5 +1,5 @@
 //
-//  DestinationRequestFactory.swift
+//  DestinationsRequestFactory.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 16/7/25.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol DestinationRequestFactory {
+public protocol DestinationsRequestFactory {
 	func makeSearchRequest(query: String) -> URLRequest
 }
 
-public final class DefaultDestinationRequestFactory: DestinationRequestFactory {
+public final class DefaultDestinationRequestFactory: DestinationsRequestFactory {
 	private let url: URL
 
 	public init(url: URL) {

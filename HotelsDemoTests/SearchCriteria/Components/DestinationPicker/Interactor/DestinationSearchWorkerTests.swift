@@ -158,7 +158,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	}
 }
 
-final class DestinationRequestFactoryStub: DestinationRequestFactory {
+final class DestinationRequestFactoryStub: DestinationsRequestFactory {
 	let url: URL
 
 	init(url: URL) {

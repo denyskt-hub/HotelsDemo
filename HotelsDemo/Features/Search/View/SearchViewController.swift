@@ -59,11 +59,6 @@ extension SearchViewController: UITableViewDataSource {
 }
 
 extension SearchViewController: UITableViewDelegate {
-	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let cellController = cellController(at: indexPath)
-		cellController.tableView(tableView, didSelectRowAt: indexPath)
-	}
-
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let cellController = cellController(at: indexPath)
 		cellController.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
