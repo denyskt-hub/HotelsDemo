@@ -9,9 +9,14 @@ import Foundation
 
 public final class RemoteImageDataLoader: ImageDataLoader {
 	private let client: HTTPClient
+	private let dispatcher: Dispatcher
 
-	public init(client: HTTPClient) {
+	public init(
+		client: HTTPClient,
+		dispatcher: Dispatcher
+	) {
 		self.client = client
+		self.dispatcher = dispatcher
 	}
 
 	private struct HTTPClientTaskWrapper: ImageDataLoaderTask {
@@ -25,17 +30,25 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
 		let request = makeRequest(url: url)
 
-		let task = client.perform(request) { result in
+		let task = client.perform(request) { [weak self] result in
+			guard let self else { return }
+
 			switch result {
 			case let .success((data, response)):
 				do {
 					let data = try ImageDataMapper.map(data, response)
-					completion(.success(data))
+					self.dispatcher.dispatch {
+						completion(.success(data))
+					}
 				} catch {
-					completion(.failure(error))
+					self.dispatcher.dispatch {
+						completion(.failure(error))
+					}
 				}
 			case let .failure(error):
-				completion(.failure(error))
+				self.dispatcher.dispatch {
+					completion(.failure(error))
+				}
 			}
 		}
 		

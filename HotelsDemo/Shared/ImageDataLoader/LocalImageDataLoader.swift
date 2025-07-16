@@ -13,9 +13,14 @@ public struct EmptyImageDataLoaderTask: ImageDataLoaderTask {
 
 public final class LocalImageDataLoader: ImageDataLoader {
 	private let cache: ImageDataCache
+	private let dispatcher: Dispatcher
 
-	public init(cache: ImageDataCache) {
+	public init(
+		cache: ImageDataCache,
+		dispatcher: Dispatcher
+	) {
 		self.cache = cache
+		self.dispatcher = dispatcher
 	}
 
 	public enum Error: Swift.Error {
@@ -23,17 +28,25 @@ public final class LocalImageDataLoader: ImageDataLoader {
 	}
 
 	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
-		cache.data(forKey: url.absoluteString) { result in
+		cache.data(forKey: url.absoluteString) { [weak self] result in
+			guard let self else { return }
+
 			switch result {
 			case let .success(data):
 				if let data = data {
-					completion(.success(data))
+					self.dispatcher.dispatch {
+						completion(.success(data))
+					}
 				}
 				else {
-					completion(.failure(Error.notFound))
+					self.dispatcher.dispatch {
+						completion(.failure(Error.notFound))
+					}
 				}
 			case let .failure(error):
-				completion(.failure(error))
+				self.dispatcher.dispatch {
+					completion(.failure(error))
+				}
 			}
 		}
 		return EmptyImageDataLoaderTask()

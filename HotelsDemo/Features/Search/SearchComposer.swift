@@ -21,8 +21,15 @@ public final class SearchComposer: SearchFactory {
 	public func makeSearch(with criteria: SearchCriteria) -> UIViewController {
 		let viewController = SearchViewController()
 
-		let localImageDataLoader = LocalImageDataLoader(cache: imageDataCache)
-		let remoteImageDataLoader = RemoteImageDataLoader(client: URLSessionHTTPClient())
+		let mainQueueDispatcher = MainQueueDispatcher()
+		let localImageDataLoader = LocalImageDataLoader(
+			cache: imageDataCache,
+			dispatcher: mainQueueDispatcher
+		)
+		let remoteImageDataLoader = RemoteImageDataLoader(
+			client: URLSessionHTTPClient(),
+			dispatcher: mainQueueDispatcher
+		)
 		let cachingImageDataLoader = CachingImageDataLoader(
 			loader: remoteImageDataLoader,
 			cache: imageDataCache

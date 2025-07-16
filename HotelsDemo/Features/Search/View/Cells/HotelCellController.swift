@@ -55,8 +55,6 @@ extension HotelCellController: UITableViewDelegate {
 
 extension HotelCellController: ImageView {
 	public func displayImage(_ image: UIImage) {
-		DispatchQueue.main.async { [weak self] in
-			self?.cell?.photoImageView.image = image
-		}
+		cell?.photoImageView.image = image
 	}
 }
