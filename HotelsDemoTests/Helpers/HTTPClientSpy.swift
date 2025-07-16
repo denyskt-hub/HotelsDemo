@@ -13,9 +13,14 @@ final class HTTPClientSpy: HTTPClient {
 
 	private var completions = [(HTTPClient.Result) -> Void]()
 
-	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) {
+	public struct Task: HTTPClientTask {
+		public func cancel() {}
+	}
+
+	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
 		requests.append(request)
 		completions.append(completion)
+		return Task()
 	}
 
 	func completeWithResult(_ result: HTTPClient.Result, at index: Int = 0) {
