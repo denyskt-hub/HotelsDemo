@@ -28,7 +28,7 @@ public final class MainComposer: MainFactory {
 		let presenter = MainPresenter()
 		let router = MainRouter(
 			searchFactory: SearchComposer(
-				imageDataCache: InMemoryImageDataCache()
+				imageDataCache: InMemoryImageDataCache(countLimit: 100)
 			)
 		)
 
