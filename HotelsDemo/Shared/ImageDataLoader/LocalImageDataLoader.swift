@@ -27,26 +27,24 @@ public final class LocalImageDataLoader: ImageDataLoader {
 		case notFound
 	}
 
-	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		cache.data(forKey: url.absoluteString) { [weak self] result in
 			guard let self else { return }
 
-			switch result {
-			case let .success(data):
-				if let data = data {
-					self.dispatcher.dispatch {
-						completion(.success(data))
+			let loadResult = LoadResult {
+				switch result {
+				case let .success(data):
+					guard let data = data else {
+						throw Error.notFound
 					}
+					return data
+				case let .failure(error):
+					throw error
 				}
-				else {
-					self.dispatcher.dispatch {
-						completion(.failure(Error.notFound))
-					}
-				}
-			case let .failure(error):
-				self.dispatcher.dispatch {
-					completion(.failure(error))
-				}
+			}
+
+			self.dispatcher.dispatch {
+				completion(loadResult)
 			}
 		}
 		return EmptyImageDataLoaderTask()

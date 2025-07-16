@@ -27,31 +27,26 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 		}
 	}
 
-	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let request = makeRequest(url: url)
 
 		let task = client.perform(request) { [weak self] result in
 			guard let self else { return }
 
-			switch result {
-			case let .success((data, response)):
-				do {
-					let data = try ImageDataMapper.map(data, response)
-					self.dispatcher.dispatch {
-						completion(.success(data))
-					}
-				} catch {
-					self.dispatcher.dispatch {
-						completion(.failure(error))
-					}
-				}
-			case let .failure(error):
-				self.dispatcher.dispatch {
-					completion(.failure(error))
+			let loadResult = LoadResult {
+				switch result {
+				case let .success((data, response)):
+					return try ImageDataMapper.map(data, response)
+				case let .failure(error):
+					throw error
 				}
 			}
+
+			self.dispatcher.dispatch {
+				completion(loadResult)
+			}
 		}
-		
+
 		return HTTPClientTaskWrapper(wrapped: task)
 	}
 

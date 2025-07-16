@@ -32,13 +32,13 @@ public final class FallbackImageDataLoader: ImageDataLoader {
 			secondaryTask?.cancel()
 		}
 
-		public func completeIfNotCancelled(_ result: ImageDataLoader.Result, completion: @escaping (ImageDataLoader.Result) -> Void) {
+		public func completeIfNotCancelled(_ result: LoadResult, _ completion: @escaping (LoadResult) -> Void) {
 			guard !isCancelled else { return }
 			completion(result)
 		}
 	}
 
-	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let task = FallbackImageDataLoaderTaskWrapper()
 
 		task.primaryTask = primary.load(url: url) { [weak self] result in
@@ -49,7 +49,7 @@ public final class FallbackImageDataLoader: ImageDataLoader {
 				completion(.success(data))
 			case .failure:
 				task.secondaryTask = self.secondary.load(url: url) { result in
-					task.completeIfNotCancelled(result, completion: completion)
+					task.completeIfNotCancelled(result, completion)
 				}
 			}
 		}

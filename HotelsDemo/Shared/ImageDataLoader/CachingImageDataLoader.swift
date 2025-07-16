@@ -19,7 +19,7 @@ public final class CachingImageDataLoader: ImageDataLoader {
 		self.cache = cache
 	}
 
-	public func load(url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		loader.load(url: url) { [weak self] result in
 			if case let .success(data) = result {
 				self?.cache.save(data, forKey: url.absoluteString) { _ in }
