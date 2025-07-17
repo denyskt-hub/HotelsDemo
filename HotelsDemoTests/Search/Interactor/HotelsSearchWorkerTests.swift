@@ -1,25 +1,25 @@
 //
-//  DestinationSearchWorkerTests.swift
+//  HotelsSearchWorkerTests.swift
 //  HotelsDemoTests
 //
-//  Created by Denys Kotenko on 27/6/25.
+//  Created by Denys Kotenko on 17/7/25.
 //
 
 import XCTest
 import HotelsDemo
 
-final class DestinationSearchWorkerTests: XCTestCase {
+final class HotelsSearchWorkerTests: XCTestCase {
 	func test_init_doesNotPerformRequest() {
 		let (_, client) = makeSUT()
-		
+
 		XCTAssertTrue(client.requests.isEmpty)
 	}
 
 	func test_search_performsRequestWithCorrectURL() {
-		let expectedURL = URL(string: "https://api.com/search?q=london")!
+		let expectedURL = URL(string: "https://api.com/hotels/search")!
 		let (sut, client) = makeSUT(url: expectedURL)
 
-		sut.search(query: "ignored") { _ in }
+		sut.search(criteria: anySearchCriteria()) { _ in }
 
 		XCTAssertEqual(client.requests.map(\.url), [expectedURL])
 	}
@@ -56,16 +56,19 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	}
 
 	func test_search_deliversResultOn200HTTPResponseWithValidJSON() throws {
-		let item = makeDestinationJSON(
-			id: 929,
-			type: "district",
-			name: "Manhattan",
-			label: "Manhattan, New York, New York State, United States",
-			country: "United States",
-			cityName: "New York"
+		let item = makeHotelJSON(
+			id: 1,
+			position: 0,
+			name: "Hotel",
+			starRating: 5,
+			reviewCount: 24,
+			reviewScore: 8.5,
+			photoURLs: [anyURL()],
+			grossPrice: 100.0,
+			currency: "USD"
 		)
-		let destinationsJSON = makeAPIResponseJSON(data: [item.json])
-		let data = makeJSONData(destinationsJSON)
+		let hotelsJSON = makeAPIResponseJSON(hotels: [item.json])
+		let data = makeJSONData(hotelsJSON)
 		let (sut, client) = makeSUT()
 
 		expect(sut, toCompleteWith: .success([item.model]), when: {
@@ -76,12 +79,12 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL = anyURL()) -> (
-		sut: DestinationSearchWorker,
+		sut: HotelsSearchWorker,
 		client: HTTPClientSpy
 	) {
 		let client = HTTPClientSpy()
-		let sut = DestinationSearchWorker(
-			factory: DestinationRequestFactoryStub(url: url),
+		let sut = HotelsSearchWorker(
+			factory: HotelsRequestFactoryStub(url: url),
 			client: client,
 			dispatcher: ImmediateDispatcher()
 		)
@@ -89,15 +92,15 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	}
 
 	private func expect(
-		_ sut: DestinationSearchWorker,
-		toCompleteWith expectedResult: DestinationSearchService.Result,
+		_ sut: HotelsSearchWorker,
+		toCompleteWith expectedResult: HotelsSearchService.Result,
 		when action: () -> Void,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
 		let exp = expectation(description: "Wait for completion")
 
-		sut.search(query: "any") { receivedResult in
+		sut.search(criteria: anySearchCriteria()) { receivedResult in
 			switch (receivedResult, expectedResult) {
 			case let (.success(received), .success(expected)):
 				XCTAssertEqual(received, expected, file: file, line: line)
@@ -114,30 +117,47 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		wait(for: [exp], timeout: 0.1)
 	}
 
-	private func makeDestinationJSON(
+	private func makeHotelJSON(
 		id: Int,
-		type: String,
+		position: Int,
 		name: String,
-		label: String,
-		country: String,
-		cityName: String
-	) -> (model: Destination, json: [String: Any]) {
-		let model = Destination(
+		starRating: Int,
+		reviewCount: Int,
+		reviewScore: Decimal,
+		photoURLs: [URL],
+		grossPrice: Decimal,
+		currency: String
+	) -> (model: Hotel, json: [String: Any]) {
+		let model = Hotel(
 			id: id,
-			type: type,
+			position: position,
 			name: name,
-			label: label,
-			country: country,
-			cityName: cityName
+			starRating: starRating,
+			reviewCount: reviewCount,
+			reviewScore: reviewScore,
+			photoURLs: photoURLs,
+			price: Price(
+				grossPrice: grossPrice,
+				currency: currency
+			)
 		)
 
 		let json = [
-			"dest_id": "\(id)",
-			"dest_type": type,
-			"name": name,
-			"label": label,
-			"country": country,
-			"city_name": cityName
+			"property": [
+				"id": id,
+				"position": position,
+				"name": name,
+				"accuratePropertyClass": starRating,
+				"reviewCount": reviewCount,
+				"reviewScore": reviewScore,
+				"photoUrls": photoURLs.map(\.absoluteString),
+				"priceBreakdown": [
+					"grossPrice":  [
+						"value": grossPrice,
+						"currency": currency
+					]
+				]
+			]
 		] as [String: Any]
 
 		return (model, json)
@@ -146,24 +166,26 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	private func makeAPIResponseJSON(
 		status: Bool = true,
 		message: String = "success",
-		data: [[String: Any]]
+		hotels: [[String: Any]]
 	) -> [String: Any] {
 		[
 			"status": status,
 			"message": message,
-			"data": data
+			"data": [
+				"hotels": hotels
+			]
 		]
 	}
 }
 
-final class DestinationRequestFactoryStub: DestinationsRequestFactory {
+final class HotelsRequestFactoryStub: HotelsRequestFactory {
 	let url: URL
 
 	init(url: URL) {
 		self.url = url
 	}
 
-	func makeSearchRequest(query: String) -> URLRequest {
+	func makeSearchRequest(criteria: SearchCriteria) -> URLRequest {
 		URLRequest(url: url)
 	}
 }

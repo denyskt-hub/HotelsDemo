@@ -101,3 +101,7 @@ func makeDestination(
 		cityName: cityName
 	)
 }
+
+func makeJSONData(_ json: [String: Any]) -> Data {
+	try! JSONSerialization.data(withJSONObject: json)
+}
