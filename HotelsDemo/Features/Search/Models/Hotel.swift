@@ -8,17 +8,45 @@
 import Foundation
 
 public struct Hotel: Equatable {
-	let id: Int
-	let position: Int
-	let name: String
-	let starRating: Int
-	let reviewCount: Int
-	let reviewScore: Decimal
-	let photoURLs: [URL]
-	let price: Price
+	public let id: Int
+	public let position: Int
+	public let name: String
+	public let starRating: Int
+	public let reviewCount: Int
+	public let reviewScore: Decimal
+	public let photoURLs: [URL]
+	public let price: Price
+
+	public init(
+		id: Int,
+		position: Int,
+		name: String,
+		starRating: Int,
+		reviewCount: Int,
+		reviewScore: Decimal,
+		photoURLs: [URL],
+		price: Price
+	) {
+		self.id = id
+		self.position = position
+		self.name = name
+		self.starRating = starRating
+		self.reviewCount = reviewCount
+		self.reviewScore = reviewScore
+		self.photoURLs = photoURLs
+		self.price = price
+	}
 }
 
-struct Price: Equatable {
-	let grossPrice: Decimal
-	let currency: String
+public struct Price: Equatable {
+	public let grossPrice: Decimal
+	public let currency: String
+
+	public init(
+		grossPrice: Decimal,
+		currency: String
+	) {
+		self.grossPrice = grossPrice
+		self.currency = currency
+	}
 }
