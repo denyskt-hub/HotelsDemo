@@ -27,6 +27,7 @@ public final class RapidAPIHTTPClient: HTTPClient {
 		self.apiKey = apiKey
 	}
 
+	@discardableResult
 	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
 		var request = request
 		request.setValue(apiHost, forHTTPHeaderField: Headers.rapidAPIHost)

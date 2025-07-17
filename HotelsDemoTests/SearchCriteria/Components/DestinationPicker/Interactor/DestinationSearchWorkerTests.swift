@@ -36,9 +36,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 	}
 
 	func test_search_deliversErrorOn200HTTPResponseWithEmptyDataOrInvalidJSON() {
-		let emptyData = Data()
-		let invalidJSONData = Data("inalid json".utf8)
-		let samples = [emptyData, invalidJSONData]
+		let samples = [emptyData(), invalidJSONData()]
 		let (sut, client) = makeSUT()
 
 		for (index, data) in samples.enumerated() {

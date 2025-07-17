@@ -83,6 +83,53 @@ final class InMemoryImageDataCacheTests: XCTestCase {
 
 	// MARK: -
 
+	func test_save_doesNotCauseDataRaces() {
+		let data = anyData()
+		let sut = makeSUT(countLimit: 100)
+
+		let taskCount = 100
+		let group = DispatchGroup()
+
+		for i in 0..<taskCount {
+			group.enter()
+			DispatchQueue.global().async {
+				sut.save(data, forKey: "key-\(i)") { _ in
+					group.leave()
+				}
+			}
+		}
+
+		let groupResult = group.wait(timeout: .now() + 1.0)
+		XCTAssertEqual(groupResult, .success, "Expect all tasks to complete")
+
+		for i in 0..<taskCount {
+			let result = getData(from: sut, forKey: "key-\(i)")
+			XCTAssertEqual(result, data, "Data mismatch at key-\(i)")
+		}
+	}
+
+	func test_data_isThreadSafe() {
+		let key = anyKey()
+		let sut = makeSUT()
+
+		save(to: sut, data: anyData(), forKey: key)
+
+		let group = DispatchGroup()
+		for _ in 0..<1000 {
+			group.enter()
+			DispatchQueue.global().async {
+				sut.data(forKey: key) { _ in
+					group.leave()
+				}
+			}
+		}
+
+		let groupResult = group.wait(timeout: .now() + 1.0)
+		XCTAssertEqual(groupResult, .success, "Expect all tasks to complete")
+	}
+
+	// MARK: -
+
 	func test_save_evictsLeastRecentlyUsedItemsOnCountLimitExceeded() {
 		let sut = makeSUT(countLimit: 2)
 

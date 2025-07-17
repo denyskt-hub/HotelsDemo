@@ -24,6 +24,10 @@ func emptyData() -> Data {
 	Data()
 }
 
+func invalidJSONData() -> Data {
+	Data("inalid json".utf8)
+}
+
 func anyHTTPURLResponse() -> HTTPURLResponse {
 	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
 }
