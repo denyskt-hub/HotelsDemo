@@ -60,22 +60,6 @@ final class SearchInteractorTests: XCTestCase {
 		sut.presenter = presenter
 		return (sut, service, presenter)
 	}
-
-	private func anyHotel() -> Hotel {
-		Hotel(
-			id: 1,
-			position: 0,
-			name: "Hotel",
-			starRating: 3,
-			reviewCount: 5,
-			reviewScore: 9.0,
-			photoURLs: [],
-			price: Price(
-				grossPrice: 100,
-				currency: "USD"
-			)
-		)
-	}
 }
 
 final class HotelsSearchServiceSpy: HotelsSearchService {

@@ -16,6 +16,10 @@ public final class SearchPresenter: SearchPresentationLogic {
 
 	public var viewController: SearchDisplayLogic?
 
+	public init() {
+		// Required for initialization in tests
+	}
+
 	public func presentSearch(response: SearchModels.Search.Response) {
 		let viewModel = SearchModels.Search.ViewModel(
 			hotels: response.hotels.map {
