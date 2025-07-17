@@ -19,6 +19,7 @@ public final class CachingImageDataLoader: ImageDataLoader {
 		self.cache = cache
 	}
 
+	@discardableResult
 	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		loader.load(url: url) { [weak self] result in
 			if case let .success(data) = result {

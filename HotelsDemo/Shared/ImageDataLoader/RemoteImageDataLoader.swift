@@ -27,6 +27,7 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 		}
 	}
 
+	@discardableResult
 	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let request = makeRequest(url: url)
 

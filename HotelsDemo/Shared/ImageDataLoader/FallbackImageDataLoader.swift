@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 public final class FallbackImageDataLoader: ImageDataLoader {
 	private let primary: ImageDataLoader
 	private let secondary: ImageDataLoader
@@ -38,6 +36,7 @@ public final class FallbackImageDataLoader: ImageDataLoader {
 		}
 	}
 
+	@discardableResult
 	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let task = FallbackImageDataLoaderTaskWrapper()
 

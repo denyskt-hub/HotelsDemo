@@ -20,6 +20,10 @@ func anyData() -> Data {
 	Data("any".utf8)
 }
 
+func emptyData() -> Data {
+	Data()
+}
+
 func anyHTTPURLResponse() -> HTTPURLResponse {
 	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
 }

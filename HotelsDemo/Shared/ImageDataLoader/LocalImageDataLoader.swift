@@ -27,6 +27,7 @@ public final class LocalImageDataLoader: ImageDataLoader {
 		case notFound
 	}
 
+	@discardableResult
 	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		cache.data(forKey: url.absoluteString) { [weak self] result in
 			guard let self else { return }

@@ -15,5 +15,6 @@ public protocol ImageDataLoader {
 	typealias LoadResult = Result<Data, Error>
 	typealias LoadCompletion = (LoadResult) -> Void
 
+	@discardableResult 
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask
 }
