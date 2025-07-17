@@ -30,106 +30,6 @@
 			);
 			target = 92806D442E03DBD6005263A8 /* HotelsDemo */;
 		};
-		92F5BD062E28A93100D16B2D /* Exceptions for "HotelsDemoTests" folder in "HotelsDemo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Helpers/Calendar.swift,
-				Helpers/HTTPClientSpy.swift,
-				Helpers/SharedTestHelpers.swift,
-				"Helpers/String+Date.swift",
-				"Helpers/UIView+TestHelpers.swift",
-				Search/Helpers/SearchSharedTestHelpers.swift,
-				Search/Interactor/HotelsSearchWorkerTests.swift,
-				Search/Interactor/SearchInteractorTests.swift,
-				Search/Presenter/SearchPresenterTests.swift,
-				SearchCriteria/Components/DateRangePicker/Helpers/DateRangePickerTestHelpers.swift,
-				SearchCriteria/Components/DateRangePicker/Interactor/DateRangePickerInteractorTests.swift,
-				SearchCriteria/Components/DateRangePicker/Interactor/DefaultCalendarDataGeneratorTests.swift,
-				SearchCriteria/Components/DateRangePicker/Models/DateRangeSelectionTests.swift,
-				SearchCriteria/Components/DateRangePicker/Presenter/DataRangePickerPresenterTests.swift,
-				SearchCriteria/Components/DateRangePicker/View/DateRangePickerViewControllerTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DefaultDestinationRequestFactoryTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationPickerInteractorTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationSearchWorkerTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationsEndpointTests.swift,
-				SearchCriteria/Components/DestinationPicker/Presenter/DestinationPickerPresenterTests.swift,
-				SearchCriteria/Components/DestinationPicker/View/DestinationPickerViewControllerTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/Interactor/RoomGuestsPickerInteractorTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/Presenter/RoomGuestsPickerPresenterTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/View/RoomGuestsPickerViewControllerTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaInteractorTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaProvider/DefaultSearchCriteriaProviderTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/CodableSearchCriteriaStoreTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/InMemorySearchCriteriaStoreTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/SearchCriteriaStoreSpecs.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/ValidatingSearchCriteriaStoreTests.swift,
-				"SearchCriteria/Interactor/SearchCriteriaStore/XCTestCase+SearchCriteriaStoreSpecs.swift",
-				SearchCriteria/Models/DefaultSearchCriteriaValidatorTests.swift,
-				SearchCriteria/Presenter/SearchCriteriaPresenterTests.swift,
-				SearchCriteria/Router/SearchCriteriaRouterTests.swift,
-				SearchCriteria/View/SearchCriteriaViewControllerTests.swift,
-				Shared/Debouncer/DefaultDebouncerTests.swift,
-				Shared/HTTPClient/RapidAPIHTTPClientTests.swift,
-				Shared/ImageDataCache/InMemoryImageDataCacheTests.swift,
-				Shared/ImageDataLoader/CachingImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/FallbackImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/ImageDataMapperTests.swift,
-				Shared/ImageDataLoader/LocalImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/RemoteImageDataLoaderTests.swift,
-				"Shared/ImageDataLoader/XCTestCase+ImageDataLoader.swift",
-			);
-			target = 92806D442E03DBD6005263A8 /* HotelsDemo */;
-		};
-		92F5BD072E28A93100D16B2D /* Exceptions for "HotelsDemoTests" folder in "HotelsDemoTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Helpers/Calendar.swift,
-				Helpers/HTTPClientSpy.swift,
-				Helpers/SharedTestHelpers.swift,
-				"Helpers/String+Date.swift",
-				"Helpers/UIView+TestHelpers.swift",
-				Search/Helpers/SearchSharedTestHelpers.swift,
-				Search/Interactor/HotelsSearchWorkerTests.swift,
-				Search/Interactor/SearchInteractorTests.swift,
-				Search/Presenter/SearchPresenterTests.swift,
-				SearchCriteria/Components/DateRangePicker/Helpers/DateRangePickerTestHelpers.swift,
-				SearchCriteria/Components/DateRangePicker/Interactor/DateRangePickerInteractorTests.swift,
-				SearchCriteria/Components/DateRangePicker/Interactor/DefaultCalendarDataGeneratorTests.swift,
-				SearchCriteria/Components/DateRangePicker/Models/DateRangeSelectionTests.swift,
-				SearchCriteria/Components/DateRangePicker/Presenter/DataRangePickerPresenterTests.swift,
-				SearchCriteria/Components/DateRangePicker/View/DateRangePickerViewControllerTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DefaultDestinationRequestFactoryTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationPickerInteractorTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationSearchWorkerTests.swift,
-				SearchCriteria/Components/DestinationPicker/Interactor/DestinationsEndpointTests.swift,
-				SearchCriteria/Components/DestinationPicker/Presenter/DestinationPickerPresenterTests.swift,
-				SearchCriteria/Components/DestinationPicker/View/DestinationPickerViewControllerTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/Interactor/RoomGuestsPickerInteractorTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/Presenter/RoomGuestsPickerPresenterTests.swift,
-				SearchCriteria/Components/RoomGuestsPicker/View/RoomGuestsPickerViewControllerTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaInteractorTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaProvider/DefaultSearchCriteriaProviderTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/CodableSearchCriteriaStoreTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/InMemorySearchCriteriaStoreTests.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/SearchCriteriaStoreSpecs.swift,
-				SearchCriteria/Interactor/SearchCriteriaStore/ValidatingSearchCriteriaStoreTests.swift,
-				"SearchCriteria/Interactor/SearchCriteriaStore/XCTestCase+SearchCriteriaStoreSpecs.swift",
-				SearchCriteria/Models/DefaultSearchCriteriaValidatorTests.swift,
-				SearchCriteria/Presenter/SearchCriteriaPresenterTests.swift,
-				SearchCriteria/Router/SearchCriteriaRouterTests.swift,
-				SearchCriteria/View/SearchCriteriaViewControllerTests.swift,
-				Shared/Debouncer/DefaultDebouncerTests.swift,
-				Shared/HTTPClient/RapidAPIHTTPClientTests.swift,
-				Shared/ImageDataCache/InMemoryImageDataCacheTests.swift,
-				Shared/ImageDataLoader/CachingImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/FallbackImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/ImageDataMapperTests.swift,
-				Shared/ImageDataLoader/LocalImageDataLoaderTests.swift,
-				Shared/ImageDataLoader/RemoteImageDataLoaderTests.swift,
-				"Shared/ImageDataLoader/XCTestCase+ImageDataLoader.swift",
-			);
-			target = 92A3EB392E0C524F009FC429 /* HotelsDemoTests */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -148,10 +48,6 @@
 		};
 		92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				92F5BD062E28A93100D16B2D /* Exceptions for "HotelsDemoTests" folder in "HotelsDemo" target */,
-				92F5BD072E28A93100D16B2D /* Exceptions for "HotelsDemoTests" folder in "HotelsDemoTests" target */,
-			);
 			path = HotelsDemoTests;
 			sourceTree = "<group>";
 		};
@@ -213,7 +109,6 @@
 			fileSystemSynchronizedGroups = (
 				92806DA62E03E0A2005263A8 /* HotelsDemo */,
 				92BBCF342E16748B000A1560 /* Configs */,
-				92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */,
 			);
 			name = HotelsDemo;
 			packageProductDependencies = (
@@ -234,6 +129,9 @@
 			);
 			dependencies = (
 				92A3EB3F2E0C5250009FC429 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */,
 			);
 			name = HotelsDemoTests;
 			packageProductDependencies = (
