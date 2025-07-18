@@ -48,7 +48,7 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 
 		return [
 			"dest_id": "\(destination.id)",
-			"search_type": destination.type ,
+			"search_type": destination.type,
 			"arrival_date": dateFormatter.string(from: criteria.checkInDate),
 			"departure_date": dateFormatter.string(from: criteria.checkOutDate),
 			"adults": "\(criteria.adults)",

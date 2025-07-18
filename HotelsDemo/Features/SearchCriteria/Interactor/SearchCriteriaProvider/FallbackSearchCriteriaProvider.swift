@@ -22,7 +22,7 @@ public final class FallbackSearchCriteriaProvider: SearchCriteriaProvider {
 	public func retrieve(completion: @escaping (SearchCriteriaProvider.RetrieveResult) -> Void) {
 		primary.retrieve { [weak self] result in
 			guard let self else { return }
-			
+
 			switch result {
 			case .success(let criteria):
 				completion(.success(criteria))

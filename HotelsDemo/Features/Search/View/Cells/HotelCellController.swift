@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HotelCellControllerDelegate {
+public protocol HotelCellControllerDelegate: AnyObject {
 	func didRequestPhoto(_ url: URL)
 	func didCancelPhotoRequest()
 }
@@ -27,7 +27,7 @@ extension HotelCellController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		1
 	}
-	
+
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: HotelCell = tableView.dequeueReusableCell()
 		cell.configure(with: viewModel)

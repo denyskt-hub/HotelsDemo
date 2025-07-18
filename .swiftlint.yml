@@ -16,5 +16,8 @@ opt_in_rules:
   - toggle_bool
   - unneeded_parentheses_in_closure_argument
 
+line_length:
+  warning: 130
+
 excluded:
   - HotelsDemoTests

@@ -30,7 +30,6 @@ public enum HotelsSearchResponseMapper {
 
 		enum PriceCodingKeys: String, CodingKey {
 			case grossPrice
-
 		}
 
 		enum GrossPriceCodingKeys: String, CodingKey {

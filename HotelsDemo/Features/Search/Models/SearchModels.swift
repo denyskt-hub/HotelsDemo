@@ -23,7 +23,7 @@ public enum SearchModels {
 
 		public struct ViewModel: Equatable {
 			public let hotels: [HotelViewModel]
-			
+
 			public init(hotels: [HotelViewModel]) {
 				self.hotels = hotels
 			}

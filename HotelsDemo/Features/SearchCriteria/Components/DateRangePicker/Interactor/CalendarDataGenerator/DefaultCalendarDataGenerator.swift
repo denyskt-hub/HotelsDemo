@@ -113,14 +113,11 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 			var rangePosition = DateRangePosition.none
 			if current == selectedStartDate && selectedEndDate == nil {
 				rangePosition = .single
-			}
-			else if current == selectedStartDate && selectedEndDate != nil {
+			} else if current == selectedStartDate && selectedEndDate != nil {
 				rangePosition = .start
-			}
-			else if current == selectedEndDate {
+			} else if current == selectedEndDate {
 				rangePosition = .end
-			}
-			else if isDateInSelectedRange(current, selectedStartDate, selectedEndDate) {
+			} else if isDateInSelectedRange(current, selectedStartDate, selectedEndDate) {
 				rangePosition = .middle
 			}
 

@@ -51,7 +51,7 @@ extension SearchViewController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		cellControllers.count
 	}
-	
+
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cellController = cellController(at: indexPath)
 		return cellController.tableView(tableView, cellForRowAt: indexPath)

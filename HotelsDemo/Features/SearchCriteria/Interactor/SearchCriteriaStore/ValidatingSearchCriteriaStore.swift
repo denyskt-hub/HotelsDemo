@@ -23,9 +23,9 @@ public final class ValidatingSearchCriteriaStore: SearchCriteriaStore {
 		let validated = validator.validate(criteria)
 		decoratee.save(validated, completion: completion)
 	}
-	
+
 	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		decoratee.retrieve() { [weak self] result in
+		decoratee.retrieve { [weak self] result in
 			guard let self else { return }
 
 			switch result {

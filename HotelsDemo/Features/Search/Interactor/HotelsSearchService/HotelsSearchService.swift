@@ -12,5 +12,3 @@ public protocol HotelsSearchService {
 
 	func search(criteria: SearchCriteria, completion: @escaping (Result) -> Void)
 }
-
-

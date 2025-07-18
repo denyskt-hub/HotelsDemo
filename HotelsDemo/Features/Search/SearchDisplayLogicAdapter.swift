@@ -35,7 +35,7 @@ public final class SearchDisplayLogicAdapter: SearchDisplayLogic {
 
 		viewController.display(hotels)
 	}
-	
+
 	public func displaySearchError(viewModel: SearchModels.ErrorViewModel) {
 		guard let viewController = viewController else { return }
 		viewController.displaySearchError(viewModel: viewModel)

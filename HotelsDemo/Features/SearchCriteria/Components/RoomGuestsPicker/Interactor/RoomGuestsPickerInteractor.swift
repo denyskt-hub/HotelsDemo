@@ -74,7 +74,7 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 
 	public func didIncrementChildrenAge() {
 		guard childrenAge.count < limits.maxChildren else { return }
-		
+
 		childrenAge.append(nil)
 		presenter?.presentUpdateChildrenAge(
 			response: RoomGuestsPickerModels.UpdateChildrenAge.Response(
@@ -108,7 +108,7 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		guard availableChildAges.contains(request.age) else {
 			preconditionFailure("Invalid age selected: \(request.age). Available: \(availableChildAges)")
 		}
-		
+
 		childrenAge[index] = request.age
 		presenter?.presentChildrenAge(
 			response: RoomGuestsPickerModels.AgeSelected.Response(
