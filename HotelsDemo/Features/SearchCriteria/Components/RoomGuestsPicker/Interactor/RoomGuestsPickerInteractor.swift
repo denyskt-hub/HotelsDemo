@@ -8,8 +8,12 @@
 import Foundation
 
 public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
-	private let limits = RoomGuestsLimits(maxRooms: 30, maxAdults: 30, maxChildren: 10)
-	private let availableAges = Array(0...17)
+	private let limits = RoomGuestsLimits(
+		maxRooms: SearchLimits.maxRooms,
+		maxAdults: SearchLimits.maxRooms,
+		maxChildren: SearchLimits.maxChildren
+	)
+	private let availableChildAges = SearchLimits.availableChildAges
 
 	private var rooms: Int
 	private var adults: Int
@@ -90,7 +94,7 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		presenter?.presentAgePicker(
 			response: RoomGuestsPickerModels.AgeSelection.Response(
 				index: index,
-				availableAges: availableAges,
+				availableAges: availableChildAges,
 				selectedAge: selectedAge
 			)
 		)
@@ -101,8 +105,8 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 		guard childrenAge.indices.contains(index) else {
 			preconditionFailure("Invalid index from UI: \(index), childrenAge count: \(childrenAge.count)")
 		}
-		guard availableAges.contains(request.age) else {
-			preconditionFailure("Invalid age selected: \(request.age). Available: \(availableAges)")
+		guard availableChildAges.contains(request.age) else {
+			preconditionFailure("Invalid age selected: \(request.age). Available: \(availableChildAges)")
 		}
 		
 		childrenAge[index] = request.age

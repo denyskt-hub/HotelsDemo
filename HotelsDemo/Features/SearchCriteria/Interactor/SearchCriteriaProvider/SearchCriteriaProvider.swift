@@ -19,6 +19,6 @@ extension SearchCriteriaProvider {
 	}
 }
 
-public enum SearchCriteriaError: Swift.Error, Equatable {
+public enum SearchCriteriaError: Error, Equatable {
 	case notFound
 }
