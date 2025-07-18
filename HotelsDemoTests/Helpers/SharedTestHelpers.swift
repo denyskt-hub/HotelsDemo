@@ -87,6 +87,8 @@ func anyDestination() -> Destination {
 }
 
 func makeDestination(
+	id: Int = 1,
+	type: String = "country",
 	name: String = "any name",
 	label: String = "any label",
 	country: String = "any country",
@@ -94,7 +96,7 @@ func makeDestination(
 ) -> Destination {
 	Destination(
 		id: 1,
-		type: "country",
+		type: type,
 		name: name,
 		label: label,
 		country: country,

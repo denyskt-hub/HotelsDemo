@@ -25,19 +25,35 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 	}
 
 	public func makeSearchRequest(criteria: SearchCriteria) -> URLRequest {
-		guard let destination = criteria.destination else {
-			preconditionFailure("Destination is required")
-		}
-
-		let checkInDate = dateFormatter.string(from: criteria.checkInDate)
-		let checkOutDate = dateFormatter.string(from: criteria.checkOutDate)
-		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")
-
-		let urlString = url.absoluteString.appending("?dest_id=\(destination.id)&search_type=\(destination.type)&arrival_date=\(checkInDate)&departure_date=\(checkOutDate)&adults=\(criteria.adults)&children_age=\(childrenAge)&room_qty=\(criteria.roomsQuantity)")
+		let queryParams = makeQueryParams(from: criteria, dateFormatter: dateFormatter)
+		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
+		let urlString = url.absoluteString.appending("?\(queryString)")
 		let finalURL = URL(string: urlString)!
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
 		return request
+	}
+
+	private func makeQueryParams(
+		from criteria: SearchCriteria,
+		dateFormatter: DateFormatter
+	) -> [String: String] {
+		guard let destination = criteria.destination else {
+			preconditionFailure("Destination is required")
+		}
+
+		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")
+		let encodedChildrenAge = childrenAge.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
+
+		return [
+			"dest_id": "\(destination.id)",
+			"search_type": destination.type ,
+			"arrival_date": dateFormatter.string(from: criteria.checkInDate),
+			"departure_date": dateFormatter.string(from: criteria.checkOutDate),
+			"adults": "\(criteria.adults)",
+			"children_age": encodedChildrenAge,
+			"room_qty": "\(criteria.roomsQuantity)"
+		]
 	}
 }
