@@ -20,6 +20,14 @@ func anyData() -> Data {
 	Data("any".utf8)
 }
 
+func emptyData() -> Data {
+	Data()
+}
+
+func invalidJSONData() -> Data {
+	Data("inalid json".utf8)
+}
+
 func anyHTTPURLResponse() -> HTTPURLResponse {
 	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
 }
@@ -79,6 +87,8 @@ func anyDestination() -> Destination {
 }
 
 func makeDestination(
+	id: Int = 1,
+	type: String = "country",
 	name: String = "any name",
 	label: String = "any label",
 	country: String = "any country",
@@ -86,10 +96,14 @@ func makeDestination(
 ) -> Destination {
 	Destination(
 		id: 1,
-		type: "country",
+		type: type,
 		name: name,
 		label: label,
 		country: country,
 		cityName: cityName
 	)
+}
+
+func makeJSONData(_ json: [String: Any]) -> Data {
+	try! JSONSerialization.data(withJSONObject: json)
 }

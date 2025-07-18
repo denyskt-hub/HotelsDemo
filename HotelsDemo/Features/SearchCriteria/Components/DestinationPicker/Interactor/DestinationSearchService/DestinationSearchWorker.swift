@@ -8,12 +8,12 @@
 import Foundation
 
 public final class DestinationSearchWorker: DestinationSearchService {
-	private let factory: DestinationRequestFactory
+	private let factory: DestinationsRequestFactory
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
 	public init(
-		factory: DestinationRequestFactory,
+		factory: DestinationsRequestFactory,
 		client: HTTPClient,
 		dispatcher: Dispatcher
 	) {
@@ -30,46 +30,18 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		client.perform(request) { [weak self] result in
 			guard let self else { return }
 
-			switch result {
-			case let .success((data, response)):
-				do {
-					let destinations = try DestinationsResponseMapper.map(data, response)
-					self.dispatcher.dispatch {
-						completion(.success(destinations))
-					}
-				} catch {
-					self.dispatcher.dispatch {
-						completion(.failure(error))
-					}
-				}
-
-			case let .failure(error):
-				self.dispatcher.dispatch {
-					completion(.failure(error))
+			let searchResult = DestinationSearchService.Result {
+				switch result {
+				case let .success((data, response)):
+					return try DestinationsResponseMapper.map(data, response)
+				case let .failure(error):
+					throw error
 				}
 			}
+
+			self.dispatcher.dispatch {
+				completion(searchResult)
+			}
 		}
-	}
-}
-
-public protocol DestinationRequestFactory {
-	func makeSearchRequest(query: String) -> URLRequest
-}
-
-public final class DefaultDestinationRequestFactory: DestinationRequestFactory {
-	private let url: URL
-
-	public init(url: URL) {
-		self.url = url
-	}
-
-	public func makeSearchRequest(query: String) -> URLRequest {
-		let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
-		let urlString = url.absoluteString.appending("?query=\(encodedQuery)")
-		let finalURL = URL(string: urlString)!
-
-		var request = URLRequest(url: finalURL)
-		request.httpMethod = "GET"
-		return request
 	}
 }

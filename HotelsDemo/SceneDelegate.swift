@@ -39,9 +39,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		)
 	}()
 
-	private var searchCriteriaFactory: SearchCriteriaFactory {
+	private lazy var mainFactory: MainFactory = {
+		MainComposer(searchCriteriaFactory: makeSearchCriteriaViewController(delegate:))
+	}()
+
+	private lazy var searchCriteriaFactory: SearchCriteriaFactory = {
 		SearchCriteriaComposer()
-	}
+	}()
 
 	var window: UIWindow?
 
@@ -62,25 +66,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	private func makeMainViewController() -> UIViewController {
-		let delegateProxy = WeakRefVirtualProxy<MainViewController>()
-		let searchCriteriaViewController = makeSearchCriteriaViewController(
-			delegate: delegateProxy
-		)
-		let viewController = MainViewController(
-			searchCriteriaViewController: searchCriteriaViewController
-		)
-		let interactor = MainInteractor()
-		let presenter = MainPresenter()
-		let router = MainRouter()
-
-		viewController.interactor = interactor
-		viewController.router = router
-		interactor.presenter = presenter
-		presenter.viewController = viewController
-		router.viewController = viewController
-
-		delegateProxy.object = viewController
-		return viewController
+		mainFactory.makeMain()
 	}
 
 	private func makeSearchCriteriaViewController(delegate: SearchCriteriaDelegate) -> UIViewController {

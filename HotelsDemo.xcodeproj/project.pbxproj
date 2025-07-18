@@ -41,14 +41,14 @@
 			path = HotelsDemo;
 			sourceTree = "<group>";
 		};
-		92A3EB3B2E0C524F009FC429 /* HotelsDemoTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = HotelsDemoTests;
-			sourceTree = "<group>";
-		};
 		92BBCF342E16748B000A1560 /* Configs */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Configs;
+			sourceTree = "<group>";
+		};
+		92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HotelsDemoTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -77,7 +77,7 @@
 				9242851D2E1EB976003FDDA9 /* HotelsDemo.xctestplan */,
 				92BBCF342E16748B000A1560 /* Configs */,
 				92806DA62E03E0A2005263A8 /* HotelsDemo */,
-				92A3EB3B2E0C524F009FC429 /* HotelsDemoTests */,
+				92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */,
 				92806D462E03DBD6005263A8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,7 +131,7 @@
 				92A3EB3F2E0C5250009FC429 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				92A3EB3B2E0C524F009FC429 /* HotelsDemoTests */,
+				92F5BCDD2E28A93100D16B2D /* HotelsDemoTests */,
 			);
 			name = HotelsDemoTests;
 			packageProductDependencies = (
