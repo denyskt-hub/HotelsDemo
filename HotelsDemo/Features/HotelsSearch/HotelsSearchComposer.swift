@@ -8,7 +8,7 @@
 import UIKit
 
 public protocol HotelsSearchFactory {
-	func makeSearch(with criteria: SearchCriteria) -> UIViewController
+	func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController
 }
 
 public final class HotelsSearchComposer: HotelsSearchFactory {
@@ -18,7 +18,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		self.imageDataCache = imageDataCache
 	}
 
-	public func makeSearch(with criteria: SearchCriteria) -> UIViewController {
+	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
 		let viewController = HotelsSearchViewController()
 
 		let mainQueueDispatcher = MainQueueDispatcher()

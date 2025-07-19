@@ -15,8 +15,8 @@ final class WeakRefVirtualProxy<T: AnyObject> {
 	}
 }
 
-extension WeakRefVirtualProxy: SearchCriteriaDelegate where T: SearchCriteriaDelegate {
-	func didRequestSearch(with searchCriteria: SearchCriteria) {
+extension WeakRefVirtualProxy: HotelsSearchCriteriaDelegate where T: HotelsSearchCriteriaDelegate {
+	func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
 		object?.didRequestSearch(with: searchCriteria)
 	}
 }

@@ -10,7 +10,7 @@ import HotelsDemo
 
 extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	func assertThatRetrieveDeliversNotFoundErrorOnEmptyStore(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -18,7 +18,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	func assertThatRetrieveDeliversSearchCriteriaOnNonEmptyStore(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -29,7 +29,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	func assertThatSaveDeliversNoErrorOnEmptyStore(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -39,7 +39,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	func assertThatSaveDeliversNoErrorOnNonEmptyStore(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -51,7 +51,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	func assertThatSaveOverridesPreviouslySavedSearchCriteria(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -64,7 +64,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	func assertThatStoreSideEffectsRunsSerially(
-		on sut: SearchCriteriaStore,
+		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -96,8 +96,8 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 
 extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	func expect(
-		_ sut: SearchCriteriaStore,
-		toRetrieve expectedResult: SearchCriteriaProvider.RetrieveResult,
+		_ sut: HotelsSearchCriteriaStore,
+		toRetrieve expectedResult: HotelsSearchCriteriaProvider.RetrieveResult,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -114,10 +114,10 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 		}
 	}
 
-	func retrieve(from sut: SearchCriteriaStore) -> SearchCriteriaProvider.RetrieveResult {
+	func retrieve(from sut: HotelsSearchCriteriaStore) -> HotelsSearchCriteriaProvider.RetrieveResult {
 		let exp = expectation(description: "Wait for retrieve")
 
-		var retrievedResult: SearchCriteriaProvider.RetrieveResult!
+		var retrievedResult: HotelsSearchCriteriaProvider.RetrieveResult!
 		sut.retrieve { result in
 			retrievedResult = result
 			exp.fulfill()
@@ -128,7 +128,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	@discardableResult
-	func save(_ criteria: SearchCriteria, to sut: SearchCriteriaStore) -> Error? {
+	func save(_ criteria: HotelsSearchCriteria, to sut: HotelsSearchCriteriaStore) -> Error? {
 		let exp = expectation(description: "Wait for save")
 
 		var savingError: Error?

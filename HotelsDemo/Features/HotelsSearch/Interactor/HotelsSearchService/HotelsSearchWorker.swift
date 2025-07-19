@@ -22,7 +22,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 		self.dispatcher = dispatcher
 	}
 
-	public func search(criteria: SearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
+	public func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
 		let request = factory.makeSearchRequest(criteria: criteria)
 
 		client.perform(request) { [weak self] result in

@@ -46,7 +46,7 @@ final class SearchInteractorTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT(criteria: SearchCriteria = anySearchCriteria()) -> (
+	private func makeSUT(criteria: HotelsSearchCriteria = anySearchCriteria()) -> (
 		sut: HotelsSearchInteractor,
 		service: HotelsSearchServiceSpy,
 		presenter: SearchPresentationLogicSpy
@@ -64,13 +64,13 @@ final class SearchInteractorTests: XCTestCase {
 
 final class HotelsSearchServiceSpy: HotelsSearchService {
 	enum Message: Equatable {
-		case search(SearchCriteria)
+		case search(HotelsSearchCriteria)
 	}
 
 	private(set) var messages = [Message]()
 	private var completions = [(HotelsSearchService.Result) -> Void]()
 
-	func search(criteria: SearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
+	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
 		messages.append(.search(criteria))
 		completions.append(completion)
 	}

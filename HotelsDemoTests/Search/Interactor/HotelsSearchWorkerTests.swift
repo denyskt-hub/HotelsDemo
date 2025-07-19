@@ -185,7 +185,7 @@ final class HotelsRequestFactoryStub: HotelsRequestFactory {
 		self.url = url
 	}
 
-	func makeSearchRequest(criteria: SearchCriteria) -> URLRequest {
+	func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest {
 		URLRequest(url: url)
 	}
 }

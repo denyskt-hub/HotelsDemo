@@ -8,13 +8,13 @@
 import Foundation
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
-	private let criteria: SearchCriteria
+	private let criteria: HotelsSearchCriteria
 	private let worker: HotelsSearchService
 
 	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
-		criteria: SearchCriteria,
+		criteria: HotelsSearchCriteria,
 		worker: HotelsSearchService
 	) {
 		self.criteria = criteria

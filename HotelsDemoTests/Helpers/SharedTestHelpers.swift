@@ -36,8 +36,8 @@ func makeHTTPURLResponse(statusCode: Int) -> HTTPURLResponse {
 	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
 }
 
-func anySearchCriteria() -> SearchCriteria {
-	SearchCriteria(
+func anySearchCriteria() -> HotelsSearchCriteria {
+	HotelsSearchCriteria(
 		destination: nil,
 		checkInDate: .now,
 		checkOutDate: .now,
@@ -50,7 +50,7 @@ func anySearchCriteria() -> SearchCriteria {
 func makeValidSearchCriteria(
 	calendar: Calendar,
 	currentDate: Date
-) -> SearchCriteria {
+) -> HotelsSearchCriteria {
 	makeSearchCriteria(
 		checkInDate: currentDate,
 		checkOutDate: currentDate.adding(days: 1, calendar: calendar)
@@ -64,8 +64,8 @@ func makeSearchCriteria(
 	adults: Int = 2,
 	childrenAge: [Int] = [],
 	roomsQuantity: Int = 1
-) -> SearchCriteria {
-	SearchCriteria(
+) -> HotelsSearchCriteria {
+	HotelsSearchCriteria(
 		destination: destination,
 		checkInDate: checkInDate,
 		checkOutDate: checkOutDate,

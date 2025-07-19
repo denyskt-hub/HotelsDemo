@@ -26,7 +26,7 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 	func test_validate_fixesInvalidDateCombinations() {
 		let currentDate = "26.06.2025".date()
 		let calendar = Calendar.gregorian()
-		let cases: [(name: String, invalid: SearchCriteria, expected: SearchCriteria)] = [
+		let cases: [(name: String, invalid: HotelsSearchCriteria, expected: HotelsSearchCriteria)] = [
 			(
 				name: "check-in before today",
 				invalid: make(in: "25.06.2025", out: "27.06.2025"),
@@ -58,14 +58,14 @@ final class DefaultSearchCriteriaValidatorTests: XCTestCase {
 	private func makeSUT(
 		calendar: Calendar,
 		currentDate: @escaping () -> Date
-	) -> DefaultSearchCriteriaValidator {
-		DefaultSearchCriteriaValidator(
+	) -> DefaultHotelsSearchCriteriaValidator {
+		DefaultHotelsSearchCriteriaValidator(
 			calendar: calendar,
 			currentDate: currentDate
 		)
 	}
 
-	private func make(in checkInDate: String, out checkOutDate: String) -> SearchCriteria {
+	private func make(in checkInDate: String, out checkOutDate: String) -> HotelsSearchCriteria {
 		makeSearchCriteria(
 			checkInDate: checkInDate.date(),
 			checkOutDate: checkOutDate.date()

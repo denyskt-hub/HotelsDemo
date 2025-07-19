@@ -10,7 +10,7 @@ import HotelsDemo
 
 final class SearchCriteriaPresenterTests: XCTestCase {
 	func test_presentLoadCriteria_displaysCorrectViewModelForGivenCriteria() {
-		let criteria = SearchCriteria(
+		let criteria = HotelsSearchCriteria(
 			destination: nil,
 			checkInDate: "27.06.2025".date(),
 			checkOutDate: "28.06.2025".date(),
@@ -18,21 +18,21 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [3],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = SearchCriteriaModels.Load.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.Load.ViewModel(
 			destination: nil,
 			dateRange: "27 Jun – 28 Jun",
 			roomGuests: "1 room for 2 adults, 1 child"
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentLoadCriteria(response: SearchCriteriaModels.Load.Response(criteria: criteria))
+		sut.presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
 
 	func test_presentLoadError_displaysCorrectErrorViewModel() {
 		let errorMessage = "Some error"
-		let expectedViewModel = SearchCriteriaModels.ErrorViewModel(message: errorMessage)
+		let expectedViewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: errorMessage)
 		let (sut, viewController) = makeSUT()
 
 		sut.presentLoadError(TestError(errorMessage))
@@ -42,7 +42,7 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 
 	func test_presentUpdateError_displaysCorrectErrorViewModel() {
 		let errorMessage = "Some error"
-		let expectedViewModel = SearchCriteriaModels.ErrorViewModel(message: errorMessage)
+		let expectedViewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: errorMessage)
 		let (sut, viewController) = makeSUT()
 
 		sut.presentUpdateError(TestError(errorMessage))
@@ -60,7 +60,7 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 		let (sut, viewController) = makeSUT()
 
 		sut.presentDates(
-			response: SearchCriteriaModels.LoadDates.Response(
+			response: HotelsSearchCriteriaModels.LoadDates.Response(
 				checkInDate: checkInDate,
 				checkOutDate: checkOutDate
 			)
@@ -78,7 +78,7 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
+		sut.presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
 
 		XCTAssertEqual(viewController.messages, [.displayRoomGuests(expectedViewModel)])
 	}
@@ -92,14 +92,14 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [3],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = SearchCriteriaModels.Load.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.Load.ViewModel(
 			destination: "London",
 			dateRange: "27 Jun – 28 Jun",
 			roomGuests: "1 room for 2 adults, 1 child"
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateDestination(response: SearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+		sut.presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -113,14 +113,14 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [],
 			roomsQuantity: 2
 		)
-		let expectedViewModel = SearchCriteriaModels.Load.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.Load.ViewModel(
 			destination: nil,
 			dateRange: "10 Jul – 15 Jul",
 			roomGuests: "2 rooms for 3 adults"
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateDates(response: SearchCriteriaModels.UpdateDates.Response(criteria: criteria))
+		sut.presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -134,14 +134,14 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [0],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = SearchCriteriaModels.Load.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.Load.ViewModel(
 			destination: "New York, USA",
 			dateRange: "22 Aug – 23 Aug",
 			roomGuests: "1 room for 1 adult, 1 child"
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria))
+		sut.presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -158,11 +158,11 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
-		sut: SearchCriteriaPresenter,
+		sut: HotelsSearchCriteriaPresenter,
 		viewController: SearchCriteriaDisplayLogicSpy
 	) {
 		let viewController = SearchCriteriaDisplayLogicSpy()
-		let sut = SearchCriteriaPresenter(calendar: .gregorian())
+		let sut = HotelsSearchCriteriaPresenter(calendar: .gregorian())
 		sut.viewController = viewController
 		return (sut, viewController)
 	}
@@ -180,27 +180,27 @@ extension TestError: LocalizedError {
 	var errorDescription: String? { message }
 }
 
-final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
+final class SearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogic {
 	enum Message: Equatable {
-		case displayCriteria(SearchCriteriaModels.Load.ViewModel)
-		case displayLoadError(SearchCriteriaModels.ErrorViewModel)
-		case displayUpdateError(SearchCriteriaModels.ErrorViewModel)
+		case displayCriteria(HotelsSearchCriteriaModels.Load.ViewModel)
+		case displayLoadError(HotelsSearchCriteriaModels.ErrorViewModel)
+		case displayUpdateError(HotelsSearchCriteriaModels.ErrorViewModel)
 		case displayDates(DateRangePickerModels.ViewModel)
 		case displayRoomGuests(RoomGuestsPickerModels.ViewModel)
-		case displaySearch(SearchCriteriaModels.Search.ViewModel)
+		case displaySearch(HotelsSearchCriteriaModels.Search.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func displayCriteria(viewModel: SearchCriteriaModels.Load.ViewModel) {
+	func displayCriteria(viewModel: HotelsSearchCriteriaModels.Load.ViewModel) {
 		messages.append(.displayCriteria(viewModel))
 	}
 
-	func displayLoadError(viewModel: SearchCriteriaModels.ErrorViewModel) {
+	func displayLoadError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel) {
 		messages.append(.displayLoadError(viewModel))
 	}
 
-	func displayUpdateError(viewModel: SearchCriteriaModels.ErrorViewModel) {
+	func displayUpdateError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel) {
 		messages.append(.displayUpdateError(viewModel))
 	}
 
@@ -212,7 +212,7 @@ final class SearchCriteriaDisplayLogicSpy: SearchCriteriaDisplayLogic {
 		messages.append(.displayRoomGuests(viewModel))
 	}
 
-	func displaySearch(viewModel: SearchCriteriaModels.Search.ViewModel) {
+	func displaySearch(viewModel: HotelsSearchCriteriaModels.Search.ViewModel) {
 		messages.append(.displaySearch(viewModel))
 	}
 }

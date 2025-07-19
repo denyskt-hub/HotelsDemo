@@ -139,10 +139,10 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (sut: ValidatingSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
+	private func makeSUT() -> (sut: ValidatingHotelsSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
 		let store = SearchCriteriaStoreSpy()
 		let validator = SearchCriteriaValidatorSpy()
-		let sut = ValidatingSearchCriteriaStore(
+		let sut = ValidatingHotelsSearchCriteriaStore(
 			decoratee: store,
 			validator: validator
 		)
@@ -150,9 +150,9 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 	}
 }
 
-final class SearchCriteriaStoreSpy: SearchCriteriaStore {
+final class SearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 	enum Message: Equatable {
-		case save(SearchCriteria)
+		case save(HotelsSearchCriteria)
 		case retrieve
 	}
 
@@ -161,7 +161,7 @@ final class SearchCriteriaStoreSpy: SearchCriteriaStore {
 	private var saveCompletions: [((SaveResult) -> Void)] = []
 	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		messages.append(.save(criteria))
 		saveCompletions.append(completion)
 	}
@@ -180,12 +180,12 @@ final class SearchCriteriaStoreSpy: SearchCriteriaStore {
 	}
 }
 
-final class SearchCriteriaValidatorSpy: SearchCriteriaValidator {
-	private(set) var validated = [SearchCriteria]()
+final class SearchCriteriaValidatorSpy: HotelsSearchCriteriaValidator {
+	private(set) var validated = [HotelsSearchCriteria]()
 
-	var stubbedResult: SearchCriteria?
+	var stubbedResult: HotelsSearchCriteria?
 
-	func validate(_ criteria: SearchCriteria) -> SearchCriteria {
+	func validate(_ criteria: HotelsSearchCriteria) -> HotelsSearchCriteria {
 		validated.append(criteria)
 		return stubbedResult ?? criteria
 	}

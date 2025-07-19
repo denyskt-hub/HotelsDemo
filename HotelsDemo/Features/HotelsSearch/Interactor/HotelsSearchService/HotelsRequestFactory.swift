@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol HotelsRequestFactory {
-	func makeSearchRequest(criteria: SearchCriteria) -> URLRequest
+	func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest
 }
 
 public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
@@ -24,7 +24,7 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 		self.url = url
 	}
 
-	public func makeSearchRequest(criteria: SearchCriteria) -> URLRequest {
+	public func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest {
 		let queryParams = makeQueryParams(from: criteria, dateFormatter: dateFormatter)
 		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
 		let urlString = url.absoluteString.appending("?\(queryString)")
@@ -36,7 +36,7 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 	}
 
 	private func makeQueryParams(
-		from criteria: SearchCriteria,
+		from criteria: HotelsSearchCriteria,
 		dateFormatter: DateFormatter
 	) -> [String: String] {
 		guard let destination = criteria.destination else {

@@ -11,7 +11,7 @@ import HotelsDemo
 final class DefaultSearchCriteriaProviderTests: XCTestCase {
 	func test_retrieve_deliversDefaultSearchCriteria() {
 		let currentDate = "26.06.2025".date()
-		let expectedCriteria = SearchCriteriaDefaults.make(
+		let expectedCriteria = HotelsSearchCriteriaDefaults.make(
 			calendar: .gregorian(),
 			currentDate: { currentDate }
 		)
@@ -37,8 +37,8 @@ final class DefaultSearchCriteriaProviderTests: XCTestCase {
 	private func makeSUT(
 		calendar: Calendar,
 		currentDate: @escaping () -> Date
-	) -> DefaultSearchCriteriaProvider {
-		DefaultSearchCriteriaProvider(
+	) -> DefaultHotelsSearchCriteriaProvider {
+		DefaultHotelsSearchCriteriaProvider(
 			calendar: calendar,
 			currentDate: currentDate
 		)

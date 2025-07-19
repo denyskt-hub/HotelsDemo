@@ -73,7 +73,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 		let (sut, _, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
-		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
+		let viewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
 		sut.displayLoadError(viewModel: viewModel)
 
 		XCTAssertEqual(sut.errorMessage, "Failed to load data")
@@ -83,7 +83,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 		let (sut, _, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
-		let viewModel = SearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
+		let viewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: "Failed to load data")
 		sut.displayUpdateError(viewModel: viewModel)
 
 		XCTAssertEqual(sut.errorMessage, "Failed to load data")
@@ -156,7 +156,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
-		sut: SearchCriteriaViewController,
+		sut: HotelsSearchCriteriaViewController,
 		interactor: SearchCriteriaInteractorSpy,
 		router: SearchCriteriaRouterSpy,
 		delegate: SearchCriteriaDelegateSpy
@@ -164,7 +164,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 		let interactor = SearchCriteriaInteractorSpy()
 		let router = SearchCriteriaRouterSpy()
 		let delegate = SearchCriteriaDelegateSpy()
-		let sut = SearchCriteriaViewController()
+		let sut = HotelsSearchCriteriaViewController()
 		sut.interactor = interactor
 		sut.router = router
 		sut.delegate = delegate
@@ -172,7 +172,7 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 	}
 }
 
-extension SearchCriteriaViewController {
+extension HotelsSearchCriteriaViewController {
 	var errorView: UIAlertController? {
 		presentedViewController as? UIAlertController
 	}
@@ -210,49 +210,49 @@ extension SearchCriteriaViewController {
 	}
 }
 
-final class SearchCriteriaInteractorSpy: SearchCriteriaBusinessLogic {
+final class SearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	enum Message: Equatable {
-		case loadCriteria(SearchCriteriaModels.Load.Request)
-		case loadDates(SearchCriteriaModels.LoadDates.Request)
-		case loadRoomGuests(SearchCriteriaModels.LoadRoomGuests.Request)
-		case updateDestination(SearchCriteriaModels.UpdateDestination.Request)
-		case updateDates(SearchCriteriaModels.UpdateDates.Request)
-		case updateRoomGuests(SearchCriteriaModels.UpdateRoomGuests.Request)
-		case search(SearchCriteriaModels.Search.Request)
+		case loadCriteria(HotelsSearchCriteriaModels.Load.Request)
+		case loadDates(HotelsSearchCriteriaModels.LoadDates.Request)
+		case loadRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Request)
+		case updateDestination(HotelsSearchCriteriaModels.UpdateDestination.Request)
+		case updateDates(HotelsSearchCriteriaModels.UpdateDates.Request)
+		case updateRoomGuests(HotelsSearchCriteriaModels.UpdateRoomGuests.Request)
+		case search(HotelsSearchCriteriaModels.Search.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func loadCriteria(request: SearchCriteriaModels.Load.Request) {
+	func loadCriteria(request: HotelsSearchCriteriaModels.Load.Request) {
 		messages.append(.loadCriteria(request))
 	}
 
-	func loadDates(request: SearchCriteriaModels.LoadDates.Request) {
+	func loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request) {
 		messages.append(.loadDates(request))
 	}
 
-	func loadRoomGuests(request: SearchCriteriaModels.LoadRoomGuests.Request) {
+	func loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request) {
 		messages.append(.loadRoomGuests(request))
 	}
 
-	func updateDestination(request: SearchCriteriaModels.UpdateDestination.Request) {
+	func updateDestination(request: HotelsSearchCriteriaModels.UpdateDestination.Request) {
 		messages.append(.updateDestination(request))
 	}
 
-	func updateDates(request: SearchCriteriaModels.UpdateDates.Request) {
+	func updateDates(request: HotelsSearchCriteriaModels.UpdateDates.Request) {
 		messages.append(.updateDates(request))
 	}
 
-	func updateRoomGuests(request: SearchCriteriaModels.UpdateRoomGuests.Request) {
+	func updateRoomGuests(request: HotelsSearchCriteriaModels.UpdateRoomGuests.Request) {
 		messages.append(.updateRoomGuests(request))
 	}
 
-	func search(request: SearchCriteriaModels.Search.Request) {
+	func search(request: HotelsSearchCriteriaModels.Search.Request) {
 		messages.append(.search(request))
 	}
 }
 
-final class SearchCriteriaRouterSpy: SearchCriteriaRoutingLogic {
+final class SearchCriteriaRouterSpy: HotelsSearchCriteriaRoutingLogic {
 	enum Message: Equatable {
 		case routeToDestinationPicker
 		case routeToDateRangePicker(DateRangePickerModels.ViewModel)
@@ -274,14 +274,14 @@ final class SearchCriteriaRouterSpy: SearchCriteriaRoutingLogic {
 	}
 }
 
-final class SearchCriteriaDelegateSpy: SearchCriteriaDelegate {
+final class SearchCriteriaDelegateSpy: HotelsSearchCriteriaDelegate {
 	enum Message: Equatable {
-		case didRequestSearch(SearchCriteria)
+		case didRequestSearch(HotelsSearchCriteria)
 	}
 
 	private(set) var messages = [Message]()
 
-	func didRequestSearch(with searchCriteria: SearchCriteria) {
+	func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
 		messages.append(.didRequestSearch(searchCriteria))
 	}
 }

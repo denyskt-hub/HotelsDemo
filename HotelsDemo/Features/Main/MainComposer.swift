@@ -12,9 +12,9 @@ public protocol MainFactory {
 }
 
 public final class MainComposer: MainFactory {
-	private let makeSearchCriteria: (SearchCriteriaDelegate) -> UIViewController
+	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
 
-	public init(searchCriteriaFactory: @escaping (SearchCriteriaDelegate) -> UIViewController) {
+	public init(searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController) {
 		self.makeSearchCriteria = searchCriteriaFactory
 	}
 

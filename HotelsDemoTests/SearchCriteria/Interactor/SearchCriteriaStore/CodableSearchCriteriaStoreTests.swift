@@ -47,8 +47,8 @@ final class CodableSearchCriteriaStoreTests: XCTestCase, SearchCriteriaStoreSpec
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> CodableSearchCriteriaStore {
-		CodableSearchCriteriaStore(
+	private func makeSUT() -> CodableHotelsSearchCriteriaStore {
+		CodableHotelsSearchCriteriaStore(
 			storeURL: testSpecificStoreURL(),
 			dispatcher: ImmediateDispatcher()
 		)

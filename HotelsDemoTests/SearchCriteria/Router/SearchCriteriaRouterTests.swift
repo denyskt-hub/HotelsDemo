@@ -81,7 +81,7 @@ final class SearchCriteriaRouterTests: XCTestCase {
 	// MARK: - Helpers
 
 	private struct SUTContainer {
-		let sut: SearchCriteriaRouter
+		let sut: HotelsSearchCriteriaRouter
 		let calendar: Calendar
 		let destinationPickerFactory: DestinationPickerFactoryStub
 		let dateRangePickerFactory: DateRangePickerFactoryStub
@@ -95,7 +95,7 @@ final class SearchCriteriaRouterTests: XCTestCase {
 		let dateRangePickerFactory = DateRangePickerFactoryStub()
 		let roomGuestsPickerFactory = RoomGuestsPickerFactoryStub()
 		let viewController = ViewControllerSpy()
-		let sut = SearchCriteriaRouter(
+		let sut = HotelsSearchCriteriaRouter(
 			calendar: calendar,
 			destinationPickerFactory: destinationPickerFactory,
 			dateRangePickerFactory: dateRangePickerFactory,
@@ -122,7 +122,7 @@ func objectID(_ object: AnyObject?) -> ObjectIdentifier? {
 	object.map { ObjectIdentifier($0) }
 }
 
-final class ViewControllerSpy: UIViewController, SearchCriteriaScene {
+final class ViewControllerSpy: UIViewController, HotelsSearchCriteriaScene {
 	var didPresent = false
 	var presentedVC: UIViewController?
 

@@ -213,7 +213,7 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
-		sut: SearchCriteriaInteractor,
+		sut: HotelsSearchCriteriaInteractor,
 		provider: SearchCriteriaProviderSpy,
 		cache: SearchCriteriaCacheSpy,
 		presenter: SearchCriteriaPresenterSpy
@@ -221,7 +221,7 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 		let provider = SearchCriteriaProviderSpy()
 		let cache = SearchCriteriaCacheSpy()
 		let presenter = SearchCriteriaPresenterSpy()
-		let sut = SearchCriteriaInteractor(
+		let sut = HotelsSearchCriteriaInteractor(
 			provider: provider,
 			cache: cache
 		)
@@ -230,7 +230,7 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 	}
 }
 
-final class SearchCriteriaProviderSpy: SearchCriteriaProvider {
+final class SearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
 
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
@@ -242,10 +242,10 @@ final class SearchCriteriaProviderSpy: SearchCriteriaProvider {
 	}
 }
 
-final class SearchCriteriaCacheSpy: SearchCriteriaCache {
+final class SearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	private var saveCompletions: [((SaveResult) -> Void)] = []
 
-	func save(_ criteria: SearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		saveCompletions.append(completion)
 	}
 
@@ -254,46 +254,46 @@ final class SearchCriteriaCacheSpy: SearchCriteriaCache {
 	}
 }
 
-final class SearchCriteriaPresenterSpy: SearchCriteriaPresentationLogic {
+final class SearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLogic {
 	enum Message: Equatable {
-		case presentCriteria(SearchCriteriaModels.Load.Response)
+		case presentCriteria(HotelsSearchCriteriaModels.Load.Response)
 		case presentLoadError(NSError)
-		case presentDates(SearchCriteriaModels.LoadDates.Response)
-		case presentRoomGuests(SearchCriteriaModels.LoadRoomGuests.Response)
-		case presentUpdateDestination(SearchCriteriaModels.UpdateDestination.Response)
-		case presentUpdateDates(SearchCriteriaModels.UpdateDates.Response)
-		case presentUpdateRoomGuests(SearchCriteriaModels.UpdateRoomGuests.Response)
+		case presentDates(HotelsSearchCriteriaModels.LoadDates.Response)
+		case presentRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Response)
+		case presentUpdateDestination(HotelsSearchCriteriaModels.UpdateDestination.Response)
+		case presentUpdateDates(HotelsSearchCriteriaModels.UpdateDates.Response)
+		case presentUpdateRoomGuests(HotelsSearchCriteriaModels.UpdateRoomGuests.Response)
 		case presentUpdateError(NSError)
-		case presentSearch(SearchCriteriaModels.Search.Response)
+		case presentSearch(HotelsSearchCriteriaModels.Search.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func presentLoadCriteria(response: SearchCriteriaModels.Load.Response) {
+	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response) {
 		messages.append(.presentCriteria(response))
 	}
 
-	func presentDates(response: SearchCriteriaModels.LoadDates.Response) {
+	func presentDates(response: HotelsSearchCriteriaModels.LoadDates.Response) {
 		messages.append(.presentDates(response))
 	}
 
-	func presentRoomGuests(response: SearchCriteriaModels.LoadRoomGuests.Response) {
+	func presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response) {
 		messages.append(.presentRoomGuests(response))
 	}
 	
-	func presentUpdateDestination(response: SearchCriteriaModels.UpdateDestination.Response) {
+	func presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response) {
 		messages.append(.presentUpdateDestination(response))
 	}
 	
-	func presentUpdateDates(response: SearchCriteriaModels.UpdateDates.Response) {
+	func presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response) {
 		messages.append(.presentUpdateDates(response))
 	}
 	
-	func presentUpdateRoomGuests(response: SearchCriteriaModels.UpdateRoomGuests.Response) {
+	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
 	}
 
-	func presentSearch(response: SearchCriteriaModels.Search.Response) {
+	func presentSearch(response: HotelsSearchCriteriaModels.Search.Response) {
 		messages.append(.presentSearch(response))
 	}
 
