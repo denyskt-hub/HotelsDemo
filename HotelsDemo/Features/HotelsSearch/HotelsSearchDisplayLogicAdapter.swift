@@ -54,8 +54,11 @@ public final class ImageDataPresentationAdapter: HotelCellControllerDelegate {
 
 	public func didRequestPhoto(_ url: URL) {
 		task = loader.load(url: url) { [weak self] result in
-			if case let .success(data) = result {
+			switch result {
+			case let .success(data):
 				self?.presenter?.presentImageData(data)
+			case let .failure(error):
+				self?.presenter?.presentImageDataError(error)
 			}
 		}
 	}
@@ -67,10 +70,12 @@ public final class ImageDataPresentationAdapter: HotelCellControllerDelegate {
 
 public protocol ImageView: AnyObject {
 	func displayImage(_ image: UIImage)
+	func displayPlaceholderImage(_ image: UIImage)
 }
 
 public protocol ImageDataPresentationLogic {
 	func presentImageData(_ data: Data)
+	func presentImageDataError(_ error: Error)
 }
 
 public final class ImageDataPresenter: ImageDataPresentationLogic {
@@ -79,5 +84,10 @@ public final class ImageDataPresenter: ImageDataPresentationLogic {
 	public func presentImageData(_ data: Data) {
 		guard let image = UIImage(data: data) else { return }
 		view?.displayImage(image)
+	}
+
+	public func presentImageDataError(_ error: Error) {
+		guard let placeholderImage = UIImage(systemName: "photo") else { return }
+		view?.displayPlaceholderImage(placeholderImage)
 	}
 }

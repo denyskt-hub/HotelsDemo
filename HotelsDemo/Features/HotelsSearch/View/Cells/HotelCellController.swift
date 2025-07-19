@@ -53,5 +53,11 @@ extension HotelCellController: UITableViewDelegate {
 extension HotelCellController: ImageView {
 	public func displayImage(_ image: UIImage) {
 		cell?.photoImageView.image = image
+		cell?.photoImageView.contentMode = .scaleAspectFill
+	}
+
+	public func displayPlaceholderImage(_ image: UIImage) {
+		cell?.photoImageView.image = image
+		cell?.photoImageView.contentMode = .center
 	}
 }

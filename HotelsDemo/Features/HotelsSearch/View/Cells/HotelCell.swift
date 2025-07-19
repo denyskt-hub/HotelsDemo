@@ -23,6 +23,7 @@ public final class HotelCell: UITableViewCell {
 		imageView.clipsToBounds = true
 		imageView.contentMode = .scaleAspectFill
 		imageView.backgroundColor = .systemBlue
+		imageView.tintColor = .secondarySystemBackground
 		imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
 		imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return imageView
