@@ -12,9 +12,9 @@ public protocol MainFactory {
 }
 
 public final class MainComposer: MainFactory {
-	private let makeSearchCriteria: (SearchCriteriaDelegate) -> UIViewController
+	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
 
-	public init(searchCriteriaFactory: @escaping (SearchCriteriaDelegate) -> UIViewController) {
+	public init(searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController) {
 		self.makeSearchCriteria = searchCriteriaFactory
 	}
 
@@ -27,7 +27,7 @@ public final class MainComposer: MainFactory {
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
 		let router = MainRouter(
-			searchFactory: SearchComposer(
+			searchFactory: HotelsSearchComposer(
 				imageDataCache: InMemoryImageDataCache(countLimit: 100)
 			)
 		)

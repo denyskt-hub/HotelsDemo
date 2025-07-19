@@ -11,3 +11,9 @@ public protocol ImageDataCache {
 	func save(_ data: Data, forKey key: String, completion: @escaping (Error?) -> Void)
 	func data(forKey key: String, completion: @escaping (Result<Data?, Error>) -> Void)
 }
+
+extension ImageDataCache {
+	public func saveIgnoringResult(_ data: Data, forKey key: String) {
+		save(data, forKey: key) { _ in }
+	}
+}

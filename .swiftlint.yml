@@ -1,0 +1,23 @@
+disabled_rules:
+  - nesting
+  - identifier_name
+
+opt_in_rules:
+  - first_where
+  - redundant_nil_coalescing
+  - vertical_whitespace_closing_braces
+  - fatal_error_message
+  - empty_count
+  - explicit_init
+  - closure_end_indentation
+  - closure_spacing
+  - contains_over_first_not_nil
+  - operator_usage_whitespace
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+
+line_length:
+  warning: 130
+
+excluded:
+  - HotelsDemoTests

@@ -36,8 +36,8 @@ public final class MainViewController: NiblessViewController, MainDisplayLogic {
 	}
 }
 
-extension MainViewController: SearchCriteriaDelegate {
-	public func didRequestSearch(with searchCriteria: SearchCriteria) {
+extension MainViewController: HotelsSearchCriteriaDelegate {
+	public func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
 		interactor?.search(request: MainModels.Search.Request(criteria: searchCriteria))
 	}
 }

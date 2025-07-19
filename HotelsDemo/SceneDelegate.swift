@@ -19,21 +19,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		return documentsURL.appendingPathComponent("search-criteria.store")
 	}()
 
-	private lazy var searchCriteriaStore: SearchCriteriaStore = {
-		ValidatingSearchCriteriaStore(
-			decoratee: CodableSearchCriteriaStore(
+	private lazy var searchCriteriaStore: HotelsSearchCriteriaStore = {
+		ValidatingHotelsSearchCriteriaStore(
+			decoratee: CodableHotelsSearchCriteriaStore(
 				storeURL: storeURL,
 				dispatcher: MainQueueDispatcher()
 			),
-			validator: DefaultSearchCriteriaValidator(
+			validator: DefaultHotelsSearchCriteriaValidator(
 				calendar: calendar,
 				currentDate: Date.init
 			)
 		)
 	}()
 
-	private lazy var defaultSearchCriteriaProvider: SearchCriteriaProvider = {
-		DefaultSearchCriteriaProvider(
+	private lazy var defaultSearchCriteriaProvider: HotelsSearchCriteriaProvider = {
+		DefaultHotelsSearchCriteriaProvider(
 			calendar: calendar,
 			currentDate: Date.init
 		)
@@ -43,8 +43,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		MainComposer(searchCriteriaFactory: makeSearchCriteriaViewController(delegate:))
 	}()
 
-	private lazy var searchCriteriaFactory: SearchCriteriaFactory = {
-		SearchCriteriaComposer()
+	private lazy var searchCriteriaFactory: HotelsSearchCriteriaFactory = {
+		HotelsSearchCriteriaComposer()
 	}()
 
 	var window: UIWindow?
@@ -69,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		mainFactory.makeMain()
 	}
 
-	private func makeSearchCriteriaViewController(delegate: SearchCriteriaDelegate) -> UIViewController {
+	private func makeSearchCriteriaViewController(delegate: HotelsSearchCriteriaDelegate) -> UIViewController {
 		searchCriteriaFactory.makeSearchCriteria(
 			delegate: delegate,
 			provider: searchCriteriaStore.fallback(to: defaultSearchCriteriaProvider),
