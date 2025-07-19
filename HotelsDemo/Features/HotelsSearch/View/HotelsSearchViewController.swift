@@ -10,9 +10,11 @@ import UIKit
 public final class HotelsSearchViewController: NiblessViewController {
 	private let rootView = HotelsSearchRootView()
 	private var cellControllers = [HotelCellController]()
+	private var onViewIsAppearing: ((HotelsSearchViewController) -> Void)?
 
 	public var interactor: HotelsSearchBusinessLogic?
 
+	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
 
 	public override func loadView() {
@@ -24,7 +26,16 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 		setupTableView()
 
-		interactor?.search(request: .init())
+		onViewIsAppearing = { viewController in
+			viewController.onViewIsAppearing = nil
+			viewController.interactor?.search(request: .init())
+		}
+	}
+
+	public override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+
+		onViewIsAppearing?(self)
 	}
 
 	private func setupTableView() {
@@ -36,6 +47,14 @@ public final class HotelsSearchViewController: NiblessViewController {
 	public func display(_ cellControllers: [HotelCellController]) {
 		self.cellControllers = cellControllers
 		tableView.reloadData()
+	}
+
+	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
+		guard viewModel.isLoading else {
+			return loadingView.hide()
+		}
+
+		loadingView.show(in: view)
 	}
 
 	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {

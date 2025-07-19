@@ -61,6 +61,14 @@ public enum HotelsSearchModels {
 		}
 	}
 
+	public struct LoadingViewModel: Equatable {
+		public let isLoading: Bool
+
+		public init(isLoading: Bool) {
+			self.isLoading = isLoading
+		}
+	}
+
 	public struct ErrorViewModel: Equatable {
 		public let message: String
 

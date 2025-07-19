@@ -22,15 +22,22 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	}
 
 	public func search(request: HotelsSearchModels.Search.Request) {
+		presenter?.presentSearchLoading(true)
 		worker.search(criteria: criteria) { [weak self] result in
 			guard let self else { return }
 
-			switch result {
-			case let .success(hotels):
-				self.presenter?.presentSearch(response: .init(hotels: hotels))
-			case let .failure(error):
-				self.presenter?.presentSearchError(error)
-			}
+			self.handleSearchResult(result)
+		}
+	}
+
+	private func handleSearchResult(_ result: HotelsSearchService.Result) {
+		presenter?.presentSearchLoading(false)
+
+		switch result {
+		case let .success(hotels):
+			presenter?.presentSearch(response: .init(hotels: hotels))
+		case let .failure(error):
+			presenter?.presentSearchError(error)
 		}
 	}
 }

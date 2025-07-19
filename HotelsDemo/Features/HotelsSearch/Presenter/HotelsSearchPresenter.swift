@@ -34,6 +34,11 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 		viewController?.displaySearch(viewModel: viewModel)
 	}
 
+	public func presentSearchLoading(_ isLoading: Bool) {
+		let viewModel = HotelsSearchModels.LoadingViewModel(isLoading: isLoading)
+		viewController?.displayLoading(viewModel: viewModel)
+	}
+
 	public func presentSearchError(_ error: Error) {
 		let viewModel = HotelsSearchModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displaySearchError(viewModel: viewModel)

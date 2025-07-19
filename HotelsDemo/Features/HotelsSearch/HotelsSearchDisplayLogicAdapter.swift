@@ -36,6 +36,11 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 		viewController.display(hotels)
 	}
 
+	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
+		guard let viewController = viewController else { return }
+		viewController.displayLoading(viewModel: viewModel)
+	}
+
 	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
 		guard let viewController = viewController else { return }
 		viewController.displaySearchError(viewModel: viewModel)
