@@ -18,7 +18,7 @@ final class SearchViewControllerTests: XCTestCase {
 	}
 
 	func test_displayCellControllers_rendersCells() {
-		let viewModels: [SearchModels.HotelViewModel] = [
+		let viewModels: [HotelsSearchModels.HotelViewModel] = [
 			.init(
 				position: 0,
 				starRating: 2,
@@ -52,18 +52,18 @@ final class SearchViewControllerTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
-		sut: SearchViewController,
+		sut: HotelsSearchViewController,
 		interactor: SearchBusinessLogicSpy
 	) {
 		let interactor = SearchBusinessLogicSpy()
-		let sut = SearchViewController()
+		let sut = HotelsSearchViewController()
 		sut.interactor = interactor
 		return (sut, interactor)
 	}
 
 	private func assertThat(
-		_ sut: SearchViewController,
-		isRendering viewModels: [SearchModels.HotelViewModel],
+		_ sut: HotelsSearchViewController,
+		isRendering viewModels: [HotelsSearchModels.HotelViewModel],
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -77,8 +77,8 @@ final class SearchViewControllerTests: XCTestCase {
 	}
 
 	private func assertThat(
-		_ sut: SearchViewController,
-		hasViewConfiguredFor viewModel: SearchModels.HotelViewModel,
+		_ sut: HotelsSearchViewController,
+		hasViewConfiguredFor viewModel: HotelsSearchModels.HotelViewModel,
 		at index: Int,
 		file: StaticString = #filePath,
 		line: UInt = #line
@@ -97,19 +97,19 @@ final class SearchViewControllerTests: XCTestCase {
 	}
 }
 
-final class SearchBusinessLogicSpy: SearchBusinessLogic {
+final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	enum Message: Equatable {
-		case search(SearchModels.Search.Request)
+		case search(HotelsSearchModels.Search.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func search(request: SearchModels.Search.Request) {
+	func search(request: HotelsSearchModels.Search.Request) {
 		messages.append(.search(request))
 	}
 }
 
-extension SearchViewController {
+extension HotelsSearchViewController {
 	var errorView: UIAlertController? {
 		presentedViewController as? UIAlertController
 	}

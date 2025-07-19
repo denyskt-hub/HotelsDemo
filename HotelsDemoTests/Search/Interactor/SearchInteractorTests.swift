@@ -47,13 +47,13 @@ final class SearchInteractorTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(criteria: SearchCriteria = anySearchCriteria()) -> (
-		sut: SearchInteractor,
+		sut: HotelsSearchInteractor,
 		service: HotelsSearchServiceSpy,
 		presenter: SearchPresentationLogicSpy
 	) {
 		let service = HotelsSearchServiceSpy()
 		let presenter = SearchPresentationLogicSpy()
-		let sut = SearchInteractor(
+		let sut = HotelsSearchInteractor(
 			criteria: criteria,
 			worker: service
 		)
@@ -80,15 +80,15 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 	}
 }
 
-final class SearchPresentationLogicSpy: SearchPresentationLogic {
+final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	enum Message: Equatable {
-		case presentSearch(SearchModels.Search.Response)
+		case presentSearch(HotelsSearchModels.Search.Response)
 		case presentSearchError(NSError)
 	}
 
 	private(set) var messages = [Message]()
 
-	func presentSearch(response: SearchModels.Search.Response) {
+	func presentSearch(response: HotelsSearchModels.Search.Response) {
 		messages.append(.presentSearch(response))
 	}
 	

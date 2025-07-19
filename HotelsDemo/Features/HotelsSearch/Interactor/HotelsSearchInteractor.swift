@@ -1,5 +1,5 @@
 //
-//  SearchInteractor.swift
+//  HotelsSearchInteractor.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public final class SearchInteractor: SearchBusinessLogic {
+public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private let criteria: SearchCriteria
 	private let worker: HotelsSearchService
 
-	public var presenter: SearchPresentationLogic?
+	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
 		criteria: SearchCriteria,
@@ -21,7 +21,7 @@ public final class SearchInteractor: SearchBusinessLogic {
 		self.worker = worker
 	}
 
-	public func search(request: SearchModels.Search.Request) {
+	public func search(request: HotelsSearchModels.Search.Request) {
 		worker.search(criteria: criteria) { [weak self] result in
 			guard let self else { return }
 

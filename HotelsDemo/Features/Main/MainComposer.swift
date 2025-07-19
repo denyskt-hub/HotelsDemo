@@ -27,7 +27,7 @@ public final class MainComposer: MainFactory {
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
 		let router = MainRouter(
-			searchFactory: SearchComposer(
+			searchFactory: HotelsSearchComposer(
 				imageDataCache: InMemoryImageDataCache(countLimit: 100)
 			)
 		)

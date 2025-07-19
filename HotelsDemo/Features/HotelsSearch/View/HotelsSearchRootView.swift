@@ -1,5 +1,5 @@
 //
-//  SearchRootView.swift
+//  HotelsSearchRootView.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class SearchRootView: NiblessView {
+public class HotelsSearchRootView: NiblessView {
 	private var hierarchyNotReady = true
 
 	public let tableView: UITableView = {
@@ -43,7 +43,7 @@ public class SearchRootView: NiblessView {
 
 // MARK: - Layout
 
-extension SearchRootView {
+extension HotelsSearchRootView {
 	private func activateConstraintsTableView() {
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		let leading = tableView.leadingAnchor.constraint(equalTo: leadingAnchor)

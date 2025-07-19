@@ -13,12 +13,12 @@ public protocol HotelCellControllerDelegate: AnyObject {
 }
 
 public final class HotelCellController: NSObject {
-	private let viewModel: SearchModels.HotelViewModel
+	private let viewModel: HotelsSearchModels.HotelViewModel
 	private var cell: HotelCell?
 
 	public var delegate: HotelCellControllerDelegate?
 
-	public init(viewModel: SearchModels.HotelViewModel) {
+	public init(viewModel: HotelsSearchModels.HotelViewModel) {
 		self.viewModel = viewModel
 	}
 }

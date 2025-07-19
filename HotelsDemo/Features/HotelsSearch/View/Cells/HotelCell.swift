@@ -147,7 +147,7 @@ public final class HotelCell: UITableViewCell {
 		activateConstraintsStack()
 	}
 
-	public func configure(with viewModel: SearchModels.HotelViewModel) {
+	public func configure(with viewModel: HotelsSearchModels.HotelViewModel) {
 		nameLabel.text = viewModel.name
 		scoreLabel.text = viewModel.score
 		reviewsLabel.text = viewModel.reviews

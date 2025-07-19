@@ -8,11 +8,11 @@
 import UIKit
 
 public final class MainRouter: MainRoutingLogic {
-	private let searchFactory: SearchFactory
+	private let searchFactory: HotelsSearchFactory
 
 	public weak var viewController: UIViewController?
 
-	public init(searchFactory: SearchFactory) {
+	public init(searchFactory: HotelsSearchFactory) {
 		self.searchFactory = searchFactory
 	}
 

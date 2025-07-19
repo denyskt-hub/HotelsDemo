@@ -1,5 +1,5 @@
 //
-//  SearchViewController.swift
+//  HotelsSearchViewController.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-public final class SearchViewController: NiblessViewController {
-	private let rootView = SearchRootView()
+public final class HotelsSearchViewController: NiblessViewController {
+	private let rootView = HotelsSearchRootView()
 	private var cellControllers = [HotelCellController]()
 
-	public var interactor: SearchBusinessLogic?
+	public var interactor: HotelsSearchBusinessLogic?
 
 	public var tableView: UITableView { rootView.tableView }
 
@@ -38,7 +38,7 @@ public final class SearchViewController: NiblessViewController {
 		tableView.reloadData()
 	}
 
-	public func displaySearchError(viewModel: SearchModels.ErrorViewModel) {
+	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
 		displayErrorMessage(viewModel.message)
 	}
 
@@ -47,7 +47,7 @@ public final class SearchViewController: NiblessViewController {
 	}
 }
 
-extension SearchViewController: UITableViewDataSource {
+extension HotelsSearchViewController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		cellControllers.count
 	}
@@ -58,7 +58,7 @@ extension SearchViewController: UITableViewDataSource {
 	}
 }
 
-extension SearchViewController: UITableViewDelegate {
+extension HotelsSearchViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let cellController = cellController(at: indexPath)
 		cellController.tableView(tableView, willDisplay: cell, forRowAt: indexPath)

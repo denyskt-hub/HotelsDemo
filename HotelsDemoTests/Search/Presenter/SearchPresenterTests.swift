@@ -58,29 +58,29 @@ final class SearchPresenterTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
-		sut: SearchPresenter,
+		sut: HotelsSearchPresenter,
 		viewController: SearchDisplayLogicSpy
 	) {
 		let viewController = SearchDisplayLogicSpy()
-		let sut = SearchPresenter()
+		let sut = HotelsSearchPresenter()
 		sut.viewController = viewController
 		return (sut, viewController)
 	}
 }
 
-final class SearchDisplayLogicSpy: SearchDisplayLogic {
+final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 	enum Message: Equatable {
-		case displaySearch(SearchModels.Search.ViewModel)
-		case displaySearchError(SearchModels.ErrorViewModel)
+		case displaySearch(HotelsSearchModels.Search.ViewModel)
+		case displaySearchError(HotelsSearchModels.ErrorViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func displaySearch(viewModel: SearchModels.Search.ViewModel) {
+	func displaySearch(viewModel: HotelsSearchModels.Search.ViewModel) {
 		messages.append(.displaySearch(viewModel))
 	}
 	
-	func displaySearchError(viewModel: SearchModels.ErrorViewModel) {
+	func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
 		messages.append(.displaySearchError(viewModel))
 	}
 }

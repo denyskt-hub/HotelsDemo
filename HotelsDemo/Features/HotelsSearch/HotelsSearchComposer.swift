@@ -1,5 +1,5 @@
 //
-//  SearchComposer.swift
+//  HotelsSearchComposer.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 14/7/25.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-public protocol SearchFactory {
+public protocol HotelsSearchFactory {
 	func makeSearch(with criteria: SearchCriteria) -> UIViewController
 }
 
-public final class SearchComposer: SearchFactory {
+public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let imageDataCache: ImageDataCache
 
 	public init(imageDataCache: ImageDataCache) {
@@ -19,7 +19,7 @@ public final class SearchComposer: SearchFactory {
 	}
 
 	public func makeSearch(with criteria: SearchCriteria) -> UIViewController {
-		let viewController = SearchViewController()
+		let viewController = HotelsSearchViewController()
 
 		let mainQueueDispatcher = MainQueueDispatcher()
 		let localImageDataLoader = LocalImageDataLoader(
@@ -34,11 +34,11 @@ public final class SearchComposer: SearchFactory {
 			loader: remoteImageDataLoader,
 			cache: imageDataCache
 		)
-		let viewControllerAdapter = SearchDisplayLogicAdapter(
+		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
 			viewController: viewController,
 			imageLoader: localImageDataLoader.fallback(to: cachingImageDataLoader)
 		)
-		let interactor = SearchInteractor(
+		let interactor = HotelsSearchInteractor(
 			criteria: criteria,
 			worker: HotelsSearchWorker(
 				factory: DefaultHotelsRequestFactory(
@@ -48,7 +48,7 @@ public final class SearchComposer: SearchFactory {
 				dispatcher: MainQueueDispatcher()
 			)
 		)
-		let presenter = SearchPresenter()
+		let presenter = HotelsSearchPresenter()
 
 		viewController.interactor = interactor
 		interactor.presenter = presenter

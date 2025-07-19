@@ -1,5 +1,5 @@
 //
-//  SearchModels.swift
+//  HotelsSearchModels.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum SearchModels {
+public enum HotelsSearchModels {
 	public enum Search {
 		public struct Request: Equatable {
 			public init() {}

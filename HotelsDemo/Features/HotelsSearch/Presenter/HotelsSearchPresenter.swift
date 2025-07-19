@@ -1,5 +1,5 @@
 //
-//  SearchPresenter.swift
+//  HotelsSearchPresenter.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
@@ -7,21 +7,21 @@
 
 import Foundation
 
-public final class SearchPresenter: SearchPresentationLogic {
+public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 	private let priceFormatter: NumberFormatter = {
 		let formatter = NumberFormatter()
 		formatter.numberStyle = .currency
 		return formatter
 	}()
 
-	public var viewController: SearchDisplayLogic?
+	public var viewController: HotelsSearchDisplayLogic?
 
 	public init() {
 		// Required for initialization in tests
 	}
 
-	public func presentSearch(response: SearchModels.Search.Response) {
-		let viewModel = SearchModels.Search.ViewModel(
+	public func presentSearch(response: HotelsSearchModels.Search.Response) {
+		let viewModel = HotelsSearchModels.Search.ViewModel(
 			hotels: response.hotels.map {
 				.init(
 					position: $0.position,
@@ -39,7 +39,7 @@ public final class SearchPresenter: SearchPresentationLogic {
 	}
 
 	public func presentSearchError(_ error: Error) {
-		let viewModel = SearchModels.ErrorViewModel(message: error.localizedDescription)
+		let viewModel = HotelsSearchModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displaySearchError(viewModel: viewModel)
 	}
 }
