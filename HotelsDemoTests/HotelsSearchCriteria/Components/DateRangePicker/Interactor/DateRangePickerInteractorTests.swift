@@ -59,7 +59,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 	private func makeSUT(
 		stub: DateRangePickerModels.CalendarData,
 		selectedStartDate: Date = .now,
-		selectedEndDate: Date = .now,
+		selectedEndDate: Date = .now
 	) -> (
 		sut: DateRangePickerInteractor,
 		generator: CalendarDataGeneratorStub,

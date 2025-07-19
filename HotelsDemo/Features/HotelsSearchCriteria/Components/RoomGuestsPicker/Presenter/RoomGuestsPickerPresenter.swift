@@ -82,7 +82,7 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 		RoomGuestsPickerModels.AgeInputViewModel(
 			index: index,
 			title: ChildTitleFormatter.title(for: index),
-			selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age",
+			selectedAgeTitle: age.map({ AgeFormatter.string(for: $0) }) ?? "Select age"
 		)
 	}
 }
