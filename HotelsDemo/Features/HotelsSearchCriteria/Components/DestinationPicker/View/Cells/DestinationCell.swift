@@ -30,7 +30,10 @@ public final class DestinationCell: UITableViewCell {
 		label.font = .systemFont(ofSize: 17, weight: .semibold)
 		label.textColor = .label
 		label.numberOfLines = 1
-		label.heightAnchor.constraint(equalToConstant: 21).isActive = true
+
+		let height = label.heightAnchor.constraint(equalToConstant: 21)
+		height.priority = UILayoutPriority(999)
+		height.isActive = true
 		return label
 	}()
 
@@ -39,7 +42,10 @@ public final class DestinationCell: UITableViewCell {
 		label.font = .systemFont(ofSize: 14, weight: .regular)
 		label.textColor = .secondaryLabel
 		label.numberOfLines = 1
-		label.heightAnchor.constraint(equalToConstant: 21).isActive = true
+
+		let height = label.heightAnchor.constraint(equalToConstant: 21)
+		height.priority = UILayoutPriority(999)
+		height.isActive = true
 		return label
 	}()
 
