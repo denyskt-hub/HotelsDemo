@@ -46,7 +46,7 @@ public final class ImageDataPresentationAdapter: HotelCellControllerDelegate {
 	private let loader: ImageDataLoader
 	private var task: ImageDataLoaderTask?
 
-	public var presenter: ImageDataPresenter?
+	public var presenter: ImageDataPresentationLogic?
 
 	public init(loader: ImageDataLoader) {
 		self.loader = loader
@@ -69,7 +69,11 @@ public protocol ImageView: AnyObject {
 	func displayImage(_ image: UIImage)
 }
 
-public final class ImageDataPresenter {
+public protocol ImageDataPresentationLogic {
+	func presentImageData(_ data: Data)
+}
+
+public final class ImageDataPresenter: ImageDataPresentationLogic {
 	public weak var view: ImageView?
 
 	public func presentImageData(_ data: Data) {

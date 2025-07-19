@@ -1,5 +1,5 @@
 //
-//  SearchBusinessLogic.swift
+//  HotelsSearchBusinessLogic.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 12/7/25.
