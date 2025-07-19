@@ -1,5 +1,5 @@
 //
-//  DefaultSearchCriteriaValidatorTests.swift
+//  DefaultHotelsSearchCriteriaValidatorTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 26/6/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class DefaultSearchCriteriaValidatorTests: XCTestCase {
+final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 	func test_validate_returnsSameCriteria_whenAllIsValid() {
 		let currentDate = "26.06.2025".date()
 		let calendar = Calendar.gregorian()

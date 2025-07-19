@@ -1,5 +1,5 @@
 //
-//  SearchCriteriaPresenterTests.swift
+//  HotelsSearchCriteriaPresenterTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 27/6/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchCriteriaPresenterTests: XCTestCase {
+final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 	func test_presentLoadCriteria_displaysCorrectViewModelForGivenCriteria() {
 		let criteria = HotelsSearchCriteria(
 			destination: nil,
@@ -159,9 +159,9 @@ final class SearchCriteriaPresenterTests: XCTestCase {
 
 	private func makeSUT() -> (
 		sut: HotelsSearchCriteriaPresenter,
-		viewController: SearchCriteriaDisplayLogicSpy
+		viewController: HotelsSearchCriteriaDisplayLogicSpy
 	) {
-		let viewController = SearchCriteriaDisplayLogicSpy()
+		let viewController = HotelsSearchCriteriaDisplayLogicSpy()
 		let sut = HotelsSearchCriteriaPresenter(calendar: .gregorian())
 		sut.viewController = viewController
 		return (sut, viewController)
@@ -180,7 +180,7 @@ extension TestError: LocalizedError {
 	var errorDescription: String? { message }
 }
 
-final class SearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogic {
+final class HotelsSearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(HotelsSearchCriteriaModels.Load.ViewModel)
 		case displayLoadError(HotelsSearchCriteriaModels.ErrorViewModel)

@@ -1,5 +1,5 @@
 //
-//  ValidatingSearchCriteriaStoreTests.swift
+//  ValidatingHotelsSearchCriteriaStoreTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 26/6/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class ValidatingSearchCriteriaStoreTests: XCTestCase {
+final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 	func test_init_doesNotMessageStore() {
 		let (_, store, _) = makeSUT()
 
@@ -139,9 +139,9 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (sut: ValidatingHotelsSearchCriteriaStore, store: SearchCriteriaStoreSpy, validator: SearchCriteriaValidatorSpy) {
-		let store = SearchCriteriaStoreSpy()
-		let validator = SearchCriteriaValidatorSpy()
+	private func makeSUT() -> (sut: ValidatingHotelsSearchCriteriaStore, store: HotelsSearchCriteriaStoreSpy, validator: HotelsSearchCriteriaValidatorSpy) {
+		let store = HotelsSearchCriteriaStoreSpy()
+		let validator = HotelsSearchCriteriaValidatorSpy()
 		let sut = ValidatingHotelsSearchCriteriaStore(
 			decoratee: store,
 			validator: validator
@@ -150,7 +150,7 @@ final class ValidatingSearchCriteriaStoreTests: XCTestCase {
 	}
 }
 
-final class SearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
+final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 	enum Message: Equatable {
 		case save(HotelsSearchCriteria)
 		case retrieve
@@ -180,7 +180,7 @@ final class SearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 	}
 }
 
-final class SearchCriteriaValidatorSpy: HotelsSearchCriteriaValidator {
+final class HotelsSearchCriteriaValidatorSpy: HotelsSearchCriteriaValidator {
 	private(set) var validated = [HotelsSearchCriteria]()
 
 	var stubbedResult: HotelsSearchCriteria?

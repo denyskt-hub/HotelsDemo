@@ -1,5 +1,5 @@
 //
-//  SearchCriteriaViewControllerTests.swift
+//  HotelsSearchCriteriaViewControllerTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 6/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchCriteriaViewControllerTests: XCTestCase {
+final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 	func test_viewDidLoad_loadInitialData() {
 		let (sut, interactor, _, _) = makeSUT()
 
@@ -157,13 +157,13 @@ final class SearchCriteriaViewControllerTests: XCTestCase {
 
 	private func makeSUT() -> (
 		sut: HotelsSearchCriteriaViewController,
-		interactor: SearchCriteriaInteractorSpy,
-		router: SearchCriteriaRouterSpy,
-		delegate: SearchCriteriaDelegateSpy
+		interactor: HotelsSearchCriteriaInteractorSpy,
+		router: HotelsSearchCriteriaRouterSpy,
+		delegate: HotelsSearchCriteriaDelegateSpy
 	) {
-		let interactor = SearchCriteriaInteractorSpy()
-		let router = SearchCriteriaRouterSpy()
-		let delegate = SearchCriteriaDelegateSpy()
+		let interactor = HotelsSearchCriteriaInteractorSpy()
+		let router = HotelsSearchCriteriaRouterSpy()
+		let delegate = HotelsSearchCriteriaDelegateSpy()
 		let sut = HotelsSearchCriteriaViewController()
 		sut.interactor = interactor
 		sut.router = router
@@ -210,7 +210,7 @@ extension HotelsSearchCriteriaViewController {
 	}
 }
 
-final class SearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
+final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	enum Message: Equatable {
 		case loadCriteria(HotelsSearchCriteriaModels.Load.Request)
 		case loadDates(HotelsSearchCriteriaModels.LoadDates.Request)
@@ -252,7 +252,7 @@ final class SearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	}
 }
 
-final class SearchCriteriaRouterSpy: HotelsSearchCriteriaRoutingLogic {
+final class HotelsSearchCriteriaRouterSpy: HotelsSearchCriteriaRoutingLogic {
 	enum Message: Equatable {
 		case routeToDestinationPicker
 		case routeToDateRangePicker(DateRangePickerModels.ViewModel)
@@ -274,7 +274,7 @@ final class SearchCriteriaRouterSpy: HotelsSearchCriteriaRoutingLogic {
 	}
 }
 
-final class SearchCriteriaDelegateSpy: HotelsSearchCriteriaDelegate {
+final class HotelsSearchCriteriaDelegateSpy: HotelsSearchCriteriaDelegate {
 	enum Message: Equatable {
 		case didRequestSearch(HotelsSearchCriteria)
 	}

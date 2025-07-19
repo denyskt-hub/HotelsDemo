@@ -1,5 +1,5 @@
 //
-//  SearchCriteriaRouterTests.swift
+//  HotelsSearchCriteriaRouterTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 4/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchCriteriaRouterTests: XCTestCase {
+final class HotelsSearchCriteriaRouterTests: XCTestCase {
 	func test_routeToDestinationPicker_presentsDestinationVC() {
 		let container = makeSUT()
 

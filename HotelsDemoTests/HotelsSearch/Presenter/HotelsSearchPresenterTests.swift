@@ -1,5 +1,5 @@
 //
-//  SearchPresenterTests.swift
+//  HotelsSearchPresenterTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 17/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchPresenterTests: XCTestCase {
+final class HotelsSearchPresenterTests: XCTestCase {
 	func test_presentSearch_displaysSearch() {
 		let photoURL = URL(string: "https://example.com/photo")!
 		let hotels = [

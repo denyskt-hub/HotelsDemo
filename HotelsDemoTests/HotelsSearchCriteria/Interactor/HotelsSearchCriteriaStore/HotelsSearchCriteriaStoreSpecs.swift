@@ -1,5 +1,5 @@
 //
-//  SearchCriteriaStoreSpecs.swift
+//  HotelsSearchCriteriaStoreSpecs.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 10/7/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SearchCriteriaStoreSpecs {
+protocol HotelsSearchCriteriaStoreSpecs {
 	func test_retrieve_deliversNotFoundErrorOnEmptyStore()
 	func test_retrieve_deliversSavedCriteriaOnNonEmptyStore()
 

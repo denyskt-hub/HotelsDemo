@@ -1,5 +1,5 @@
 //
-//  XCTestCase+SearchCriteriaStoreSpecs.swift
+//  XCTestCase+HotelsSearchCriteriaStoreSpecs.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 10/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-extension SearchCriteriaStoreSpecs where Self: XCTestCase {
+extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 	func assertThatRetrieveDeliversNotFoundErrorOnEmptyStore(
 		on sut: HotelsSearchCriteriaStore,
 		file: StaticString = #filePath,
@@ -94,7 +94,7 @@ extension SearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 }
 
-extension SearchCriteriaStoreSpecs where Self: XCTestCase {
+extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 	func expect(
 		_ sut: HotelsSearchCriteriaStore,
 		toRetrieve expectedResult: HotelsSearchCriteriaProvider.RetrieveResult,

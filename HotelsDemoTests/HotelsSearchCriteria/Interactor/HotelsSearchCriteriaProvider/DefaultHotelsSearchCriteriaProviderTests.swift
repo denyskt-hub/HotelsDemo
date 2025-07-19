@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class DefaultSearchCriteriaProviderTests: XCTestCase {
+final class DefaultHotelsSearchCriteriaProviderTests: XCTestCase {
 	func test_retrieve_deliversDefaultSearchCriteria() {
 		let currentDate = "26.06.2025".date()
 		let expectedCriteria = HotelsSearchCriteriaDefaults.make(

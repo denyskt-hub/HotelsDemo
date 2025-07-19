@@ -1,5 +1,5 @@
 //
-//  SearchCriteriaInteractorTests.swift
+//  HotelsSearchCriteriaInteractorTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 26/6/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchCriteriaInteractorTests: XCTestCase {
+final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	func test_loadCriteria_presentLoadErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
@@ -214,13 +214,13 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 
 	private func makeSUT() -> (
 		sut: HotelsSearchCriteriaInteractor,
-		provider: SearchCriteriaProviderSpy,
-		cache: SearchCriteriaCacheSpy,
-		presenter: SearchCriteriaPresenterSpy
+		provider: HotelsSearchCriteriaProviderSpy,
+		cache: HotelsSearchCriteriaCacheSpy,
+		presenter: HotelsSearchCriteriaPresenterSpy
 	) {
-		let provider = SearchCriteriaProviderSpy()
-		let cache = SearchCriteriaCacheSpy()
-		let presenter = SearchCriteriaPresenterSpy()
+		let provider = HotelsSearchCriteriaProviderSpy()
+		let cache = HotelsSearchCriteriaCacheSpy()
+		let presenter = HotelsSearchCriteriaPresenterSpy()
 		let sut = HotelsSearchCriteriaInteractor(
 			provider: provider,
 			cache: cache
@@ -230,7 +230,7 @@ final class SearchCriteriaInteractorTests: XCTestCase {
 	}
 }
 
-final class SearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
+final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
 
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
@@ -242,7 +242,7 @@ final class SearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 	}
 }
 
-final class SearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
+final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	private var saveCompletions: [((SaveResult) -> Void)] = []
 
 	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
@@ -254,7 +254,7 @@ final class SearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	}
 }
 
-final class SearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLogic {
+final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLogic {
 	enum Message: Equatable {
 		case presentCriteria(HotelsSearchCriteriaModels.Load.Response)
 		case presentLoadError(NSError)

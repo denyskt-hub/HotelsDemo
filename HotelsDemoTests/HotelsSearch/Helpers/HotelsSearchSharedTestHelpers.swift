@@ -1,5 +1,5 @@
 //
-//  SearchSharedTestHelpers.swift
+//  HotelsSearchSharedTestHelpers.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 17/7/25.

@@ -1,5 +1,5 @@
 //
-//  CodableSearchCriteriaStoreTests.swift
+//  CodableHotelsSearchCriteriaStoreTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 25/6/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class CodableSearchCriteriaStoreTests: XCTestCase, SearchCriteriaStoreSpecs {
+final class CodableHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCriteriaStoreSpecs {
 	override func setUp() {
 		super.setUp()
 

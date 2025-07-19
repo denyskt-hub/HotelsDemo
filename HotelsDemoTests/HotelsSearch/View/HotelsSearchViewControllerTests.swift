@@ -1,5 +1,5 @@
 //
-//  SearchViewControllerTests.swift
+//  HotelsSearchViewControllerTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 18/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchViewControllerTests: XCTestCase {
+final class HotelsSearchViewControllerTests: XCTestCase {
 	func test_viewDidLoad_searchHotels() {
 		let (sut, interactor) = makeSUT()
 

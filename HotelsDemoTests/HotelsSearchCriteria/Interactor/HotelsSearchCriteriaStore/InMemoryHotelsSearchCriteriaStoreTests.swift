@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class InMemorySearchCriteriaStoreTests: XCTestCase, SearchCriteriaStoreSpecs {
+final class InMemoryHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCriteriaStoreSpecs {
 	func test_retrieve_deliversNotFoundErrorOnEmptyStore() {
 		assertThatRetrieveDeliversNotFoundErrorOnEmptyStore(on: makeSUT())
 	}

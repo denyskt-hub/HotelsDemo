@@ -1,5 +1,5 @@
 //
-//  SearchInteractorTests.swift
+//  HotelsSearchInteractorTests.swift
 //  HotelsDemoTests
 //
 //  Created by Denys Kotenko on 17/7/25.
@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class SearchInteractorTests: XCTestCase {
+final class HotelsSearchInteractorTests: XCTestCase {
 	func test_init_doesNotRequestSearch() {
 		let (_, service, _) = makeSUT()
 
