@@ -25,8 +25,8 @@ public enum APIResponseMapper {
 
 			return apiResponse.data
 		} catch {
-			print(error)
-			print(String(data: data, encoding: .utf8) ?? "No data")
+			Logger.log("Decoding error: \(error)", level: .error)
+			Logger.log("Raw response: \(String(data: data, encoding: .utf8) ?? "Invalid UTF-8")", level: .debug)
 			throw APIError.decoding
 		}
 	}
