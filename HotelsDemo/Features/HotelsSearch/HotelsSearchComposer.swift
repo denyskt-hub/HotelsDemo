@@ -48,7 +48,9 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 				dispatcher: MainQueueDispatcher()
 			)
 		)
-		let presenter = HotelsSearchPresenter()
+		let presenter = HotelsSearchPresenter(
+			priceFormatter: PriceFormatter()
+		)
 
 		viewController.interactor = interactor
 		interactor.presenter = presenter

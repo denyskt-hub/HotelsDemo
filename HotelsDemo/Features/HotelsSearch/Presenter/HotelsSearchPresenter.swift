@@ -8,16 +8,12 @@
 import Foundation
 
 public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
-	private let priceFormatter: NumberFormatter = {
-		let formatter = NumberFormatter()
-		formatter.numberStyle = .currency
-		return formatter
-	}()
+	private let priceFormatter: PriceFormatter
 
 	public var viewController: HotelsSearchDisplayLogic?
 
-	public init() {
-		// Required for initialization in tests
+	public init(priceFormatter: PriceFormatter) {
+		self.priceFormatter = priceFormatter
 	}
 
 	public func presentSearch(response: HotelsSearchModels.Search.Response) {
@@ -29,7 +25,7 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 					name: $0.name,
 					score: "\($0.reviewScore)",
 					reviews: "\($0.reviewCount) reviews",
-					price: priceFormatter.string($0.price),
+					price: priceFormatter.string(from: $0.price),
 					priceDetails: "Includes taxes and fees",
 					photoURL: $0.photoURLs.first
 				)
@@ -44,9 +40,22 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 	}
 }
 
-extension NumberFormatter {
-	func string(_ price: Price) -> String {
-		currencyCode = price.currency
-		return string(from: price.grossPrice as NSNumber) ?? "\(price.currency) \(price)"
+public final class PriceFormatter {
+	private let numberFormatter: NumberFormatter
+
+	public init(locale: Locale = .current) {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		formatter.locale = locale
+		self.numberFormatter = formatter
+	}
+
+	public func string(from price: Price) -> String {
+		numberFormatter.currencyCode = price.currency
+		if let formatted = numberFormatter.string(from: price.grossPrice as NSNumber) {
+			return formatted
+		} else {
+			return "\(price.currency) \(price.grossPrice)"
+		}
 	}
 }

@@ -37,7 +37,7 @@ final class HotelsSearchPresenterTests: XCTestCase {
 						name: "Hotel",
 						score: "9.5",
 						reviews: "93 reviews",
-						price: "US$150.00",
+						price: "$150.00",
 						priceDetails: "Includes taxes and fees",
 						photoURL: photoURL
 					)
@@ -57,12 +57,12 @@ final class HotelsSearchPresenterTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (
+	private func makeSUT(locale: Locale = Locale(identifier: "en_US")) -> (
 		sut: HotelsSearchPresenter,
 		viewController: SearchDisplayLogicSpy
 	) {
 		let viewController = SearchDisplayLogicSpy()
-		let sut = HotelsSearchPresenter()
+		let sut = HotelsSearchPresenter(priceFormatter: PriceFormatter(locale: locale))
 		sut.viewController = viewController
 		return (sut, viewController)
 	}
