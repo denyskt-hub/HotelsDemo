@@ -24,7 +24,7 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 
 		let hotels = viewModel.hotels.map {
 			let view = HotelCellController(viewModel: $0)
-			let adapter = ImageDataPresentationAdapter(loader: imageDataLoader)
+			let adapter = HotelPhotoLoaderAdapter(loader: imageDataLoader)
 			let presenter = ImageDataPresenter()
 
 			view.delegate = adapter
@@ -39,55 +39,5 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
 		guard let viewController = viewController else { return }
 		viewController.displaySearchError(viewModel: viewModel)
-	}
-}
-
-public final class ImageDataPresentationAdapter: HotelCellControllerDelegate {
-	private let loader: ImageDataLoader
-	private var task: ImageDataLoaderTask?
-
-	public var presenter: ImageDataPresentationLogic?
-
-	public init(loader: ImageDataLoader) {
-		self.loader = loader
-	}
-
-	public func didRequestPhoto(_ url: URL) {
-		task = loader.load(url: url) { [weak self] result in
-			switch result {
-			case let .success(data):
-				self?.presenter?.presentImageData(data)
-			case let .failure(error):
-				self?.presenter?.presentImageDataError(error)
-			}
-		}
-	}
-
-	public func didCancelPhotoRequest() {
-		task?.cancel()
-	}
-}
-
-public protocol ImageView: AnyObject {
-	func displayImage(_ image: UIImage)
-	func displayPlaceholderImage(_ image: UIImage)
-}
-
-public protocol ImageDataPresentationLogic {
-	func presentImageData(_ data: Data)
-	func presentImageDataError(_ error: Error)
-}
-
-public final class ImageDataPresenter: ImageDataPresentationLogic {
-	public weak var view: ImageView?
-
-	public func presentImageData(_ data: Data) {
-		guard let image = UIImage(data: data) else { return }
-		view?.displayImage(image)
-	}
-
-	public func presentImageDataError(_ error: Error) {
-		guard let placeholderImage = UIImage(systemName: "photo") else { return }
-		view?.displayPlaceholderImage(placeholderImage)
 	}
 }

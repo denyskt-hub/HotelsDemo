@@ -23,6 +23,8 @@ public final class HotelCellController: NSObject {
 	}
 }
 
+// MARK: - UITableViewDataSource
+
 extension HotelCellController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		1
@@ -35,6 +37,8 @@ extension HotelCellController: UITableViewDataSource {
 		return cell
 	}
 }
+
+// MARK: - UITableViewDelegate
 
 extension HotelCellController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -49,6 +53,8 @@ extension HotelCellController: UITableViewDelegate {
 		delegate?.didCancelPhotoRequest()
 	}
 }
+
+// MARK: - ImageView
 
 extension HotelCellController: ImageView {
 	public func displayImage(_ image: UIImage) {
