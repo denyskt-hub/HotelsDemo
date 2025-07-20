@@ -66,4 +66,8 @@ extension HotelCellController: ImageView {
 		cell?.photoImageView.image = image
 		cell?.photoImageView.contentMode = .center
 	}
+
+	public func displayLoading(_ isLoading: Bool) {
+		cell?.photoContainer.isShimmering = isLoading
+	}
 }

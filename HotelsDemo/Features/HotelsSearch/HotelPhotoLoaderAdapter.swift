@@ -18,13 +18,19 @@ public final class HotelPhotoLoaderAdapter: HotelCellControllerDelegate {
 	}
 
 	public func didRequestPhoto(_ url: URL) {
+		presenter?.presentLoading(true)
 		task = loader.load(url: url) { [weak self] result in
-			switch result {
-			case let .success(data):
-				self?.presenter?.presentImageData(data)
-			case let .failure(error):
-				self?.presenter?.presentImageDataError(error)
-			}
+			self?.presenter?.presentLoading(false)
+			self?.handleLoadResult(result)
+		}
+	}
+
+	private func handleLoadResult(_ result: ImageDataLoader.LoadResult) {
+		switch result {
+		case let .success(data):
+			presenter?.presentImageData(data)
+		case let .failure(error):
+			presenter?.presentImageDataError(error)
 		}
 	}
 

@@ -10,7 +10,7 @@ import UIKit
 public final class HotelCell: UITableViewCell {
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
-			photoImageView,
+			photoContainer,
 			infoStack
 		])
 		stack.axis = .horizontal
@@ -18,12 +18,18 @@ public final class HotelCell: UITableViewCell {
 		return stack
 	}()
 
+	public let photoContainer: UIView = {
+		let view = UIView()
+		view.roundAllCorners(radius: 10)
+		return view
+	}()
+
 	public let photoImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.clipsToBounds = true
 		imageView.contentMode = .scaleAspectFill
-		imageView.backgroundColor = .systemBlue
-		imageView.tintColor = .secondarySystemBackground
+		imageView.backgroundColor = .secondarySystemBackground
+		imageView.tintColor = .secondaryLabel
 		imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
 		imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return imageView
@@ -139,11 +145,13 @@ public final class HotelCell: UITableViewCell {
 	}
 
 	private func setupHierarchy() {
+		photoContainer.addSubview(photoImageView)
 		scoreContainer.addSubview(scoreLabel)
 		contentView.addSubview(stack)
 	}
 
 	private func activateConstraints() {
+		activateConstraintsPhotoImageView()
 		activateConstraintsScoreLabel()
 		activateConstraintsStack()
 	}
@@ -155,6 +163,7 @@ public final class HotelCell: UITableViewCell {
 		setStarRating(viewModel.starRating)
 		priceLabel.text = viewModel.price
 		priceDetailsLabel.text = viewModel.priceDetails
+		photoImageView.image = nil
 	}
 
 	private func setStarRating(_ rating: Int) {
@@ -176,6 +185,15 @@ public final class HotelCell: UITableViewCell {
 // MARK: - Layout
 
 extension HotelCell {
+	private func activateConstraintsPhotoImageView() {
+		photoImageView.translatesAutoresizingMaskIntoConstraints = false
+		let leading = photoImageView.leadingAnchor.constraint(equalTo: photoContainer.leadingAnchor)
+		let trailing = photoImageView.trailingAnchor.constraint(equalTo: photoContainer.trailingAnchor)
+		let top = photoImageView.topAnchor.constraint(equalTo: photoContainer.topAnchor)
+		let bottom = photoImageView.bottomAnchor.constraint(equalTo: photoContainer.bottomAnchor)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
 	private func activateConstraintsScoreLabel() {
 		scoreLabel.translatesAutoresizingMaskIntoConstraints = false
 		let leading = scoreLabel.leadingAnchor.constraint(equalTo: scoreContainer.layoutMarginsGuide.leadingAnchor)

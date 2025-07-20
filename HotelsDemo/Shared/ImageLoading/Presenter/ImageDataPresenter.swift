@@ -19,4 +19,8 @@ public final class ImageDataPresenter: ImageDataPresentationLogic {
 		guard let placeholderImage = UIImage(systemName: "photo") else { return }
 		view?.displayPlaceholderImage(placeholderImage)
 	}
+
+	public func presentLoading(_ isLoading: Bool) {
+		view?.displayLoading(isLoading)
+	}
 }

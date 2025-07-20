@@ -26,13 +26,12 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		worker.search(criteria: criteria) { [weak self] result in
 			guard let self else { return }
 
+			self.presenter?.presentSearchLoading(false)
 			self.handleSearchResult(result)
 		}
 	}
 
 	private func handleSearchResult(_ result: HotelsSearchService.Result) {
-		presenter?.presentSearchLoading(false)
-
 		switch result {
 		case let .success(hotels):
 			presenter?.presentSearch(response: .init(hotels: hotels))
