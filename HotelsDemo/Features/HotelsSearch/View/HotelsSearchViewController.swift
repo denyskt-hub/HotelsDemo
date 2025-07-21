@@ -13,9 +13,11 @@ public final class HotelsSearchViewController: NiblessViewController {
 	private var onViewIsAppearing: ((HotelsSearchViewController) -> Void)?
 
 	public var interactor: HotelsSearchBusinessLogic?
+	public var router: HotelsSearchRoutingLogic?
 
 	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
+	public var filterButton: UIButton { rootView.actionBar.filterButton }
 
 	public override func loadView() {
 		view = rootView
@@ -25,6 +27,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 		super.viewDidLoad()
 
 		setupTableView()
+		setupFilterButton()
 
 		onViewIsAppearing = { viewController in
 			viewController.onViewIsAppearing = nil
@@ -42,6 +45,10 @@ public final class HotelsSearchViewController: NiblessViewController {
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.register(HotelCell.self)
+	}
+
+	private func setupFilterButton() {
+		filterButton.addTarget(self, action: #selector(filterTapHandler), for: .touchUpInside)
 	}
 
 	public func display(_ cellControllers: [HotelCellController]) {
@@ -64,7 +71,13 @@ public final class HotelsSearchViewController: NiblessViewController {
 	private func cellController(at indexPath: IndexPath) -> HotelCellController {
 		cellControllers[indexPath.row]
 	}
+
+	@objc private func filterTapHandler() {
+		router?.routeToHotelsFilterPicker()
+	}
 }
+
+// MARK: - UITableViewDataSource
 
 extension HotelsSearchViewController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -76,6 +89,8 @@ extension HotelsSearchViewController: UITableViewDataSource {
 		return cellController.tableView(tableView, cellForRowAt: indexPath)
 	}
 }
+
+// MARK: - UITableViewDelegate
 
 extension HotelsSearchViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

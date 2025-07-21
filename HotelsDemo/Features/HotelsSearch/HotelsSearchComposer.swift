@@ -51,10 +51,15 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		let presenter = HotelsSearchPresenter(
 			priceFormatter: PriceFormatter()
 		)
+		let router = HotelsSearchRouter(
+			hotelsFilterPickerFactory: HotelsFilterPickerComposer()
+		)
 
 		viewController.interactor = interactor
+		viewController.router = router
 		interactor.presenter = presenter
 		presenter.viewController = viewControllerAdapter
+		router.viewController = viewController
 
 		return viewController
 	}

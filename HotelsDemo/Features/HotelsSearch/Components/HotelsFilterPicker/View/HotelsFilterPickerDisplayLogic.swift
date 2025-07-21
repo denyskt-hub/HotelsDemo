@@ -7,6 +7,4 @@
 
 import Foundation
 
-public protocol HotelsFilterPickerDisplayLogic: AnyObject {
-
-}
+public protocol HotelsFilterPickerDisplayLogic: AnyObject {}

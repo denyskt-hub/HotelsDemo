@@ -7,11 +7,9 @@
 
 import UIKit
 
-public protocol HotelsFilterPickerDelegate: AnyObject {
+public protocol HotelsFilterPickerDelegate: AnyObject {}
 
-}
-
-public final class HotelsFilterPickerViewController: NiblessViewController {
+public final class HotelsFilterPickerViewController: NiblessViewController, HotelsFilterPickerDisplayLogic {
 	private let rootView = HotelsFilterPickerRootView()
 
 	public var interactor: HotelsFilterPickerBusinessLogic?
@@ -26,11 +24,30 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 
+		setupTitle()
+		setupNavigationBar()
 		setupTableView()
+	}
+
+	private func setupTitle() {
+		title = "Filter"
+	}
+
+	private func setupNavigationBar() {
+		navigationItem.leftBarButtonItem = UIBarButtonItem(
+			barButtonSystemItem: .close,
+			target: self,
+			action: #selector(close)
+		)
+		navigationController?.navigationBar.prefersLargeTitles = false
 	}
 
 	private func setupTableView() {
 		tableView.dataSource = self
+	}
+
+	@objc private func close() {
+		dismiss(animated: true, completion: nil)
 	}
 }
 

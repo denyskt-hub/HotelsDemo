@@ -7,6 +7,4 @@
 
 import Foundation
 
-public protocol HotelsFilterPickerPresentationLogic {
-	
-}
+public protocol HotelsFilterPickerPresentationLogic {}
