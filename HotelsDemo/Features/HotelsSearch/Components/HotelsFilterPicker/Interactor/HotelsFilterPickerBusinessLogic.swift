@@ -7,4 +7,6 @@
 
 import Foundation
 
-public protocol HotelsFilterPickerBusinessLogic {}
+public protocol HotelsFilterPickerBusinessLogic {
+	func load(request: HotelsFilterPickerModels.Load.Request)
+}

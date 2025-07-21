@@ -7,4 +7,6 @@
 
 import Foundation
 
-public protocol HotelsFilterPickerDisplayLogic: AnyObject {}
+public protocol HotelsFilterPickerDisplayLogic: AnyObject {
+	func displayLoad(viewModel: HotelsFilterPickerModels.Load.ViewModel)
+}

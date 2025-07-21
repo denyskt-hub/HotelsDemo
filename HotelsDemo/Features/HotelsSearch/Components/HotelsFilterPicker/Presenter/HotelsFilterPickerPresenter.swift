@@ -9,4 +9,51 @@ import Foundation
 
 public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLogic {
 	public weak var viewController: HotelsFilterPickerDisplayLogic?
+
+	public func presentLoad(response: HotelsFilterPickerModels.Load.Response) {
+		let viewModel = HotelsFilterPickerModels.Load.ViewModel(
+			filters: [
+				makePriceRangeFilterViewModel(selectedPriceRange: response.filter.priceRange),
+				makeStarRatingFilterViewModel(selectedRatings: response.filter.starRatings),
+				makeReviewScoreFilterViewModel(selectedReviewScore: response.filter.minReviewScore)
+			]
+		)
+		viewController?.displayLoad(viewModel: viewModel)
+	}
+
+	private func makePriceRangeFilterViewModel(
+		selectedPriceRange: ClosedRange<Decimal>?
+	) -> HotelsFilterPickerModels.FilterViewModel {
+		.priceRange(min: 0, max: 100000, selected: selectedPriceRange)
+	}
+
+	private func makeStarRatingFilterViewModel(
+		selectedRatings: Set<Int>?
+	) -> HotelsFilterPickerModels.FilterViewModel {
+		let options = Array(1...5).map { value in
+			HotelsFilterPickerModels.FilterOptionViewModel(
+				title: "\(value)",
+				value: value,
+				isSelected: selectedRatings?.contains(value) ?? false
+			)
+		}
+
+		return .starRating(options: options)
+	}
+
+	private func makeReviewScoreFilterViewModel(
+		selectedReviewScore: Decimal?
+	) -> HotelsFilterPickerModels.FilterViewModel {
+		let options = Array(5...9)
+			.map { Decimal($0) }
+			.map { value in
+				HotelsFilterPickerModels.FilterOptionViewModel(
+					title: "\(value)",
+					value: value,
+					isSelected: value == selectedReviewScore
+				)
+			}
+
+		return .reviewScore(options: options)
+	}
 }

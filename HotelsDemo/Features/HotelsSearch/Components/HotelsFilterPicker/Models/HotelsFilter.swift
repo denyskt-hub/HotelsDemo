@@ -7,8 +7,18 @@
 
 import Foundation
 
-public struct HotelsFilter {
-	let priceRange: ClosedRange<Decimal>?
-	let starRating: Int?
-	let minReviewScore: Decimal?
+public struct HotelsFilter: Equatable {
+	public let priceRange: ClosedRange<Decimal>?
+	public let starRatings: Set<Int>?
+	public let minReviewScore: Decimal?
+
+	public init(
+		priceRange: ClosedRange<Decimal>? = nil,
+		starRatings: Set<Int>? = nil,
+		minReviewScore: Decimal? = nil
+	) {
+		self.priceRange = priceRange
+		self.starRatings = starRatings
+		self.minReviewScore = minReviewScore
+	}
 }

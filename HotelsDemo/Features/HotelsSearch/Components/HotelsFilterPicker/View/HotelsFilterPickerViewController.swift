@@ -27,6 +27,8 @@ public final class HotelsFilterPickerViewController: NiblessViewController, Hote
 		setupTitle()
 		setupNavigationBar()
 		setupTableView()
+
+		interactor?.load(request: .init())
 	}
 
 	private func setupTitle() {
@@ -44,6 +46,10 @@ public final class HotelsFilterPickerViewController: NiblessViewController, Hote
 
 	private func setupTableView() {
 		tableView.dataSource = self
+	}
+
+	public func displayLoad(viewModel: HotelsFilterPickerModels.Load.ViewModel) {
+
 	}
 
 	@objc private func close() {
