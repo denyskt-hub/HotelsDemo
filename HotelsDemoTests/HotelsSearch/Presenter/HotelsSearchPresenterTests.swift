@@ -71,6 +71,7 @@ final class HotelsSearchPresenterTests: XCTestCase {
 final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 	enum Message: Equatable {
 		case displaySearch(HotelsSearchModels.Search.ViewModel)
+		case displayLoading(HotelsSearchModels.LoadingViewModel)
 		case displaySearchError(HotelsSearchModels.ErrorViewModel)
 	}
 
@@ -79,7 +80,11 @@ final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 	func displaySearch(viewModel: HotelsSearchModels.Search.ViewModel) {
 		messages.append(.displaySearch(viewModel))
 	}
-	
+
+	func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
+		messages.append(.displayLoading(viewModel))
+	}
+
 	func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
 		messages.append(.displaySearchError(viewModel))
 	}

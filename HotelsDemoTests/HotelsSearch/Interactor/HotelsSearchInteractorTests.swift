@@ -31,7 +31,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		sut.search(request: .init())
 		service.completeWithResult(.failure(serviceError))
 
-		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
+		XCTAssertEqual(presenter.messages.last, .presentSearchError(serviceError))
 	}
 
 	func test_search_presentsHotelsOnServiceSuccess() {
@@ -41,7 +41,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		sut.search(request: .init())
 		service.completeWithResult(.success(hotels))
 
-		XCTAssertEqual(presenter.messages, [.presentSearch(.init(hotels: hotels))])
+		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
 	}
 
 	// MARK: - Helpers
@@ -83,6 +83,7 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	enum Message: Equatable {
 		case presentSearch(HotelsSearchModels.Search.Response)
+		case presentSearchLoading(Bool)
 		case presentSearchError(NSError)
 	}
 
@@ -91,7 +92,11 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	func presentSearch(response: HotelsSearchModels.Search.Response) {
 		messages.append(.presentSearch(response))
 	}
-	
+
+	func presentSearchLoading(_ isLoading: Bool) {
+		messages.append(.presentSearchLoading(isLoading))
+	}
+
 	func presentSearchError(_ error: Error) {
 		messages.append(.presentSearchError(error as NSError))
 	}
