@@ -9,7 +9,8 @@ import UIKit
 
 public protocol HotelsFilterPickerDelegate: AnyObject {}
 
-public final class HotelsFilterPickerViewController: NiblessViewController, HotelsFilterPickerDisplayLogic {
+public final class HotelsFilterPickerViewController: NiblessViewController {
+	private var sections = [FilterSection]()
 	private let rootView = HotelsFilterPickerRootView()
 
 	public var interactor: HotelsFilterPickerBusinessLogic?
@@ -46,10 +47,18 @@ public final class HotelsFilterPickerViewController: NiblessViewController, Hote
 
 	private func setupTableView() {
 		tableView.dataSource = self
+		tableView.delegate = self
+
+		tableView.register(PriceRangeCell.self)
 	}
 
-	public func displayLoad(viewModel: HotelsFilterPickerModels.Load.ViewModel) {
+	public func display(_ sections: [FilterSection]) {
+		self.sections = sections
+		tableView.reloadData()
+	}
 
+	private func cellController(at indexPath: IndexPath) -> CellController {
+		sections[indexPath.section].cellControllers[indexPath.row]
 	}
 
 	@objc private func close() {
@@ -60,11 +69,26 @@ public final class HotelsFilterPickerViewController: NiblessViewController, Hote
 // MARK: - UITableViewDataSource
 
 extension HotelsFilterPickerViewController: UITableViewDataSource {
+	public func numberOfSections(in tableView: UITableView) -> Int {
+		sections.count
+	}
+
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		1
+		sections[section].cellControllers.count
 	}
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		UITableViewCell()
+		let ds = cellController(at: indexPath).dataSource
+		return ds.tableView(tableView, cellForRowAt: indexPath)
+	}
+}
+
+// MARK: - UITableViewDelegate
+
+extension HotelsFilterPickerViewController: UITableViewDelegate {
+	public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let view = FilterHeaderView()
+		view.titleLabel.text = sections[section].title
+		return view
 	}
 }

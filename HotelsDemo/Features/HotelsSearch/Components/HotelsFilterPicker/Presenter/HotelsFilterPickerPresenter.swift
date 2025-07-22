@@ -8,7 +8,7 @@
 import Foundation
 
 public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLogic {
-	public weak var viewController: HotelsFilterPickerDisplayLogic?
+	public var viewController: HotelsFilterPickerDisplayLogic?
 
 	public func presentLoad(response: HotelsFilterPickerModels.Load.Response) {
 		let viewModel = HotelsFilterPickerModels.Load.ViewModel(
@@ -24,7 +24,14 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 	private func makePriceRangeFilterViewModel(
 		selectedPriceRange: ClosedRange<Decimal>?
 	) -> HotelsFilterPickerModels.FilterViewModel {
-		.priceRange(min: 0, max: 100000, selected: selectedPriceRange)
+		.priceRange(
+			option: .init(
+				minPrice: 0,
+				maxPrice: 5000,
+				currencyCode: "USD",
+				selectedRange: selectedPriceRange
+			)
+		)
 	}
 
 	private func makeStarRatingFilterViewModel(

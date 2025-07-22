@@ -14,6 +14,9 @@ public protocol HotelsFilterPickerFactory {
 public final class HotelsFilterPickerComposer: HotelsFilterPickerFactory {
 	public func makeFilter() -> UIViewController {
 		let viewController = HotelsFilterPickerViewController()
+		let viewControllerAdapter = HotelsFilterPickerDisplayLogicAdapter(
+			viewController: viewController
+		)
 		let interactor = HotelsFilterPickerInteractor(
 			currentFilter: HotelsFilter()
 		)
@@ -21,7 +24,7 @@ public final class HotelsFilterPickerComposer: HotelsFilterPickerFactory {
 
 		viewController.interactor = interactor
 		interactor.presenter = presenter
-		presenter.viewController = viewController
+		presenter.viewController = viewControllerAdapter
 
 		return viewController
 	}

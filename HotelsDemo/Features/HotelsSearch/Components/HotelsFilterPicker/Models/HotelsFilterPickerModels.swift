@@ -31,9 +31,28 @@ public enum HotelsFilterPickerModels {
 	}
 
 	public enum FilterViewModel: Equatable {
-		case priceRange(min: Decimal, max: Decimal, selected: ClosedRange<Decimal>?)
+		case priceRange(option: PriceRangeFilterOptionViewModel)
 		case starRating(options: [FilterOptionViewModel<Int>])
 		case reviewScore(options: [FilterOptionViewModel<Decimal>])
+	}
+
+	public struct PriceRangeFilterOptionViewModel: Equatable {
+		public let minPrice: Decimal
+		public let maxPrice: Decimal
+		public let currencyCode: String
+		public let selectedRange: ClosedRange<Decimal>?
+
+		public init(
+			minPrice: Decimal,
+			maxPrice: Decimal,
+			currencyCode: String,
+			selectedRange: ClosedRange<Decimal>?
+		) {
+			self.minPrice = minPrice
+			self.maxPrice = maxPrice
+			self.currencyCode = currencyCode
+			self.selectedRange = selectedRange
+		}
 	}
 
 	public struct FilterOptionViewModel<Value: Hashable>: Equatable {
