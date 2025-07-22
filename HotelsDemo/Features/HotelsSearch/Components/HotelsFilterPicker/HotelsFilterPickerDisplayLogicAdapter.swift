@@ -24,9 +24,44 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		filters.map { filter in
 			FilterSection(
 				title: filter.title,
-				cellControllers: filter.cellControllers()
+				cellControllers: makeCellControllers(for: filter)
 			)
 		}
+	}
+
+	private func makeCellControllers(for filter: HotelsFilterPickerModels.FilterViewModel) -> [CellController] {
+		switch filter {
+		case let .priceRange(viewModel):
+			return [makePriceRangeCellController(viewModel)]
+		case .starRating:
+			return []
+		case .reviewScore:
+			return []
+		}
+	}
+
+	private func makePriceRangeCellController(
+		_ viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel
+	) -> CellController {
+		let view = PriceRangeCellController(viewModel: viewModel)
+		let interactor = PriceRangeInteractor(
+			currencyCode: viewModel.currencyCode,
+			selectedRange: viewModel.selectedRange
+		)
+		let presenter = PriceRangePresenter()
+
+		view.interactor = interactor
+		view.delegate = self
+		interactor.presenter = presenter
+		presenter.view = view
+
+		return CellController(view)
+	}
+}
+
+extension HotelsFilterPickerDisplayLogicAdapter: PriceRangeCellControllerDelegate {
+	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>) {
+		viewController?.interactor?.updatePriceRange(request: .init(priceRange: priceRange))
 	}
 }
 
@@ -49,17 +84,6 @@ extension HotelsFilterPickerModels.FilterViewModel {
 			return "Star Ratings"
 		case .reviewScore:
 			return "Review Score"
-		}
-	}
-
-	func cellControllers() -> [CellController] {
-		switch self {
-		case let .priceRange(viewModel):
-			return [CellController(PriceRangeCellController(viewModel: viewModel))]
-		case .starRating:
-			return []
-		case .reviewScore:
-			return []
 		}
 	}
 }

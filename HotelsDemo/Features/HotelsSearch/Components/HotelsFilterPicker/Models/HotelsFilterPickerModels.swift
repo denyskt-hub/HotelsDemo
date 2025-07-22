@@ -30,6 +30,16 @@ public enum HotelsFilterPickerModels {
 		}
 	}
 
+	public enum UpdatePriceRange {
+		public struct Request: Equatable {
+			public let priceRange: ClosedRange<Decimal>
+
+			public init(priceRange: ClosedRange<Decimal>) {
+				self.priceRange = priceRange
+			}
+		}
+	}
+
 	public enum FilterViewModel: Equatable {
 		case priceRange(option: PriceRangeFilterOptionViewModel)
 		case starRating(options: [FilterOptionViewModel<Int>])

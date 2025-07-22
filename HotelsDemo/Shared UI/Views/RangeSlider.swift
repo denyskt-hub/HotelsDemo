@@ -135,6 +135,7 @@ extension RangeSlider {
 			upperThumbImageView.isHighlighted = true
 		}
 
+		sendActions(for: .editingDidBegin)
 		return lowerThumbImageView.isHighlighted || upperThumbImageView.isHighlighted
 	}
 
@@ -167,6 +168,7 @@ extension RangeSlider {
 	public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
 		lowerThumbImageView.isHighlighted = false
 		upperThumbImageView.isHighlighted = false
+		sendActions(for: .editingDidEnd)
 	}
 
 	private func boundValue(_ value: CGFloat, toLowerValue lowerValue: CGFloat, upperValue: CGFloat) -> CGFloat {
@@ -174,7 +176,7 @@ extension RangeSlider {
 	}
 }
 
-class RangeSliderTrackLayer: CALayer {
+private class RangeSliderTrackLayer: CALayer {
 	internal weak var rangeSlider: RangeSlider?
 
 	public override func draw(in ctx: CGContext) {

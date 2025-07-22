@@ -15,6 +15,7 @@ public final class PriceRangeCellController: NSObject {
 	private let viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel
 	private let cell = PriceRangeCell()
 
+	public var interactor: PriceRangeInteractor?
 	public var delegate: PriceRangeCellControllerDelegate?
 
 	public init(viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel) {
@@ -26,15 +27,24 @@ public final class PriceRangeCellController: NSObject {
 	}
 
 	private func setupCell() {
-		cell.slider.addTarget(self, action: #selector(rangeSliderValueChanged(_:)), for: .valueChanged)
+		cell.slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
+		cell.slider.addTarget(self, action: #selector(sliderEditingDidEnd(_:)), for: .editingDidEnd)
 	}
 
 	private func configureCell() {
 		cell.configure(with: viewModel)
 	}
 
-	@objc private func rangeSliderValueChanged(_ slider: RangeSlider) {
-		delegate?.didSelectPriceRange(Decimal(slider.lowerValue)...Decimal(slider.upperValue))
+	@objc private func sliderValueChanged(_ slider: RangeSlider) {
+		interactor?.selectedRangeValueChanged(makePriceRange(slider.lowerValue, slider.upperValue))
+	}
+
+	@objc private func sliderEditingDidEnd(_ slider: RangeSlider) {
+		delegate?.didSelectPriceRange(makePriceRange(slider.lowerValue, slider.upperValue))
+	}
+
+	private func makePriceRange(_ lowerValue: CGFloat, _ upperValue: CGFloat) -> ClosedRange<Decimal> {
+		Decimal(lowerValue)...Decimal(upperValue)
 	}
 }
 
@@ -47,5 +57,12 @@ extension PriceRangeCellController: UITableViewDataSource {
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		cell
+	}
+}
+
+extension PriceRangeCellController: PriceRangeView {
+	public func displayPriceRange(_ viewModel: PriceRangeViewModel) {
+		cell.lowerValueLabel.text = viewModel.lowerBound
+		cell.upperValueLabel.text = viewModel.upperBound
 	}
 }
