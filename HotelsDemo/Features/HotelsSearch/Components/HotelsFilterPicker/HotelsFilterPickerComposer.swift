@@ -8,17 +8,20 @@
 import UIKit
 
 public protocol HotelsFilterPickerFactory {
-	func makeFilter(delegate: HotelsFilterPickerDelegate?) -> UIViewController
+	func makeFilter(filter: HotelsFilter, delegate: HotelsFilterPickerDelegate?) -> UIViewController
 }
 
 public final class HotelsFilterPickerComposer: HotelsFilterPickerFactory {
-	public func makeFilter(delegate: HotelsFilterPickerDelegate?) -> UIViewController {
+	public func makeFilter(
+		filter: HotelsFilter,
+		delegate: HotelsFilterPickerDelegate?
+	) -> UIViewController {
 		let viewController = HotelsFilterPickerViewController()
 		let viewControllerAdapter = HotelsFilterPickerDisplayLogicAdapter(
 			viewController: viewController
 		)
 		let interactor = HotelsFilterPickerInteractor(
-			currentFilter: HotelsFilter()
+			currentFilter: filter
 		)
 		let presenter = HotelsFilterPickerPresenter()
 

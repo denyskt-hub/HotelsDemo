@@ -40,6 +40,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		)
 		let interactor = HotelsSearchInteractor(
 			criteria: criteria,
+			repository: DefaultHotelsRepository(),
 			worker: HotelsSearchWorker(
 				factory: DefaultHotelsRequestFactory(
 					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)

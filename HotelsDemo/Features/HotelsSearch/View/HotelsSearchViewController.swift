@@ -68,12 +68,19 @@ public final class HotelsSearchViewController: NiblessViewController {
 		displayErrorMessage(viewModel.message)
 	}
 
-	private func cellController(at indexPath: IndexPath) -> HotelCellController {
-		cellControllers[indexPath.row]
+	public func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel) {
+		router?.routeToHotelsFilterPicker(viewModel: viewModel)
+	}
+
+	private func cellController(at indexPath: IndexPath) -> HotelCellController? {
+		guard cellControllers.indices.contains(indexPath.row) else {
+			return nil
+		}
+		return cellControllers[indexPath.row]
 	}
 
 	@objc private func filterTapHandler() {
-		router?.routeToHotelsFilterPicker()
+		interactor?.filter(request: .init())
 	}
 }
 
@@ -85,7 +92,9 @@ extension HotelsSearchViewController: UITableViewDataSource {
 	}
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cellController = cellController(at: indexPath)
+		guard let cellController = cellController(at: indexPath) else {
+			preconditionFailure("cellController not found")
+		}
 		return cellController.tableView(tableView, cellForRowAt: indexPath)
 	}
 }
@@ -95,12 +104,12 @@ extension HotelsSearchViewController: UITableViewDataSource {
 extension HotelsSearchViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let cellController = cellController(at: indexPath)
-		cellController.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
+		cellController?.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
 	}
 
 	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let cellController = cellController(at: indexPath)
-		cellController.tableView(tableView, didEndDisplaying: cell, forRowAt: indexPath)
+		cellController?.tableView(tableView, didEndDisplaying: cell, forRowAt: indexPath)
 	}
 }
 
@@ -108,6 +117,6 @@ extension HotelsSearchViewController: UITableViewDelegate {
 
 extension HotelsSearchViewController: HotelsFilterPickerDelegate {
 	public func didSelectFilter(_ filter: HotelsFilter) {
-
+		interactor?.updateFilter(request: .init(filter: filter))
 	}
 }

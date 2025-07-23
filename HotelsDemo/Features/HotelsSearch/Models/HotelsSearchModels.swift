@@ -30,6 +30,46 @@ public enum HotelsSearchModels {
 		}
 	}
 
+	public enum Filter {
+		public struct Request: Equatable {
+			public init() {}
+		}
+
+		public struct Response: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+	}
+
+	public enum UpdateFilter {
+		public struct Request: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+	}
+
 	public struct HotelViewModel: Equatable {
 		public let position: Int
 		public let starRating: Int

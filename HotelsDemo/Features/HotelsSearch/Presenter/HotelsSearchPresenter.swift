@@ -43,6 +43,11 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 		let viewModel = HotelsSearchModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displaySearchError(viewModel: viewModel)
 	}
+
+	public func presentFilter(response: HotelsSearchModels.Filter.Response) {
+		let viewModel = HotelsSearchModels.Filter.ViewModel(filter: response.filter)
+		viewController?.displayFilter(viewModel: viewModel)
+	}
 }
 
 public final class PriceFormatter {

@@ -9,21 +9,27 @@ import Foundation
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private let criteria: HotelsSearchCriteria
+	private let repository: HotelsRepository
+	private var filter = HotelsFilter()
+
 	private let worker: HotelsSearchService
+	private var task: HTTPClientTask?
 
 	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
 		criteria: HotelsSearchCriteria,
+		repository: HotelsRepository,
 		worker: HotelsSearchService
 	) {
 		self.criteria = criteria
+		self.repository = repository
 		self.worker = worker
 	}
 
 	public func search(request: HotelsSearchModels.Search.Request) {
 		presenter?.presentSearchLoading(true)
-		worker.search(criteria: criteria) { [weak self] result in
+		task = worker.search(criteria: criteria) { [weak self] result in
 			guard let self else { return }
 
 			self.presenter?.presentSearchLoading(false)
@@ -34,9 +40,27 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private func handleSearchResult(_ result: HotelsSearchService.Result) {
 		switch result {
 		case let .success(hotels):
+			repository.setHotels(hotels)
 			presenter?.presentSearch(response: .init(hotels: hotels))
 		case let .failure(error):
 			presenter?.presentSearchError(error)
 		}
+	}
+
+	public func cancelSearch() {
+		task?.cancel()
+	}
+
+	public func filter(request: HotelsSearchModels.Filter.Request) {
+		presenter?.presentFilter(response: .init(filter: filter))
+	}
+
+	public func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
+		filter = request.filter
+		presenter?.presentSearch(
+			response: .init(
+				hotels: repository.filter(with: HotelsSpecificationFactory.make(from: request.filter))
+			)
+		)
 	}
 }

@@ -63,19 +63,18 @@ public final class PriceRangeCell: UITableViewCell {
 	}
 
 	public func configure(with viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel) {
-		self.viewModel = viewModel
-
 		slider.minimumValue = CGFloat((viewModel.minPrice as NSDecimalNumber).doubleValue)
 		slider.maximumValue = CGFloat((viewModel.maxPrice as NSDecimalNumber).doubleValue)
 
-		slider.lowerValue = CGFloat(((viewModel.selectedRange?.lowerBound ?? viewModel.minPrice) as NSDecimalNumber).doubleValue)
-		slider.upperValue = CGFloat(((viewModel.selectedRange?.upperBound ?? viewModel.maxPrice) as NSDecimalNumber).doubleValue)
+		let lowerValue = viewModel.selectedRange?.lowerBound ?? viewModel.minPrice
+		let upperValue = viewModel.selectedRange?.upperBound ?? viewModel.maxPrice
 
-		lowerValueLabel.text = viewModel.minPrice.formatted(.currency(code: viewModel.currencyCode))
-		upperValueLabel.text = viewModel.maxPrice.formatted(.currency(code: viewModel.currencyCode))
+		slider.lowerValue = CGFloat((lowerValue as NSDecimalNumber).doubleValue)
+		slider.upperValue = CGFloat((upperValue as NSDecimalNumber).doubleValue)
+
+		lowerValueLabel.text = lowerValue.formatted(.currency(code: viewModel.currencyCode))
+		upperValueLabel.text = upperValue.formatted(.currency(code: viewModel.currencyCode))
 	}
-
-	private var viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel?
 }
 
 // MARK: - Layout
