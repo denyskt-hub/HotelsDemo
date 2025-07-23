@@ -65,11 +65,9 @@ public final class HotelCell: UITableViewCell {
 		return label
 	}()
 
-	private lazy var starRatingView: UIStackView = {
-		let stack = UIStackView(arrangedSubviews: [])
-		stack.axis = .horizontal
-		stack.spacing = 2
-		return stack
+	private let starRatingView: StarRatingView = {
+		let view = StarRatingView()
+		return view
 	}()
 
 	private lazy var reviewsView: UIStackView = {
@@ -160,25 +158,10 @@ public final class HotelCell: UITableViewCell {
 		nameLabel.text = viewModel.name
 		scoreLabel.text = viewModel.score
 		reviewsLabel.text = viewModel.reviews
-		setStarRating(viewModel.starRating)
+		starRatingView.rating = viewModel.starRating
 		priceLabel.text = viewModel.price
 		priceDetailsLabel.text = viewModel.priceDetails
 		photoImageView.image = nil
-	}
-
-	private func setStarRating(_ rating: Int) {
-		starRatingView.arrangedSubviews.forEach {
-			$0.removeFromSuperview()
-		}
-
-		for _ in 0..<rating {
-			let imageView = UIImageView()
-			imageView.image = UIImage(systemName: "star.fill")
-			imageView.contentMode = .scaleAspectFit
-			imageView.widthAnchor.constraint(equalToConstant: 14).isActive = true
-			imageView.heightAnchor.constraint(equalToConstant: 14).isActive = true
-			starRatingView.addArrangedSubview(imageView)
-		}
 	}
 }
 

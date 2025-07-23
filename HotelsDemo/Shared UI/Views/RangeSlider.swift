@@ -38,13 +38,13 @@ public class RangeSlider: UIControl {
 		}
 	}
 
-	public var trackTintColor = UIColor(white: 0.9, alpha: 1) {
+	public var trackTintColor = UIColor.secondarySystemBackground {
 		didSet {
 			trackLayer.setNeedsDisplay()
 		}
 	}
 
-	public var trackHighlightTintColor = UIColor(red: 0, green: 0.45, blue: 0.94, alpha: 1) {
+	public var trackHighlightTintColor = UIColor.systemBlue {
 		didSet {
 			trackLayer.setNeedsDisplay()
 		}

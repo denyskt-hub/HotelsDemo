@@ -37,8 +37,8 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		switch filter {
 		case let .priceRange(viewModel):
 			return [makePriceRangeCellController(viewModel)]
-		case .starRating:
-			return []
+		case let .starRating(viewModels):
+			return makeStarRatingCellControllers(viewModels)
 		case .reviewScore:
 			return []
 		}
@@ -60,6 +60,14 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		presenter.view = view
 
 		return CellController(view)
+	}
+
+	private func makeStarRatingCellControllers(
+		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<Int>]
+	) -> [CellController] {
+		viewModels.map {
+			CellController(StarRatingCellController(viewModel: $0))
+		}
 	}
 }
 
