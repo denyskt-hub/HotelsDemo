@@ -50,7 +50,7 @@ public class RangeSlider: UIControl {
 		}
 	}
 
-	public var thumbImage = UIImage(systemName: "circle.fill")! {
+	public var thumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
 		didSet {
 			upperThumbImageView.image = thumbImage
 			lowerThumbImageView.image = thumbImage
@@ -58,7 +58,7 @@ public class RangeSlider: UIControl {
 		}
 	}
 
-	public var highlightedThumbImage = UIImage(systemName: "circle.fill")! {
+	public var highlightedThumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
 		didSet {
 			upperThumbImageView.highlightedImage = highlightedThumbImage
 			lowerThumbImageView.highlightedImage = highlightedThumbImage
@@ -98,7 +98,7 @@ public class RangeSlider: UIControl {
 		CATransaction.begin()
 		CATransaction.setDisableActions(true)
 
-		trackLayer.frame = bounds.insetBy(dx: 0.0, dy: bounds.height / 3)
+		trackLayer.frame = bounds.insetBy(dx: thumbImage.size.width / 2, dy: bounds.height / 3)
 		trackLayer.setNeedsDisplay()
 
 		lowerThumbImageView.frame = CGRect(
@@ -116,11 +116,11 @@ public class RangeSlider: UIControl {
 	internal func positionForValue(_ value: CGFloat) -> CGFloat {
 		let maxNormalizedValue = maximumValue - minimumValue
 		let normalizedValue = (value - minimumValue) / maxNormalizedValue
-		return bounds.width * normalizedValue
+		return (bounds.width - thumbImage.size.width) * normalizedValue
 	}
 
 	private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
-		let x = positionForValue(value) - thumbImage.size.width / 2.0
+		let x = positionForValue(value)
 		return CGPoint(x: x, y: (bounds.height - thumbImage.size.height) / 2.0)
 	}
 }
@@ -143,7 +143,7 @@ extension RangeSlider {
 		let location = touch.location(in: self)
 
 		let deltaLocation = location.x - previousLocation.x
-		let deltaValue = (maximumValue - minimumValue) * deltaLocation / bounds.width
+		let deltaValue = (maximumValue - minimumValue) * deltaLocation / (bounds.width - thumbImage.size.width)
 
 		previousLocation = location
 

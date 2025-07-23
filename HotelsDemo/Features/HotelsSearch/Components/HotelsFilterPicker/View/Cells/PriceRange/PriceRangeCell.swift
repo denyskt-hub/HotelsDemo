@@ -82,17 +82,17 @@ public final class PriceRangeCell: UITableViewCell {
 extension PriceRangeCell {
 	private func activateConstraintsSlider() {
 		slider.translatesAutoresizingMaskIntoConstraints = false
-		let leading = slider.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor)
-		let trailing = slider.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
+		let leading = slider.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10)
+		let trailing = slider.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
 		let top = slider.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top])
 	}
 
 	private func activateConstraintsSelectedRangeStack() {
 		selectedRangeStack.translatesAutoresizingMaskIntoConstraints = false
-		let leading = selectedRangeStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor)
-		let trailing = selectedRangeStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
-		let top = selectedRangeStack.topAnchor.constraint(equalTo: slider.bottomAnchor)
+		let leading = selectedRangeStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10)
+		let trailing = selectedRangeStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
+		let top = selectedRangeStack.topAnchor.constraint(equalTo: slider.bottomAnchor, constant: 4)
 		let bottom = selectedRangeStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
