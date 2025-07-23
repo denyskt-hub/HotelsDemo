@@ -63,17 +63,17 @@ public final class PriceRangeCell: UITableViewCell {
 	}
 
 	public func configure(with viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel) {
-		slider.minimumValue = CGFloat((viewModel.minPrice as NSDecimalNumber).doubleValue)
-		slider.maximumValue = CGFloat((viewModel.maxPrice as NSDecimalNumber).doubleValue)
+		slider.minimumValue = viewModel.minPrice.cgFloatValue
+		slider.maximumValue = viewModel.maxPrice.cgFloatValue
 
 		let lowerValue = viewModel.selectedRange?.lowerBound ?? viewModel.minPrice
 		let upperValue = viewModel.selectedRange?.upperBound ?? viewModel.maxPrice
 
-		slider.lowerValue = CGFloat((lowerValue as NSDecimalNumber).doubleValue)
-		slider.upperValue = CGFloat((upperValue as NSDecimalNumber).doubleValue)
+		slider.lowerValue = lowerValue.cgFloatValue
+		slider.upperValue = upperValue.cgFloatValue
 
-		lowerValueLabel.text = lowerValue.formatted(.currency(code: viewModel.currencyCode))
-		upperValueLabel.text = upperValue.formatted(.currency(code: viewModel.currencyCode))
+		lowerValueLabel.text = lowerValue.formattedCurrency(code: viewModel.currencyCode)
+		upperValueLabel.text = upperValue.formattedCurrency(code: viewModel.currencyCode)
 	}
 }
 
@@ -95,5 +95,25 @@ extension PriceRangeCell {
 		let top = selectedRangeStack.topAnchor.constraint(equalTo: slider.bottomAnchor)
 		let bottom = selectedRangeStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+}
+
+// MARK: - Helpers
+
+extension Decimal {
+	var cgFloatValue: CGFloat {
+		NSDecimalNumber(decimal: self).doubleValue.cgFloatValue
+	}
+}
+
+extension Decimal {
+	func formattedCurrency(code: String) -> String {
+		formatted(.currency(code: code))
+	}
+}
+
+extension Double {
+	var cgFloatValue: CGFloat {
+		CGFloat(self)
 	}
 }
