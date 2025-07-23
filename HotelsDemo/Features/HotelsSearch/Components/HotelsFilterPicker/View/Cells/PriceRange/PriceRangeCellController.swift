@@ -60,6 +60,8 @@ extension PriceRangeCellController: UITableViewDataSource {
 	}
 }
 
+// MARK: - PriceRangeView
+
 extension PriceRangeCellController: PriceRangeView {
 	public func displayPriceRange(_ viewModel: PriceRangeViewModel) {
 		cell.lowerValueLabel.text = viewModel.lowerBound

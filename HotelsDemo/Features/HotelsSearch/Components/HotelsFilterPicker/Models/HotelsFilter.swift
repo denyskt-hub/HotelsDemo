@@ -9,7 +9,7 @@ import Foundation
 
 public struct HotelsFilter: Equatable {
 	public var priceRange: ClosedRange<Decimal>?
-	public let starRatings: Set<Int>
+	public var starRatings: Set<Int>
 	public let minReviewScore: Decimal?
 
 	public init(

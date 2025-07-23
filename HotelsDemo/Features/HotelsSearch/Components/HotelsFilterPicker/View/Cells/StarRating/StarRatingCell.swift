@@ -37,14 +37,22 @@ public final class StarRatingCell: UITableViewCell {
 		return view
 	}()
 
-	required public init?(coder: NSCoder) {
+	public var onSelect: ((Int) -> Void)?
+
+	public override func prepareForReuse() {
+		super.prepareForReuse()
+		onSelect = nil
+	}
+
+	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
 		setupHierarchy()
+		setupGesture()
 		activateConstraints()
 	}
 
@@ -53,13 +61,25 @@ public final class StarRatingCell: UITableViewCell {
 		contentView.addSubview(stack)
 	}
 
+	private func setupGesture() {
+		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+		contentView.addGestureRecognizer(tapGesture)
+		contentView.isUserInteractionEnabled = true
+	}
+
 	private func activateConstraints() {
 		activateConstraintsStarRatingView()
 		activateConstraintsStack()
 	}
 
 	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<Int>) {
+		iconImageView.isHighlighted = viewModel.isSelected
 		starRatingView.rating = viewModel.value
+	}
+
+	@objc private func handleTap() {
+		iconImageView.isHighlighted.toggle()
+		onSelect?(starRatingView.rating)
 	}
 }
 

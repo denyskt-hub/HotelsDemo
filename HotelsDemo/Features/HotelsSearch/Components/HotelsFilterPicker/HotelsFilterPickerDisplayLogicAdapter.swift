@@ -65,17 +65,36 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 	private func makeStarRatingCellControllers(
 		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<Int>]
 	) -> [CellController] {
-		viewModels.map {
-			CellController(StarRatingCellController(viewModel: $0))
+		let adapter = StarRatingSelectionAdapter(
+			starRatings: Set(viewModels.compactMap { $0.isSelected ? $0.value : nil })
+		)
+		adapter.delegate = self
+
+		return viewModels.map {
+			let view = StarRatingCellController(viewModel: $0)
+			view.delegate = adapter
+			return CellController(view)
 		}
 	}
 }
+
+// MARK: - PriceRangeCellControllerDelegate
 
 extension HotelsFilterPickerDisplayLogicAdapter: PriceRangeCellControllerDelegate {
 	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>) {
 		viewController?.interactor?.updatePriceRange(request: .init(priceRange: priceRange))
 	}
 }
+
+// MARK: - StarRatingSelectionDelegate
+
+extension HotelsFilterPickerDisplayLogicAdapter: StarRatingSelectionDelegate {
+	public func didSelectStarRatings(_ starRatings: Set<Int>) {
+		viewController?.interactor?.updateStarRatings(request: .init(starRatings: starRatings))
+	}
+}
+
+// MARK: -
 
 public struct FilterSection {
 	public let title: String

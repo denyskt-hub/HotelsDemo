@@ -126,16 +126,16 @@ public final class HotelCell: UITableViewCell {
 		return label
 	}()
 
-	required public init?(coder: NSCoder) {
+	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	override public func prepareForReuse() {
+	public override func prepareForReuse() {
 		super.prepareForReuse()
 		photoImageView.image = nil
 	}
 
-	override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
 		setupHierarchy()
