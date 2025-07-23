@@ -20,6 +20,10 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		viewController?.display(makeFilterSections(from: viewModel.filters))
 	}
 
+	public func displaySelectedFilter(viewModel: HotelsFilterPickerModels.Select.ViewModel) {
+		viewController?.displaySelectedFilter(viewModel: viewModel)
+	}
+
 	private func makeFilterSections(from filters: [HotelsFilterPickerModels.FilterViewModel]) -> [FilterSection] {
 		filters.map { filter in
 			FilterSection(

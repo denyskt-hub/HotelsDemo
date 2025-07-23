@@ -97,6 +97,8 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	}
 }
 
+// MARK: - HotelsSearchCriteriaScene
+
 extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 	public func didSelectDestination(_ destination: Destination) {
 		interactor?.updateDestination(

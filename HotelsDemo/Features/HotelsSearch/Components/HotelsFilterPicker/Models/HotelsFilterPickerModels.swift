@@ -40,6 +40,28 @@ public enum HotelsFilterPickerModels {
 		}
 	}
 
+	public enum Select {
+		public struct Request: Equatable {
+			public init() {}
+		}
+
+		public struct Response: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let filter: HotelsFilter
+
+			public init(filter: HotelsFilter) {
+				self.filter = filter
+			}
+		}
+	}
+
 	public enum FilterViewModel: Equatable {
 		case priceRange(option: PriceRangeFilterOptionViewModel)
 		case starRating(options: [FilterOptionViewModel<Int>])

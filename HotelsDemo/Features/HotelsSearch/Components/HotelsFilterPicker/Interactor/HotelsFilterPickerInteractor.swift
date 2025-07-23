@@ -23,4 +23,8 @@ public final class HotelsFilterPickerInteractor: HotelsFilterPickerBusinessLogic
 	public func updatePriceRange(request: HotelsFilterPickerModels.UpdatePriceRange.Request) {
 		currentFilter.priceRange = request.priceRange
 	}
+
+	public func selectFilter(request: HotelsFilterPickerModels.Select.Request) {
+		presenter?.presentSelectedFilter(response: .init(filter: currentFilter))
+	}
 }

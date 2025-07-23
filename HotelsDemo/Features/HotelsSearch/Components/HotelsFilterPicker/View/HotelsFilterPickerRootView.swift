@@ -12,7 +12,8 @@ public class HotelsFilterPickerRootView: NiblessView {
 
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
-			tableView
+			tableView,
+			applyButtonView
 		])
 		stack.axis = .vertical
 		stack.spacing = 10
@@ -25,6 +26,16 @@ public class HotelsFilterPickerRootView: NiblessView {
 		tableView.allowsSelection = false
 		return tableView
 	}()
+
+	private let applyButtonView: ActionButtonView = {
+		let view = ActionButtonView()
+		view.setTitle("Apply")
+		return view
+	}()
+
+	public var applyButton: UIButton {
+		applyButtonView.button
+	}
 
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()

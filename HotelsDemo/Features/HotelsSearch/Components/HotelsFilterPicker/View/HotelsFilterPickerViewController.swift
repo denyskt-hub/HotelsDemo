@@ -7,7 +7,9 @@
 
 import UIKit
 
-public protocol HotelsFilterPickerDelegate: AnyObject {}
+public protocol HotelsFilterPickerDelegate: AnyObject {
+	func didSelectFilter(_ filter: HotelsFilter)
+}
 
 public final class HotelsFilterPickerViewController: NiblessViewController {
 	private var sections = [FilterSection]()
@@ -17,6 +19,7 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 	public weak var delegate: HotelsFilterPickerDelegate?
 
 	public var tableView: UITableView { rootView.tableView }
+	public var applyButton: UIButton { rootView.applyButton }
 
 	public override func loadView() {
 		view = rootView
@@ -28,6 +31,7 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 		setupTitle()
 		setupNavigationBar()
 		setupTableView()
+		setupApplyButton()
 
 		interactor?.load(request: .init())
 	}
@@ -52,6 +56,10 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 		tableView.register(PriceRangeCell.self)
 	}
 
+	private func setupApplyButton() {
+		applyButton.addTarget(self, action: #selector(applyTapHandler), for: .touchUpInside)
+	}
+
 	public func display(_ sections: [FilterSection]) {
 		self.sections = sections
 		tableView.reloadData()
@@ -61,8 +69,17 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 		sections[indexPath.section].cellControllers[indexPath.row]
 	}
 
+	public func displaySelectedFilter(viewModel: HotelsFilterPickerModels.Select.ViewModel) {
+		delegate?.didSelectFilter(viewModel.filter)
+		dismiss(animated: true)
+	}
+
+	@objc private func applyTapHandler() {
+		interactor?.selectFilter(request: HotelsFilterPickerModels.Select.Request())
+	}
+
 	@objc private func close() {
-		dismiss(animated: true, completion: nil)
+		dismiss(animated: true)
 	}
 }
 

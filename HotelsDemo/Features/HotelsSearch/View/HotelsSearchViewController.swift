@@ -103,3 +103,11 @@ extension HotelsSearchViewController: UITableViewDelegate {
 		cellController.tableView(tableView, didEndDisplaying: cell, forRowAt: indexPath)
 	}
 }
+
+// MARK: - HotelsFilterPickerDelegate
+
+extension HotelsSearchViewController: HotelsFilterPickerDelegate {
+	public func didSelectFilter(_ filter: HotelsFilter) {
+
+	}
+}

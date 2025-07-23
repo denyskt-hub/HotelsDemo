@@ -31,5 +31,3 @@ public struct PriceRangeViewModel {
 		self.upperBound = upperBound
 	}
 }
-
-

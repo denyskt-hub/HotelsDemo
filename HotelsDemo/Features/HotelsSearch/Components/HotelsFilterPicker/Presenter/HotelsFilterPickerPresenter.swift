@@ -21,6 +21,13 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 		viewController?.displayLoad(viewModel: viewModel)
 	}
 
+	public func presentSelectedFilter(response: HotelsFilterPickerModels.Select.Response) {
+		let viewModel = HotelsFilterPickerModels.Select.ViewModel(
+			filter: response.filter
+		)
+		viewController?.displaySelectedFilter(viewModel: viewModel)
+	}
+
 	private func makePriceRangeFilterViewModel(
 		selectedPriceRange: ClosedRange<Decimal>?
 	) -> HotelsFilterPickerModels.FilterViewModel {
