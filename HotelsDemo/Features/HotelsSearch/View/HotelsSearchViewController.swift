@@ -17,7 +17,9 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
-	public var filterButton: UIButton { rootView.actionBar.filterButton }
+
+	private var actionBar: HotelsActionBar { rootView.actionBar }
+	public var filterButton: UIButton { actionBar.filterButton }
 
 	public override func loadView() {
 		view = rootView
@@ -41,10 +43,15 @@ public final class HotelsSearchViewController: NiblessViewController {
 		onViewIsAppearing?(self)
 	}
 
+	public override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+
+		tableView.contentInset.bottom = tableView.frame.origin.y + tableView.frame.height - actionBar.frame.origin.y
+	}
+
 	private func setupTableView() {
 		tableView.dataSource = self
 		tableView.delegate = self
-		tableView.contentInset.bottom = tableView.frame.height - filterButton.frame.origin.y
 
 		tableView.register(HotelCell.self)
 	}
