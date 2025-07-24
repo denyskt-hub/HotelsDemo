@@ -12,6 +12,14 @@ public protocol MainFactory {
 }
 
 public final class MainComposer: MainFactory {
+	private let client: HTTPClient = {
+		RapidAPIHTTPClient(
+			client: LoggingHTTPClient(
+				client: URLSessionHTTPClient()
+			)
+		)
+	}()
+
 	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
 
 	public init(searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController) {
@@ -28,6 +36,7 @@ public final class MainComposer: MainFactory {
 		let presenter = MainPresenter()
 		let router = MainRouter(
 			searchFactory: HotelsSearchComposer(
+				client: client,
 				imageDataCache: InMemoryImageDataCache(countLimit: 100)
 			)
 		)
