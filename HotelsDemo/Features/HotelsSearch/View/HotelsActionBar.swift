@@ -21,9 +21,7 @@ public class HotelsActionBar: NiblessView {
 
 	public let filterButton: UIButton = {
 		let button = UIButton()
-		button.configure(title: "Filter")
-		button.tintColor = .label
-		button.backgroundColor = .systemGray6
+		button.configure(.filled, title: "Filter")
 		button.roundAllCorners(radius: 10)
 		button.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return button

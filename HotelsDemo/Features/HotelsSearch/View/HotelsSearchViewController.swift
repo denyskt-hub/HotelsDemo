@@ -44,6 +44,8 @@ public final class HotelsSearchViewController: NiblessViewController {
 	private func setupTableView() {
 		tableView.dataSource = self
 		tableView.delegate = self
+		tableView.contentInset.bottom = tableView.frame.height - filterButton.frame.origin.y
+
 		tableView.register(HotelCell.self)
 	}
 

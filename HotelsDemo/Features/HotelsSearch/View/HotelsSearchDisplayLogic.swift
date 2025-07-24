@@ -13,4 +13,5 @@ public protocol HotelsSearchDisplayLogic: AnyObject {
 	func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel)
 
 	func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel)
+	func displayUpdateFilter(viewModel: HotelsSearchModels.UpdateFilter.ViewModel)
 }

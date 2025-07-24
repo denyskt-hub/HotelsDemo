@@ -20,20 +20,7 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	}
 
 	public func displaySearch(viewModel: HotelsSearchModels.Search.ViewModel) {
-		guard let viewController = viewController else { return }
-
-		let hotels = viewModel.hotels.map {
-			let view = HotelCellController(viewModel: $0)
-			let adapter = HotelPhotoLoaderAdapter(loader: imageDataLoader)
-			let presenter = ImageDataPresenter()
-
-			view.delegate = adapter
-			adapter.presenter = presenter
-			presenter.view = view
-			return view
-		}
-
-		viewController.display(hotels)
+		display(viewModel.hotels)
 	}
 
 	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
@@ -46,5 +33,26 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 
 	public func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel) {
 		viewController?.displayFilter(viewModel: viewModel)
+	}
+
+	public func displayUpdateFilter(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
+		display(viewModel.hotels)
+	}
+
+	private func display(_ hotels: [HotelsSearchModels.HotelViewModel]) {
+		guard let viewController = viewController else { return }
+
+		let hotels = hotels.map {
+			let view = HotelCellController(viewModel: $0)
+			let adapter = HotelPhotoLoaderAdapter(loader: imageDataLoader)
+			let presenter = ImageDataPresenter()
+
+			view.delegate = adapter
+			adapter.presenter = presenter
+			presenter.view = view
+			return view
+		}
+
+		viewController.display(hotels)
 	}
 }

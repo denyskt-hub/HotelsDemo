@@ -40,8 +40,8 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private func handleSearchResult(_ result: HotelsSearchService.Result) {
 		switch result {
 		case let .success(hotels):
-			repository.setHotels(hotels)
-			presenter?.presentSearch(response: .init(hotels: hotels))
+			setHotels(hotels)
+			presenter?.presentSearch(response: .init(hotels: applyFilter(filter)))
 		case let .failure(error):
 			presenter?.presentSearchError(error)
 		}
@@ -57,10 +57,14 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 
 	public func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
 		filter = request.filter
-		presenter?.presentSearch(
-			response: .init(
-				hotels: repository.filter(with: HotelsSpecificationFactory.make(from: request.filter))
-			)
-		)
+		presenter?.presentUpdateFilter(response: .init(hotels: applyFilter(filter)))
+	}
+
+	private func setHotels(_ hotels: [Hotel]) {
+		repository.setHotels(hotels)
+	}
+
+	private func applyFilter(_ filter: HotelsFilter) -> [Hotel] {
+		repository.filter(with: HotelsSpecificationFactory.make(from: filter))
 	}
 }
