@@ -17,11 +17,19 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 	}
 
 	public func displayLoad(viewModel: HotelsFilterPickerModels.Load.ViewModel) {
-		viewController?.display(makeFilterSections(from: viewModel.filters))
+		display(viewModel.filters)
+	}
+
+	public func displayResetFilter(viewModel: HotelsFilterPickerModels.Reset.ViewModel) {
+		display(viewModel.filters)
 	}
 
 	public func displaySelectedFilter(viewModel: HotelsFilterPickerModels.Select.ViewModel) {
 		viewController?.displaySelectedFilter(viewModel: viewModel)
+	}
+
+	private func display(_ filters: [HotelsFilterPickerModels.FilterViewModel]) {
+		viewController?.display(makeFilterSections(from: filters))
 	}
 
 	private func makeFilterSections(from filters: [HotelsFilterPickerModels.FilterViewModel]) -> [FilterSection] {

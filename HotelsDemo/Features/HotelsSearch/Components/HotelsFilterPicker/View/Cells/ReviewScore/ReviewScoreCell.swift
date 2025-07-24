@@ -26,7 +26,7 @@ public final class ReviewScoreCell: UITableViewCell {
 		let imageView = UIImageView()
 		let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
 		imageView.image = UIImage(systemName: "square", withConfiguration: config)
-		imageView.highlightedImage = UIImage(systemName: "checkmark.square", withConfiguration: config)
+		imageView.highlightedImage = UIImage(systemName: "checkmark.square.fill", withConfiguration: config)
 		return imageView
 	}()
 

@@ -13,4 +13,5 @@ public protocol HotelsFilterPickerBusinessLogic {
 	func updateStarRatings(request: HotelsFilterPickerModels.UpdateStarRatings.Request)
 	func updateReviewScore(request: HotelsFilterPickerModels.UpdateReviewScore.Request)
 	func selectFilter(request: HotelsFilterPickerModels.Select.Request)
+	func resetFilter(request: HotelsFilterPickerModels.Reset.Request)
 }

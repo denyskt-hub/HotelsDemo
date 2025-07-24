@@ -46,6 +46,12 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 			target: self,
 			action: #selector(close)
 		)
+
+		let resetButton = UIButton()
+		resetButton.configure(title: "Reset")
+		resetButton.addTarget(self, action: #selector(resetTapHandler), for: .touchUpInside)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(customView: resetButton)
+
 		navigationController?.navigationBar.prefersLargeTitles = false
 	}
 
@@ -78,6 +84,10 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 
 	@objc private func applyTapHandler() {
 		interactor?.selectFilter(request: HotelsFilterPickerModels.Select.Request())
+	}
+
+	@objc private func resetTapHandler() {
+		interactor?.resetFilter(request: HotelsFilterPickerModels.Reset.Request())
 	}
 
 	@objc private func close() {

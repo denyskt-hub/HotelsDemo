@@ -12,20 +12,29 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 
 	public func presentLoad(response: HotelsFilterPickerModels.Load.Response) {
 		let viewModel = HotelsFilterPickerModels.Load.ViewModel(
-			filters: [
-				makePriceRangeFilterViewModel(selectedPriceRange: response.filter.priceRange),
-				makeStarRatingFilterViewModel(selectedRatings: response.filter.starRatings),
-				makeReviewScoreFilterViewModel(selectedReviewScores: response.filter.reviewScores)
-			]
+			filters: makeFilterViewModels(response.filter)
 		)
 		viewController?.displayLoad(viewModel: viewModel)
 	}
 
-	public func presentSelectedFilter(response: HotelsFilterPickerModels.Select.Response) {
-		let viewModel = HotelsFilterPickerModels.Select.ViewModel(
-			filter: response.filter
+	public func presentResetFilter(response: HotelsFilterPickerModels.Reset.Response) {
+		let viewModel = HotelsFilterPickerModels.Reset.ViewModel(
+			filters: makeFilterViewModels(response.filter)
 		)
+		viewController?.displayResetFilter(viewModel: viewModel)
+	}
+
+	public func presentSelectedFilter(response: HotelsFilterPickerModels.Select.Response) {
+		let viewModel = HotelsFilterPickerModels.Select.ViewModel(filter: response.filter)
 		viewController?.displaySelectedFilter(viewModel: viewModel)
+	}
+
+	private func makeFilterViewModels(_ filter: HotelsFilter) -> [HotelsFilterPickerModels.FilterViewModel] {
+		[
+			makePriceRangeFilterViewModel(selectedPriceRange: filter.priceRange),
+			makeStarRatingFilterViewModel(selectedRatings: filter.starRatings),
+			makeReviewScoreFilterViewModel(selectedReviewScores: filter.reviewScores)
+		]
 	}
 
 	private func makePriceRangeFilterViewModel(
