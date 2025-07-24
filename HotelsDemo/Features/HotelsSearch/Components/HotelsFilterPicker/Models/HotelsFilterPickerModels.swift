@@ -75,7 +75,7 @@ public enum HotelsFilterPickerModels {
 	public enum FilterViewModel: Equatable {
 		case priceRange(option: PriceRangeFilterOptionViewModel)
 		case starRating(options: [FilterOptionViewModel<Int>])
-		case reviewScore(options: [FilterOptionViewModel<Decimal>])
+		case reviewScore(options: [FilterOptionViewModel<ReviewScore>])
 	}
 
 	public struct PriceRangeFilterOptionViewModel: Equatable {

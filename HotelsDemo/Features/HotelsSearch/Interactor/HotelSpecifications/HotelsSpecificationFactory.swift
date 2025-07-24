@@ -20,7 +20,7 @@ public enum HotelsSpecificationFactory {
 		}
 
 		if let minReviewScore = filter.minReviewScore {
-			spec = spec.and(AnySpecification(HotelReviewScoreSpecification(minReviewScore: minReviewScore)))
+			spec = spec.and(AnySpecification(HotelReviewScoreSpecification(minReviewScore: minReviewScore.rawValue)))
 		}
 
 		return spec

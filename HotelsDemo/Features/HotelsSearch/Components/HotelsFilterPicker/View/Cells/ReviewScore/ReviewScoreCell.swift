@@ -1,17 +1,17 @@
 //
-//  StarRatingCell.swift
+//  ReviewScoreCell.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 23/7/25.
+//  Created by Denys Kotenko on 24/7/25.
 //
 
 import UIKit
 
-public final class StarRatingCell: UITableViewCell {
+public final class ReviewScoreCell: UITableViewCell {
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			checkmarkImageView,
-			starRatingContainer,
+			titleLabel,
 			UIView()
 		])
 		stack.axis = .horizontal
@@ -27,14 +27,9 @@ public final class StarRatingCell: UITableViewCell {
 		return imageView
 	}()
 
-	private let starRatingContainer: UIView = {
-		let view = UIView()
-		return view
-	}()
-
-	private let starRatingView: StarRatingView = {
-		let view = StarRatingView()
-		return view
+	public let titleLabel: UILabel = {
+		let label = UILabel()
+		return label
 	}()
 
 	public var onSelect: ((Int) -> Void)?
@@ -57,7 +52,6 @@ public final class StarRatingCell: UITableViewCell {
 	}
 
 	private func setupHierarchy() {
-		starRatingContainer.addSubview(starRatingView)
 		contentView.addSubview(stack)
 	}
 
@@ -68,32 +62,22 @@ public final class StarRatingCell: UITableViewCell {
 	}
 
 	private func activateConstraints() {
-		activateConstraintsStarRatingView()
 		activateConstraintsStack()
 	}
 
-	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<Int>) {
+	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
-		starRatingView.rating = viewModel.value
+		titleLabel.text = viewModel.title
 	}
 
 	@objc private func handleTap() {
 		checkmarkImageView.isHighlighted.toggle()
-		onSelect?(starRatingView.rating)
 	}
 }
 
 // MARK: - Layout
 
-extension StarRatingCell {
-	private func activateConstraintsStarRatingView() {
-		starRatingView.translatesAutoresizingMaskIntoConstraints = false
-		let leading = starRatingView.leadingAnchor.constraint(equalTo: starRatingContainer.leadingAnchor)
-		let trailing = starRatingView.trailingAnchor.constraint(equalTo: starRatingContainer.trailingAnchor)
-		let centerY = starRatingView.centerYAnchor.constraint(equalTo: starRatingContainer.centerYAnchor)
-		NSLayoutConstraint.activate([leading, trailing, centerY])
-	}
-
+extension ReviewScoreCell {
 	private func activateConstraintsStack() {
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		let leading = stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10)

@@ -55,6 +55,7 @@ public final class HotelsFilterPickerViewController: NiblessViewController {
 
 		tableView.register(PriceRangeCell.self)
 		tableView.register(StarRatingCell.self)
+		tableView.register(ReviewScoreCell.self)
 	}
 
 	private func setupApplyButton() {

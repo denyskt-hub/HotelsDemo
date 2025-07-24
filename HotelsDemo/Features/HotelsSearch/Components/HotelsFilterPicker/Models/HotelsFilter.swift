@@ -10,12 +10,12 @@ import Foundation
 public struct HotelsFilter: Equatable {
 	public var priceRange: ClosedRange<Decimal>?
 	public var starRatings: Set<Int>
-	public let minReviewScore: Decimal?
+	public let minReviewScore: ReviewScore?
 
 	public init(
 		priceRange: ClosedRange<Decimal>? = nil,
 		starRatings: Set<Int> = [],
-		minReviewScore: Decimal? = nil
+		minReviewScore: ReviewScore? = nil
 	) {
 		self.priceRange = priceRange
 		self.starRatings = starRatings

@@ -56,18 +56,42 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 	}
 
 	private func makeReviewScoreFilterViewModel(
-		selectedReviewScore: Decimal?
+		selectedReviewScore: ReviewScore?
 	) -> HotelsFilterPickerModels.FilterViewModel {
-		let options = Array(5...9)
-			.map { Decimal($0) }
-			.map { value in
+		let options = ReviewScore.allCases
+			.map { reviewScore in
 				HotelsFilterPickerModels.FilterOptionViewModel(
-					title: "\(value)",
-					value: value,
-					isSelected: value == selectedReviewScore
+					title: "\(reviewScore.title): \(reviewScore.rawValue)+",
+					value: reviewScore,
+					isSelected: reviewScore == selectedReviewScore
 				)
 			}
 
 		return .reviewScore(options: options)
+	}
+}
+
+public enum ReviewScore: Decimal, CaseIterable {
+	case fair = 5.0
+	case pleasant = 6.0
+	case good = 7.0
+	case veryGood = 8.0
+	case wonderful = 9.0
+}
+
+extension ReviewScore {
+	var title: String {
+		switch self {
+		case .fair:
+			return "Fair"
+		case .pleasant:
+			return "Pleasant"
+		case .good:
+			return "Good"
+		case .veryGood:
+			return "Very good"
+		case .wonderful:
+			return "Wonderful"
+		}
 	}
 }
