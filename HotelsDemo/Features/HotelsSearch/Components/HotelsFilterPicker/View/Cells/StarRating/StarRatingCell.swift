@@ -22,8 +22,9 @@ public final class StarRatingCell: UITableViewCell {
 
 	private let checkmarkImageView: UIImageView = {
 		let imageView = UIImageView()
-		imageView.image = UIImage(systemName: "square")
-		imageView.highlightedImage = UIImage(systemName: "checkmark.square")
+		let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
+		imageView.image = UIImage(systemName: "square", withConfiguration: config)
+		imageView.highlightedImage = UIImage(systemName: "checkmark.square", withConfiguration: config)
 		return imageView
 	}()
 

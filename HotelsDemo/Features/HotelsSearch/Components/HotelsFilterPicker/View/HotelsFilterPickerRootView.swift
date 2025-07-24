@@ -24,6 +24,7 @@ public class HotelsFilterPickerRootView: NiblessView {
 		let tableView = UITableView()
 		tableView.separatorStyle = .none
 		tableView.allowsSelection = false
+		tableView.showsVerticalScrollIndicator = false
 		return tableView
 	}()
 
