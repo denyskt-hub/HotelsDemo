@@ -63,7 +63,7 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 	}
 
 	private func makeStarRatingCellControllers(
-		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<Int>]
+		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<StarRating>]
 	) -> [CellController] {
 		let adapter = StarRatingSelectionAdapter(
 			starRatings: Set(viewModels.compactMap { $0.isSelected ? $0.value : nil })
@@ -98,7 +98,7 @@ extension HotelsFilterPickerDisplayLogicAdapter: PriceRangeCellControllerDelegat
 // MARK: - StarRatingSelectionDelegate
 
 extension HotelsFilterPickerDisplayLogicAdapter: StarRatingSelectionDelegate {
-	public func didSelectStarRatings(_ starRatings: Set<Int>) {
+	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
 		viewController?.interactor?.updateStarRatings(request: .init(starRatings: starRatings))
 	}
 }

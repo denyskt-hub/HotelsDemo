@@ -8,19 +8,19 @@
 import Foundation
 
 public protocol StarRatingSelectionDelegate: AnyObject {
-	func didSelectStarRatings(_ starRatings: Set<Int>)
+	func didSelectStarRatings(_ starRatings: Set<StarRating>)
 }
 
 public final class StarRatingSelectionAdapter: StarRatingCellControllerDelegate {
-	private var starRatings = Set<Int>()
+	private var starRatings = Set<StarRating>()
 
 	public var delegate: StarRatingSelectionDelegate?
 
-	public init(starRatings: Set<Int>) {
+	public init(starRatings: Set<StarRating>) {
 		self.starRatings = starRatings
 	}
 
-	public func starRatingSelection(_ starRating: Int) {
+	public func starRatingSelection(_ starRating: StarRating) {
 		if starRatings.contains(starRating) {
 			starRatings.remove(starRating)
 		} else {

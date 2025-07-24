@@ -42,9 +42,9 @@ public enum HotelsFilterPickerModels {
 
 	public enum UpdateStarRatings {
 		public struct Request: Equatable {
-			public let starRatings: Set<Int>
+			public let starRatings: Set<StarRating>
 
-			public init(starRatings: Set<Int>) {
+			public init(starRatings: Set<StarRating>) {
 				self.starRatings = starRatings
 			}
 		}
@@ -74,7 +74,7 @@ public enum HotelsFilterPickerModels {
 
 	public enum FilterViewModel: Equatable {
 		case priceRange(option: PriceRangeFilterOptionViewModel)
-		case starRating(options: [FilterOptionViewModel<Int>])
+		case starRating(options: [FilterOptionViewModel<StarRating>])
 		case reviewScore(options: [FilterOptionViewModel<ReviewScore>])
 	}
 

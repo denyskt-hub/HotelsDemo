@@ -42,13 +42,13 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 	}
 
 	private func makeStarRatingFilterViewModel(
-		selectedRatings: Set<Int>?
+		selectedRatings: Set<StarRating>
 	) -> HotelsFilterPickerModels.FilterViewModel {
-		let options = Array(1...5).map { value in
+		let options = StarRating.allCases.map { starRating in
 			HotelsFilterPickerModels.FilterOptionViewModel(
-				title: "\(value)",
-				value: value,
-				isSelected: selectedRatings?.contains(value) ?? false
+				title: starRating.title,
+				value: starRating,
+				isSelected: selectedRatings.contains(starRating)
 			)
 		}
 
@@ -58,16 +58,40 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 	private func makeReviewScoreFilterViewModel(
 		selectedReviewScore: ReviewScore?
 	) -> HotelsFilterPickerModels.FilterViewModel {
-		let options = ReviewScore.allCases
-			.map { reviewScore in
-				HotelsFilterPickerModels.FilterOptionViewModel(
-					title: "\(reviewScore.title): \(reviewScore.rawValue)+",
-					value: reviewScore,
-					isSelected: reviewScore == selectedReviewScore
-				)
-			}
+		let options = ReviewScore.allCases.map { reviewScore in
+			HotelsFilterPickerModels.FilterOptionViewModel(
+				title: "\(reviewScore.title): \(reviewScore.rawValue)+",
+				value: reviewScore,
+				isSelected: reviewScore == selectedReviewScore
+			)
+		}
 
 		return .reviewScore(options: options)
+	}
+}
+
+public enum StarRating: Int, CaseIterable {
+	case one = 1
+	case two = 2
+	case three = 3
+	case four = 4
+	case five = 5
+}
+
+extension StarRating {
+	var title: String {
+		switch self {
+		case .one:
+			return "1 star"
+		case .two:
+			return "2 stars"
+		case .three:
+			return "3 stars"
+		case .four:
+			return "4 stars"
+		case .five:
+			return "5 stars"
+		}
 	}
 }
 

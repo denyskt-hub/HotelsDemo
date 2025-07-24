@@ -8,9 +8,9 @@
 import Foundation
 
 public struct HotelStarRatingSpecification: HotelSpecification {
-	private let allowedRatings: Set<Int>
+	private let allowedRatings: [Int]
 
-	public init(allowedRatings: Set<Int>) {
+	public init(allowedRatings: [Int]) {
 		self.allowedRatings = allowedRatings
 	}
 

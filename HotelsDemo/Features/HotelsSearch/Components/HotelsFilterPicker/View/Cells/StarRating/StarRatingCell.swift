@@ -72,9 +72,9 @@ public final class StarRatingCell: UITableViewCell {
 		activateConstraintsStack()
 	}
 
-	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<Int>) {
+	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<StarRating>) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
-		starRatingView.rating = viewModel.value
+		starRatingView.rating = viewModel.value.rawValue
 	}
 
 	@objc private func handleTap() {
