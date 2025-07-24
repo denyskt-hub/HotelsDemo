@@ -22,6 +22,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 		self.dispatcher = dispatcher
 	}
 
+	@discardableResult
 	public func search(
 		criteria: HotelsSearchCriteria,
 		completion: @escaping (HotelsSearchService.Result) -> Void

@@ -55,6 +55,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let presenter = SearchPresentationLogicSpy()
 		let sut = HotelsSearchInteractor(
 			criteria: criteria,
+			repository: DefaultHotelsRepository(),
 			worker: service
 		)
 		sut.presenter = presenter
@@ -70,9 +71,10 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 	private(set) var messages = [Message]()
 	private var completions = [(HotelsSearchService.Result) -> Void]()
 
-	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
+	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) -> HTTPClientTask {
 		messages.append(.search(criteria))
 		completions.append(completion)
+		return TaskStub()
 	}
 
 	func completeWithResult(_ result: HotelsSearchService.Result, at index: Int = 0) {
@@ -85,6 +87,8 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 		case presentSearch(HotelsSearchModels.Search.Response)
 		case presentSearchLoading(Bool)
 		case presentSearchError(NSError)
+		case presentFilter(HotelsSearchModels.Filter.Response)
+		case presentUpdateFilter(HotelsSearchModels.UpdateFilter.Response)
 	}
 
 	private(set) var messages = [Message]()
@@ -99,5 +103,13 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 
 	func presentSearchError(_ error: Error) {
 		messages.append(.presentSearchError(error as NSError))
+	}
+
+	func presentFilter(response: HotelsSearchModels.Filter.Response) {
+		messages.append(.presentFilter(response))
+	}
+
+	func presentUpdateFilter(response: HotelsSearchModels.UpdateFilter.Response) {
+		messages.append(.presentUpdateFilter(response))
 	}
 }

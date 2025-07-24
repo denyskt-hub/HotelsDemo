@@ -66,7 +66,7 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<StarRating>]
 	) -> [CellController] {
 		let adapter = StarRatingSelectionAdapter(
-			starRatings: Set(viewModels.compactMap { $0.isSelected ? $0.value : nil })
+			selectedStarRatings: Set(viewModels.compactMap { $0.isSelected ? $0.value : nil })
 		)
 		adapter.delegate = self
 
@@ -80,8 +80,14 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 	private func makeReviewScoreCellControllers(
 		_ viewModels: [HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>]
 	) -> [CellController] {
+		let adapter = ReviewScoreSelectionAdapter(
+			selectedReivewScores: Set(viewModels.compactMap { $0.isSelected ? $0.value : nil })
+		)
+		adapter.delegate = self
+
 		return viewModels.map {
 			let view = ReviewScoreCellController(viewModel: $0)
+			view.delegate = adapter
 			return CellController(view)
 		}
 	}
@@ -100,6 +106,14 @@ extension HotelsFilterPickerDisplayLogicAdapter: PriceRangeCellControllerDelegat
 extension HotelsFilterPickerDisplayLogicAdapter: StarRatingSelectionDelegate {
 	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
 		viewController?.interactor?.updateStarRatings(request: .init(starRatings: starRatings))
+	}
+}
+
+// MARK: - ReviewScoreCellControllerDelegate
+
+extension HotelsFilterPickerDisplayLogicAdapter: ReviewScoreSelectionDelegate {
+	public func didSelectReviewScores(_ reviewScores: Set<ReviewScore>) {
+		viewController?.interactor?.updateReviewScore(request: .init(reviewScores: reviewScores))
 	}
 }
 

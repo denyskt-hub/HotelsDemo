@@ -8,6 +8,8 @@
 import UIKit
 
 public final class ReviewScoreCell: UITableViewCell {
+	private var score: Decimal = 0.0
+
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			checkmarkImageView,
@@ -32,7 +34,7 @@ public final class ReviewScoreCell: UITableViewCell {
 		return label
 	}()
 
-	public var onSelect: ((Int) -> Void)?
+	public var onSelect: ((Decimal) -> Void)?
 
 	public override func prepareForReuse() {
 		super.prepareForReuse()
@@ -68,10 +70,12 @@ public final class ReviewScoreCell: UITableViewCell {
 	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		titleLabel.text = viewModel.title
+		score = viewModel.value.rawValue
 	}
 
 	@objc private func handleTap() {
 		checkmarkImageView.isHighlighted.toggle()
+		onSelect?(score)
 	}
 }
 

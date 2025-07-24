@@ -8,19 +8,19 @@
 import Foundation
 import HotelsDemo
 
+struct TaskStub: HTTPClientTask {
+	public func cancel() {}
+}
+
 final class HTTPClientSpy: HTTPClient {
 	private(set) var requests = [URLRequest]()
 
 	private var completions = [(HTTPClient.Result) -> Void]()
 
-	public struct Task: HTTPClientTask {
-		public func cancel() {}
-	}
-
 	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
 		requests.append(request)
 		completions.append(completion)
-		return Task()
+		return TaskStub()
 	}
 
 	func completeWithResult(_ result: HTTPClient.Result, at index: Int = 0) {

@@ -50,6 +50,16 @@ public enum HotelsFilterPickerModels {
 		}
 	}
 
+	public enum UpdateReviewScore {
+		public struct Request: Equatable {
+			public let reviewScores: Set<ReviewScore>
+
+			public init(reviewScores: Set<ReviewScore>) {
+				self.reviewScores = reviewScores
+			}
+		}
+	}
+
 	public enum Select {
 		public struct Request: Equatable {
 			public init() {}

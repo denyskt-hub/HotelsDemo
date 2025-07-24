@@ -12,20 +12,20 @@ public protocol StarRatingSelectionDelegate: AnyObject {
 }
 
 public final class StarRatingSelectionAdapter: StarRatingCellControllerDelegate {
-	private var starRatings = Set<StarRating>()
+	private var selectedStarRatings = Set<StarRating>()
 
 	public var delegate: StarRatingSelectionDelegate?
 
-	public init(starRatings: Set<StarRating>) {
-		self.starRatings = starRatings
+	public init(selectedStarRatings: Set<StarRating>) {
+		self.selectedStarRatings = selectedStarRatings
 	}
 
 	public func starRatingSelection(_ starRating: StarRating) {
-		if starRatings.contains(starRating) {
-			starRatings.remove(starRating)
+		if selectedStarRatings.contains(starRating) {
+			selectedStarRatings.remove(starRating)
 		} else {
-			starRatings.insert(starRating)
+			selectedStarRatings.insert(starRating)
 		}
-		delegate?.didSelectStarRatings(starRatings)
+		delegate?.didSelectStarRatings(selectedStarRatings)
 	}
 }

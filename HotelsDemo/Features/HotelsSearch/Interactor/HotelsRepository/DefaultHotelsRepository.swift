@@ -8,7 +8,11 @@
 import Foundation
 
 public final class DefaultHotelsRepository: HotelsRepository {
-	private var hotels: [Hotel] = []
+	private var hotels: [Hotel]
+
+	public init(hotels: [Hotel] = []) {
+		self.hotels = hotels
+	}
 
 	public func allHotels() -> [Hotel] {
 		hotels

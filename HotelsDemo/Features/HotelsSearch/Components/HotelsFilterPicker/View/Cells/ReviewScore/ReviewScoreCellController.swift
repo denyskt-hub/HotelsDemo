@@ -7,7 +7,9 @@
 
 import UIKit
 
-public protocol ReviewScoreCellControllerDelegate: AnyObject {}
+public protocol ReviewScoreCellControllerDelegate: AnyObject {
+	func reviewScoreSelection(_ reviewScore: ReviewScore)
+}
 
 public final class ReviewScoreCellController: NSObject {
 	private let viewModel: HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>
@@ -30,6 +32,12 @@ extension ReviewScoreCellController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: ReviewScoreCell = tableView.dequeueReusableCell()
 		cell.configure(with: viewModel)
+		cell.onSelect = {
+			guard let reviewScore = ReviewScore(rawValue: $0) else {
+				return
+			}
+			self.delegate?.reviewScoreSelection(reviewScore)
+		}
 		self.cell = cell
 		return cell
 	}

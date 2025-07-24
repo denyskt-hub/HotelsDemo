@@ -15,7 +15,7 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 			filters: [
 				makePriceRangeFilterViewModel(selectedPriceRange: response.filter.priceRange),
 				makeStarRatingFilterViewModel(selectedRatings: response.filter.starRatings),
-				makeReviewScoreFilterViewModel(selectedReviewScore: response.filter.minReviewScore)
+				makeReviewScoreFilterViewModel(selectedReviewScores: response.filter.reviewScores)
 			]
 		)
 		viewController?.displayLoad(viewModel: viewModel)
@@ -56,13 +56,13 @@ public final class HotelsFilterPickerPresenter: HotelsFilterPickerPresentationLo
 	}
 
 	private func makeReviewScoreFilterViewModel(
-		selectedReviewScore: ReviewScore?
+		selectedReviewScores: Set<ReviewScore>
 	) -> HotelsFilterPickerModels.FilterViewModel {
 		let options = ReviewScore.allCases.map { reviewScore in
 			HotelsFilterPickerModels.FilterOptionViewModel(
 				title: "\(reviewScore.title): \(reviewScore.rawValue)+",
 				value: reviewScore,
-				isSelected: reviewScore == selectedReviewScore
+				isSelected: selectedReviewScores.contains(reviewScore)
 			)
 		}
 

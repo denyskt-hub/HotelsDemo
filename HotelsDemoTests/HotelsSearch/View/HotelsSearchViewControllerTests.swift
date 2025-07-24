@@ -100,12 +100,27 @@ final class HotelsSearchViewControllerTests: XCTestCase {
 final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	enum Message: Equatable {
 		case search(HotelsSearchModels.Search.Request)
+		case cancelSearch
+		case filter(HotelsSearchModels.Filter.Request)
+		case updateFilter(HotelsSearchModels.UpdateFilter.Request)
 	}
 
 	private(set) var messages = [Message]()
 
 	func search(request: HotelsSearchModels.Search.Request) {
 		messages.append(.search(request))
+	}
+
+	func cancelSearch() {
+		messages.append(.cancelSearch)
+	}
+
+	func filter(request: HotelsSearchModels.Filter.Request) {
+		messages.append(.filter(request))
+	}
+
+	func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
+		messages.append(.updateFilter(request))
 	}
 }
 
