@@ -32,11 +32,11 @@ extension ReviewScoreCellController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: ReviewScoreCell = tableView.dequeueReusableCell()
 		cell.configure(with: viewModel)
-		cell.onSelect = {
-			guard let reviewScore = ReviewScore(rawValue: $0) else {
+		cell.onSelect = { [weak self] rawValue in
+			guard let reviewScore = ReviewScore(rawValue: rawValue) else {
 				return
 			}
-			self.delegate?.reviewScoreSelection(reviewScore)
+			self?.delegate?.reviewScoreSelection(reviewScore)
 		}
 		self.cell = cell
 		return cell
