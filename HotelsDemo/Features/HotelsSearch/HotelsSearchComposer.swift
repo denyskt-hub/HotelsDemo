@@ -12,9 +12,14 @@ public protocol HotelsSearchFactory {
 }
 
 public final class HotelsSearchComposer: HotelsSearchFactory {
+	private let client: HTTPClient
 	private let imageDataCache: ImageDataCache
 
-	public init(imageDataCache: ImageDataCache) {
+	public init(
+		client: HTTPClient,
+		imageDataCache: ImageDataCache
+	) {
+		self.client = client
 		self.imageDataCache = imageDataCache
 	}
 
@@ -44,7 +49,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 				factory: DefaultHotelsRequestFactory(
 					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
 				),
-				client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
+				client: client,
 				dispatcher: MainQueueDispatcher()
 			)
 		)
