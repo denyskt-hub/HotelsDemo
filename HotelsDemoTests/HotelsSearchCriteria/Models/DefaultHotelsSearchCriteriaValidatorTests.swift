@@ -23,6 +23,24 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 		XCTAssertEqual(result, validCriteria)
 	}
 
+	func test_validate_doesNotFixesValidDateCombinations() {
+		let currentDate = "26.06.2025".date()
+		let calendar = Calendar.gregorian()
+		let validCriterias = [
+			make(in: "27.06.2025", out: "28.06.2025"),
+			make(in: "27.06.2025", out: "29.06.2025"),
+			make(in: "27.06.2025", out: "30.06.2025")
+		]
+
+		let sut = makeSUT(calendar: calendar, currentDate: { currentDate })
+
+		for valid in validCriterias {
+			let result = sut.validate(valid)
+
+			XCTAssertEqual(result, valid)
+		}
+	}
+
 	func test_validate_fixesInvalidDateCombinations() {
 		let currentDate = "26.06.2025".date()
 		let calendar = Calendar.gregorian()
