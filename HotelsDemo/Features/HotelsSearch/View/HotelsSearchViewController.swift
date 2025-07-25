@@ -122,10 +122,10 @@ extension HotelsSearchViewController: UITableViewDelegate {
 	}
 }
 
-// MARK: - HotelsFilterPickerDelegate
+// MARK: - HotelFiltersPickerDelegate
 
-extension HotelsSearchViewController: HotelsFilterPickerDelegate {
-	public func didSelectFilter(_ filter: HotelsFilter) {
+extension HotelsSearchViewController: HotelFiltersPickerDelegate {
+	public func didSelectFilters(_ filter: HotelsFilter) {
 		interactor?.updateFilter(request: .init(filter: filter))
 	}
 }

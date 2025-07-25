@@ -14,15 +14,15 @@ public protocol HotelsSearchRoutingLogic {
 public final class HotelsSearchRouter: HotelsSearchRoutingLogic {
 	public weak var viewController: HotelsSearchViewController?
 
-	private let hotelsFilterPickerFactory: HotelsFilterPickerFactory
+	private let hotelFiltersPickerFactory: HotelFiltersPickerFactory
 
-	public init(hotelsFilterPickerFactory: HotelsFilterPickerFactory) {
-		self.hotelsFilterPickerFactory = hotelsFilterPickerFactory
+	public init(hotelFiltersPickerFactory: HotelFiltersPickerFactory) {
+		self.hotelFiltersPickerFactory = hotelFiltersPickerFactory
 	}
 
 	public func routeToHotelsFilterPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
-		let filterVC = hotelsFilterPickerFactory
-			.makeFilter(filter: viewModel.filter, delegate: viewController)
+		let filterVC = hotelFiltersPickerFactory
+			.makeHotelFiltersPicker(filter: viewModel.filter, delegate: viewController)
 			.embeddedInNavigationController()
 		filterVC.modalPresentationStyle = .fullScreen
 		viewController?.present(filterVC, animated: true)

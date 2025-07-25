@@ -35,7 +35,13 @@ public final class ReviewScoreCell: UITableViewCell {
 		return label
 	}()
 
-	public var onSelect: ((Decimal) -> Void)?
+	public var onSelect: ((Decimal) -> Void)? {
+		didSet {
+			if onSelect != nil {
+				setupGesture()
+			}
+		}
+	}
 
 	public override func prepareForReuse() {
 		super.prepareForReuse()
@@ -49,9 +55,13 @@ public final class ReviewScoreCell: UITableViewCell {
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+		setupAppearance()
 		setupHierarchy()
-		setupGesture()
 		activateConstraints()
+	}
+
+	private func setupAppearance() {
+		selectedBackgroundView = UIView()
 	}
 
 	private func setupHierarchy() {
@@ -68,6 +78,12 @@ public final class ReviewScoreCell: UITableViewCell {
 		activateConstraintsStack()
 	}
 
+	public func configure(with viewModel: ReviewScoreModels.OptionViewModel) {
+		checkmarkImageView.isHighlighted = viewModel.isSelected
+		titleLabel.text = viewModel.title
+		score = viewModel.value.rawValue
+	}
+
 	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		titleLabel.text = viewModel.title
@@ -75,8 +91,10 @@ public final class ReviewScoreCell: UITableViewCell {
 	}
 
 	@objc private func handleTap() {
-		checkmarkImageView.isHighlighted.toggle()
-		onSelect?(score)
+		if let onSelect = onSelect {
+			checkmarkImageView.isHighlighted.toggle()
+			onSelect(score)
+		}
 	}
 }
 

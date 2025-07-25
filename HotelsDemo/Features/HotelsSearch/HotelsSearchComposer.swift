@@ -53,7 +53,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 			priceFormatter: PriceFormatter()
 		)
 		let router = HotelsSearchRouter(
-			hotelsFilterPickerFactory: HotelsFilterPickerComposer()
+			hotelFiltersPickerFactory: HotelFiltersPickerComposer()
 		)
 
 		viewController.interactor = interactor
