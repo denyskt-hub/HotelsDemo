@@ -22,7 +22,12 @@ public final class ReviewScoreInteractor: ReviewScoreBusinessLogic {
 
 	public func reset(request: ReviewScoreModels.Reset.Request) {
 		selectedReviewScore = nil
-		presenter?.present(response: .init(options: makeOptions(selectedReviewScore)))
+		presenter?.presentReset(response: .init(options: makeOptions(selectedReviewScore)))
+	}
+
+	public func select(request: ReviewScoreModels.Select.Request) {
+		selectedReviewScore = selectedReviewScore != request.reviewScore ? request.reviewScore : nil
+		presenter?.presentSelect(response: .init(reviewScore: selectedReviewScore))
 	}
 
 	private func makeOptions(_ selectedReviewScore: ReviewScore?) -> [ReviewScoreModels.Option] {

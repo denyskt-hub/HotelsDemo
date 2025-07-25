@@ -10,6 +10,23 @@ import UIKit
 public class ReviewScoreRootView: NiblessView {
 	private var hierarchyNotReady = true
 
+	private lazy var stack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [
+			titleLabel,
+			tableView
+		])
+		stack.axis = .vertical
+		stack.spacing = 10
+		return stack
+	}()
+
+	public let titleLabel: UILabel = {
+		let label = UILabel()
+		label.font = .systemFont(ofSize: 17, weight: .semibold)
+		label.text = "Review Score"
+		return label
+	}()
+
 	public let tableView: UITableView = {
 		let tableView = IntrinsicTableView()
 		tableView.separatorStyle = .none
@@ -37,23 +54,23 @@ public class ReviewScoreRootView: NiblessView {
 	}
 
 	private func setupHierarchy() {
-		addSubview(tableView)
+		addSubview(stack)
 	}
 
 	private func activateConstraints() {
-		activateConstraintsTableView()
+		activateConstraintsStack()
 	}
 }
 
 // MARK: - Layout
 
 extension ReviewScoreRootView {
-	private func activateConstraintsTableView() {
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		let leading = tableView.leadingAnchor.constraint(equalTo: leadingAnchor)
-		let trailing = tableView.trailingAnchor.constraint(equalTo: trailingAnchor)
-		let top = tableView.topAnchor.constraint(equalTo: topAnchor)
-		let bottom = tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+	private func activateConstraintsStack() {
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		let leading = stack.leadingAnchor.constraint(equalTo: leadingAnchor)
+		let trailing = stack.trailingAnchor.constraint(equalTo: trailingAnchor)
+		let top = stack.topAnchor.constraint(equalTo: topAnchor, constant: 10)
+		let bottom = stack.bottomAnchor.constraint(equalTo: bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
 	}
 }

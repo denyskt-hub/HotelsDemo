@@ -16,9 +16,13 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		filter: HotelsFilter,
 		delegate: HotelFiltersPickerDelegate?
 	) -> UIViewController {
+		let delegateProxy = WeakRefVirtualProxy<HotelFiltersPickerViewController>()
 		let viewController = HotelFiltersPickerViewController(
 			filterViewControllers: [
-				makeReviewScoreViewController(selectedReviewScore: filter.reviewScores.first)
+				makeReviewScoreViewController(
+					selectedReviewScore: filter.reviewScores.first,
+					delegate: delegateProxy
+				)
 			]
 		)
 		let interactor = HotelFiltersPickerInteractor(
@@ -31,10 +35,14 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		interactor.presenter = presenter
 		presenter.viewController = viewController
 
+		delegateProxy.object = viewController
 		return viewController
 	}
 
-	private func makeReviewScoreViewController(selectedReviewScore: ReviewScore?) -> ResetableFilterViewController {
+	private func makeReviewScoreViewController(
+		selectedReviewScore: ReviewScore?,
+		delegate: ReviewScoreDelegate?
+	) -> ResetableFilterViewController {
 		let viewController = ReviewScoreViewController()
 		let interactor = ReviewScoreInteractor(
 			selectedReviewScore: selectedReviewScore
@@ -42,6 +50,7 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		let presenter = ReviewScorePresenter()
 
 		viewController.interactor = interactor
+		viewController.delegate = delegate
 		interactor.presenter = presenter
 		presenter.viewController = viewController
 

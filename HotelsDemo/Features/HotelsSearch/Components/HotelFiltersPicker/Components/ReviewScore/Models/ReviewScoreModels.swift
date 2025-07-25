@@ -52,6 +52,32 @@ public enum ReviewScoreModels {
 		}
 	}
 
+	public enum Select {
+		public struct Request: Equatable {
+			public let reviewScore: ReviewScore?
+
+			public init(reviewScore: ReviewScore?) {
+				self.reviewScore = reviewScore
+			}
+		}
+
+		public struct Response: Equatable {
+			public let reviewScore: ReviewScore?
+
+			public init(reviewScore: ReviewScore?) {
+				self.reviewScore = reviewScore
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let reviewScore: ReviewScore?
+
+			public init(reviewScore: ReviewScore?) {
+				self.reviewScore = reviewScore
+			}
+		}
+	}
+
 	public struct Option: Equatable {
 		public let value: ReviewScore
 		public let isSelected: Bool

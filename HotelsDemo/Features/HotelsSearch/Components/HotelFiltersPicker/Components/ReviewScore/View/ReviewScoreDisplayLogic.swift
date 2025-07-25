@@ -10,4 +10,5 @@ import Foundation
 public protocol ReviewScoreDisplayLogic: AnyObject {
 	func display(viewModel: ReviewScoreModels.Load.ViewModel)
 	func displayReset(viewModel: ReviewScoreModels.Reset.ViewModel)
+	func displaySelect(viewModel: ReviewScoreModels.Select.ViewModel)
 }

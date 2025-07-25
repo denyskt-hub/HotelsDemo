@@ -24,6 +24,11 @@ public final class ReviewScorePresenter: ReviewScorePresentationLogic {
 		viewController?.displayReset(viewModel: viewModel)
 	}
 
+	public func presentSelect(response: ReviewScoreModels.Select.Response) {
+		let viewModel = ReviewScoreModels.Select.ViewModel(reviewScore: response.reviewScore)
+		viewController?.displaySelect(viewModel: viewModel)
+	}
+
 	private func makeOptionViewModels(_ options: [ReviewScoreModels.Option]) -> [ReviewScoreModels.OptionViewModel] {
 		options.map {
 			.init(title: $0.value.title, value: $0.value, isSelected: $0.isSelected)

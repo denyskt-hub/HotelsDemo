@@ -74,16 +74,25 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 		dismiss(animated: true)
 	}
 
+	public func displayResetFilter(viewModel: HotelFiltersPickerModels.Reset.ViewModel) {
+		filterViewControllers.forEach { $0.reset() }
+	}
+
 	@objc private func applyTapHandler() {
 		interactor?.selectFilter(request: HotelFiltersPickerModels.Select.Request())
 	}
 
 	@objc private func resetTapHandler() {
 		interactor?.resetFilter(request: HotelFiltersPickerModels.Reset.Request())
-		filterViewControllers.forEach { $0.reset() }
 	}
 
 	@objc private func close() {
 		dismiss(animated: true)
+	}
+}
+
+extension HotelFiltersPickerViewController: ReviewScoreDelegate {
+	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
+		interactor?.updateReviewScore(request: .init(reviewScores: reviewScore != nil ? Set([reviewScore!]) : []))
 	}
 }

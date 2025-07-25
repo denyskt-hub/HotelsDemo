@@ -34,6 +34,6 @@ public final class HotelFiltersPickerInteractor: HotelFiltersPickerBusinessLogic
 
 	public func resetFilter(request: HotelFiltersPickerModels.Reset.Request) {
 		currentFilter = HotelsFilter()
-		presenter?.presentResetFilter(response: .init(filter: currentFilter))
+		presenter?.presentResetFilter(response: .init())
 	}
 }

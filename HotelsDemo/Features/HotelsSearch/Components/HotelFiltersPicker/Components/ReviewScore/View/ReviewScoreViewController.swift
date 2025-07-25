@@ -7,11 +7,16 @@
 
 import UIKit
 
+public protocol ReviewScoreDelegate: AnyObject {
+	func didSelectReviewScore(_ reviewScore: ReviewScore?)
+}
+
 public final class ReviewScoreViewController: NiblessViewController, ReviewScoreDisplayLogic {
 	private let rootView = ReviewScoreRootView()
 	private var options = [ReviewScoreModels.OptionViewModel]()
 
 	public var interactor: ReviewScoreBusinessLogic?
+	public var delegate: ReviewScoreDelegate?
 
 	public var tableView: UITableView { rootView.tableView }
 
@@ -40,6 +45,10 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 
 	public func displayReset(viewModel: ReviewScoreModels.Reset.ViewModel) {
 		display(viewModel.options)
+	}
+
+	public func displaySelect(viewModel: ReviewScoreModels.Select.ViewModel) {
+		delegate?.didSelectReviewScore(viewModel.reviewScore)
 	}
 
 	private func display(_ options: [ReviewScoreModels.OptionViewModel]) {
@@ -73,6 +82,16 @@ extension ReviewScoreViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ReviewScoreViewController: UITableViewDelegate {
+	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if tableView.indexPathForSelectedRow == indexPath {
+			tableView.deselectRow(at: indexPath, animated: true)
+			return nil
+		}
+		return indexPath
+	}
+
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let option = options[indexPath.row]
+		interactor?.select(request: .init(reviewScore: option.value))
 	}
 }

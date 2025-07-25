@@ -9,4 +9,5 @@ import Foundation
 
 public protocol HotelFiltersPickerDisplayLogic: AnyObject {
 	func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel)
+	func displayResetFilter(viewModel: HotelFiltersPickerModels.Reset.ViewModel)
 }

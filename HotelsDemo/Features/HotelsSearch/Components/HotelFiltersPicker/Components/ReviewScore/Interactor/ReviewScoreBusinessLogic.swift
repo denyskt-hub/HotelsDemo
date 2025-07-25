@@ -10,4 +10,5 @@ import Foundation
 public protocol ReviewScoreBusinessLogic {
 	func load(request: ReviewScoreModels.Load.Request)
 	func reset(request: ReviewScoreModels.Reset.Request)
+	func select(request: ReviewScoreModels.Select.Request)
 }
