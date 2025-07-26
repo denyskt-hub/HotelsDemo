@@ -8,5 +8,6 @@
 import UIKit
 
 public protocol HotelFiltersScene: UIViewController,
+	PriceRangeDelegate,
 	StarRatingDelegate,
 	ReviewScoreDelegate {}

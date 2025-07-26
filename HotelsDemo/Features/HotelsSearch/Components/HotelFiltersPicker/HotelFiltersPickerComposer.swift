@@ -19,6 +19,11 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		let delegateProxy = WeakRefVirtualProxy<HotelFiltersPickerViewController>()
 		let viewController = HotelFiltersPickerViewController(
 			filterViewControllers: [
+				makePriceRangeViewController(
+					selectedPriceRange: filter.priceRange,
+					currencyCode: "USD",
+					delegate: delegateProxy
+				),
 				makeStarRatingViewController(
 					selectedStarRating: filter.starRatings,
 					delegate: delegateProxy
@@ -40,6 +45,26 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		presenter.viewController = viewController
 
 		delegateProxy.object = viewController
+		return viewController
+	}
+
+	private func makePriceRangeViewController(
+		selectedPriceRange: ClosedRange<Decimal>?,
+		currencyCode: String,
+		delegate: PriceRangeDelegate?
+	) -> ResetableFilterViewController {
+		let viewController = PriceRangeViewController()
+		let interactor = PriceRangeInteractor(
+			selectedPriceRange: selectedPriceRange,
+			currencyCode: currencyCode
+		)
+		let presenter = PriceRangePresenter()
+
+		viewController.interactor = interactor
+		viewController.delegate = delegate
+		interactor.presenter = presenter
+		presenter.viewController = viewController
+
 		return viewController
 	}
 

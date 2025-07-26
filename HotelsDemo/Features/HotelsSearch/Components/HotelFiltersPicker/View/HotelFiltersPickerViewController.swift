@@ -94,6 +94,10 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 // MARK: - HotelFiltersScene
 
 extension HotelFiltersPickerViewController: HotelFiltersScene {
+	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
+		interactor?.updatePriceRange(request: .init(priceRange: priceRange))
+	}
+
 	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
 		interactor?.updateStarRatings(request: .init(starRatings: starRatings))
 	}

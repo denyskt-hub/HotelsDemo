@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class PriceRangePresenter {
+public final class PriceRangeCellPresenter {
 	public weak var view: PriceRangeView?
 
 	public func presentSelectedRange(_ range: ClosedRange<Decimal>, currencyCode: String) {

@@ -56,11 +56,11 @@ public final class HotelsFilterPickerDisplayLogicAdapter: HotelsFilterPickerDisp
 		_ viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel
 	) -> CellController {
 		let view = PriceRangeCellController(viewModel: viewModel)
-		let interactor = PriceRangeInteractor(
+		let interactor = PriceRangeCellInteractor(
 			currencyCode: viewModel.currencyCode,
 			selectedRange: viewModel.selectedRange
 		)
-		let presenter = PriceRangePresenter()
+		let presenter = PriceRangeCellPresenter()
 
 		view.interactor = interactor
 		view.delegate = self

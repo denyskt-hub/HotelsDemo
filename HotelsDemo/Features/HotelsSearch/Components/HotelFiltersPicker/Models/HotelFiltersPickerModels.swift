@@ -68,9 +68,9 @@ public enum HotelFiltersPickerModels {
 
 	public enum UpdatePriceRange {
 		public struct Request: Equatable {
-			public let priceRange: ClosedRange<Decimal>
+			public let priceRange: ClosedRange<Decimal>?
 
-			public init(priceRange: ClosedRange<Decimal>) {
+			public init(priceRange: ClosedRange<Decimal>?) {
 				self.priceRange = priceRange
 			}
 		}

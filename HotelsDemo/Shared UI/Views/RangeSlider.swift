@@ -54,7 +54,6 @@ public class RangeSlider: UIControl {
 		didSet {
 			upperThumbImageView.image = thumbImage
 			lowerThumbImageView.image = thumbImage
-			updateLayerFrames()
 		}
 	}
 
@@ -62,7 +61,6 @@ public class RangeSlider: UIControl {
 		didSet {
 			upperThumbImageView.highlightedImage = highlightedThumbImage
 			lowerThumbImageView.highlightedImage = highlightedThumbImage
-			updateLayerFrames()
 		}
 	}
 
@@ -91,7 +89,7 @@ public class RangeSlider: UIControl {
 
 	public override func layoutSubviews() {
 		super.layoutSubviews()
-		updateLayerFrames()
+		self.updateLayerFrames()
 	}
 
 	private func updateLayerFrames() {
@@ -114,8 +112,9 @@ public class RangeSlider: UIControl {
 	}
 
 	internal func positionForValue(_ value: CGFloat) -> CGFloat {
-		let maxNormalizedValue = maximumValue - minimumValue
-		let normalizedValue = (value - minimumValue) / maxNormalizedValue
+		let range = maximumValue - minimumValue
+		guard range != 0, bounds.width != 0 else { return 0 }
+		let normalizedValue = (value - minimumValue) / range
 		return (bounds.width - thumbImage.size.width) * normalizedValue
 	}
 
@@ -150,13 +149,15 @@ extension RangeSlider {
 		if lowerThumbImageView.isHighlighted {
 			lowerValue += deltaValue
 			lowerValue = boundValue(
-				lowerValue, toLowerValue: minimumValue,
+				lowerValue,
+				toLowerValue: minimumValue,
 				upperValue: upperValue
 			)
 		} else if upperThumbImageView.isHighlighted {
 			upperValue += deltaValue
 			upperValue = boundValue(
-				upperValue, toLowerValue: lowerValue,
+				upperValue,
+				toLowerValue: lowerValue,
 				upperValue: maximumValue
 			)
 		}

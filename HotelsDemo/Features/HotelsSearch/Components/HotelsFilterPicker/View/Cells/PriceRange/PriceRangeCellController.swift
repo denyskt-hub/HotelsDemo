@@ -15,7 +15,7 @@ public final class PriceRangeCellController: NSObject {
 	private let viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel
 	private let cell = PriceRangeCell()
 
-	public var interactor: PriceRangeInteractor?
+	public var interactor: PriceRangeCellInteractor?
 	public var delegate: PriceRangeCellControllerDelegate?
 
 	public init(viewModel: HotelsFilterPickerModels.PriceRangeFilterOptionViewModel) {

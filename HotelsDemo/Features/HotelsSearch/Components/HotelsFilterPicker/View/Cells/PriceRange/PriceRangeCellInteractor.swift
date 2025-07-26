@@ -7,22 +7,22 @@
 
 import Foundation
 
-public final class PriceRangeInteractor {
+public final class PriceRangeCellInteractor {
 	private let currencyCode: String
-	private var selectedRange: ClosedRange<Decimal>?
+	private var selectedPriceRange: ClosedRange<Decimal>?
 
-	public var presenter: PriceRangePresenter?
+	public var presenter: PriceRangeCellPresenter?
 
 	public init(
 		currencyCode: String,
 		selectedRange: ClosedRange<Decimal>? = nil
 	) {
 		self.currencyCode = currencyCode
-		self.selectedRange = selectedRange
+		self.selectedPriceRange = selectedRange
 	}
 
 	public func selectedRangeValueChanged(_ range: ClosedRange<Decimal>) {
-		selectedRange = range
+		selectedPriceRange = range
 		presenter?.presentSelectedRange(range, currencyCode: currencyCode)
 	}
 }

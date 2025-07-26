@@ -1,0 +1,47 @@
+//
+//  PriceRangePresenter.swift
+//  HotelsDemo
+//
+//  Created by Denys Kotenko on 26/7/25.
+//
+
+import Foundation
+
+public final class PriceRangePresenter: PriceRangePresentationLogic {
+	public weak var viewController: PriceRangeDisplayLogic?
+
+	public func present(response: PriceRangeModels.Load.Response) {
+		let priceRange = response.priceRange ?? response.availablePriceRange
+		let viewModel = PriceRangeModels.Load.ViewModel(
+			availablePriceRange: response.availablePriceRange,
+			priceRange: priceRange,
+			lowerValue: priceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
+			upperValue: priceRange.upperBound.formatted(.currency(code: response.currencyCode))
+		)
+		viewController?.display(viewModel: viewModel)
+	}
+
+	public func presentReset(response: PriceRangeModels.Reset.Response) {
+		let viewModel = PriceRangeModels.Reset.ViewModel(
+			availablePriceRange: response.availablePriceRange,
+			lowerValue: response.availablePriceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
+			upperValue: response.availablePriceRange.upperBound.formatted(.currency(code: response.currencyCode))
+		)
+		viewController?.displayReset(viewModel: viewModel)
+	}
+
+	public func presentSelect(response: PriceRangeModels.Select.Response) {
+		let viewModel = PriceRangeModels.Select.ViewModel(
+			priceRange: response.priceRange
+		)
+		viewController?.displaySelect(viewModel: viewModel)
+	}
+
+	public func presentSelecting(response: PriceRangeModels.Selecting.Response) {
+		let viewModel = PriceRangeModels.Selecting.ViewModel(
+			lowerValue: response.priceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
+			upperValue: response.priceRange.upperBound.formatted(.currency(code: response.currencyCode))
+		)
+		viewController?.displaySelecting(viewModel: viewModel)
+	}
+}

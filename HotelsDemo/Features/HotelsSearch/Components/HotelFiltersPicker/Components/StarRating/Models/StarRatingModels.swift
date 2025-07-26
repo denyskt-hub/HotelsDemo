@@ -15,7 +15,7 @@ public enum StarRatingModels {
 
 		public struct Response: Equatable {
 			public let options: [Option]
-			
+
 			public init(options: [Option]) {
 				self.options = options
 			}
