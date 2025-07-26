@@ -105,3 +105,17 @@ extension PriceRangeViewController: ResetableFilterViewController {
 		interactor?.reset(request: .init())
 	}
 }
+
+// MARK: - Helpers
+
+extension Decimal {
+	var cgFloatValue: CGFloat {
+		NSDecimalNumber(decimal: self).doubleValue.cgFloatValue
+	}
+}
+
+extension Double {
+	var cgFloatValue: CGFloat {
+		CGFloat(self)
+	}
+}

@@ -15,8 +15,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 		let viewModel = PriceRangeModels.Load.ViewModel(
 			availablePriceRange: response.availablePriceRange,
 			priceRange: priceRange,
-			lowerValue: priceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
-			upperValue: priceRange.upperBound.formatted(.currency(code: response.currencyCode))
+			lowerValue: priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
+			upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode)
 		)
 		viewController?.display(viewModel: viewModel)
 	}
@@ -24,8 +24,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 	public func presentReset(response: PriceRangeModels.Reset.Response) {
 		let viewModel = PriceRangeModels.Reset.ViewModel(
 			availablePriceRange: response.availablePriceRange,
-			lowerValue: response.availablePriceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
-			upperValue: response.availablePriceRange.upperBound.formatted(.currency(code: response.currencyCode))
+			lowerValue: response.availablePriceRange.lowerBound.formattedCurrency(code: response.currencyCode),
+			upperValue: response.availablePriceRange.upperBound.formattedCurrency(code: response.currencyCode)
 		)
 		viewController?.displayReset(viewModel: viewModel)
 	}
@@ -39,9 +39,17 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 
 	public func presentSelecting(response: PriceRangeModels.Selecting.Response) {
 		let viewModel = PriceRangeModels.Selecting.ViewModel(
-			lowerValue: response.priceRange.lowerBound.formatted(.currency(code: response.currencyCode)),
-			upperValue: response.priceRange.upperBound.formatted(.currency(code: response.currencyCode))
+			lowerValue: response.priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
+			upperValue: response.priceRange.upperBound.formattedCurrency(code: response.currencyCode)
 		)
 		viewController?.displaySelecting(viewModel: viewModel)
+	}
+}
+
+// MARK: - Helpers
+
+extension Decimal {
+	func formattedCurrency(code: String) -> String {
+		formatted(.currency(code: code))
 	}
 }

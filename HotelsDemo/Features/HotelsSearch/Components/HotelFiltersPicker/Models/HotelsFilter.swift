@@ -2,7 +2,7 @@
 //  HotelsFilter.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 20/7/25.
+//  Created by Denys Kotenko on 26/7/25.
 //
 
 import Foundation

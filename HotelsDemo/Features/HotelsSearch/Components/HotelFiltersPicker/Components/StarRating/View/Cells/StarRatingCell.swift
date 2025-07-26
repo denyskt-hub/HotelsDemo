@@ -38,19 +38,6 @@ public final class StarRatingCell: UITableViewCell {
 		return view
 	}()
 
-	public var onSelect: ((Int) -> Void)? {
-		didSet {
-			if onSelect != nil {
-				setupGesture()
-			}
-		}
-	}
-
-	public override func prepareForReuse() {
-		super.prepareForReuse()
-		onSelect = nil
-	}
-
 	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
@@ -72,12 +59,6 @@ public final class StarRatingCell: UITableViewCell {
 		contentView.addSubview(stack)
 	}
 
-	private func setupGesture() {
-		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-		contentView.addGestureRecognizer(tapGesture)
-		contentView.isUserInteractionEnabled = true
-	}
-
 	private func activateConstraints() {
 		activateConstraintsStarRatingView()
 		activateConstraintsStack()
@@ -86,18 +67,6 @@ public final class StarRatingCell: UITableViewCell {
 	public func configure(with viewModel: StarRatingModels.OptionViewModel) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		starRatingView.rating = viewModel.value.rawValue
-	}
-
-	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<StarRating>) {
-		checkmarkImageView.isHighlighted = viewModel.isSelected
-		starRatingView.rating = viewModel.value.rawValue
-	}
-
-	@objc private func handleTap() {
-		if let onSelect = onSelect {
-			checkmarkImageView.isHighlighted.toggle()
-			onSelect(starRatingView.rating)
-		}
 	}
 }
 

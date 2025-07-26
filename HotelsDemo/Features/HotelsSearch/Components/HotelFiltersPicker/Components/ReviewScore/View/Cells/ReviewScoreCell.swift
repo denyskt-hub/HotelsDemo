@@ -35,19 +35,6 @@ public final class ReviewScoreCell: UITableViewCell {
 		return label
 	}()
 
-	public var onSelect: ((Decimal) -> Void)? {
-		didSet {
-			if onSelect != nil {
-				setupGesture()
-			}
-		}
-	}
-
-	public override func prepareForReuse() {
-		super.prepareForReuse()
-		onSelect = nil
-	}
-
 	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
@@ -68,12 +55,6 @@ public final class ReviewScoreCell: UITableViewCell {
 		contentView.addSubview(stack)
 	}
 
-	private func setupGesture() {
-		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-		contentView.addGestureRecognizer(tapGesture)
-		contentView.isUserInteractionEnabled = true
-	}
-
 	private func activateConstraints() {
 		activateConstraintsStack()
 	}
@@ -82,19 +63,6 @@ public final class ReviewScoreCell: UITableViewCell {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		titleLabel.text = viewModel.title
 		score = viewModel.value.rawValue
-	}
-
-	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<ReviewScore>) {
-		checkmarkImageView.isHighlighted = viewModel.isSelected
-		titleLabel.text = viewModel.title
-		score = viewModel.value.rawValue
-	}
-
-	@objc private func handleTap() {
-		if let onSelect = onSelect {
-			checkmarkImageView.isHighlighted.toggle()
-			onSelect(score)
-		}
 	}
 }
 
