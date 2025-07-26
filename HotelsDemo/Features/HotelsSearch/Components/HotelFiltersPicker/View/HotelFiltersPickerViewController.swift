@@ -91,7 +91,13 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	}
 }
 
-extension HotelFiltersPickerViewController: ReviewScoreDelegate {
+// MARK: - HotelFiltersScene
+
+extension HotelFiltersPickerViewController: HotelFiltersScene {
+	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
+		interactor?.updateStarRatings(request: .init(starRatings: starRatings))
+	}
+
 	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
 		interactor?.updateReviewScore(request: .init(reviewScores: reviewScore != nil ? Set([reviewScore!]) : []))
 	}

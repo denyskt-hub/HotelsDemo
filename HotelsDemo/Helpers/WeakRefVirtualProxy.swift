@@ -21,6 +21,12 @@ extension WeakRefVirtualProxy: HotelsSearchCriteriaDelegate where T: HotelsSearc
 	}
 }
 
+extension WeakRefVirtualProxy: StarRatingDelegate where T: StarRatingDelegate {
+	func didSelectStarRatings(_ starRatings: Set<StarRating>) {
+		object?.didSelectStarRatings(starRatings)
+	}
+}
+
 extension WeakRefVirtualProxy: ReviewScoreDelegate where T: ReviewScoreDelegate {
 	func didSelectReviewScore(_ reviewScore: ReviewScore?) {
 		object?.didSelectReviewScore(reviewScore)

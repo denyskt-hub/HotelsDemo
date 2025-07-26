@@ -25,7 +25,10 @@ public final class ReviewScorePresenter: ReviewScorePresentationLogic {
 	}
 
 	public func presentSelect(response: ReviewScoreModels.Select.Response) {
-		let viewModel = ReviewScoreModels.Select.ViewModel(reviewScore: response.reviewScore)
+		let viewModel = ReviewScoreModels.Select.ViewModel(
+			reviewScore: response.reviewScore,
+			options: makeOptionViewModels(response.options)
+		)
 		viewController?.displaySelect(viewModel: viewModel)
 	}
 

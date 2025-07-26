@@ -1,0 +1,47 @@
+//
+//  StarRatingInteractor.swift
+//  HotelsDemo
+//
+//  Created by Denys Kotenko on 26/7/25.
+//
+
+import Foundation
+
+public final class StarRatingInteractor: StarRatingBusinessLogic {
+	private var selectedStarRatings = Set<StarRating>()
+
+	public var presenter: StarRatingPresentationLogic?
+
+	public init(selectedStarRatings: Set<StarRating>) {
+		self.selectedStarRatings = selectedStarRatings
+	}
+
+	public func load(request: StarRatingModels.Load.Request) {
+		presenter?.present(response: .init(options: makeOptions(selectedStarRatings)))
+	}
+
+	public func reset(request: StarRatingModels.Reset.Request) {
+		selectedStarRatings = []
+		presenter?.presentReset(response: .init(options: makeOptions(selectedStarRatings)))
+	}
+
+	public func select(request: StarRatingModels.Select.Request) {
+		if selectedStarRatings.contains(request.starRating) {
+			selectedStarRatings.remove(request.starRating)
+		} else {
+			selectedStarRatings.insert(request.starRating)
+		}
+		presenter?.presentSelect(
+			response: .init(
+				starRatings: selectedStarRatings,
+				options: makeOptions(selectedStarRatings)
+			)
+		)
+	}
+
+	private func makeOptions(_ selectedStarRatings: Set<StarRating>) -> [StarRatingModels.Option] {
+		StarRating.allCases.map {
+			StarRatingModels.Option(value: $0, isSelected: selectedStarRatings.contains($0))
+		}
+	}
+}

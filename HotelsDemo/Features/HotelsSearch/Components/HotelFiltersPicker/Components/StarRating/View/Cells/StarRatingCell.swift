@@ -38,7 +38,13 @@ public final class StarRatingCell: UITableViewCell {
 		return view
 	}()
 
-	public var onSelect: ((Int) -> Void)?
+	public var onSelect: ((Int) -> Void)? {
+		didSet {
+			if onSelect != nil {
+				setupGesture()
+			}
+		}
+	}
 
 	public override func prepareForReuse() {
 		super.prepareForReuse()
@@ -52,9 +58,13 @@ public final class StarRatingCell: UITableViewCell {
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+		setupAppearance()
 		setupHierarchy()
-		setupGesture()
 		activateConstraints()
+	}
+
+	private func setupAppearance() {
+		selectedBackgroundView = UIView()
 	}
 
 	private func setupHierarchy() {
@@ -73,14 +83,21 @@ public final class StarRatingCell: UITableViewCell {
 		activateConstraintsStack()
 	}
 
+	public func configure(with viewModel: StarRatingModels.OptionViewModel) {
+		checkmarkImageView.isHighlighted = viewModel.isSelected
+		starRatingView.rating = viewModel.value.rawValue
+	}
+
 	public func configure(with viewModel: HotelsFilterPickerModels.FilterOptionViewModel<StarRating>) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		starRatingView.rating = viewModel.value.rawValue
 	}
 
 	@objc private func handleTap() {
-		checkmarkImageView.isHighlighted.toggle()
-		onSelect?(starRatingView.rating)
+		if let onSelect = onSelect {
+			checkmarkImageView.isHighlighted.toggle()
+			onSelect(starRatingView.rating)
+		}
 	}
 }
 

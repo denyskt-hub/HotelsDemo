@@ -49,6 +49,7 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 
 	public func displaySelect(viewModel: ReviewScoreModels.Select.ViewModel) {
 		delegate?.didSelectReviewScore(viewModel.reviewScore)
+		display(viewModel.options)
 	}
 
 	private func display(_ options: [ReviewScoreModels.OptionViewModel]) {
