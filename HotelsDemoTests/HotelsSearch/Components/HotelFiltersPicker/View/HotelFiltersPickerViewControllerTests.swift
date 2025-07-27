@@ -37,6 +37,15 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		XCTAssertEqual(interactor.messages, [.selectFilters(.init())])
 	}
 
+	func test_resetButtonTap_resetsFilters() {
+		let (sut, _, interactor, _) = makeSUT()
+		sut.simulateAppearance()
+		
+		sut.simulateResetButtonTap()
+
+		XCTAssertEqual(interactor.messages, [.resetFilters(.init())])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -63,6 +72,10 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 extension HotelFiltersPickerViewController {
 	func simulateApplyButtonTap() {
 		applyButton.simulateTap()
+	}
+
+	func simulateResetButtonTap() {
+		resetButton.simulateTap()
 	}
 }
 

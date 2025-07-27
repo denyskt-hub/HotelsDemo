@@ -20,6 +20,11 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 	public var contentStack: UIStackView { rootView.contentStack }
 	public var applyButton: UIButton { rootView.applyButton }
+	public let resetButton: UIButton = {
+		let button = UIButton()
+		button.configure(title: "Reset")
+		return button
+	}()
 
 	public init(filterViewControllers: [ResetableFilterViewController]) {
 		self.filterViewControllers = filterViewControllers
@@ -36,6 +41,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 		setupTitle()
 		setupNavigationBar()
 		setupApplyButton()
+		setupResetButton()
 
 		addChildren(filterViewControllers, to: contentStack)
 	}
@@ -51,9 +57,6 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 			action: #selector(close)
 		)
 
-		let resetButton = UIButton()
-		resetButton.configure(title: "Reset")
-		resetButton.addTarget(self, action: #selector(resetTapHandler), for: .touchUpInside)
 		navigationItem.rightBarButtonItem = UIBarButtonItem(customView: resetButton)
 
 		navigationController?.navigationBar.prefersLargeTitles = false
@@ -61,6 +64,10 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 	private func setupApplyButton() {
 		applyButton.addTarget(self, action: #selector(applyTapHandler), for: .touchUpInside)
+	}
+
+	private func setupResetButton() {
+		resetButton.addTarget(self, action: #selector(resetTapHandler), for: .touchUpInside)
 	}
 
 	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel) {
