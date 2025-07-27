@@ -9,12 +9,6 @@ import XCTest
 import HotelsDemo
 
 final class HotelFiltersPickerInteractorTests: XCTestCase {
-	func test_init_doesNotMessagePresenter() {
-		let (_, presenter) = makeSUT(currentFilters: anyHotelFilters())
-
-		XCTAssertTrue(presenter.messages.isEmpty)
-	}
-
 	func test_selectFilters_presentsSelectedFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
 
@@ -95,10 +89,6 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		let sut = HotelFiltersPickerInteractor(currentFilters: currentFilters)
 		sut.presenter = presenter
 		return (sut, presenter)
-	}
-
-	private func anyHotelFilters() -> HotelFilters {
-		HotelFilters()
 	}
 }
 

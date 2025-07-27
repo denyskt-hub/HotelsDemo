@@ -10,6 +10,10 @@ import Foundation
 public final class HotelFiltersPickerPresenter: HotelFiltersPickerPresentationLogic {
 	public var viewController: HotelFiltersPickerDisplayLogic?
 
+	public init() {
+		// Required for initialization in tests
+	}
+
 	public func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
 		let viewModel = HotelFiltersPickerModels.Select.ViewModel(filters: response.filters)
 		viewController?.displaySelectedFilters(viewModel: viewModel)
