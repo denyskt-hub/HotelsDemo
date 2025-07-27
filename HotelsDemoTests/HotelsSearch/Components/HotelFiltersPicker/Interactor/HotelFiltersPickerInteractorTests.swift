@@ -14,7 +14,17 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 
 		XCTAssertTrue(presenter.messages.isEmpty)
 	}
-	
+
+	func test_selectFilters_presentsSelectedFilters() {
+		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
+		
+		sut.selectFilters(request: .init())
+		
+		XCTAssertEqual(presenter.messages, [
+			.presentSelectedFilters(.init(filters: anyHotelFilters()))
+		])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(currentFilters: HotelFilters) -> (
@@ -33,7 +43,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 }
 
 final class HotelFiltersPickerPresentationLogicSpy: HotelFiltersPickerPresentationLogic {
-	enum Message {
+	enum Message: Equatable {
 		case presentSelectedFilters(HotelFiltersPickerModels.Select.Response)
 		case presentResetFilters(HotelFiltersPickerModels.Reset.Response)
 	}
