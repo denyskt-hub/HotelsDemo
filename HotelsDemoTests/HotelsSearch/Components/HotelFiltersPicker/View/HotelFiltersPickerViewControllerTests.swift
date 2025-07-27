@@ -11,26 +11,55 @@ import HotelsDemo
 final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	func test_displaySelectedFilters_notifiesDelegateWithSelectedFilters() {
 		let filters = anyHotelFilters()
-		let (sut, _, delegate) = makeSUT()
-		
+		let (sut, _, _, delegate) = makeSUT()
+
 		sut.displaySelectedFilters(viewModel: .init(filters: filters))
 
 		XCTAssertEqual(delegate.messages, [.didSelectFilters(filters)])
+	}
+
+	func test_displayResetFilters_callsResetOnEachFilterViewController() {
+		let (sut, filterViewControllers, _, _) = makeSUT()
+
+		sut.displayResetFilters(viewModel: .init())
+
+		filterViewControllers.forEach { filterViewController in
+			XCTAssertEqual(filterViewController.messages, [.reset])
+		}
 	}
 
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
 		sut: HotelFiltersPickerViewController,
+		filterViewControllers: [ResetableFilterViewControllerSpy],
 		interactor: HotelFiltersPickerBusinessLogicSpy,
 		delegate: HotelFiltersPickerDelegateSpy
 	) {
+		let filterViewControllers = [
+			ResetableFilterViewControllerSpy(),
+			ResetableFilterViewControllerSpy()
+		]
 		let interactor = HotelFiltersPickerBusinessLogicSpy()
 		let delegate = HotelFiltersPickerDelegateSpy()
-		let sut = HotelFiltersPickerViewController(filterViewControllers: [])
+		let sut = HotelFiltersPickerViewController(
+			filterViewControllers: filterViewControllers
+		)
 		sut.interactor = interactor
 		sut.delegate = delegate
-		return (sut, interactor, delegate)
+		return (sut, filterViewControllers, interactor, delegate)
+	}
+}
+
+final class ResetableFilterViewControllerSpy: UIViewController, ResetableFilterViewController {
+	enum Message: Equatable {
+		case reset
+	}
+	
+	private(set) var messages = [Message]()
+
+	func reset() {
+		messages.append(.reset)
 	}
 }
 
