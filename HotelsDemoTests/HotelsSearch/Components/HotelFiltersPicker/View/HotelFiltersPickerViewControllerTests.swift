@@ -76,6 +76,19 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		XCTAssertEqual(interactor.messages.last, .updateStarRatings(.init(starRatings: [.one, .two])))
 	}
 
+	func test_didSelectReviewScore_updateReviewScore() {
+		let (sut, interactor, _) = makeSUT()
+
+		sut.didSelectReviewScore(nil)
+		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: nil)))
+
+		sut.didSelectReviewScore(.fair)
+		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: .fair)))
+
+		sut.didSelectReviewScore(.good)
+		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: .good)))
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(filterViewControllers: [ResetableFilterViewController] = []) -> (
