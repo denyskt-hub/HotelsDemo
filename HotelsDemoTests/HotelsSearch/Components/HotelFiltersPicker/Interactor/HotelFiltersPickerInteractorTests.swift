@@ -17,11 +17,38 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 
 	func test_selectFilters_presentsSelectedFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
-		
+
 		sut.selectFilters(request: .init())
-		
+
 		XCTAssertEqual(presenter.messages, [
 			.presentSelectedFilters(.init(filters: anyHotelFilters()))
+		])
+	}
+
+	func test_resetFilters_presentsResetFilters() {
+		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
+
+		sut.resetFilters(request: .init())
+
+		XCTAssertEqual(presenter.messages, [
+			.presentResetFilters(.init())
+		])
+	}
+
+	func test_resetFilters_resetsCurrentFilters() {
+		let currentFilters = HotelFilters(
+			priceRange: 0...100,
+			starRatings: Set([.five]),
+			reviewScores: Set([.wonderful])
+		)
+		let (sut, presenter) = makeSUT(currentFilters: currentFilters)
+
+		sut.resetFilters(request: .init())
+		sut.selectFilters(request: .init())
+
+		XCTAssertEqual(presenter.messages, [
+			.presentResetFilters(.init()),
+			.presentSelectedFilters(.init(filters: HotelFilters()))
 		])
 	}
 
