@@ -10,8 +10,8 @@ import Foundation
 public struct HotelReviewScoreSpecification: HotelSpecification {
 	private let minReviewScore: Decimal
 
-	public init(reviewScores: [Decimal]) {
-		self.minReviewScore = reviewScores.min() ?? 0
+	public init(reviewScore: Decimal) {
+		self.minReviewScore = reviewScore
 	}
 
 	public func isSatisfied(by item: Hotel) -> Bool {

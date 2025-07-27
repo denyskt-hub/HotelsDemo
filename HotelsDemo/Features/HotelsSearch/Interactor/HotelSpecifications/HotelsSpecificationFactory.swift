@@ -19,8 +19,8 @@ public enum HotelsSpecificationFactory {
 			spec = spec.and(AnySpecification(HotelStarRatingSpecification(allowedRatings: filter.starRatings.map(\.rawValue))))
 		}
 
-		if !filter.reviewScores.isEmpty {
-			spec = spec.and(AnySpecification(HotelReviewScoreSpecification(reviewScores: filter.reviewScores.map(\.rawValue))))
+		if let reviewScore = filter.reviewScore {
+			spec = spec.and(AnySpecification(HotelReviewScoreSpecification(reviewScore: reviewScore.rawValue)))
 		}
 
 		return spec

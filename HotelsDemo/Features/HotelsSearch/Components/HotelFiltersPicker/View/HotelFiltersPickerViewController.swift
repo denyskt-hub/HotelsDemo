@@ -104,6 +104,6 @@ extension HotelFiltersPickerViewController: HotelFiltersScene {
 	}
 
 	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
-		interactor?.updateReviewScore(request: .init(reviewScores: reviewScore != nil ? Set([reviewScore!]) : []))
+		interactor?.updateReviewScore(request: .init(reviewScore: reviewScore))
 	}
 }

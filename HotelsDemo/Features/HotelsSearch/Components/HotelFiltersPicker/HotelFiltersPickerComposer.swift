@@ -29,7 +29,7 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 					delegate: delegateProxy
 				),
 				makeReviewScoreViewController(
-					selectedReviewScore: filters.reviewScores.first,
+					selectedReviewScore: filters.reviewScore,
 					delegate: delegateProxy
 				)
 			]

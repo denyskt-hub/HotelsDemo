@@ -33,7 +33,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		let currentFilters = HotelFilters(
 			priceRange: 0...100,
 			starRatings: Set([.five]),
-			reviewScores: Set([.wonderful])
+			reviewScore: .wonderful
 		)
 		let (sut, presenter) = makeSUT(currentFilters: currentFilters)
 
@@ -71,11 +71,11 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 	func test_updateReviewScore_updatesCurrentFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: HotelFilters())
 
-		sut.updateReviewScore(request: .init(reviewScores: [.wonderful]))
+		sut.updateReviewScore(request: .init(reviewScore: .wonderful))
 		sut.selectFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
-			.presentSelectedFilters(.init(filters: HotelFilters(reviewScores: [.wonderful])))
+			.presentSelectedFilters(.init(filters: HotelFilters(reviewScore: .wonderful)))
 		])
 	}
 

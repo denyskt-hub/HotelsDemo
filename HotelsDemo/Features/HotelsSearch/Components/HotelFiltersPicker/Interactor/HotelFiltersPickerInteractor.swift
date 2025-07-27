@@ -25,7 +25,7 @@ public final class HotelFiltersPickerInteractor: HotelFiltersPickerBusinessLogic
 	}
 
 	public func updateReviewScore(request: HotelFiltersPickerModels.UpdateReviewScore.Request) {
-		currentFilters.reviewScores = request.reviewScores
+		currentFilters.reviewScore = request.reviewScore
 	}
 
 	public func selectFilters(request: HotelFiltersPickerModels.Select.Request) {

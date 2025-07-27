@@ -66,10 +66,10 @@ public enum HotelFiltersPickerModels {
 
 	public enum UpdateReviewScore {
 		public struct Request: Equatable {
-			public let reviewScores: Set<ReviewScore>
+			public let reviewScore: ReviewScore?
 
-			public init(reviewScores: Set<ReviewScore>) {
-				self.reviewScores = reviewScores
+			public init(reviewScore: ReviewScore?) {
+				self.reviewScore = reviewScore
 			}
 		}
 	}
