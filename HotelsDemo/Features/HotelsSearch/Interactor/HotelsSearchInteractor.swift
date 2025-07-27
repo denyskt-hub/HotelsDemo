@@ -10,7 +10,7 @@ import Foundation
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private let criteria: HotelsSearchCriteria
 	private let repository: HotelsRepository
-	private var filter = HotelsFilter()
+	private var filter = HotelFilters()
 
 	private let worker: HotelsSearchService
 	private var task: HTTPClientTask?
@@ -64,7 +64,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		repository.setHotels(hotels)
 	}
 
-	private func applyFilter(_ filter: HotelsFilter) -> [Hotel] {
+	private func applyFilter(_ filter: HotelFilters) -> [Hotel] {
 		repository.filter(with: HotelsSpecificationFactory.make(from: filter))
 	}
 }

@@ -8,6 +8,6 @@
 import Foundation
 
 public protocol HotelFiltersPickerPresentationLogic {
-	func presentSelectedFilter(response: HotelFiltersPickerModels.Select.Response)
-	func presentResetFilter(response: HotelFiltersPickerModels.Reset.Response)
+	func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response)
+	func presentResetFilters(response: HotelFiltersPickerModels.Reset.Response)
 }

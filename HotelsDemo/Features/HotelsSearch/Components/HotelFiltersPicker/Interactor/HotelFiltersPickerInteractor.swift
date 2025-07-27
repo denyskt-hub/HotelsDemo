@@ -8,32 +8,32 @@
 import Foundation
 
 public final class HotelFiltersPickerInteractor: HotelFiltersPickerBusinessLogic {
-	private var currentFilter: HotelsFilter
+	private var currentFilters: HotelFilters
 
 	public var presenter: HotelFiltersPickerPresentationLogic?
 
-	public init(currentFilter: HotelsFilter) {
-		self.currentFilter = currentFilter
+	public init(currentFilters: HotelFilters) {
+		self.currentFilters = currentFilters
 	}
 
 	public func updatePriceRange(request: HotelFiltersPickerModels.UpdatePriceRange.Request) {
-		currentFilter.priceRange = request.priceRange
+		currentFilters.priceRange = request.priceRange
 	}
 
 	public func updateStarRatings(request: HotelFiltersPickerModels.UpdateStarRatings.Request) {
-		currentFilter.starRatings = request.starRatings
+		currentFilters.starRatings = request.starRatings
 	}
 
 	public func updateReviewScore(request: HotelFiltersPickerModels.UpdateReviewScore.Request) {
-		currentFilter.reviewScores = request.reviewScores
+		currentFilters.reviewScores = request.reviewScores
 	}
 
-	public func selectFilter(request: HotelFiltersPickerModels.Select.Request) {
-		presenter?.presentSelectedFilter(response: .init(filter: currentFilter))
+	public func selectFilters(request: HotelFiltersPickerModels.Select.Request) {
+		presenter?.presentSelectedFilters(response: .init(filters: currentFilters))
 	}
 
-	public func resetFilter(request: HotelFiltersPickerModels.Reset.Request) {
-		currentFilter = HotelsFilter()
-		presenter?.presentResetFilter(response: .init())
+	public func resetFilters(request: HotelFiltersPickerModels.Reset.Request) {
+		currentFilters = HotelFilters()
+		presenter?.presentResetFilters(response: .init())
 	}
 }

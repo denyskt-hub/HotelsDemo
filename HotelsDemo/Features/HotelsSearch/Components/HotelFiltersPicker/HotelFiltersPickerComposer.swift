@@ -8,34 +8,34 @@
 import UIKit
 
 public protocol HotelFiltersPickerFactory {
-	func makeHotelFiltersPicker(filter: HotelsFilter, delegate: HotelFiltersPickerDelegate?) -> UIViewController
+	func makeHotelFiltersPicker(filters: HotelFilters, delegate: HotelFiltersPickerDelegate?) -> UIViewController
 }
 
 public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 	public func makeHotelFiltersPicker(
-		filter: HotelsFilter,
+		filters: HotelFilters,
 		delegate: HotelFiltersPickerDelegate?
 	) -> UIViewController {
 		let delegateProxy = WeakRefVirtualProxy<HotelFiltersPickerViewController>()
 		let viewController = HotelFiltersPickerViewController(
 			filterViewControllers: [
 				makePriceRangeViewController(
-					selectedPriceRange: filter.priceRange,
+					selectedPriceRange: filters.priceRange,
 					currencyCode: "USD",
 					delegate: delegateProxy
 				),
 				makeStarRatingViewController(
-					selectedStarRating: filter.starRatings,
+					selectedStarRating: filters.starRatings,
 					delegate: delegateProxy
 				),
 				makeReviewScoreViewController(
-					selectedReviewScore: filter.reviewScores.first,
+					selectedReviewScore: filters.reviewScores.first,
 					delegate: delegateProxy
 				)
 			]
 		)
 		let interactor = HotelFiltersPickerInteractor(
-			currentFilter: filter
+			currentFilters: filters
 		)
 		let presenter = HotelFiltersPickerPresenter()
 

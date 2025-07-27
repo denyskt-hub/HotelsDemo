@@ -10,13 +10,13 @@ import Foundation
 public final class HotelFiltersPickerPresenter: HotelFiltersPickerPresentationLogic {
 	public var viewController: HotelFiltersPickerDisplayLogic?
 
-	public func presentSelectedFilter(response: HotelFiltersPickerModels.Select.Response) {
-		let viewModel = HotelFiltersPickerModels.Select.ViewModel(filter: response.filter)
+	public func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
+		let viewModel = HotelFiltersPickerModels.Select.ViewModel(filters: response.filters)
 		viewController?.displaySelectedFilters(viewModel: viewModel)
 	}
 
-	public func presentResetFilter(response: HotelFiltersPickerModels.Reset.Response) {
+	public func presentResetFilters(response: HotelFiltersPickerModels.Reset.Response) {
 		let viewModel = HotelFiltersPickerModels.Reset.ViewModel()
-		viewController?.displayResetFilter(viewModel: viewModel)
+		viewController?.displayResetFilters(viewModel: viewModel)
 	}
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 public protocol HotelFiltersPickerDelegate: AnyObject {
-	func didSelectFilters(_ filter: HotelsFilter)
+	func didSelectFilters(_ filters: HotelFilters)
 }
 
 public protocol FilterViewController: UIViewController {}
@@ -70,20 +70,20 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	}
 
 	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel) {
-		delegate?.didSelectFilters(viewModel.filter)
+		delegate?.didSelectFilters(viewModel.filters)
 		dismiss(animated: true)
 	}
 
-	public func displayResetFilter(viewModel: HotelFiltersPickerModels.Reset.ViewModel) {
+	public func displayResetFilters(viewModel: HotelFiltersPickerModels.Reset.ViewModel) {
 		filterViewControllers.forEach { $0.reset() }
 	}
 
 	@objc private func applyTapHandler() {
-		interactor?.selectFilter(request: HotelFiltersPickerModels.Select.Request())
+		interactor?.selectFilters(request: HotelFiltersPickerModels.Select.Request())
 	}
 
 	@objc private func resetTapHandler() {
-		interactor?.resetFilter(request: HotelFiltersPickerModels.Reset.Request())
+		interactor?.resetFilters(request: HotelFiltersPickerModels.Reset.Request())
 	}
 
 	@objc private func close() {

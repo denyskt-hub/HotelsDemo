@@ -1,5 +1,5 @@
 //
-//  HotelsFilter.swift
+//  HotelFilters.swift
 //  HotelsDemo
 //
 //  Created by Denys Kotenko on 26/7/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct HotelsFilter: Equatable {
+public struct HotelFilters: Equatable {
 	public var priceRange: ClosedRange<Decimal>?
 	public var starRatings: Set<StarRating>
 	public var reviewScores: Set<ReviewScore>

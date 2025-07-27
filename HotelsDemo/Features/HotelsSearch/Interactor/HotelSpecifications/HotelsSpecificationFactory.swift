@@ -8,7 +8,7 @@
 import Foundation
 
 public enum HotelsSpecificationFactory {
-	public static func make(from filter: HotelsFilter) -> any HotelSpecification {
+	public static func make(from filter: HotelFilters) -> any HotelSpecification {
 		var spec = AnySpecification(AlwaysTrueHotelSpecification())
 
 		if let priceRange = filter.priceRange {

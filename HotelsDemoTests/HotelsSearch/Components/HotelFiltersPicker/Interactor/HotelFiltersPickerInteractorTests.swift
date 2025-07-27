@@ -17,34 +17,34 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 	
 	// MARK: - Helpers
 
-	private func makeSUT(currentFilters: HotelsFilter) -> (
+	private func makeSUT(currentFilters: HotelFilters) -> (
 		sut: HotelFiltersPickerInteractor,
 		presenter: HotelFiltersPickerPresentationLogicSpy
 	) {
 		let presenter = HotelFiltersPickerPresentationLogicSpy()
-		let sut = HotelFiltersPickerInteractor(currentFilter: currentFilters)
+		let sut = HotelFiltersPickerInteractor(currentFilters: currentFilters)
 		sut.presenter = presenter
 		return (sut, presenter)
 	}
 
-	private func anyHotelFilters() -> HotelsFilter {
-		HotelsFilter()
+	private func anyHotelFilters() -> HotelFilters {
+		HotelFilters()
 	}
 }
 
 final class HotelFiltersPickerPresentationLogicSpy: HotelFiltersPickerPresentationLogic {
 	enum Message {
-		case presentSelectedFilter(HotelFiltersPickerModels.Select.Response)
-		case presentResetFilter(HotelFiltersPickerModels.Reset.Response)
+		case presentSelectedFilters(HotelFiltersPickerModels.Select.Response)
+		case presentResetFilters(HotelFiltersPickerModels.Reset.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func presentSelectedFilter(response: HotelFiltersPickerModels.Select.Response) {
-		messages.append(.presentSelectedFilter(response))
+	func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
+		messages.append(.presentSelectedFilters(response))
 	}
 	
-	func presentResetFilter(response: HotelFiltersPickerModels.Reset.Response) {
-		messages.append(.presentResetFilter(response))
+	func presentResetFilters(response: HotelFiltersPickerModels.Reset.Response) {
+		messages.append(.presentResetFilters(response))
 	}
 }

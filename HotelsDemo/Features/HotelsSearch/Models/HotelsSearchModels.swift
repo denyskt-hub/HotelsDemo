@@ -36,17 +36,17 @@ public enum HotelsSearchModels {
 		}
 
 		public struct Response: Equatable {
-			public let filter: HotelsFilter
+			public let filter: HotelFilters
 
-			public init(filter: HotelsFilter) {
+			public init(filter: HotelFilters) {
 				self.filter = filter
 			}
 		}
 
 		public struct ViewModel: Equatable {
-			public let filter: HotelsFilter
+			public let filter: HotelFilters
 
-			public init(filter: HotelsFilter) {
+			public init(filter: HotelFilters) {
 				self.filter = filter
 			}
 		}
@@ -54,9 +54,9 @@ public enum HotelsSearchModels {
 
 	public enum UpdateFilter {
 		public struct Request: Equatable {
-			public let filter: HotelsFilter
+			public let filter: HotelFilters
 
-			public init(filter: HotelsFilter) {
+			public init(filter: HotelFilters) {
 				self.filter = filter
 			}
 		}

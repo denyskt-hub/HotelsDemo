@@ -22,7 +22,7 @@ public final class HotelsSearchRouter: HotelsSearchRoutingLogic {
 
 	public func routeToHotelsFilterPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
 		let filterVC = hotelFiltersPickerFactory
-			.makeHotelFiltersPicker(filter: viewModel.filter, delegate: viewController)
+			.makeHotelFiltersPicker(filters: viewModel.filter, delegate: viewController)
 			.embeddedInNavigationController()
 		filterVC.modalPresentationStyle = .fullScreen
 		viewController?.present(filterVC, animated: true)
