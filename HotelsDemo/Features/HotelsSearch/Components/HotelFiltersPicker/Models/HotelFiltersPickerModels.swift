@@ -8,28 +8,6 @@
 import Foundation
 
 public enum HotelFiltersPickerModels {
-	public enum Load {
-		public struct Request: Equatable {
-			public init() {}
-		}
-
-		public struct Response: Equatable {
-			public let filters: HotelFilters
-
-			public init(filters: HotelFilters) {
-				self.filters = filters
-			}
-		}
-
-		public struct ViewModel: Equatable {
-			public let filters: [FilterViewModel]
-
-			public init(filters: [FilterViewModel]) {
-				self.filters = filters
-			}
-		}
-	}
-
 	public enum Select {
 		public struct Request: Equatable {
 			public init() {}
@@ -93,43 +71,6 @@ public enum HotelFiltersPickerModels {
 			public init(reviewScores: Set<ReviewScore>) {
 				self.reviewScores = reviewScores
 			}
-		}
-	}
-
-	public enum FilterViewModel: Equatable {
-		case priceRange(option: PriceRangeFilterOptionViewModel)
-		case starRating(options: [FilterOptionViewModel<StarRating>])
-		case reviewScore(options: [FilterOptionViewModel<ReviewScore>])
-	}
-
-	public struct PriceRangeFilterOptionViewModel: Equatable {
-		public let minPrice: Decimal
-		public let maxPrice: Decimal
-		public let currencyCode: String
-		public let selectedRange: ClosedRange<Decimal>?
-
-		public init(
-			minPrice: Decimal,
-			maxPrice: Decimal,
-			currencyCode: String,
-			selectedRange: ClosedRange<Decimal>?
-		) {
-			self.minPrice = minPrice
-			self.maxPrice = maxPrice
-			self.currencyCode = currencyCode
-			self.selectedRange = selectedRange
-		}
-	}
-
-	public struct FilterOptionViewModel<Value: Hashable>: Equatable {
-		public let title: String
-		public let value: Value
-		public let isSelected: Bool
-
-		public init(title: String, value: Value, isSelected: Bool) {
-			self.title = title
-			self.value = value
-			self.isSelected = isSelected
 		}
 	}
 }
