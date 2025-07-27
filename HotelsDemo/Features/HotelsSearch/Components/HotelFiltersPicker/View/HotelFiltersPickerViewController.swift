@@ -11,12 +11,6 @@ public protocol HotelFiltersPickerDelegate: AnyObject {
 	func didSelectFilters(_ filters: HotelFilters)
 }
 
-public protocol FilterViewController: UIViewController {}
-
-public protocol ResetableFilterViewController: FilterViewController {
-	func reset()
-}
-
 public final class HotelFiltersPickerViewController: NiblessViewController, HotelFiltersPickerDisplayLogic {
 	private let rootView = HotelFiltersPickerRootView()
 	private let filterViewControllers: [ResetableFilterViewController]
