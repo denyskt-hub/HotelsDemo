@@ -63,6 +63,17 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		])
 	}
 
+	func test_updateStarRatings_updatesCurrentFilters() {
+		let (sut, presenter) = makeSUT(currentFilters: HotelFilters())
+
+		sut.updateStarRatings(request: .init(starRatings: [.five]))
+		sut.selectFilters(request: .init())
+
+		XCTAssertEqual(presenter.messages, [
+			.presentSelectedFilters(.init(filters: HotelFilters(starRatings: [.five])))
+		])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(currentFilters: HotelFilters) -> (
