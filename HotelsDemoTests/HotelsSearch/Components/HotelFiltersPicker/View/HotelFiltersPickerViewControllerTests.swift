@@ -28,6 +28,15 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		}
 	}
 
+	func test_applyButtonTap_selectsFilters() {
+		let (sut, _, interactor, _) = makeSUT()
+		sut.simulateAppearance()
+
+		sut.simulateApplyButtonTap()
+
+		XCTAssertEqual(interactor.messages, [.selectFilters(.init())])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -48,6 +57,12 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		sut.interactor = interactor
 		sut.delegate = delegate
 		return (sut, filterViewControllers, interactor, delegate)
+	}
+}
+
+extension HotelFiltersPickerViewController {
+	func simulateApplyButtonTap() {
+		applyButton.simulateTap()
 	}
 }
 
