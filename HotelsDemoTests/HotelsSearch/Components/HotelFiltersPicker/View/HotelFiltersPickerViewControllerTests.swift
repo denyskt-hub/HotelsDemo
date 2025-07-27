@@ -11,7 +11,7 @@ import HotelsDemo
 final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	func test_displaySelectedFilters_notifiesDelegateWithSelectedFilters() {
 		let filters = anyHotelFilters()
-		let (sut, _, _, delegate) = makeSUT()
+		let (sut, _, delegate) = makeSUT()
 
 		sut.displaySelectedFilters(viewModel: .init(filters: filters))
 
@@ -19,7 +19,11 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	}
 
 	func test_displayResetFilters_callsResetOnEachFilterViewController() {
-		let (sut, filterViewControllers, _, _) = makeSUT()
+		let filterViewControllers = [
+			ResetableFilterViewControllerSpy(),
+			ResetableFilterViewControllerSpy()
+		]
+		let (sut, _, _) = makeSUT(filterViewControllers: filterViewControllers)
 
 		sut.displayResetFilters(viewModel: .init())
 
@@ -29,7 +33,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	}
 
 	func test_applyButtonTap_selectsFilters() {
-		let (sut, _, interactor, _) = makeSUT()
+		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearance()
 
 		sut.simulateApplyButtonTap()
@@ -38,7 +42,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	}
 
 	func test_resetButtonTap_resetsFilters() {
-		let (sut, _, interactor, _) = makeSUT()
+		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearance()
 		
 		sut.simulateResetButtonTap()
@@ -48,16 +52,11 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (
+	private func makeSUT(filterViewControllers: [ResetableFilterViewController] = []) -> (
 		sut: HotelFiltersPickerViewController,
-		filterViewControllers: [ResetableFilterViewControllerSpy],
 		interactor: HotelFiltersPickerBusinessLogicSpy,
 		delegate: HotelFiltersPickerDelegateSpy
 	) {
-		let filterViewControllers = [
-			ResetableFilterViewControllerSpy(),
-			ResetableFilterViewControllerSpy()
-		]
 		let interactor = HotelFiltersPickerBusinessLogicSpy()
 		let delegate = HotelFiltersPickerDelegateSpy()
 		let sut = HotelFiltersPickerViewController(
@@ -65,7 +64,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		)
 		sut.interactor = interactor
 		sut.delegate = delegate
-		return (sut, filterViewControllers, interactor, delegate)
+		return (sut, interactor, delegate)
 	}
 }
 
