@@ -26,6 +26,15 @@ final class ReviewScoreInteractorTests: XCTestCase {
 		}
 	}
 
+	func test_reset_presentsReset() {
+		let (sut, presenter) = makeSUT(selectedReviewScore: .pleasant)
+
+		sut.reset(request: .init())
+
+		let expectedOptions = ReviewScoreModels.Option.makeAll(selected: nil)
+		XCTAssertEqual(presenter.messages, [.presentReset(.init(options: expectedOptions))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(selectedReviewScore: ReviewScore? = nil) -> (
