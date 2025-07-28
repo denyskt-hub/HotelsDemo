@@ -26,13 +26,43 @@ final class ReviewScoreInteractorTests: XCTestCase {
 		}
 	}
 
-	func test_reset_presentsReset() {
+	func test_reset_presentsResetState() {
 		let (sut, presenter) = makeSUT(selectedReviewScore: .pleasant)
 
 		sut.reset(request: .init())
 
 		let expectedOptions = ReviewScore.allCases.toOptions(selected: nil)
 		XCTAssertEqual(presenter.messages, [.presentReset(.init(options: expectedOptions))])
+	}
+
+	func test_select_presentsSelectedReviewScore() {
+		let (sut, presenter) = makeSUT(selectedReviewScore: nil)
+
+		sut.select(request: .init(reviewScore: .fair))
+
+		XCTAssertEqual(presenter.messages, [
+			.presentSelect(.init(reviewScore: .fair, options: ReviewScore.allCases.toOptions(selected: .fair)))
+		])
+	}
+
+	func test_selectAlreadySelectedReviewScore_presentsDeselectedReviewScore() {
+		let (sut, presenter) = makeSUT(selectedReviewScore: .fair)
+
+		sut.select(request: .init(reviewScore: .fair))
+
+		XCTAssertEqual(presenter.messages, [
+			.presentSelect(.init(reviewScore: nil, options: ReviewScore.allCases.toOptions(selected: nil)))
+		])
+	}
+
+	func test_selectNewReviewScore_presentsNewReviewScore() {
+		let (sut, presenter) = makeSUT(selectedReviewScore: .fair)
+
+		sut.select(request: .init(reviewScore: .wonderful))
+
+		XCTAssertEqual(presenter.messages, [
+			.presentSelect(.init(reviewScore: .wonderful, options: ReviewScore.allCases.toOptions(selected: .wonderful)))
+		])
 	}
 
 	// MARK: - Helpers
