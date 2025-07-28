@@ -104,3 +104,11 @@ public enum ReviewScoreModels {
 		}
 	}
 }
+
+public extension ReviewScoreModels.Option {
+	static func makeAll(selected: ReviewScore?) -> [Self] {
+		ReviewScore.allCases.map {
+			.init(value: $0, isSelected: $0 == selected)
+		}
+	}
+}

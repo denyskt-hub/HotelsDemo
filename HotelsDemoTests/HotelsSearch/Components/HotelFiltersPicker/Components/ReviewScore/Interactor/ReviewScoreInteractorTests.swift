@@ -10,19 +10,20 @@ import HotelsDemo
 
 final class ReviewScoreInteractorTests: XCTestCase {
 	func test_load_presentsInitialState() {
-		let (sut, presenter) = makeSUT()
-		
-		sut.load(request: .init())
-		
-		XCTAssertEqual(presenter.messages, [
-			.present(.init(options: [
-				.init(value: .fair, isSelected: false),
-				.init(value: .pleasant, isSelected: false),
-				.init(value: .good, isSelected: false),
-				.init(value: .veryGood, isSelected: false),
-				.init(value: .wonderful, isSelected: false)
-			]))
-		])
+		let cases: [(ReviewScore?, String)] = [
+			(nil, "when nothing selected"),
+			(.fair, "when .fair is selected"),
+			(.wonderful, "when .wonderful is selected")
+		]
+
+		cases.forEach { selected, description in
+			let (sut, presenter) = makeSUT(selectedReviewScore: selected)
+
+			sut.load(request: .init())
+
+			let expectedOptions = ReviewScoreModels.Option.makeAll(selected: selected)
+			XCTAssertEqual(presenter.messages.last, .present(.init(options: expectedOptions)), description)
+		}
 	}
 
 	// MARK: - Helpers
@@ -37,6 +38,12 @@ final class ReviewScoreInteractorTests: XCTestCase {
 		)
 		sut.presenter = presenter
 		return (sut, presenter)
+	}
+
+	private func makeOptions(_ selectedReviewScore: ReviewScore?) -> [ReviewScoreModels.Option] {
+		ReviewScore.allCases.map {
+			ReviewScoreModels.Option(value: $0, isSelected: $0 == selectedReviewScore)
+		}
 	}
 }
 
