@@ -85,6 +85,11 @@ public enum ReviewScoreModels {
 	public struct Option: Equatable {
 		public let value: ReviewScore
 		public let isSelected: Bool
+
+		public init(value: ReviewScore, isSelected: Bool) {
+			self.value = value
+			self.isSelected = isSelected
+		}
 	}
 
 	public struct OptionViewModel: Equatable {
