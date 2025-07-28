@@ -21,7 +21,7 @@ final class ReviewScoreInteractorTests: XCTestCase {
 
 			sut.load(request: .init())
 
-			let expectedOptions = ReviewScoreModels.Option.makeAll(selected: selected)
+			let expectedOptions = ReviewScore.allCases.toOptions(selected: selected)
 			XCTAssertEqual(presenter.messages.last, .present(.init(options: expectedOptions)), description)
 		}
 	}
@@ -31,7 +31,7 @@ final class ReviewScoreInteractorTests: XCTestCase {
 
 		sut.reset(request: .init())
 
-		let expectedOptions = ReviewScoreModels.Option.makeAll(selected: nil)
+		let expectedOptions = ReviewScore.allCases.toOptions(selected: nil)
 		XCTAssertEqual(presenter.messages, [.presentReset(.init(options: expectedOptions))])
 	}
 

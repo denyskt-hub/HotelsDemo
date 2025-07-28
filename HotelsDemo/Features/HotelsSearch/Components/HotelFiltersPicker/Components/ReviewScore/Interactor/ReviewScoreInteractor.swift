@@ -36,8 +36,6 @@ public final class ReviewScoreInteractor: ReviewScoreBusinessLogic {
 	}
 
 	private func makeOptions(_ selectedReviewScore: ReviewScore?) -> [ReviewScoreModels.Option] {
-		ReviewScore.allCases.map {
-			ReviewScoreModels.Option(value: $0, isSelected: $0 == selectedReviewScore)
-		}
+		ReviewScore.allCases.toOptions(selected: selectedReviewScore)
 	}
 }
