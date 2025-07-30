@@ -10,6 +10,10 @@ import Foundation
 public final class ReviewScorePresenter: ReviewScorePresentationLogic {
 	public weak var viewController: ReviewScoreDisplayLogic?
 
+	public init() {
+		// Required for initialization in tests
+	}
+
 	public func present(response: ReviewScoreModels.Load.Response) {
 		let viewModel = ReviewScoreModels.Load.ViewModel(
 			options: makeOptionViewModels(response.options)

@@ -15,7 +15,7 @@ public enum ReviewScore: Decimal, CaseIterable {
 	case wonderful = 9.0
 }
 
-extension ReviewScore {
+public extension ReviewScore {
 	var title: String {
 		switch self {
 		case .fair:
