@@ -50,30 +50,6 @@ final class ReviewScorePresenterTests: XCTestCase {
 		sut.viewController = viewController
 		return (sut, viewController)
 	}
-
-	private func fairOption(isSelected: Bool = false) -> ReviewScoreModels.Option {
-		makeOption(.fair, isSelected: isSelected)
-	}
-
-	private func fairOptionViewModel(isSelected: Bool = false) -> ReviewScoreModels.OptionViewModel {
-		.init(title: ReviewScore.fair.title, value: .fair, isSelected: isSelected)
-	}
-
-	private func wonderfulOption(isSelected: Bool = false) -> ReviewScoreModels.Option {
-		makeOption(.wonderful, isSelected: isSelected)
-	}
-
-	private func wonderfulOptionViewModel(isSelected: Bool = false) -> ReviewScoreModels.OptionViewModel {
-		.init(title: ReviewScore.wonderful.title, value: .wonderful, isSelected: isSelected)
-	}
-
-	private func makeOption(_ reviewScore: ReviewScore, isSelected: Bool) -> ReviewScoreModels.Option {
-		.init(value: reviewScore, isSelected: isSelected)
-	}
-
-	private func makeOptionViewModel(_ reviewScore: ReviewScore, isSelected: Bool = false) -> ReviewScoreModels.OptionViewModel {
-		.init(title: reviewScore.title, value: reviewScore, isSelected: isSelected)
-	}
 }
 
 final class ReviewScoreDisplayLogicSpy: ReviewScoreDisplayLogic {

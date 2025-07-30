@@ -8,8 +8,6 @@
 import UIKit
 
 public final class ReviewScoreCell: UITableViewCell {
-	private var score: Decimal = 0.0
-
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			checkmarkImageView,
@@ -22,7 +20,7 @@ public final class ReviewScoreCell: UITableViewCell {
 		return stack
 	}()
 
-	private let checkmarkImageView: UIImageView = {
+	public let checkmarkImageView: UIImageView = {
 		let imageView = UIImageView()
 		let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
 		imageView.image = UIImage(systemName: "square", withConfiguration: config)
@@ -62,7 +60,6 @@ public final class ReviewScoreCell: UITableViewCell {
 	public func configure(with viewModel: ReviewScoreModels.OptionViewModel) {
 		checkmarkImageView.isHighlighted = viewModel.isSelected
 		titleLabel.text = viewModel.title
-		score = viewModel.value.rawValue
 	}
 }
 
