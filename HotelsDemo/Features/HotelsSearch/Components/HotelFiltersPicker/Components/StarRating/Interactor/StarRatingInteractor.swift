@@ -31,6 +31,7 @@ public final class StarRatingInteractor: StarRatingBusinessLogic {
 		} else {
 			selectedStarRatings.insert(request.starRating)
 		}
+
 		presenter?.presentSelect(
 			response: .init(
 				starRatings: selectedStarRatings,
@@ -40,8 +41,6 @@ public final class StarRatingInteractor: StarRatingBusinessLogic {
 	}
 
 	private func makeOptions(_ selectedStarRatings: Set<StarRating>) -> [StarRatingModels.Option] {
-		StarRating.allCases.map {
-			StarRatingModels.Option(value: $0, isSelected: selectedStarRatings.contains($0))
-		}
+		StarRating.allCases.toOptions(selected: selectedStarRatings)
 	}
 }

@@ -99,3 +99,9 @@ public enum StarRatingModels {
 		}
 	}
 }
+
+public extension Array where Element == StarRating {
+	func toOptions(selected: Set<StarRating>) -> [StarRatingModels.Option] {
+		map { .init(value: $0, isSelected: selected.contains($0)) }
+	}
+}
