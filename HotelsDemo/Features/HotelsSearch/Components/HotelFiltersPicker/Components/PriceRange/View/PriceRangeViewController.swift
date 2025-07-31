@@ -29,10 +29,6 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 		super.viewDidLoad()
 
 		setupSlider()
-	}
-
-	public override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
 
 		interactor?.load(request: .init())
 	}
@@ -108,13 +104,13 @@ extension PriceRangeViewController: ResetableFilterViewController {
 
 // MARK: - Helpers
 
-extension Decimal {
+public extension Decimal {
 	var cgFloatValue: CGFloat {
 		NSDecimalNumber(decimal: self).doubleValue.cgFloatValue
 	}
 }
 
-extension Double {
+public extension Double {
 	var cgFloatValue: CGFloat {
 		CGFloat(self)
 	}
