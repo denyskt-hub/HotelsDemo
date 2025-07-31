@@ -10,6 +10,10 @@ import Foundation
 public final class PriceRangePresenter: PriceRangePresentationLogic {
 	public weak var viewController: PriceRangeDisplayLogic?
 
+	public init() {
+		// Required for initialization in tests
+	}
+
 	public func present(response: PriceRangeModels.Load.Response) {
 		let priceRange = response.priceRange ?? response.availablePriceRange
 		let viewModel = PriceRangeModels.Load.ViewModel(
