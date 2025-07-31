@@ -8,6 +8,7 @@
 import Foundation
 
 public final class PriceRangeInteractor: PriceRangeBusinessLogic {
+	private let availablePriceRange: ClosedRange<Decimal> = 0...3000
 	private var selectedPriceRange: ClosedRange<Decimal>?
 	private let currencyCode: String
 
@@ -24,7 +25,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 	public func load(request: PriceRangeModels.Load.Request) {
 		presenter?.present(
 			response: .init(
-				availablePriceRange: 0...3000,
+				availablePriceRange: availablePriceRange,
 				priceRange: selectedPriceRange,
 				currencyCode: currencyCode
 			)
@@ -35,7 +36,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 		selectedPriceRange = nil
 		presenter?.presentReset(
 			response: .init(
-				availablePriceRange: 0...3000,
+				availablePriceRange: availablePriceRange,
 				currencyCode: currencyCode
 			)
 		)
