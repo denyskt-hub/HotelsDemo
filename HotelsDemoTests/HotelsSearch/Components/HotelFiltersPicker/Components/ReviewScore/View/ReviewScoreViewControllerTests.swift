@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class ReviewScoreViewControllerTests: XCTestCase {
+final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	private let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
 	private let optionsWithSelectedOption = [fairOptionViewModel(), wonderfulOptionViewModel(isSelected: true)]
 
@@ -78,30 +78,14 @@ final class ReviewScoreViewControllerTests: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
-		guard sut.numberOfRenderedOptions() == viewModels.count else {
-			return XCTFail("Expect \(viewModels.count) options, got \(sut.numberOfRenderedOptions()) instead", file: file, line: line)
-		}
+		assertThat(sut, isRendering: viewModels, assert: { view, viewModel, index in
+			guard let cell = view as? ReviewScoreCell else {
+				return XCTFail("Expected \(ReviewScoreCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
+			}
 
-		viewModels.enumerated().forEach { index, viewModel in
-			assertThat(sut, hasViewConfiguredFor: viewModel, at: index, file: file, line: line)
-		}
-	}
-
-	private func assertThat(
-		_ sut: ReviewScoreViewController,
-		hasViewConfiguredFor viewModel: ReviewScoreModels.OptionViewModel,
-		at index: Int,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let view = sut.optionView(at: index)
-
-		guard let cell = view as? ReviewScoreCell else {
-			return XCTFail("Expected \(ReviewScoreCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
-		}
-
-		XCTAssertEqual(cell.titleLabel.text, viewModel.title, "Expected titleLabel to be \(viewModel.title), for view at index \(index)", file: file, line: line)
-		XCTAssertEqual(cell.checkmarkImageView.isHighlighted, viewModel.isSelected, "Expected checkmarkImageView.isHighlighted to be \(viewModel.isSelected), for view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.titleLabel.text, viewModel.title, "Expected titleLabel to be \(viewModel.title), for view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.checkmarkImageView.isHighlighted, viewModel.isSelected, "Expected checkmarkImageView.isHighlighted to be \(viewModel.isSelected), for view at index \(index)", file: file, line: line)
+		}, file: file, line: line)
 	}
 }
 
@@ -139,24 +123,4 @@ final class ReviewScoreDelegateSpy: ReviewScoreDelegate {
 	}
 }
 
-extension ReviewScoreViewController {
-	func numberOfRenderedOptions() -> Int {
-		numberOfRows(in: 0)
-	}
-
-	func optionView(at index: Int) -> UITableViewCell? {
-		cell(row: index, section: 0)
-	}
-
-	private func cell(row: Int, section: Int) -> UITableViewCell? {
-		guard numberOfRows(in: section) > row else { return nil }
-
-		let dataSource = tableView.dataSource
-		let indexPath = IndexPath(row: row, section: section)
-		return dataSource?.tableView(tableView, cellForRowAt: indexPath)
-	}
-
-	private func numberOfRows(in section: Int) -> Int {
-		tableView.numberOfSections == 0 ? 0 : tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
-	}
-}
+extension ReviewScoreViewController: TableViewRenderer {}
