@@ -15,7 +15,7 @@ public enum StarRating: Int, CaseIterable {
 	case five = 5
 }
 
-extension StarRating {
+public extension StarRating {
 	var title: String {
 		switch self {
 		case .one:

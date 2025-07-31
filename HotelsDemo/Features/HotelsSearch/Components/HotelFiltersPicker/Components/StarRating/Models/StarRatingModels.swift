@@ -85,6 +85,11 @@ public enum StarRatingModels {
 	public struct Option: Equatable {
 		public let value: StarRating
 		public let isSelected: Bool
+
+		public init(value: StarRating, isSelected: Bool) {
+			self.value = value
+			self.isSelected = isSelected
+		}
 	}
 
 	public struct OptionViewModel: Equatable {

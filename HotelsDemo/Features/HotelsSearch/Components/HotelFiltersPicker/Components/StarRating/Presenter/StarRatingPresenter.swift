@@ -10,6 +10,10 @@ import Foundation
 public final class StarRatingPresenter: StarRatingPresentationLogic {
 	public weak var viewController: StarRatingDisplayLogic?
 
+	public init() {
+		// Required for initialization in tests
+	}
+
 	public func present(response: StarRatingModels.Load.Response) {
 		let viewModel = StarRatingModels.Load.ViewModel(
 			options: makeOptionViewModels(response.options)

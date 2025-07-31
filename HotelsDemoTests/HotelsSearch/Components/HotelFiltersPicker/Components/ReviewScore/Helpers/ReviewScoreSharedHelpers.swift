@@ -13,7 +13,7 @@ func fairOption(isSelected: Bool = false) -> ReviewScoreModels.Option {
 }
 
 func fairOptionViewModel(isSelected: Bool = false) -> ReviewScoreModels.OptionViewModel {
-	.init(title: ReviewScore.fair.title, value: .fair, isSelected: isSelected)
+	makeOptionViewModel(.fair, isSelected: isSelected)
 }
 
 func wonderfulOption(isSelected: Bool = false) -> ReviewScoreModels.Option {
@@ -21,7 +21,7 @@ func wonderfulOption(isSelected: Bool = false) -> ReviewScoreModels.Option {
 }
 
 func wonderfulOptionViewModel(isSelected: Bool = false) -> ReviewScoreModels.OptionViewModel {
-	.init(title: ReviewScore.wonderful.title, value: .wonderful, isSelected: isSelected)
+	makeOptionViewModel(.wonderful, isSelected: isSelected)
 }
 
 func makeOption(_ reviewScore: ReviewScore, isSelected: Bool) -> ReviewScoreModels.Option {
