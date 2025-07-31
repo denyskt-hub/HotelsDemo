@@ -9,6 +9,9 @@ import XCTest
 import HotelsDemo
 
 final class ReviewScoreViewControllerTests: XCTestCase {
+	private let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
+	private let optionsWithSelectedOption = [fairOptionViewModel(), wonderfulOptionViewModel(isSelected: true)]
+
 	func test_viewDidLoad_loadsInitialData() {
 		let (sut, interactor, _) = makeSUT()
 
@@ -18,17 +21,17 @@ final class ReviewScoreViewControllerTests: XCTestCase {
 	}
 
 	func test_display_rendersReviewScoreOptions() {
-		let options = [fairOptionViewModel(), wonderfulOptionViewModel(isSelected: true)]
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
 		sut.display(viewModel: .init(options: options))
-
 		assertThat(sut, isRendering: options)
+
+		sut.display(viewModel: .init(options: optionsWithSelectedOption))
+		assertThat(sut, isRendering: optionsWithSelectedOption)
 	}
 
 	func test_displayReset_rendersReviewScoreOptions() {
-		let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
@@ -38,7 +41,6 @@ final class ReviewScoreViewControllerTests: XCTestCase {
 	}
 
 	func test_displaySelect_rendersReviewScoreOptions() {
-		let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
@@ -48,7 +50,6 @@ final class ReviewScoreViewControllerTests: XCTestCase {
 	}
 
 	func test_displaySelect_notifiesDelegateWithSelectedReviewScore() {
-		let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
 		let (sut, _, delegate) = makeSUT()
 
 		sut.displaySelect(viewModel: .init(reviewScore: .fair, options: options))
