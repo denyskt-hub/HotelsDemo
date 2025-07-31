@@ -83,14 +83,6 @@ extension ReviewScoreViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ReviewScoreViewController: UITableViewDelegate {
-	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if tableView.indexPathForSelectedRow == indexPath {
-			tableView.deselectRow(at: indexPath, animated: true)
-			return nil
-		}
-		return indexPath
-	}
-
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let option = options[indexPath.row]
 		interactor?.select(request: .init(reviewScore: option.value))

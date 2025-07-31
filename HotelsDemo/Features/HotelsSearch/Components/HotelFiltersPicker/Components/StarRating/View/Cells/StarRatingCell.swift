@@ -20,7 +20,7 @@ public final class StarRatingCell: UITableViewCell {
 		return stack
 	}()
 
-	private let checkmarkImageView: UIImageView = {
+	public let checkmarkImageView: UIImageView = {
 		let imageView = UIImageView()
 		let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
 		imageView.image = UIImage(systemName: "square", withConfiguration: config)
@@ -33,7 +33,7 @@ public final class StarRatingCell: UITableViewCell {
 		return view
 	}()
 
-	private let starRatingView: StarRatingView = {
+	public let starRatingView: StarRatingView = {
 		let view = StarRatingView()
 		return view
 	}()

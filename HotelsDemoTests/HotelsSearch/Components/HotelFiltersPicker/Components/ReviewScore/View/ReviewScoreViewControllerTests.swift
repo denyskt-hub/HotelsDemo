@@ -20,6 +20,24 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 		XCTAssertEqual(interactor.messages, [.load(.init())])
 	}
 
+	func test_reset_resetsSelectedOptions() {
+		let (sut, interactor, _) = makeSUT()
+
+		sut.reset()
+
+		XCTAssertEqual(interactor.messages, [.reset(.init())])
+	}
+
+	func test_tapOnOption_selectsOptions() {
+		let (sut, interactor, _) = makeSUT()
+		sut.simulateAppearanceInWindow()
+		sut.display(viewModel: .init(options: [makeOptionViewModel(.good)]))
+
+		sut.simulateTapOnItem(at: 0)
+
+		XCTAssertEqual(interactor.messages.last, .select(.init(reviewScore: .good)))
+	}
+
 	func test_display_rendersReviewScoreOptions() {
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()

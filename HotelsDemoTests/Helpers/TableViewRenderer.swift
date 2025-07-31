@@ -34,4 +34,10 @@ extension TableViewRenderer {
 	func numberOfRows(in section: Int) -> Int {
 		tableView.numberOfSections == 0 ? 0 : tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
 	}
+
+	func simulateTapOnItem(at row: Int) {
+		let delegate = tableView.delegate
+		let indexPath = IndexPath(row: row, section: 0)
+		delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+	}
 }
