@@ -8,10 +8,12 @@
 import Foundation
 
 public final class PriceRangePresenter: PriceRangePresentationLogic {
+	private let locale: Locale
+
 	public weak var viewController: PriceRangeDisplayLogic?
 
-	public init() {
-		// Required for initialization in tests
+	public init(locale: Locale = .current) {
+		self.locale = locale
 	}
 
 	public func present(response: PriceRangeModels.Load.Response) {
@@ -20,8 +22,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 			priceRangeViewModel: .init(
 				availablePriceRange: response.availablePriceRange,
 				priceRange: priceRange,
-				lowerValue: priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
-				upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode)
+				lowerValue: priceRange.lowerBound.formattedCurrency(code: response.currencyCode, locale: locale),
+				upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 			)
 		)
 		viewController?.display(viewModel: viewModel)
@@ -32,8 +34,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 			priceRangeViewModel: .init(
 				availablePriceRange: response.availablePriceRange,
 				priceRange: response.availablePriceRange,
-				lowerValue: response.availablePriceRange.lowerBound.formattedCurrency(code: response.currencyCode),
-				upperValue: response.availablePriceRange.upperBound.formattedCurrency(code: response.currencyCode)
+				lowerValue: response.availablePriceRange.lowerBound.formattedCurrency(code: response.currencyCode, locale: locale),
+				upperValue: response.availablePriceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 			)
 		)
 		viewController?.displayReset(viewModel: viewModel)
@@ -48,8 +50,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 
 	public func presentSelecting(response: PriceRangeModels.Selecting.Response) {
 		let viewModel = PriceRangeModels.Selecting.ViewModel(
-			lowerValue: response.priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
-			upperValue: response.priceRange.upperBound.formattedCurrency(code: response.currencyCode)
+			lowerValue: response.priceRange.lowerBound.formattedCurrency(code: response.currencyCode, locale: locale),
+			upperValue: response.priceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 		)
 		viewController?.displaySelecting(viewModel: viewModel)
 	}
@@ -58,7 +60,11 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 // MARK: - Helpers
 
 extension Decimal {
-	func formattedCurrency(code: String) -> String {
-		formatted(.currency(code: code))
+	func formattedCurrency(code: String, locale: Locale = .current) -> String {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		formatter.currencyCode = code
+		formatter.locale = locale
+		return formatter.string(for: self) ?? "\(self)"
 	}
 }

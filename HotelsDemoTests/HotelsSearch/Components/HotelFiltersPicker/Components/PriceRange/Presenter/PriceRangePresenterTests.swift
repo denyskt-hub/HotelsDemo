@@ -16,8 +16,8 @@ final class PriceRangePresenterTests: XCTestCase {
 		var expectedViewModel = PriceRangeModels.PriceRangeViewModel(
 			availablePriceRange: 0...100,
 			priceRange: 0...100,
-			lowerValue: "US$0.00",
-			upperValue: "US$100.00"
+			lowerValue: "$0.00",
+			upperValue: "$100.00"
 		)
 		XCTAssertEqual(viewController.messages.last, .display(.init(priceRangeViewModel: expectedViewModel)))
 
@@ -25,8 +25,8 @@ final class PriceRangePresenterTests: XCTestCase {
 		expectedViewModel = PriceRangeModels.PriceRangeViewModel(
 			availablePriceRange: 0...100,
 			priceRange: 20...70,
-			lowerValue: "US$20.00",
-			upperValue: "US$70.00"
+			lowerValue: "$20.00",
+			upperValue: "$70.00"
 		)
 		XCTAssertEqual(viewController.messages.last, .display(.init(priceRangeViewModel: expectedViewModel)))
 	}
@@ -39,8 +39,8 @@ final class PriceRangePresenterTests: XCTestCase {
 		let expectedViewModel = PriceRangeModels.PriceRangeViewModel(
 			availablePriceRange: 0...100,
 			priceRange: 0...100,
-			lowerValue: "US$0.00",
-			upperValue: "US$100.00"
+			lowerValue: "$0.00",
+			upperValue: "$100.00"
 		)
 		XCTAssertEqual(viewController.messages.last, .displayReset(.init(priceRangeViewModel: expectedViewModel)))
 	}
@@ -58,17 +58,17 @@ final class PriceRangePresenterTests: XCTestCase {
 		
 		sut.presentSelecting(response: .init(priceRange: 50...80, currencyCode: "USD"))
 		
-		XCTAssertEqual(viewController.messages.last, .displaySelecting(.init(lowerValue: "US$50.00", upperValue: "US$80.00")))
+		XCTAssertEqual(viewController.messages.last, .displaySelecting(.init(lowerValue: "$50.00", upperValue: "$80.00")))
 	}
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (
+	private func makeSUT(locale: Locale = Locale(identifier: "en_US")) -> (
 		sut: PriceRangePresenter,
 		viewController: PriceRangeDisplayLogicSpy
 	) {
 		let viewController = PriceRangeDisplayLogicSpy()
-		let sut = PriceRangePresenter()
+		let sut = PriceRangePresenter(locale: locale)
 		sut.viewController = viewController
 		return (sut, viewController)
 	}
