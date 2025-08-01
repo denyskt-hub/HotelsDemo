@@ -13,10 +13,22 @@ final class PriceRangePresenterTests: XCTestCase {
 		let (sut, viewController) = makeSUT()
 
 		sut.present(response: .init(availablePriceRange: 0...100, priceRange: nil, currencyCode: "USD"))
-		XCTAssertEqual(viewController.messages.last, .display(.init(availablePriceRange: 0...100, priceRange: 0...100, lowerValue: "US$0.00", upperValue: "US$100.00")))
+		var expectedViewModel = PriceRangeModels.PriceRangeViewModel(
+			availablePriceRange: 0...100,
+			priceRange: 0...100,
+			lowerValue: "US$0.00",
+			upperValue: "US$100.00"
+		)
+		XCTAssertEqual(viewController.messages.last, .display(.init(priceRangeViewModel: expectedViewModel)))
 
 		sut.present(response: .init(availablePriceRange: 0...100, priceRange: 20...70, currencyCode: "USD"))
-		XCTAssertEqual(viewController.messages.last, .display(.init(availablePriceRange: 0...100, priceRange: 20...70, lowerValue: "US$20.00", upperValue: "US$70.00")))
+		expectedViewModel = PriceRangeModels.PriceRangeViewModel(
+			availablePriceRange: 0...100,
+			priceRange: 20...70,
+			lowerValue: "US$20.00",
+			upperValue: "US$70.00"
+		)
+		XCTAssertEqual(viewController.messages.last, .display(.init(priceRangeViewModel: expectedViewModel)))
 	}
 
 	func test_presentReset_presentsReset() {

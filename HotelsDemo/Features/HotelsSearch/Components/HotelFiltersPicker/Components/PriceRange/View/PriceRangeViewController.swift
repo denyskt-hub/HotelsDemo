@@ -39,12 +39,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	public func display(viewModel: PriceRangeModels.Load.ViewModel) {
-		display(
-			availablePriceRange: viewModel.availablePriceRange,
-			priceRange: viewModel.priceRange,
-			lowerValue: viewModel.lowerValue,
-			upperValue: viewModel.upperValue
-		)
+		display(viewModel.priceRangeViewModel)
 	}
 
 	public func displayReset(viewModel: PriceRangeModels.Reset.ViewModel) {
@@ -61,6 +56,17 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	public func displaySelecting(viewModel: PriceRangeModels.Selecting.ViewModel) {
+		lowerValueLabel.text = viewModel.lowerValue
+		upperValueLabel.text = viewModel.upperValue
+	}
+
+	private func display(_ viewModel: PriceRangeModels.PriceRangeViewModel) {
+		slider.minimumValue = viewModel.availablePriceRange.lowerBound.cgFloatValue
+		slider.maximumValue = viewModel.availablePriceRange.upperBound.cgFloatValue
+
+		slider.lowerValue = viewModel.priceRange.lowerBound.cgFloatValue
+		slider.upperValue = viewModel.priceRange.upperBound.cgFloatValue
+
 		lowerValueLabel.text = viewModel.lowerValue
 		upperValueLabel.text = viewModel.upperValue
 	}

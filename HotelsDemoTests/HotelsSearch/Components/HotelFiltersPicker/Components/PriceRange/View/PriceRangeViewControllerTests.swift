@@ -28,7 +28,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 	func test_sliderValueChanged_slectingPriceRange() {
 		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearance()
-		sut.display(viewModel: .init(availablePriceRange: 0...500, priceRange: 0...500, lowerValue: "US$0.00", upperValue: "US$500.00"))
+		sut.display(viewModel: makeLoadViewModelWith(priceRange: .none, in: 0...500))
 
 		sut.simulateSliderLowerValueChanged(to: 20)
 		XCTAssertEqual(interactor.messages.last, .selecting(.init(priceRange: 20...500)))
@@ -40,13 +40,23 @@ final class PriceRangeViewControllerTests: XCTestCase {
 	func test_sliderEditingDidEnd_selectsPriceRange() {
 		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearance()
-		sut.display(viewModel: .init(availablePriceRange: 0...500, priceRange: 0...500, lowerValue: "US$0.00", upperValue: "US$500.00"))
+		sut.display(viewModel: makeLoadViewModelWith(priceRange: .none, in: 0...500))
 
 		sut.simulateSliderLowerEditingDidEnd(to: 20)
 		XCTAssertEqual(interactor.messages.last, .select(.init(priceRange: 20...500)))
 
 		sut.simulateSliderUpperEditingDidEnd(to: 30)
 		XCTAssertEqual(interactor.messages.last, .select(.init(priceRange: 20...30)))
+	}
+
+	func test_display_rendersPriceRange() {
+		let viewModel = makeLoadViewModelWith(priceRange: 100...200, in: 0...500)
+		let (sut, _, _) = makeSUT()
+		sut.simulateAppearance()
+
+		sut.display(viewModel: viewModel)
+
+		assertThat(sut, isRendering: viewModel.priceRangeViewModel)
 	}
 
 	// MARK: - Helpers
@@ -62,6 +72,38 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		sut.interactor = interactor
 		sut.delegate = delegate
 		return (sut, interactor, delegate)
+	}
+
+	private func makeLoadViewModelWith(
+		priceRange: ClosedRange<Decimal>?,
+		in availablePriceRange: ClosedRange<Decimal>,
+		lowerValue: String = "lower",
+		upperValue: String = "upper"
+	) -> PriceRangeModels.Load.ViewModel {
+		.init(
+			priceRangeViewModel: .init(
+				availablePriceRange: availablePriceRange,
+				priceRange: priceRange ?? availablePriceRange,
+				lowerValue: lowerValue,
+				upperValue: upperValue
+			)
+		)
+	}
+
+	private func assertThat(
+		_ sut: PriceRangeViewController,
+		isRendering viewModel: PriceRangeModels.PriceRangeViewModel,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		XCTAssertEqual(sut.slider.minimumValue, viewModel.availablePriceRange.lowerBound.cgFloatValue)
+		XCTAssertEqual(sut.slider.maximumValue, viewModel.availablePriceRange.upperBound.cgFloatValue)
+
+		XCTAssertEqual(sut.slider.lowerValue, viewModel.priceRange.lowerBound.cgFloatValue)
+		XCTAssertEqual(sut.slider.upperValue, viewModel.priceRange.upperBound.cgFloatValue)
+
+		XCTAssertEqual(sut.lowerValueLabel.text, viewModel.lowerValue)
+		XCTAssertEqual(sut.upperValueLabel.text, viewModel.upperValue)
 	}
 }
 

@@ -30,21 +30,10 @@ public enum PriceRangeModels {
 		}
 
 		public struct ViewModel: Equatable {
-			public let availablePriceRange: ClosedRange<Decimal>
-			public let priceRange: ClosedRange<Decimal>
-			public let lowerValue: String
-			public let upperValue: String
+			public let priceRangeViewModel: PriceRangeViewModel
 
-			public init(
-				availablePriceRange: ClosedRange<Decimal>,
-				priceRange: ClosedRange<Decimal>,
-				lowerValue: String,
-				upperValue: String
-			) {
-				self.availablePriceRange = availablePriceRange
-				self.priceRange = priceRange
-				self.lowerValue = lowerValue
-				self.upperValue = upperValue
+			public init(priceRangeViewModel: PriceRangeViewModel) {
+				self.priceRangeViewModel = priceRangeViewModel
 			}
 		}
 	}
@@ -140,6 +129,25 @@ public enum PriceRangeModels {
 				self.lowerValue = lowerValue
 				self.upperValue = upperValue
 			}
+		}
+	}
+
+	public struct PriceRangeViewModel: Equatable {
+		public let availablePriceRange: ClosedRange<Decimal>
+		public let priceRange: ClosedRange<Decimal>
+		public let lowerValue: String
+		public let upperValue: String
+
+		public init(
+			availablePriceRange: ClosedRange<Decimal>,
+			priceRange: ClosedRange<Decimal>,
+			lowerValue: String,
+			upperValue: String
+		) {
+			self.availablePriceRange = availablePriceRange
+			self.priceRange = priceRange
+			self.lowerValue = lowerValue
+			self.upperValue = upperValue
 		}
 	}
 }

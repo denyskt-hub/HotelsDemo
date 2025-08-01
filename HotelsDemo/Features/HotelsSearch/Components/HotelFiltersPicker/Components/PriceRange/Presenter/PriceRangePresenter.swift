@@ -17,10 +17,12 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 	public func present(response: PriceRangeModels.Load.Response) {
 		let priceRange = response.priceRange ?? response.availablePriceRange
 		let viewModel = PriceRangeModels.Load.ViewModel(
-			availablePriceRange: response.availablePriceRange,
-			priceRange: priceRange,
-			lowerValue: priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
-			upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode)
+			priceRangeViewModel: .init(
+				availablePriceRange: response.availablePriceRange,
+				priceRange: priceRange,
+				lowerValue: priceRange.lowerBound.formattedCurrency(code: response.currencyCode),
+				upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode)
+			)
 		)
 		viewController?.display(viewModel: viewModel)
 	}
