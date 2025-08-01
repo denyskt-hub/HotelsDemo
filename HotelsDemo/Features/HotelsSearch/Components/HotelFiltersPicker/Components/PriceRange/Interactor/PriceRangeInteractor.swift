@@ -16,7 +16,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 
 	public init(
 		selectedPriceRange: ClosedRange<Decimal>?,
-		currencyCode: String,
+		currencyCode: String
 	) {
 		self.selectedPriceRange = selectedPriceRange
 		self.currencyCode = currencyCode
