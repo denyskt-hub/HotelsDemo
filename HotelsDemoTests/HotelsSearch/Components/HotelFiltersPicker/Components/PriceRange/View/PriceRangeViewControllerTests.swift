@@ -59,6 +59,34 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		assertThat(sut, isRendering: viewModel.priceRangeViewModel)
 	}
 
+	func test_displayReset_rendersPriceRange() {
+		let viewModel = makeResetViewModelWith(availablePriceRange: 0...500)
+		let (sut, _, _) = makeSUT()
+		sut.simulateAppearance()
+		
+		sut.display(viewModel: makeLoadViewModelWith(priceRange: 100...200, in: 0...500))
+		sut.displayReset(viewModel: viewModel)
+
+		assertThat(sut, isRendering: viewModel.priceRangeViewModel)
+	}
+
+	func test_displaySelecting_rendersSelectingPriceRange() {
+		let (sut, _, _) = makeSUT()
+
+		sut.displaySelecting(viewModel: .init(lowerValue: "US$150", upperValue: "US$200"))
+
+		XCTAssertEqual(sut.lowerValueLabel.text, "US$150")
+		XCTAssertEqual(sut.upperValueLabel.text, "US$200")
+	}
+	
+	func test_displaySelect_notifiesDelegateWithSelectedPriceRange() {
+		let (sut, _, delegate) = makeSUT()
+
+		sut.displaySelect(viewModel: .init(priceRange: 150...200))
+
+		XCTAssertEqual(delegate.messages, [.didSelectPriceRange(150...200)])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -84,6 +112,21 @@ final class PriceRangeViewControllerTests: XCTestCase {
 			priceRangeViewModel: .init(
 				availablePriceRange: availablePriceRange,
 				priceRange: priceRange ?? availablePriceRange,
+				lowerValue: lowerValue,
+				upperValue: upperValue
+			)
+		)
+	}
+
+	private func makeResetViewModelWith(
+		availablePriceRange: ClosedRange<Decimal>,
+		lowerValue: String = "lower",
+		upperValue: String = "upper"
+	) -> PriceRangeModels.Reset.ViewModel {
+		.init(
+			priceRangeViewModel: .init(
+				availablePriceRange: availablePriceRange,
+				priceRange: availablePriceRange,
 				lowerValue: lowerValue,
 				upperValue: upperValue
 			)

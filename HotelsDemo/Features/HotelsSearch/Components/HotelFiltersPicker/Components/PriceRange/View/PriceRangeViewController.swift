@@ -43,16 +43,11 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	public func displayReset(viewModel: PriceRangeModels.Reset.ViewModel) {
-		display(
-			availablePriceRange: viewModel.availablePriceRange,
-			priceRange: viewModel.availablePriceRange,
-			lowerValue: viewModel.lowerValue,
-			upperValue: viewModel.upperValue
-		)
+		display(viewModel.priceRangeViewModel)
 	}
 
 	public func displaySelect(viewModel: PriceRangeModels.Select.ViewModel) {
-		delegate?.didSelectPriceRange(makePriceRange(slider.lowerValue, slider.upperValue))
+		delegate?.didSelectPriceRange(viewModel.priceRange)
 	}
 
 	public func displaySelecting(viewModel: PriceRangeModels.Selecting.ViewModel) {
@@ -69,22 +64,6 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 		lowerValueLabel.text = viewModel.lowerValue
 		upperValueLabel.text = viewModel.upperValue
-	}
-
-	private func display(
-		availablePriceRange: ClosedRange<Decimal>,
-		priceRange: ClosedRange<Decimal>,
-		lowerValue: String,
-		upperValue: String
-	) {
-		slider.minimumValue = availablePriceRange.lowerBound.cgFloatValue
-		slider.maximumValue = availablePriceRange.upperBound.cgFloatValue
-
-		slider.lowerValue = priceRange.lowerBound.cgFloatValue
-		slider.upperValue = priceRange.upperBound.cgFloatValue
-
-		lowerValueLabel.text = lowerValue
-		upperValueLabel.text = upperValue
 	}
 
 	@objc private func sliderValueChanged(_ slider: RangeSlider) {
