@@ -30,7 +30,7 @@ public final class HotelCell: UITableViewCell {
 		imageView.contentMode = .scaleAspectFill
 		imageView.backgroundColor = .secondarySystemBackground
 		imageView.tintColor = .secondaryLabel
-		imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+		imageView.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
 		imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return imageView
 	}()
@@ -42,6 +42,8 @@ public final class HotelCell: UITableViewCell {
 		])
 		stack.axis = .vertical
 		stack.spacing = 8
+		stack.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		stack.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return stack
 	}()
 
@@ -54,6 +56,8 @@ public final class HotelCell: UITableViewCell {
 		stack.axis = .vertical
 		stack.alignment = .leading
 		stack.spacing = 8
+		stack.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		stack.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return stack
 	}()
 
@@ -62,11 +66,15 @@ public final class HotelCell: UITableViewCell {
 		label.font = .systemFont(ofSize: 16, weight: .semibold)
 		label.textColor = .label
 		label.numberOfLines = 2
+		label.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return label
 	}()
 
 	private let starRatingView: StarRatingView = {
 		let view = StarRatingView()
+		view.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return view
 	}()
 
@@ -78,12 +86,16 @@ public final class HotelCell: UITableViewCell {
 		])
 		stack.axis = .horizontal
 		stack.spacing = 8
+		stack.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		stack.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return stack
 	}()
 
 	private let scoreContainer: UIView = {
 		let view = UIView()
 		view.backgroundColor = .systemGray6
+		view.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return view
 	}()
 
@@ -91,6 +103,8 @@ public final class HotelCell: UITableViewCell {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 13, weight: .regular)
 		label.textColor = .label
+		label.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return label
 	}()
 
@@ -98,6 +112,8 @@ public final class HotelCell: UITableViewCell {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 13, weight: .regular)
 		label.textColor = .secondaryLabel
+		label.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return label
 	}()
 
@@ -109,6 +125,8 @@ public final class HotelCell: UITableViewCell {
 		stack.axis = .vertical
 		stack.alignment = .trailing
 		stack.spacing = 10
+		stack.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		stack.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return stack
 	}()
 
@@ -116,6 +134,8 @@ public final class HotelCell: UITableViewCell {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .semibold)
 		label.textColor = .label
+		label.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return label
 	}()
 
@@ -123,6 +143,8 @@ public final class HotelCell: UITableViewCell {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 13, weight: .regular)
 		label.textColor = .secondaryLabel
+		label.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return label
 	}()
 
@@ -132,7 +154,14 @@ public final class HotelCell: UITableViewCell {
 
 	public override func prepareForReuse() {
 		super.prepareForReuse()
+
+		nameLabel.text = nil
+		scoreLabel.text = nil
+		reviewsLabel.text = nil
+		priceLabel.text = nil
+		priceDetailsLabel.text = nil
 		photoImageView.image = nil
+		starRatingView.rating = 0
 	}
 
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -174,7 +203,9 @@ extension HotelCell {
 		let trailing = photoImageView.trailingAnchor.constraint(equalTo: photoContainer.trailingAnchor)
 		let top = photoImageView.topAnchor.constraint(equalTo: photoContainer.topAnchor)
 		let bottom = photoImageView.bottomAnchor.constraint(equalTo: photoContainer.bottomAnchor)
-		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+		let width = photoImageView.widthAnchor.constraint(equalToConstant: 100)
+		let height = photoImageView.heightAnchor.constraint(equalTo: infoStack.heightAnchor)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom, width, height])
 	}
 
 	private func activateConstraintsScoreLabel() {
@@ -183,7 +214,8 @@ extension HotelCell {
 		let trailing = scoreLabel.trailingAnchor.constraint(equalTo: scoreContainer.layoutMarginsGuide.trailingAnchor)
 		let top = scoreLabel.topAnchor.constraint(equalTo: scoreContainer.layoutMarginsGuide.topAnchor)
 		let bottom = scoreLabel.bottomAnchor.constraint(equalTo: scoreContainer.layoutMarginsGuide.bottomAnchor)
-		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+		let height = scoreLabel.heightAnchor.constraint(equalToConstant: 18)
+		NSLayoutConstraint.activate([leading, trailing, top, bottom, height])
 	}
 
 	private func activateConstraintsStack() {

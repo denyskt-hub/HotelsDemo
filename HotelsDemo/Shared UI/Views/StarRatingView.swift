@@ -14,19 +14,27 @@ public final class StarRatingView: NiblessView {
 		let stack = UIStackView(arrangedSubviews: [])
 		stack.axis = .horizontal
 		stack.spacing = 2
+		stack.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+		stack.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 		return stack
 	}()
 
 	public var rating: Int = 0 {
 		didSet {
 			updateStack(rating, starSize)
+			invalidateIntrinsicContentSize()
 		}
 	}
 
 	public var starSize: StarSize = .medium {
 		didSet {
 			updateStack(rating, starSize)
+			invalidateIntrinsicContentSize()
 		}
+	}
+
+	override public var intrinsicContentSize: CGSize {
+		rating == 0 ? .zero : CGSize(width: UIView.noIntrinsicMetric, height: starSize.size.height)
 	}
 
 	override public func didMoveToWindow() {
