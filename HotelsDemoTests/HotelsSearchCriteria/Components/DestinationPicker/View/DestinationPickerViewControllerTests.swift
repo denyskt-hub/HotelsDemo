@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class DestinationPickerViewControllerTests: XCTestCase {
+final class DestinationPickerViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	func test_viewDidLoad_doesNotRequestSearchDestinations() {
 		let (sut, interactor, _) = makeSUT()
 
@@ -104,35 +104,19 @@ final class DestinationPickerViewControllerTests: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
-		guard sut.numberOfRenderedDestinationViews() == destinations.count else {
-			return XCTFail("Expect \(destinations.count) images, got \(sut.numberOfRenderedDestinationViews()) instead", file: file, line: line)
-		}
+		assertThat(sut, isRendering: destinations, assert: { view, viewModel, index in
+			guard let cell = view as? DestinationCell else {
+				return XCTFail("Expected \(DestinationCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
+			}
 
-		destinations.enumerated().forEach { index, destination in
-			assertThat(sut, hasViewConfiguredFor: destination, at: index, file: file, line: line)
-		}
-	}
+			XCTAssertEqual(cell.titleLabel.text, viewModel.title, "Expected titleLabel to be \(viewModel.title), for destination view at index (\(index))", file: file, line: line)
 
-	private func assertThat(
-		_ sut: DestinationPickerViewController,
-		hasViewConfiguredFor destination: DestinationPickerModels.Search.DestinationViewModel,
-		at index: Int,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let view = sut.destinationView(at: index)
-
-		guard let cell = view as? DestinationCell else {
-			return XCTFail("Expected \(DestinationCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
-		}
-
-		XCTAssertEqual(cell.titleLabel.text, destination.title, "Expected titleLabel to be \(destination.title), for destination view at index (\(index))", file: file, line: line)
-
-		XCTAssertEqual(cell.subtitleLabel.text, destination.subtitle, "Expected subtitleLabel to be \(destination.subtitle), for destination view at index (\(index))", file: file, line: line)
+			XCTAssertEqual(cell.subtitleLabel.text, viewModel.subtitle, "Expected subtitleLabel to be \(viewModel.subtitle), for destination view at index (\(index))", file: file, line: line)
+		}, file: file, line: line)
 	}
 }
 
-extension DestinationPickerViewController {
+extension DestinationPickerViewController: TableViewRenderer {
 	func simulateSearch(_ query: String) {
 		let currentText = textField.text ?? ""
 		let range = NSRange(location: 0, length: currentText.count)
@@ -147,30 +131,10 @@ extension DestinationPickerViewController {
 		}
 	}
 
-	func numberOfRenderedDestinationViews() -> Int {
-		numberOfRows(in: 0)
-	}
-
-	func destinationView(at index: Int) -> UITableViewCell? {
-		cell(row: index, section: 0)
-	}
-
 	func simulateTapOnDestination(at row: Int) {
 		let delegate = tableView.delegate
 		let indexPath = IndexPath(row: row, section: 0)
 		delegate?.tableView?(tableView, didSelectRowAt: indexPath)
-	}
-
-	private func cell(row: Int, section: Int) -> UITableViewCell? {
-		guard numberOfRows(in: section) > row else { return nil }
-
-		let dataSource = tableView.dataSource
-		let indexPath = IndexPath(row: row, section: section)
-		return dataSource?.tableView(tableView, cellForRowAt: indexPath)
-	}
-
-	private func numberOfRows(in section: Int) -> Int {
-		tableView.numberOfSections == 0 ? 0 : tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
 	}
 }
 

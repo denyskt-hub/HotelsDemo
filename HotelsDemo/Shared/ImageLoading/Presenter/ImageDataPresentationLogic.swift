@@ -10,4 +10,5 @@ import Foundation
 public protocol ImageDataPresentationLogic {
 	func presentImageData(_ data: Data)
 	func presentImageDataError(_ error: Error)
+	func presentLoading(_ isLoading: Bool)
 }

@@ -18,25 +18,46 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 
 	public func presentSearch(response: HotelsSearchModels.Search.Response) {
 		let viewModel = HotelsSearchModels.Search.ViewModel(
-			hotels: response.hotels.map {
-				.init(
-					position: $0.position,
-					starRating: $0.starRating,
-					name: $0.name,
-					score: "\($0.reviewScore)",
-					reviews: "\($0.reviewCount) reviews",
-					price: priceFormatter.string(from: $0.price),
-					priceDetails: "Includes taxes and fees",
-					photoURL: $0.photoURLs.first
-				)
-			}
+			hotels: makeHotelViewModels(response.hotels)
 		)
 		viewController?.displaySearch(viewModel: viewModel)
+	}
+
+	public func presentSearchLoading(_ isLoading: Bool) {
+		let viewModel = HotelsSearchModels.LoadingViewModel(isLoading: isLoading)
+		viewController?.displayLoading(viewModel: viewModel)
 	}
 
 	public func presentSearchError(_ error: Error) {
 		let viewModel = HotelsSearchModels.ErrorViewModel(message: error.localizedDescription)
 		viewController?.displaySearchError(viewModel: viewModel)
+	}
+
+	public func presentFilter(response: HotelsSearchModels.Filter.Response) {
+		let viewModel = HotelsSearchModels.Filter.ViewModel(filter: response.filter)
+		viewController?.displayFilter(viewModel: viewModel)
+	}
+
+	public func presentUpdateFilter(response: HotelsSearchModels.UpdateFilter.Response) {
+		let viewModel = HotelsSearchModels.UpdateFilter.ViewModel(
+			hotels: makeHotelViewModels(response.hotels)
+		)
+		viewController?.displayUpdateFilter(viewModel: viewModel)
+	}
+
+	private func makeHotelViewModels(_ hotels: [Hotel]) -> [HotelsSearchModels.HotelViewModel] {
+		hotels.map {
+			.init(
+				position: $0.position,
+				starRating: $0.starRating,
+				name: $0.name,
+				score: "\($0.reviewScore)",
+				reviews: "\($0.reviewCount) reviews",
+				price: priceFormatter.string(from: $0.price),
+				priceDetails: "Includes taxes and fees",
+				photoURL: $0.photoURLs.first
+			)
+		}
 	}
 }
 

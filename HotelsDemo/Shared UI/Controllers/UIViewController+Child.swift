@@ -16,13 +16,12 @@ public extension UIViewController {
 
 		child.view.translatesAutoresizingMaskIntoConstraints = false
 		let constraints = [
-			containerView.leadingAnchor.constraint(equalTo: child.view.leadingAnchor),
-			containerView.trailingAnchor.constraint(equalTo: child.view.trailingAnchor),
-			containerView.topAnchor.constraint(equalTo: child.view.topAnchor),
-			containerView.bottomAnchor.constraint(equalTo: child.view.bottomAnchor)
+			child.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+			child.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+			child.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+			child.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
 		]
 		constraints.forEach { $0.isActive = true }
-		containerView.addConstraints(constraints)
 
 		child.didMove(toParent: self)
 	}
@@ -33,5 +32,27 @@ public extension UIViewController {
 		child.willMove(toParent: nil)
 		child.view.removeFromSuperview()
 		child.removeFromParent()
+	}
+
+	func addChildren(_ children: [UIViewController], to stackView: UIStackView) {
+		children.forEach { child in
+			addChildToStack(child, stackView: stackView)
+		}
+	}
+
+	func removeChildren(_ children: [UIViewController]) {
+		children.forEach { child in
+			removeChild(child)
+		}
+	}
+
+	private func addChildToStack(_ child: UIViewController, stackView: UIStackView) {
+		guard child.parent == nil else { return }
+
+		addChild(child)
+
+		stackView.addArrangedSubview(child.view)
+
+		child.didMove(toParent: self)
 	}
 }

@@ -45,6 +45,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		)
 		let interactor = HotelsSearchInteractor(
 			criteria: criteria,
+			repository: DefaultHotelsRepository(),
 			worker: HotelsSearchWorker(
 				factory: DefaultHotelsRequestFactory(
 					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
@@ -56,10 +57,15 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		let presenter = HotelsSearchPresenter(
 			priceFormatter: PriceFormatter()
 		)
+		let router = HotelsSearchRouter(
+			hotelFiltersPickerFactory: HotelFiltersPickerComposer()
+		)
 
 		viewController.interactor = interactor
+		viewController.router = router
 		interactor.presenter = presenter
 		presenter.viewController = viewControllerAdapter
+		router.viewController = viewController
 
 		return viewController
 	}

@@ -31,7 +31,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		sut.search(request: .init())
 		service.completeWithResult(.failure(serviceError))
 
-		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
+		XCTAssertEqual(presenter.messages.last, .presentSearchError(serviceError))
 	}
 
 	func test_search_presentsHotelsOnServiceSuccess() {
@@ -41,7 +41,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		sut.search(request: .init())
 		service.completeWithResult(.success(hotels))
 
-		XCTAssertEqual(presenter.messages, [.presentSearch(.init(hotels: hotels))])
+		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
 	}
 
 	// MARK: - Helpers
@@ -55,6 +55,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let presenter = SearchPresentationLogicSpy()
 		let sut = HotelsSearchInteractor(
 			criteria: criteria,
+			repository: DefaultHotelsRepository(),
 			worker: service
 		)
 		sut.presenter = presenter
@@ -70,9 +71,10 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 	private(set) var messages = [Message]()
 	private var completions = [(HotelsSearchService.Result) -> Void]()
 
-	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
+	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) -> HTTPClientTask {
 		messages.append(.search(criteria))
 		completions.append(completion)
+		return TaskStub()
 	}
 
 	func completeWithResult(_ result: HotelsSearchService.Result, at index: Int = 0) {
@@ -83,7 +85,10 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	enum Message: Equatable {
 		case presentSearch(HotelsSearchModels.Search.Response)
+		case presentSearchLoading(Bool)
 		case presentSearchError(NSError)
+		case presentFilter(HotelsSearchModels.Filter.Response)
+		case presentUpdateFilter(HotelsSearchModels.UpdateFilter.Response)
 	}
 
 	private(set) var messages = [Message]()
@@ -91,8 +96,20 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	func presentSearch(response: HotelsSearchModels.Search.Response) {
 		messages.append(.presentSearch(response))
 	}
-	
+
+	func presentSearchLoading(_ isLoading: Bool) {
+		messages.append(.presentSearchLoading(isLoading))
+	}
+
 	func presentSearchError(_ error: Error) {
 		messages.append(.presentSearchError(error as NSError))
+	}
+
+	func presentFilter(response: HotelsSearchModels.Filter.Response) {
+		messages.append(.presentFilter(response))
+	}
+
+	func presentUpdateFilter(response: HotelsSearchModels.UpdateFilter.Response) {
+		messages.append(.presentUpdateFilter(response))
 	}
 }

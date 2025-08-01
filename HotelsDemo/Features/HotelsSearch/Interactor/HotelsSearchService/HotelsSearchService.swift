@@ -10,5 +10,6 @@ import Foundation
 public protocol HotelsSearchService {
 	typealias Result = Swift.Result<[Hotel], Error>
 
-	func search(criteria: HotelsSearchCriteria, completion: @escaping (Result) -> Void)
+	@discardableResult
+	func search(criteria: HotelsSearchCriteria, completion: @escaping (Result) -> Void) -> HTTPClientTask
 }

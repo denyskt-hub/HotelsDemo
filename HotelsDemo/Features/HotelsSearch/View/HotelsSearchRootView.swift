@@ -15,6 +15,11 @@ public class HotelsSearchRootView: NiblessView {
 		return tableView
 	}()
 
+	public let actionBar: HotelsActionBar = {
+		let actionBar = HotelsActionBar()
+		return actionBar
+	}()
+
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()
 
@@ -34,10 +39,12 @@ public class HotelsSearchRootView: NiblessView {
 
 	private func setupHierarchy() {
 		addSubview(tableView)
+		addSubview(actionBar)
 	}
 
 	private func activateConstraints() {
 		activateConstraintsTableView()
+		activateConstraintsActionBar()
 	}
 }
 
@@ -51,5 +58,13 @@ extension HotelsSearchRootView {
 		let top = tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
 		let bottom = tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
 		NSLayoutConstraint.activate([leading, trailing, top, bottom])
+	}
+
+	private func activateConstraintsActionBar() {
+		actionBar.translatesAutoresizingMaskIntoConstraints = false
+		let leading = actionBar.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor)
+		let trailing = actionBar.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
+		let bottom = actionBar.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
+		NSLayoutConstraint.activate([leading, trailing, bottom])
 	}
 }

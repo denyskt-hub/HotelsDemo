@@ -36,6 +36,10 @@ func makeHTTPURLResponse(statusCode: Int) -> HTTPURLResponse {
 	HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
 }
 
+func anyHotelFilters() -> HotelFilters {
+	HotelFilters()
+}
+
 func anySearchCriteria() -> HotelsSearchCriteria {
 	HotelsSearchCriteria(
 		destination: nil,

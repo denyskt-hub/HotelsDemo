@@ -22,10 +22,14 @@ public final class HotelsSearchWorker: HotelsSearchService {
 		self.dispatcher = dispatcher
 	}
 
-	public func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) {
+	@discardableResult
+	public func search(
+		criteria: HotelsSearchCriteria,
+		completion: @escaping (HotelsSearchService.Result) -> Void
+	) -> HTTPClientTask {
 		let request = factory.makeSearchRequest(criteria: criteria)
 
-		client.perform(request) { [weak self] result in
+		return client.perform(request) { [weak self] result in
 			guard let self else { return }
 
 			let searchResult = HotelsSearchService.Result {

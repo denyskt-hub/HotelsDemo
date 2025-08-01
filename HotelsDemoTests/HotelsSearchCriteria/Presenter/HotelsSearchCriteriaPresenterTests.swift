@@ -168,18 +168,6 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 	}
 }
 
-struct TestError: Error {
-	let message: String
-
-	init(_ message: String) {
-		self.message = message
-	}
-}
-
-extension TestError: LocalizedError {
-	var errorDescription: String? { message }
-}
-
 final class HotelsSearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogic {
 	enum Message: Equatable {
 		case displayCriteria(HotelsSearchCriteriaModels.Load.ViewModel)

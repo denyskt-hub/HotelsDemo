@@ -10,4 +10,5 @@ import UIKit
 public protocol ImageView: AnyObject {
 	func displayImage(_ image: UIImage)
 	func displayPlaceholderImage(_ image: UIImage)
+	func displayLoading(_ isLoading: Bool)
 }

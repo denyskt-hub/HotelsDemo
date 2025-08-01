@@ -63,7 +63,7 @@ public final class DefaultHotelsSearchCriteriaValidator: HotelsSearchCriteriaVal
 		let minCheckIn = today
 
 		var checkIn = checkIn
-		var checkOut = checkIn
+		var checkOut = checkOut
 
 		if checkIn < minCheckIn {
 			checkIn = minCheckIn.adding(days: 1, calendar: calendar)

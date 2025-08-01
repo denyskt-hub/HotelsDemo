@@ -8,7 +8,7 @@
 import XCTest
 import HotelsDemo
 
-final class HotelsSearchViewControllerTests: XCTestCase {
+final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	func test_viewDidLoad_searchHotels() {
 		let (sut, interactor) = makeSUT()
 
@@ -67,39 +67,26 @@ final class HotelsSearchViewControllerTests: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
-		guard sut.numberOfRenderedHotelViews() == viewModels.count else {
-			return XCTFail("Expect \(viewModels.count) hotels, got \(sut.numberOfRenderedHotelViews()) instead", file: file, line: line)
-		}
+		assertThat(sut, isRendering: viewModels, assert: { view, viewModel, index in
+			guard let cell = view as? HotelCell else {
+				return XCTFail("Expected \(HotelCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
+			}
 
-		viewModels.enumerated().forEach { index, viewModel in
-			assertThat(sut, hasViewConfiguredFor: viewModel, at: index, file: file, line: line)
-		}
-	}
-
-	private func assertThat(
-		_ sut: HotelsSearchViewController,
-		hasViewConfiguredFor viewModel: HotelsSearchModels.HotelViewModel,
-		at index: Int,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let view = sut.hotelView(at: index)
-
-		guard let cell = view as? HotelCell else {
-			return XCTFail("Expected \(HotelCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
-		}
-
-		XCTAssertEqual(cell.nameLabel.text, viewModel.name, "Expected nameLabel to be \(viewModel.name), for hotel view at index \(index)", file: file, line: line)
-		XCTAssertEqual(cell.scoreLabel.text, viewModel.score, "Expected scoreLabel to be \(viewModel.score), for hotel view at index \(index)", file: file, line: line)
-		XCTAssertEqual(cell.reviewsLabel.text, viewModel.reviews, "Expected reviewsLabel to be \(viewModel.reviews), for hotel view at index \(index)", file: file, line: line)
-		XCTAssertEqual(cell.priceLabel.text, viewModel.price, "Expected priceLabel to be \(viewModel.price), for hotel view at index \(index)", file: file, line: line)
-		XCTAssertEqual(cell.priceDetailsLabel.text, viewModel.priceDetails, "Expected priceDetailsLabel to be \(viewModel.priceDetails), for hotel view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.nameLabel.text, viewModel.name, "Expected nameLabel to be \(viewModel.name), for hotel view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.scoreLabel.text, viewModel.score, "Expected scoreLabel to be \(viewModel.score), for hotel view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.reviewsLabel.text, viewModel.reviews, "Expected reviewsLabel to be \(viewModel.reviews), for hotel view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.priceLabel.text, viewModel.price, "Expected priceLabel to be \(viewModel.price), for hotel view at index \(index)", file: file, line: line)
+			XCTAssertEqual(cell.priceDetailsLabel.text, viewModel.priceDetails, "Expected priceDetailsLabel to be \(viewModel.priceDetails), for hotel view at index \(index)", file: file, line: line)
+		}, file: file, line: line)
 	}
 }
 
 final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	enum Message: Equatable {
 		case search(HotelsSearchModels.Search.Request)
+		case cancelSearch
+		case filter(HotelsSearchModels.Filter.Request)
+		case updateFilter(HotelsSearchModels.UpdateFilter.Request)
 	}
 
 	private(set) var messages = [Message]()
@@ -107,34 +94,26 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	func search(request: HotelsSearchModels.Search.Request) {
 		messages.append(.search(request))
 	}
+
+	func cancelSearch() {
+		messages.append(.cancelSearch)
+	}
+
+	func filter(request: HotelsSearchModels.Filter.Request) {
+		messages.append(.filter(request))
+	}
+
+	func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
+		messages.append(.updateFilter(request))
+	}
 }
 
-extension HotelsSearchViewController {
+extension HotelsSearchViewController: TableViewRenderer {
 	var errorView: UIAlertController? {
 		presentedViewController as? UIAlertController
 	}
 
 	var errorMessage: String? {
 		errorView?.message
-	}
-
-	func numberOfRenderedHotelViews() -> Int {
-		numberOfRows(in: 0)
-	}
-
-	func hotelView(at index: Int) -> UITableViewCell? {
-		cell(row: index, section: 0)
-	}
-
-	private func cell(row: Int, section: Int) -> UITableViewCell? {
-		guard numberOfRows(in: section) > row else { return nil }
-
-		let dataSource = tableView.dataSource
-		let indexPath = IndexPath(row: row, section: section)
-		return dataSource?.tableView(tableView, cellForRowAt: indexPath)
-	}
-
-	private func numberOfRows(in section: Int) -> Int {
-		tableView.numberOfSections == 0 ? 0 : tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
 	}
 }
