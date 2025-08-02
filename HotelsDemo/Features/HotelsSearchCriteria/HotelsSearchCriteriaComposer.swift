@@ -17,6 +17,12 @@ public protocol HotelsSearchCriteriaFactory {
 }
 
 public final class HotelsSearchCriteriaComposer: HotelsSearchCriteriaFactory {
+	private let client: HTTPClient
+
+	public init(client: HTTPClient) {
+		self.client = client
+	}
+
 	public func makeSearchCriteria(
 		delegate: HotelsSearchCriteriaDelegate,
 		provider: HotelsSearchCriteriaProvider,
@@ -31,7 +37,7 @@ public final class HotelsSearchCriteriaComposer: HotelsSearchCriteriaFactory {
 		let presenter = HotelsSearchCriteriaPresenter(calendar: calendar)
 		let router = HotelsSearchCriteriaRouter(
 			calendar: calendar,
-			destinationPickerFactory: DestinationPickerComposer(),
+			destinationPickerFactory: DestinationPickerComposer(client: client),
 			dateRangePickerFactory: DateRangePickerComposer(),
 			roomGuestsPickerFactory: RoomGuestsPickerComposer()
 		)

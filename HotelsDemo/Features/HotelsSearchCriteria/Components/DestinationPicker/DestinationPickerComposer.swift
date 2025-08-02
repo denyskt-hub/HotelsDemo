@@ -12,13 +12,19 @@ public protocol DestinationPickerFactory {
 }
 
 public final class DestinationPickerComposer: DestinationPickerFactory {
+	private let client: HTTPClient
+
+	public init(client: HTTPClient) {
+		self.client = client
+	}
+
 	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
 		let viewController = DestinationPickerViewController()
 		let worker = DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
-			client: RapidAPIHTTPClient(client: URLSessionHTTPClient()),
+			client: client,
 			dispatcher: MainQueueDispatcher()
 		)
 		let interactor = DestinationPickerInteractor(

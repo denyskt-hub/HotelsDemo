@@ -12,17 +12,14 @@ public protocol MainFactory {
 }
 
 public final class MainComposer: MainFactory {
-	private let client: HTTPClient = {
-		RapidAPIHTTPClient(
-			client: LoggingHTTPClient(
-				client: URLSessionHTTPClient()
-			)
-		)
-	}()
-
+	private let client: HTTPClient
 	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
 
-	public init(searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController) {
+	public init(
+		client: HTTPClient,
+		searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController
+	) {
+		self.client = client
 		self.makeSearchCriteria = searchCriteriaFactory
 	}
 

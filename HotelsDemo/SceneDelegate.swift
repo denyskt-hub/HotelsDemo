@@ -8,6 +8,14 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+	private let client: HTTPClient = {
+		RapidAPIHTTPClient(
+			client: LoggingHTTPClient(
+				client: URLSessionHTTPClient()
+			)
+		)
+	}()
+
 	private lazy var calendar: Calendar = {
 		var calendar = Calendar(identifier: .gregorian)
 		calendar.timeZone = TimeZone(secondsFromGMT: 0)!
@@ -40,11 +48,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}()
 
 	private lazy var mainFactory: MainFactory = {
-		MainComposer(searchCriteriaFactory: makeSearchCriteriaViewController(delegate:))
+		MainComposer(
+			client: client,
+			searchCriteriaFactory: makeSearchCriteriaViewController(delegate:)
+		)
 	}()
 
 	private lazy var searchCriteriaFactory: HotelsSearchCriteriaFactory = {
-		HotelsSearchCriteriaComposer()
+		HotelsSearchCriteriaComposer(client: client)
 	}()
 
 	var window: UIWindow?
