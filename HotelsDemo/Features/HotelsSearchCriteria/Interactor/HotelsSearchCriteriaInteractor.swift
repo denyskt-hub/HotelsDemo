@@ -179,7 +179,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response(criteria: criteria))
+		presenter?.presentLoadCriteria(
+			response: HotelsSearchCriteriaModels.Load.Response(criteria: criteria)
+		)
 	}
 
 	private func presentLoadError(_ error: Error) {
@@ -187,7 +189,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
-		presenter?.presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests))
+		presenter?.presentRoomGuests(
+			response: HotelsSearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests)
+		)
 	}
 
 	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
@@ -200,15 +204,21 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+		presenter?.presentUpdateDestination(
+			response: HotelsSearchCriteriaModels.UpdateDestination.Response(criteria: criteria)
+		)
 	}
 
 	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response(criteria: criteria))
+		presenter?.presentUpdateDates(
+			response: HotelsSearchCriteriaModels.UpdateDates.Response(criteria: criteria)
+		)
 	}
 
 	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria))
+		presenter?.presentUpdateRoomGuests(
+			response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria)
+		)
 	}
 
 	private func presentUpdateError(_ error: Error) {

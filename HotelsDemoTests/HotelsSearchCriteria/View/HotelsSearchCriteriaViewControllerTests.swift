@@ -56,17 +56,13 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 	func test_displayCriteria_rendersCriteria() {
 		let (sut, _, _, _) = makeSUT()
 
-		sut.displayCriteria(
-			viewModel: .init(
-				destination: "destination",
-				dateRange: "Jul 10 – Jul 20",
-				roomGuests: "2 Adults, 1 Room"
-			)
-		)
+		let anyValidViewModel = anyValidSearchCriteriaViewModel()
+		sut.displayCriteria(viewModel: anyValidViewModel)
+		assertThat(sut, isRendering: anyValidViewModel)
 
-		XCTAssertEqual(sut.destinationControlTitle, "destination")
-		XCTAssertEqual(sut.datesControlTitle, "Jul 10 – Jul 20")
-		XCTAssertEqual(sut.roomGuestsControlTitle, "2 Adults, 1 Room")
+		let invalidViewModel = invalidSearchCriteriaViewModel()
+		sut.displayCriteria(viewModel: invalidViewModel)
+		assertThat(sut, isRendering: invalidViewModel)
 	}
 
 	func test_displayLoadError_presentsAlertWithCorrectMessage() {
@@ -169,6 +165,34 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		sut.router = router
 		sut.delegate = delegate
 		return (sut, interactor, router, delegate)
+	}
+
+	private func assertThat(
+		_ sut: HotelsSearchCriteriaViewController,
+		isRendering viewModel: HotelsSearchCriteriaModels.Load.ViewModel,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		XCTAssertEqual(sut.destinationControlTitle, viewModel.destination)
+		XCTAssertEqual(sut.datesControlTitle, viewModel.dateRange)
+		XCTAssertEqual(sut.roomGuestsControlTitle, viewModel.roomGuests)
+		XCTAssertEqual(sut.searchButton.isEnabled, viewModel.isSearchEnabled)
+	}
+
+	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Load.ViewModel {
+		.init(
+			destination: "Any valid destination",
+			dateRange: "Any valid date range",
+			roomGuests: "Any valid room guests"
+		)
+	}
+
+	private func invalidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Load.ViewModel {
+		.init(
+			destination: nil,
+			dateRange: "Any valid date range",
+			roomGuests: "Any valid room guests"
+		)
 	}
 }
 

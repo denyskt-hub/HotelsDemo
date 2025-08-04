@@ -26,6 +26,10 @@ public enum HotelsSearchCriteriaModels {
 			public let dateRange: String
 			public let roomGuests: String
 
+			public var isSearchEnabled: Bool {
+				destination != nil
+			}
+
 			public init(destination: String?, dateRange: String, roomGuests: String) {
 				self.destination = destination
 				self.dateRange = dateRange

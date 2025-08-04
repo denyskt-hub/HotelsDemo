@@ -74,6 +74,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		destinationControl.setTitle(viewModel.destination)
 		datesControl.setTitle(viewModel.dateRange)
 		roomGuestsControl.setTitle(viewModel.roomGuests)
+		searchButton.isEnabled = viewModel.isSearchEnabled
 	}
 
 	public func displayLoadError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel) {
