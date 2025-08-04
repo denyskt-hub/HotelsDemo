@@ -24,6 +24,7 @@ public class HotelsSearchCriteriaRootView: NiblessView {
 
 	public let destinationControl: IconTitleControl = {
 		let control = IconTitleControl()
+		control.setPlaceholder("Search hotel, city, area...")
 		control.setImage(UIImage(systemName: "magnifyingglass"))
 		control.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return control

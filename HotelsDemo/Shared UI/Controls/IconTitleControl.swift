@@ -8,6 +8,7 @@
 import UIKit
 
 public final class IconTitleControl: UIControl {
+	private var placeholderTitle: String?
 	private var hierarchyNotReady = true
 
 	private lazy var stack: UIStackView = {
@@ -56,12 +57,30 @@ public final class IconTitleControl: UIControl {
 		activateConstraintsStack()
 	}
 
+	public func placeholder() -> String? {
+		placeholderTitle
+	}
+
+	public func setPlaceholder(_ placeholder: String?) {
+		placeholderTitle = placeholder
+		if titleLabel.text?.isEmpty ?? true {
+			titleLabel.text = placeholder
+		}
+	}
+
 	public func title() -> String? {
-		titleLabel.text
+		let title = titleLabel.text
+		return (title?.isEmpty ?? true) ? placeholderTitle : title
 	}
 
 	public func setTitle(_ title: String?) {
-		titleLabel.text = title
+		if let text = title, !text.isEmpty {
+			titleLabel.text = text
+			titleLabel.textColor = .label
+		} else {
+			titleLabel.text = placeholderTitle
+			titleLabel.textColor = .secondaryLabel
+		}
 	}
 
 	public func setImage(_ image: UIImage?) {
