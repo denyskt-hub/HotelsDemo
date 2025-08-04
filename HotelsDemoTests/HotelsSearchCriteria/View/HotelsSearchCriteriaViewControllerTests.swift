@@ -173,10 +173,10 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
-		XCTAssertEqual(sut.destinationControlTitle, viewModel.destination)
-		XCTAssertEqual(sut.datesControlTitle, viewModel.dateRange)
-		XCTAssertEqual(sut.roomGuestsControlTitle, viewModel.roomGuests)
-		XCTAssertEqual(sut.searchButton.isEnabled, viewModel.isSearchEnabled)
+		XCTAssertEqual(sut.destinationControlTitle, viewModel.destination, file: file, line: line)
+		XCTAssertEqual(sut.datesControlTitle, viewModel.dateRange, file: file, line: line)
+		XCTAssertEqual(sut.roomGuestsControlTitle, viewModel.roomGuests, file: file, line: line)
+		XCTAssertEqual(sut.searchButton.isEnabled, viewModel.isSearchEnabled, file: file, line: line)
 	}
 
 	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Load.ViewModel {

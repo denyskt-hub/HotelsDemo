@@ -14,7 +14,8 @@ public final class IconTitleControl: UIControl {
 	private lazy var stack: UIStackView = {
 		let stack = UIStackView(arrangedSubviews: [
 			imageView,
-			titleLabel
+			titleLabel,
+			placeholderLabel
 		])
 		stack.axis = .horizontal
 		stack.alignment = .center
@@ -39,6 +40,13 @@ public final class IconTitleControl: UIControl {
 		return label
 	}()
 
+	private let placeholderLabel: UILabel = {
+		let label = UILabel()
+		label.font = .systemFont(ofSize: 17)
+		label.textColor = .secondaryLabel
+		return label
+	}()
+
 	override public func didMoveToWindow() {
 		super.didMoveToWindow()
 
@@ -58,29 +66,21 @@ public final class IconTitleControl: UIControl {
 	}
 
 	public func placeholder() -> String? {
-		placeholderTitle
+		placeholderLabel.text
 	}
 
 	public func setPlaceholder(_ placeholder: String?) {
-		placeholderTitle = placeholder
-		if titleLabel.text?.isEmpty ?? true {
-			titleLabel.text = placeholder
-		}
+		placeholderLabel.text = placeholder
 	}
 
 	public func title() -> String? {
-		let title = titleLabel.text
-		return (title?.isEmpty ?? true) ? placeholderTitle : title
+		titleLabel.text
 	}
 
 	public func setTitle(_ title: String?) {
-		if let text = title, !text.isEmpty {
-			titleLabel.text = text
-			titleLabel.textColor = .label
-		} else {
-			titleLabel.text = placeholderTitle
-			titleLabel.textColor = .secondaryLabel
-		}
+		titleLabel.text = title
+		titleLabel.isHidden = title?.isEmpty ?? true
+		placeholderLabel.isHidden = !titleLabel.isHidden
 	}
 
 	public func setImage(_ image: UIImage?) {
