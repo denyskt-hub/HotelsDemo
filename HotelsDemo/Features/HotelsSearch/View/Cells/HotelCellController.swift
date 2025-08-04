@@ -7,16 +7,8 @@
 
 import UIKit
 
-public protocol HotelCellControllerDelegate: AnyObject {
-	func didRequestPhoto(_ url: URL)
-	func didCancelPhotoRequest()
-}
-
 public final class HotelCellController: NSObject {
 	private let viewModel: HotelsSearchModels.HotelViewModel
-	private var cell: HotelCell?
-
-	public var delegate: HotelCellControllerDelegate?
 
 	public init(viewModel: HotelsSearchModels.HotelViewModel) {
 		self.viewModel = viewModel
@@ -33,7 +25,6 @@ extension HotelCellController: UITableViewDataSource {
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: HotelCell = tableView.dequeueReusableCell()
 		cell.configure(with: viewModel)
-		self.cell = cell
 		return cell
 	}
 }
@@ -42,32 +33,14 @@ extension HotelCellController: UITableViewDataSource {
 
 extension HotelCellController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		self.cell = cell as? HotelCell
+		let hotelCell = cell as? HotelCell
 		if let url = viewModel.photoURL {
-			delegate?.didRequestPhoto(url)
+			hotelCell?.photoImageView.setImage(url)
 		}
 	}
 
 	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		self.cell = nil
-		delegate?.didCancelPhotoRequest()
-	}
-}
-
-// MARK: - ImageView
-
-extension HotelCellController: ImageView {
-	public func displayImage(_ image: UIImage) {
-		cell?.photoImageView.image = image
-		cell?.photoImageView.contentMode = .scaleAspectFill
-	}
-
-	public func displayPlaceholderImage(_ image: UIImage) {
-		cell?.photoImageView.image = image
-		cell?.photoImageView.contentMode = .center
-	}
-
-	public func displayLoading(_ isLoading: Bool) {
-		cell?.photoContainer.isShimmering = isLoading
+		let hotelCell = cell as? HotelCell
+		hotelCell?.photoImageView.setImage(nil)
 	}
 }

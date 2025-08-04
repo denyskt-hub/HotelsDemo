@@ -1,13 +1,13 @@
 //
-//  HotelCellImageLoaderAdapter.swift
+//  ImageDataLoaderAdapter.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 19/7/25.
+//  Created by Denys Kotenko on 4/8/25.
 //
 
 import Foundation
 
-public final class HotelPhotoLoaderAdapter: HotelCellControllerDelegate {
+public final class ImageDataLoaderAdapter: ImageViewDelegate {
 	private let loader: ImageDataLoader
 	private var task: ImageDataLoaderTask?
 
@@ -17,8 +17,11 @@ public final class HotelPhotoLoaderAdapter: HotelCellControllerDelegate {
 		self.loader = loader
 	}
 
-	public func didRequestPhoto(_ url: URL) {
+	public func didSetImageWith(_ url: URL) {
 		presenter?.presentLoading(true)
+
+		task?.cancel()
+
 		task = loader.load(url: url) { [weak self] result in
 			self?.presenter?.presentLoading(false)
 			self?.handleLoadResult(result)
@@ -34,7 +37,8 @@ public final class HotelPhotoLoaderAdapter: HotelCellControllerDelegate {
 		}
 	}
 
-	public func didCancelPhotoRequest() {
+	public func didCancel() {
 		task?.cancel()
+		task = nil
 	}
 }

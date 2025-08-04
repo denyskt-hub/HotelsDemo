@@ -42,16 +42,7 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	private func display(_ hotels: [HotelsSearchModels.HotelViewModel]) {
 		guard let viewController = viewController else { return }
 
-		let hotels = hotels.map {
-			let view = HotelCellController(viewModel: $0)
-			let adapter = HotelPhotoLoaderAdapter(loader: imageDataLoader)
-			let presenter = ImageDataPresenter()
-
-			view.delegate = adapter
-			adapter.presenter = presenter
-			presenter.view = view
-			return view
-		}
+		let hotels = hotels.map { HotelCellController(viewModel: $0) }
 
 		viewController.display(hotels)
 	}

@@ -8,7 +8,7 @@
 import UIKit
 
 public final class ImageDataPresenter: ImageDataPresentationLogic {
-	public weak var view: ImageView?
+	public weak var view: ImageDisplayLogic?
 
 	public func presentImageData(_ data: Data) {
 		guard let image = UIImage(data: data) else { return }

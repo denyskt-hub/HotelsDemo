@@ -1,17 +1,17 @@
 //
-//  ShimmeringLayer.swift
+//  ShimmeringView.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 20/7/25.
+//  Created by Denys Kotenko on 4/8/25.
 //
 
 import UIKit
 
-extension UIView {
+public class ShimmeringView: UIView {
+	private var shimmerLayer: CALayer?
+
 	public var isShimmering: Bool {
-		get {
-			layer.mask is ShimmeringLayer
-		}
+		get { shimmerLayer != nil }
 		set {
 			if newValue {
 				startShimmering()
@@ -22,11 +22,21 @@ extension UIView {
 	}
 
 	private func startShimmering() {
-		layer.mask = ShimmeringLayer(size: bounds.size)
+		guard shimmerLayer == nil else { return }
+
+		let shimmer = ShimmeringLayer(size: bounds.size)
+		layer.addSublayer(shimmer)
+		shimmerLayer = shimmer
 	}
 
 	private func stopShimmering() {
-		layer.mask = nil
+		shimmerLayer?.removeFromSuperlayer()
+		shimmerLayer = nil
+	}
+
+	override public func layoutSubviews() {
+		super.layoutSubviews()
+		shimmerLayer?.frame = bounds
 	}
 
 	private class ShimmeringLayer: CAGradientLayer {

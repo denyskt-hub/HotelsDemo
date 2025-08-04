@@ -24,8 +24,8 @@ public final class HotelCell: UITableViewCell {
 		return view
 	}()
 
-	public let photoImageView: UIImageView = {
-		let imageView = UIImageView()
+	public let photoImageView: ImageView = {
+		let imageView = ImageView()
 		imageView.clipsToBounds = true
 		imageView.contentMode = .scaleAspectFill
 		imageView.backgroundColor = .secondarySystemBackground
@@ -160,7 +160,7 @@ public final class HotelCell: UITableViewCell {
 		reviewsLabel.text = nil
 		priceLabel.text = nil
 		priceDetailsLabel.text = nil
-		photoImageView.image = nil
+		photoImageView.setImage(nil)
 		starRatingView.rating = 0
 	}
 
