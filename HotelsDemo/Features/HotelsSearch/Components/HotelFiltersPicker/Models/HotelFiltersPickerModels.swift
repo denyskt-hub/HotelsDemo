@@ -8,6 +8,28 @@
 import Foundation
 
 public enum HotelFiltersPickerModels {
+	public enum Load {
+		public struct Request: Equatable {
+			public init() {}
+		}
+		
+		public struct Response: Equatable {
+			public let filters: HotelFilters
+
+			public init(filters: HotelFilters) {
+				self.filters = filters
+			}
+		}
+
+		public struct ViewModel: Equatable {
+			public let hasSelectedFilters: Bool
+
+			public init(hasSelectedFilters: Bool) {
+				self.hasSelectedFilters = hasSelectedFilters
+			}
+		}
+	}
+
 	public enum Select {
 		public struct Request: Equatable {
 			public init() {}

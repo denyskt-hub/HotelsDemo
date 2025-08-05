@@ -14,6 +14,17 @@ public final class HotelFiltersPickerPresenter: HotelFiltersPickerPresentationLo
 		// Required for initialization in tests
 	}
 
+	public func present(response: HotelFiltersPickerModels.Load.Response) {
+		let hasSelectedFilters = !response.filters.starRatings.isEmpty ||
+			response.filters.priceRange != nil ||
+			response.filters.reviewScore != nil
+
+		let viewModel = HotelFiltersPickerModels.Load.ViewModel(
+			hasSelectedFilters: hasSelectedFilters
+		)
+		viewController?.display(viewModel: viewModel)
+	}
+
 	public func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
 		let viewModel = HotelFiltersPickerModels.Select.ViewModel(filters: response.filters)
 		viewController?.displaySelectedFilters(viewModel: viewModel)

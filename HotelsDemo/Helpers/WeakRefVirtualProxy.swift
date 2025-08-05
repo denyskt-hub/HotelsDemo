@@ -21,6 +21,8 @@ extension WeakRefVirtualProxy: HotelsSearchCriteriaDelegate where T: HotelsSearc
 	}
 }
 
+extension WeakRefVirtualProxy: HotelFiltersScene where T: HotelFiltersScene {}
+
 extension WeakRefVirtualProxy: PriceRangeDelegate where T: PriceRangeDelegate {
 	func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
 		object?.didSelectPriceRange(priceRange)

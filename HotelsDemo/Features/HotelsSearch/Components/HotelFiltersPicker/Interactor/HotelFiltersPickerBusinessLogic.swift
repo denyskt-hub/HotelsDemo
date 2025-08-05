@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol HotelFiltersPickerBusinessLogic: AnyObject {
+	func load(request: HotelFiltersPickerModels.Load.Request)
 	func updatePriceRange(request: HotelFiltersPickerModels.UpdatePriceRange.Request)
 	func updateStarRatings(request: HotelFiltersPickerModels.UpdateStarRatings.Request)
 	func updateReviewScore(request: HotelFiltersPickerModels.UpdateReviewScore.Request)

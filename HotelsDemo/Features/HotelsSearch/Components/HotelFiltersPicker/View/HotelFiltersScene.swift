@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HotelFiltersScene: UIViewController,
+public protocol HotelFiltersScene: AnyObject,
 	PriceRangeDelegate,
 	StarRatingDelegate,
 	ReviewScoreDelegate {}
