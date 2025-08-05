@@ -59,7 +59,12 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 
 	public func updateFilters(request: HotelsSearchModels.UpdateFilter.Request) {
 		filters = request.filters
-		presenter?.presentUpdateFilters(response: .init(hotels: applyFilters(filters)))
+		presenter?.presentUpdateFilters(
+			response: .init(
+				hotels: applyFilters(filters),
+				hasSelectedFilters: filters.hasSelectedFilters
+			)
+		)
 	}
 
 	private func setHotels(_ hotels: [Hotel]) {

@@ -22,3 +22,11 @@ public struct HotelFilters: Equatable {
 		self.reviewScore = reviewScore
 	}
 }
+
+extension HotelFilters {
+	var hasSelectedFilters: Bool {
+		!starRatings.isEmpty ||
+		priceRange != nil ||
+		reviewScore != nil
+	}
+}

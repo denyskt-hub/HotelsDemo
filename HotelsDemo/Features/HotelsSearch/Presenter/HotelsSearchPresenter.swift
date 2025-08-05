@@ -40,7 +40,8 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 
 	public func presentUpdateFilters(response: HotelsSearchModels.UpdateFilter.Response) {
 		let viewModel = HotelsSearchModels.UpdateFilter.ViewModel(
-			hotels: makeHotelViewModels(response.hotels)
+			hotels: makeHotelViewModels(response.hotels),
+			hasSelectedFilters: response.hasSelectedFilters
 		)
 		viewController?.displayUpdateFilters(viewModel: viewModel)
 	}

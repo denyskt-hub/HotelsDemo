@@ -15,12 +15,8 @@ public final class HotelFiltersPickerPresenter: HotelFiltersPickerPresentationLo
 	}
 
 	public func present(response: HotelFiltersPickerModels.Load.Response) {
-		let hasSelectedFilters = !response.filters.starRatings.isEmpty ||
-			response.filters.priceRange != nil ||
-			response.filters.reviewScore != nil
-
 		let viewModel = HotelFiltersPickerModels.Load.ViewModel(
-			hasSelectedFilters: hasSelectedFilters
+			hasSelectedFilters: response.filters.hasSelectedFilters
 		)
 		viewController?.display(viewModel: viewModel)
 	}

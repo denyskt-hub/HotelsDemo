@@ -73,6 +73,10 @@ public final class HotelsSearchViewController: NiblessViewController {
 		tableView.reloadData()
 	}
 
+	public func display(_ hasSelectedFilters: Bool) {
+		filterButton.setBadgeVisible(hasSelectedFilters)
+	}
+
 	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
 		guard viewModel.isLoading else {
 			return loadingView.hide()
@@ -85,8 +89,8 @@ public final class HotelsSearchViewController: NiblessViewController {
 		displayErrorMessage(viewModel.message)
 	}
 
-	public func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel) {
-		router?.routeToHotelsFilterPicker(viewModel: viewModel)
+	public func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
+		router?.routeToHotelFiltersPicker(viewModel: viewModel)
 	}
 
 	private func cellController(at indexPath: IndexPath) -> HotelCellController? {
