@@ -12,7 +12,7 @@ public enum HotelFiltersPickerModels {
 		public struct Request: Equatable {
 			public init() {}
 		}
-		
+
 		public struct Response: Equatable {
 			public let filters: HotelFilters
 

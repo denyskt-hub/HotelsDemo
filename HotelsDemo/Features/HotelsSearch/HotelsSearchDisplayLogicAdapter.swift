@@ -9,14 +9,9 @@ import UIKit
 
 public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	private weak var viewController: HotelsSearchViewController?
-	private let imageDataLoader: ImageDataLoader
 
-	public init(
-		viewController: HotelsSearchViewController,
-		imageLoader: ImageDataLoader
-	) {
+	public init(viewController: HotelsSearchViewController) {
 		self.viewController = viewController
-		self.imageDataLoader = imageLoader
 	}
 
 	public func displaySearch(viewModel: HotelsSearchModels.Search.ViewModel) {
@@ -31,11 +26,11 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 		viewController?.displaySearchError(viewModel: viewModel)
 	}
 
-	public func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	public func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
 		viewController?.displayFilter(viewModel: viewModel)
 	}
 
-	public func displayUpdateFilter(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
+	public func displayUpdateFilters(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
 		display(viewModel.hotels)
 	}
 

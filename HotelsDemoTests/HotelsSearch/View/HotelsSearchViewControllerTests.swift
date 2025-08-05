@@ -64,9 +64,9 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		let filter = anyHotelFilters()
 		let (sut, _, router) = makeSUT()
 
-		sut.displayFilter(viewModel: .init(filter: filter))
+		sut.displayFilter(viewModel: .init(filters: filter))
 
-		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(.init(filter: filter))])
+		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(.init(filters: filter))])
 	}
 
 	func test_filterTap_presentsFilter() {
@@ -84,7 +84,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 		sut.didSelectFilters(filters)
 
-		XCTAssertEqual(interactor.messages, [.updateFilter(.init(filter: filters))])
+		XCTAssertEqual(interactor.messages, [.updateFilter(.init(filters: filters))])
 	}
 
 	// MARK: - Helpers
@@ -140,11 +140,11 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 		messages.append(.cancelSearch)
 	}
 
-	func filter(request: HotelsSearchModels.Filter.Request) {
+	func filters(request: HotelsSearchModels.Filter.Request) {
 		messages.append(.filter(request))
 	}
 
-	func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
+	func updateFilters(request: HotelsSearchModels.UpdateFilter.Request) {
 		messages.append(.updateFilter(request))
 	}
 }

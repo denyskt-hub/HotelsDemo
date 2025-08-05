@@ -44,9 +44,30 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
 	}
 
+	func test_filters_presentsFilters() {
+		let filters = anyHotelFilters()
+		let (sut, _, presenter) = makeSUT()
+
+		sut.filters(request: .init())
+
+		XCTAssertEqual(presenter.messages.last, .presentFilters(.init(filters: filters)))
+	}
+
+	func test_updateFilters_presentsUpdateFilters() {
+		let filters = anyHotelFilters()
+		let (sut, _, presenter) = makeSUT()
+
+		sut.updateFilters(request: .init(filters: filters))
+
+		XCTAssertEqual(presenter.messages.last, .presentUpdateFilter(.init(hotels: [])))
+	}
+
 	// MARK: - Helpers
 
-	private func makeSUT(criteria: HotelsSearchCriteria = anySearchCriteria()) -> (
+	private func makeSUT(
+		criteria: HotelsSearchCriteria = anySearchCriteria(),
+		filters: HotelFilters = anyHotelFilters()
+	) -> (
 		sut: HotelsSearchInteractor,
 		service: HotelsSearchServiceSpy,
 		presenter: SearchPresentationLogicSpy
@@ -55,6 +76,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let presenter = SearchPresentationLogicSpy()
 		let sut = HotelsSearchInteractor(
 			criteria: criteria,
+			filters: filters,
 			repository: DefaultHotelsRepository(),
 			worker: service
 		)
@@ -87,7 +109,7 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 		case presentSearch(HotelsSearchModels.Search.Response)
 		case presentSearchLoading(Bool)
 		case presentSearchError(NSError)
-		case presentFilter(HotelsSearchModels.Filter.Response)
+		case presentFilters(HotelsSearchModels.Filter.Response)
 		case presentUpdateFilter(HotelsSearchModels.UpdateFilter.Response)
 	}
 
@@ -105,11 +127,11 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 		messages.append(.presentSearchError(error as NSError))
 	}
 
-	func presentFilter(response: HotelsSearchModels.Filter.Response) {
-		messages.append(.presentFilter(response))
+	func presentFilters(response: HotelsSearchModels.Filter.Response) {
+		messages.append(.presentFilters(response))
 	}
 
-	func presentUpdateFilter(response: HotelsSearchModels.UpdateFilter.Response) {
+	func presentUpdateFilters(response: HotelsSearchModels.UpdateFilter.Response) {
 		messages.append(.presentUpdateFilter(response))
 	}
 }

@@ -10,7 +10,7 @@ import Foundation
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private let criteria: HotelsSearchCriteria
 	private let repository: HotelsRepository
-	private var filter = HotelFilters()
+	private var filters: HotelFilters
 
 	private let worker: HotelsSearchService
 	private var task: HTTPClientTask?
@@ -19,10 +19,12 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 
 	public init(
 		criteria: HotelsSearchCriteria,
+		filters: HotelFilters,
 		repository: HotelsRepository,
 		worker: HotelsSearchService
 	) {
 		self.criteria = criteria
+		self.filters = filters
 		self.repository = repository
 		self.worker = worker
 	}
@@ -41,7 +43,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		switch result {
 		case let .success(hotels):
 			setHotels(hotels)
-			presenter?.presentSearch(response: .init(hotels: applyFilter(filter)))
+			presenter?.presentSearch(response: .init(hotels: applyFilters(filters)))
 		case let .failure(error):
 			presenter?.presentSearchError(error)
 		}
@@ -51,20 +53,20 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		task?.cancel()
 	}
 
-	public func filter(request: HotelsSearchModels.Filter.Request) {
-		presenter?.presentFilter(response: .init(filter: filter))
+	public func filters(request: HotelsSearchModels.Filter.Request) {
+		presenter?.presentFilters(response: .init(filters: filters))
 	}
 
-	public func updateFilter(request: HotelsSearchModels.UpdateFilter.Request) {
-		filter = request.filter
-		presenter?.presentUpdateFilter(response: .init(hotels: applyFilter(filter)))
+	public func updateFilters(request: HotelsSearchModels.UpdateFilter.Request) {
+		filters = request.filters
+		presenter?.presentUpdateFilters(response: .init(hotels: applyFilters(filters)))
 	}
 
 	private func setHotels(_ hotels: [Hotel]) {
 		repository.setHotels(hotels)
 	}
 
-	private func applyFilter(_ filter: HotelFilters) -> [Hotel] {
-		repository.filter(with: HotelsSpecificationFactory.make(from: filter))
+	private func applyFilters(_ filters: HotelFilters) -> [Hotel] {
+		repository.filter(with: HotelsSpecificationFactory.make(from: filters))
 	}
 }

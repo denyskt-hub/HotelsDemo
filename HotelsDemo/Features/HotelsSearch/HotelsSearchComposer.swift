@@ -25,26 +25,12 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
 		let viewController = HotelsSearchViewController()
-
-		let mainQueueDispatcher = MainQueueDispatcher()
-		let localImageDataLoader = LocalImageDataLoader(
-			cache: imageDataCache,
-			dispatcher: mainQueueDispatcher
-		)
-		let remoteImageDataLoader = RemoteImageDataLoader(
-			client: URLSessionHTTPClient(),
-			dispatcher: mainQueueDispatcher
-		)
-		let cachingImageDataLoader = CachingImageDataLoader(
-			loader: remoteImageDataLoader,
-			cache: imageDataCache
-		)
 		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
-			viewController: viewController,
-			imageLoader: localImageDataLoader.fallback(to: cachingImageDataLoader)
+			viewController: viewController
 		)
 		let interactor = HotelsSearchInteractor(
 			criteria: criteria,
+			filters: HotelFilters(),
 			repository: DefaultHotelsRepository(),
 			worker: HotelsSearchWorker(
 				factory: DefaultHotelsRequestFactory(

@@ -97,7 +97,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 	}
 
 	@objc private func filterTapHandler() {
-		interactor?.filter(request: .init())
+		interactor?.filters(request: .init())
 	}
 }
 
@@ -134,6 +134,6 @@ extension HotelsSearchViewController: UITableViewDelegate {
 
 extension HotelsSearchViewController: HotelFiltersPickerDelegate {
 	public func didSelectFilters(_ filters: HotelFilters) {
-		interactor?.updateFilter(request: .init(filter: filters))
+		interactor?.updateFilters(request: .init(filters: filters))
 	}
 }

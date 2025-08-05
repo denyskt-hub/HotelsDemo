@@ -55,6 +55,33 @@ final class HotelsSearchPresenterTests: XCTestCase {
 		XCTAssertEqual(viewController.messages, [.displaySearchError(.init(message: "error message"))])
 	}
 
+	func test_presentFilters_displaysFilters() {
+		let filters = anyHotelFilters()
+		let (sut, viewController) = makeSUT()
+
+		sut.presentFilters(response: .init(filters: filters))
+
+		XCTAssertEqual(viewController.messages, [.displayFilters(.init(filters: filters))])
+	}
+
+	func test_presentSearchLoading_displaysLoading() {
+		let (sut, viewController) = makeSUT()
+
+		sut.presentSearchLoading(true)
+		XCTAssertEqual(viewController.messages.last, .displayLoading(.init(isLoading: true)))
+
+		sut.presentSearchLoading(false)
+		XCTAssertEqual(viewController.messages.last, .displayLoading(.init(isLoading: false)))
+	}
+
+	func test_presentUpdateFilters_displaysUpdateFilters() {
+		let (sut, viewController) = makeSUT()
+
+		sut.presentUpdateFilters(response: .init(hotels: []))
+
+		XCTAssertEqual(viewController.messages, [.displayUpdateFilters(.init(hotels: []))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(locale: Locale = Locale(identifier: "en_US")) -> (
@@ -73,8 +100,8 @@ final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 		case displaySearch(HotelsSearchModels.Search.ViewModel)
 		case displayLoading(HotelsSearchModels.LoadingViewModel)
 		case displaySearchError(HotelsSearchModels.ErrorViewModel)
-		case displayFilter(HotelsSearchModels.Filter.ViewModel)
-		case displayUpdateFilter(HotelsSearchModels.UpdateFilter.ViewModel)
+		case displayFilters(HotelsSearchModels.Filter.ViewModel)
+		case displayUpdateFilters(HotelsSearchModels.UpdateFilter.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -91,11 +118,11 @@ final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 		messages.append(.displaySearchError(viewModel))
 	}
 
-	func displayFilter(viewModel: HotelsSearchModels.Filter.ViewModel) {
-		messages.append(.displayFilter(viewModel))
+	func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
+		messages.append(.displayFilters(viewModel))
 	}
 
-	func displayUpdateFilter(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
-		messages.append(.displayUpdateFilter(viewModel))
+	func displayUpdateFilters(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
+		messages.append(.displayUpdateFilters(viewModel))
 	}
 }

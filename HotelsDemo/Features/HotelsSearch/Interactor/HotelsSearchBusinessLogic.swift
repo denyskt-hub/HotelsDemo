@@ -11,6 +11,6 @@ public protocol HotelsSearchBusinessLogic {
 	func search(request: HotelsSearchModels.Search.Request)
 	func cancelSearch()
 
-	func filter(request: HotelsSearchModels.Filter.Request)
-	func updateFilter(request: HotelsSearchModels.UpdateFilter.Request)
+	func filters(request: HotelsSearchModels.Filter.Request)
+	func updateFilters(request: HotelsSearchModels.UpdateFilter.Request)
 }
