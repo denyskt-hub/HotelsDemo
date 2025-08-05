@@ -37,6 +37,14 @@ public final class HotelsSearchViewController: NiblessViewController {
 		}
 	}
 
+	public override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+
+		if isMovingFromParent {
+			interactor?.cancelSearch()
+		}
+	}
+
 	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
