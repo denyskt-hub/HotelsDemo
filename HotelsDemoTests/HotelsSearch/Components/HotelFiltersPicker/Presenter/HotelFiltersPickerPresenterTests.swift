@@ -9,6 +9,16 @@ import XCTest
 import HotelsDemo
 
 final class HotelFiltersPickerPresenterTests: XCTestCase {
+	func test_present_displaysResetButtonState() {
+		let (sut, viewController) = makeSUT()
+
+		sut.present(response: .init(filters: emptyHotelFilters()))
+		XCTAssertEqual(viewController.messages.last, .display(.init(hasSelectedFilters: false)))
+
+		sut.present(response: .init(filters: nonEmptyHotelFilters()))
+		XCTAssertEqual(viewController.messages.last, .display(.init(hasSelectedFilters: true)))
+	}
+
 	func test_presentSelectedFilters_displaysSelectedFilters() {
 		let filters = anyHotelFilters()
 		let (sut, viewController) = makeSUT()
@@ -45,11 +55,16 @@ final class HotelFiltersPickerPresenterTests: XCTestCase {
 
 final class HotelFiltersPickerDisplayLogicSpy: HotelFiltersPickerDisplayLogic {
 	enum Message: Equatable {
+		case display(HotelFiltersPickerModels.Load.ViewModel)
 		case displaySelectedFilters(HotelFiltersPickerModels.Select.ViewModel)
 		case displayResetFilters(HotelFiltersPickerModels.Reset.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
+
+	func display(viewModel: HotelFiltersPickerModels.Load.ViewModel) {
+		messages.append(.display(viewModel))
+	}
 
 	func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel) {
 		messages.append(.displaySelectedFilters(viewModel))

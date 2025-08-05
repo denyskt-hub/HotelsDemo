@@ -9,6 +9,17 @@ import XCTest
 import HotelsDemo
 
 final class HotelFiltersPickerInteractorTests: XCTestCase {
+	func test_load_presentsFilters() {
+		let filters = anyHotelFilters()
+		let (sut, presenter) = makeSUT(currentFilters: filters)
+
+		sut.load(request: .init())
+
+		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: filters))
+		])
+	}
+
 	func test_selectFilters_presentsSelectedFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
 
@@ -20,16 +31,18 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 	}
 
 	func test_resetFilters_presentsResetFilters() {
-		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
+		let (sut, presenter) = makeSUT(currentFilters: nonEmptyHotelFilters())
 
 		sut.resetFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: emptyHotelFilters())),
 			.presentResetFilters(.init())
 		])
 	}
 
 	func test_resetFilters_resetsCurrentFilters() {
+		let emptyFilters = emptyHotelFilters()
 		let currentFilters = HotelFilters(
 			priceRange: 0...100,
 			starRatings: Set([.five]),
@@ -41,8 +54,9 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		sut.selectFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: emptyFilters)),
 			.presentResetFilters(.init()),
-			.presentSelectedFilters(.init(filters: HotelFilters()))
+			.presentSelectedFilters(.init(filters: emptyFilters))
 		])
 	}
 
@@ -53,6 +67,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		sut.selectFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: HotelFilters(priceRange: 10...20))),
 			.presentSelectedFilters(.init(filters: HotelFilters(priceRange: 10...20)))
 		])
 	}
@@ -64,6 +79,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		sut.selectFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: HotelFilters(starRatings: [.five]))),
 			.presentSelectedFilters(.init(filters: HotelFilters(starRatings: [.five])))
 		])
 	}
@@ -75,6 +91,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		sut.selectFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
+			.present(.init(filters: HotelFilters(reviewScore: .wonderful))),
 			.presentSelectedFilters(.init(filters: HotelFilters(reviewScore: .wonderful)))
 		])
 	}
@@ -94,11 +111,16 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 
 final class HotelFiltersPickerPresentationLogicSpy: HotelFiltersPickerPresentationLogic {
 	enum Message: Equatable {
+		case present(HotelFiltersPickerModels.Load.Response)
 		case presentSelectedFilters(HotelFiltersPickerModels.Select.Response)
 		case presentResetFilters(HotelFiltersPickerModels.Reset.Response)
 	}
 
 	private(set) var messages = [Message]()
+
+	func present(response: HotelFiltersPickerModels.Load.Response) {
+		messages.append(.present(response))
+	}
 
 	func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
 		messages.append(.presentSelectedFilters(response))

@@ -9,6 +9,24 @@ import XCTest
 import HotelsDemo
 
 final class HotelFiltersPickerViewControllerTests: XCTestCase {
+	func test_viewDidLoad_loadsInitialData() {
+		let (sut, interactor, _) = makeSUT()
+
+		sut.simulateAppearance()
+		
+		XCTAssertEqual(interactor.messages, [.load(.init())])
+	}
+
+	func test_display_rendersHasSelectedFiltersState() {
+		let (sut, _, _) = makeSUT()
+
+		sut.display(viewModel: .init(hasSelectedFilters: false))
+		XCTAssertFalse(sut.resetButton.isEnabled)
+
+		sut.display(viewModel: .init(hasSelectedFilters: true))
+		XCTAssertTrue(sut.resetButton.isEnabled)
+	}
+
 	func test_displaySelectedFilters_notifiesDelegateWithSelectedFilters() {
 		let filters = anyHotelFilters()
 		let (sut, _, delegate) = makeSUT()
@@ -38,7 +56,10 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 
 		sut.simulateApplyButtonTap()
 
-		XCTAssertEqual(interactor.messages, [.selectFilters(.init())])
+		XCTAssertEqual(interactor.messages, [
+			.load(.init()),
+			.selectFilters(.init())
+		])
 	}
 
 	func test_resetButtonTap_resetsFilters() {
@@ -47,7 +68,10 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		
 		sut.simulateResetButtonTap()
 
-		XCTAssertEqual(interactor.messages, [.resetFilters(.init())])
+		XCTAssertEqual(interactor.messages, [
+			.load(.init()),
+			.resetFilters(.init())
+		])
 	}
 
 	func test_didSelectPriceRange_updatesPriceRange() {
@@ -131,6 +155,7 @@ final class ResetableFilterViewControllerSpy: UIViewController, ResetableFilterV
 
 final class HotelFiltersPickerBusinessLogicSpy: HotelFiltersPickerBusinessLogic {
 	enum Message: Equatable {
+		case load(HotelFiltersPickerModels.Load.Request)
 		case updatePriceRange(HotelFiltersPickerModels.UpdatePriceRange.Request)
 		case updateStarRatings(HotelFiltersPickerModels.UpdateStarRatings.Request)
 		case updateReviewScore(HotelFiltersPickerModels.UpdateReviewScore.Request)
@@ -139,6 +164,10 @@ final class HotelFiltersPickerBusinessLogicSpy: HotelFiltersPickerBusinessLogic 
 	}
 
 	private(set) var messages = [Message]()
+
+	func load(request: HotelFiltersPickerModels.Load.Request) {
+		messages.append(.load(request))
+	}
 
 	func updatePriceRange(request: HotelFiltersPickerModels.UpdatePriceRange.Request) {
 		messages.append(.updatePriceRange(request))

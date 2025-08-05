@@ -23,7 +23,6 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	public let resetButton: UIButton = {
 		let button = UIButton()
 		button.configure(title: "Reset")
-		button.isEnabled = false
 		return button
 	}()
 
@@ -70,6 +69,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	}
 
 	private func setupResetButton() {
+		resetButton.isEnabled = false
 		resetButton.addTarget(self, action: #selector(resetTapHandler), for: .touchUpInside)
 	}
 
