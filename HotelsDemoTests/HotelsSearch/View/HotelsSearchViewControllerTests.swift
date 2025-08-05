@@ -10,11 +10,22 @@ import HotelsDemo
 
 final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	func test_viewDidLoad_searchHotels() {
-		let (sut, interactor) = makeSUT()
+		let (sut, interactor, _) = makeSUT()
 
 		sut.simulateAppearance()
 
 		XCTAssertEqual(interactor.messages, [.search(.init())])
+	}
+
+	func test_displayLoading_rendersLoadingIndicator() {
+		let (sut, _, _) = makeSUT()
+		XCTAssertFalse(sut.isShowingLoadingIndicator)
+
+		sut.displayLoading(viewModel: .init(isLoading: true))
+		XCTAssertTrue(sut.isShowingLoadingIndicator)
+
+		sut.displayLoading(viewModel: .init(isLoading: false))
+		XCTAssertFalse(sut.isShowingLoadingIndicator)
 	}
 
 	func test_displayCellControllers_rendersCells() {
@@ -31,7 +42,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 			)
 		]
 		let cellControllers = viewModels.map(HotelCellController.init)
-		let (sut, _) = makeSUT()
+		let (sut, _, _) = makeSUT()
 
 		sut.simulateAppearanceInWindow()
 		assertThat(sut, isRendering: [])
@@ -41,7 +52,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 	}
 
 	func test_displaySearchError_rendersErrorMessage() {
-		let (sut, _) = makeSUT()
+		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
 		sut.displaySearchError(viewModel: .init(message: "Some error message"))
@@ -49,16 +60,46 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		XCTAssertEqual(sut.errorMessage, "Some error message")
 	}
 
+	func test_displayFilter_routesToHotelFiltersPicker() {
+		let filter = anyHotelFilters()
+		let (sut, _, router) = makeSUT()
+
+		sut.displayFilter(viewModel: .init(filter: filter))
+
+		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(.init(filter: filter))])
+	}
+
+	func test_filterTap_presentsFilter() {
+		let (sut, interactor, _) = makeSUT()
+		sut.simulateAppearance()
+
+		sut.simulateFilterButtonTap()
+
+		XCTAssertEqual(interactor.messages.last, .filter(.init()))
+	}
+
+	func test_didSelectFilters_updatesFiters() {
+		let filters = anyHotelFilters()
+		let (sut, interactor, _) = makeSUT()
+
+		sut.didSelectFilters(filters)
+
+		XCTAssertEqual(interactor.messages, [.updateFilter(.init(filter: filters))])
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
 		sut: HotelsSearchViewController,
-		interactor: SearchBusinessLogicSpy
+		interactor: SearchBusinessLogicSpy,
+		router: HotelsSearchRoutingLogicSpy
 	) {
 		let interactor = SearchBusinessLogicSpy()
+		let router = HotelsSearchRoutingLogicSpy()
 		let sut = HotelsSearchViewController()
 		sut.interactor = interactor
-		return (sut, interactor)
+		sut.router = router
+		return (sut, interactor, router)
 	}
 
 	private func assertThat(
@@ -108,6 +149,18 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	}
 }
 
+final class HotelsSearchRoutingLogicSpy: HotelsSearchRoutingLogic {
+	enum Message: Equatable {
+		case routeToHotelsFilterPicker(HotelsSearchModels.Filter.ViewModel)
+	}
+
+	private(set) var messages = [Message]()
+
+	func routeToHotelsFilterPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
+		messages.append(.routeToHotelsFilterPicker(viewModel))
+	}
+}
+
 extension HotelsSearchViewController: TableViewRenderer {
 	var errorView: UIAlertController? {
 		presentedViewController as? UIAlertController
@@ -115,5 +168,13 @@ extension HotelsSearchViewController: TableViewRenderer {
 
 	var errorMessage: String? {
 		errorView?.message
+	}
+
+	var isShowingLoadingIndicator: Bool {
+		!loadingView.isHidden && loadingView.isAnimating
+	}
+
+	func simulateFilterButtonTap() {
+		filterButton.simulateTap()
 	}
 }
