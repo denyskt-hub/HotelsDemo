@@ -25,15 +25,15 @@ func anyHotel() -> Hotel {
 }
 
 func makeHotel(
-	id: Int,
-	position: Int,
-	name: String,
-	starRating: Int,
-	reviewCount: Int,
-	reviewScore: Decimal,
-	photoURLs: [URL],
-	grossPrice: Decimal,
-	currency: String
+	id: Int = 0,
+	position: Int = 0,
+	name: String = "Hotel",
+	starRating: Int = 5,
+	reviewCount: Int = 0,
+	reviewScore: Decimal = 0,
+	photoURLs: [URL] = [],
+	grossPrice: Decimal = 100,
+	currency: String = "USD"
 ) -> Hotel {
 	Hotel(
 		id: id,
