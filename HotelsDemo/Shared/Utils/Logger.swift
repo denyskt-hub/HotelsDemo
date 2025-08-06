@@ -44,19 +44,25 @@ public enum LogTag: Hashable {
 	}
 }
 
+public struct LoggerConfiguration {
+	var level: LogLevel
+	var enabledTags: Set<LogTag>
+
+	public static var `default`: LoggerConfiguration {
+		.init(
+			level: .debug,
+			enabledTags: [.general, .networking]
+		)
+	}
+}
+
 public struct Logger {
 	private static let queue = DispatchQueue(label: "\(Logger.self)Queue")
 
-	private static var _level: LogLevel = .debug
-	public static var level: LogLevel {
-		get { queue.sync { _level } }
-		set { queue.sync { _level = newValue } }
-	}
-
-	private static var _enabledTags: Set<LogTag> = [.general, .networking]
-	public static var enabledTags: Set<LogTag> {
-		get { queue.sync { _enabledTags } }
-		set { queue.sync { _enabledTags = newValue } }
+	private static var _configuration = LoggerConfiguration.default
+	public static var configuration: LoggerConfiguration {
+		get { queue.sync { _configuration } }
+		set { queue.sync { _configuration = newValue } }
 	}
 
 	public static func log(
@@ -91,9 +97,29 @@ public struct Logger {
 
 	private static func shouldLog(_ level: LogLevel, _ tag: LogTag) -> Bool {
 		#if DEBUG
-		level.priority >= Self.level.priority && enabledTags.contains(tag)
+		level.priority >= configuration.level.priority && configuration.enabledTags.contains(tag)
 		#else
 		false
 		#endif
+	}
+}
+
+public extension Logger {
+	static func setMinimumLogLevel(_ level: LogLevel) {
+		configuration.level = level
+	}
+}
+
+public extension Logger {
+	static func enableTag(_ tag: LogTag) {
+		configuration.enabledTags.insert(tag)
+	}
+
+	static func disableTag(_ tag: LogTag) {
+		configuration.enabledTags.remove(tag)
+	}
+
+	static func disableAllLogs() {
+		configuration.level = .none
 	}
 }

@@ -13,8 +13,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		_ application: UIApplication,
 		didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 	) -> Bool {
-		Logger.level = .debug
-		Logger.enabledTags = [.general, .networking]
+		Logger.configuration = .init(
+			level: .debug,
+			enabledTags: [.general, .networking]
+		)
 		return true
 	}
 }
