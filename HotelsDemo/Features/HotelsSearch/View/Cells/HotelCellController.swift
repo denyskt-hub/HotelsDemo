@@ -9,9 +9,14 @@ import UIKit
 
 public final class HotelCellController: NSObject {
 	private let viewModel: HotelsSearchModels.HotelViewModel
+	private let prefetcher: ImageDataPrefetcher
 
-	public init(viewModel: HotelsSearchModels.HotelViewModel) {
+	public init(
+		viewModel: HotelsSearchModels.HotelViewModel,
+		prefetcher: ImageDataPrefetcher = SharedImageDataPrefetcher.instance
+	) {
 		self.viewModel = viewModel
+		self.prefetcher = prefetcher
 	}
 }
 
@@ -29,18 +34,41 @@ extension HotelCellController: UITableViewDataSource {
 	}
 }
 
+// MARK: - UITableViewDataSourcePrefetching
+
+extension HotelCellController: UITableViewDataSourcePrefetching {
+	public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+		prefetcher.prefetch(urls: photoURLs())
+	}
+
+	public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+		prefetcher.cancelPrefetching(urls: photoURLs())
+	}
+
+	private func photoURLs() -> [URL] {
+		[viewModel.photoURL].compactMap { $0 }
+	}
+}
+
 // MARK: - UITableViewDelegate
 
 extension HotelCellController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		let hotelCell = cell as? HotelCell
-		if let url = viewModel.photoURL {
-			hotelCell?.photoImageView.setImage(url)
-		}
+		loadImage(with: viewModel.photoURL, for: cell as? HotelCell)
 	}
 
 	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		let hotelCell = cell as? HotelCell
-		hotelCell?.photoImageView.setImage(nil)
+		cancelImageLoad(for: cell as? HotelCell)
+	}
+}
+
+extension HotelCellController {
+	private func loadImage(with url: URL?, for cell: HotelCell?) {
+		guard let url = url else { return }
+		cell?.photoImageView.setImage(url)
+	}
+
+	private func cancelImageLoad(for cell: HotelCell?) {
+		cell?.photoImageView.setImage(nil)
 	}
 }

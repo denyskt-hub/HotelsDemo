@@ -58,6 +58,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 	}
 
 	private func setupTableView() {
+		tableView.prefetchDataSource = self
 		tableView.dataSource = self
 		tableView.delegate = self
 
@@ -117,6 +118,24 @@ extension HotelsSearchViewController: UITableViewDataSource {
 			preconditionFailure("cellController not found")
 		}
 		return cellController.tableView(tableView, cellForRowAt: indexPath)
+	}
+}
+
+// MARK: - UITableViewDataSourcePrefetching
+
+extension HotelsSearchViewController: UITableViewDataSourcePrefetching {
+	public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+		indexPaths.forEach { indexPath in
+			let cellController = cellController(at: indexPath)
+			cellController?.tableView(tableView, prefetchRowsAt: [indexPath])
+		}
+	}
+
+	public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+		indexPaths.forEach { indexPath in
+			let cellController = cellController(at: indexPath)
+			cellController?.tableView(tableView, cancelPrefetchingForRowsAt: [indexPath])
+		}
 	}
 }
 

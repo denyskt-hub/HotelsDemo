@@ -41,7 +41,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 				photoURL: nil
 			)
 		]
-		let cellControllers = viewModels.map(HotelCellController.init)
+		let cellControllers = viewModels.map { HotelCellController(viewModel: $0) }
 		let (sut, _, _) = makeSUT()
 
 		sut.simulateAppearanceInWindow()

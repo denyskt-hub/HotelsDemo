@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SharedImageDataLoader {
+public enum SharedImageDataLoader {
 	private static var _instance: ImageDataLoader?
 
 	public static var instance: ImageDataLoader {
@@ -16,20 +16,32 @@ enum SharedImageDataLoader {
 	}
 
 	private static func defaultLoader() -> ImageDataLoader {
-		let cache = InMemoryImageDataCache(countLimit: 100)
-		let dispatcher = MainQueueDispatcher()
-		let local = LocalImageDataLoader(
-			cache: cache,
-			dispatcher: dispatcher
+		let cache = LoggingImageDataCache(
+			cache: SharedImageDataCache.instance
 		)
-		let remote = RemoteImageDataLoader(
-			client: URLSessionHTTPClient.shared,
-			dispatcher: dispatcher
+		let dispatcher = MainQueueDispatcher()
+		let local = LoggingImageDataLoader(
+			loader: LocalImageDataLoader(
+				cache: cache,
+				dispatcher: dispatcher
+			),
+			tag: "local image"
+		)
+		let remote = LoggingImageDataLoader(
+			loader: RemoteImageDataLoader(
+				client: URLSessionHTTPClient.shared,
+				dispatcher: dispatcher
+			),
+			tag: "remote image"
 		)
 		let caching = CachingImageDataLoader(
 			loader: remote,
 			cache: cache
 		)
-		return local.fallback(to: caching)
+		let logging = LoggingImageDataLoader(
+			loader: local.fallback(to: caching),
+			tag: "image loading"
+		)
+		return logging
 	}
 }
