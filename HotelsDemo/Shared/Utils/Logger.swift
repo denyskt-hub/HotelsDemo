@@ -45,8 +45,19 @@ public enum LogTag: Hashable {
 }
 
 public struct Logger {
-	public static var level: LogLevel = .debug
-	public static var enabledTags: Set<LogTag> = [.general, .networking]
+	private static let queue = DispatchQueue(label: "\(Logger.self)Queue")
+
+	private static var _level: LogLevel = .debug
+	public static var level: LogLevel {
+		get { queue.sync { _level } }
+		set { queue.sync { _level = newValue } }
+	}
+
+	private static var _enabledTags: Set<LogTag> = [.general, .networking]
+	public static var enabledTags: Set<LogTag> {
+		get { queue.sync { _enabledTags } }
+		set { queue.sync { _enabledTags = newValue } }
+	}
 
 	public static func log(
 		_ message: @autoclosure () -> String,
@@ -57,9 +68,12 @@ public struct Logger {
 		line: UInt = #line
 	) {
 		guard shouldLog(level, tag) else { return }
+		let evaluatedMessage = message()
 
-		let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
-		print("[\(level.rawValue)] [\(tag)] \(fileName):\(line) \(function) ➝ \(message())")
+		queue.async {
+			let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
+			print("[\(level.rawValue)] [\(tag)] \(fileName):\(line) \(function) ➝ \(evaluatedMessage)")
+		}
 	}
 
 	public static func log(
@@ -68,8 +82,11 @@ public struct Logger {
 		tag: LogTag = .general
 	) {
 		guard shouldLog(level, tag) else { return }
+		let evaluatedMessage = message()
 
-		print("[\(level.rawValue)] [\(tag)] ➝ \(message())")
+		queue.async {
+			print("[\(level.rawValue)] [\(tag)] ➝ \(evaluatedMessage)")
+		}
 	}
 
 	private static func shouldLog(_ level: LogLevel, _ tag: LogTag) -> Bool {
