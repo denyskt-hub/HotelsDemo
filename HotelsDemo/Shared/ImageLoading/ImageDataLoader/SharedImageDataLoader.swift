@@ -8,31 +8,28 @@
 import Foundation
 
 public enum SharedImageDataLoader {
-	private static var _instance: ImageDataLoader?
+	private static var _instance: ImageDataLoader = defaultLoader()
 
 	public static var instance: ImageDataLoader {
-		get { _instance ?? defaultLoader() }
+		get { _instance }
 		set { _instance = newValue }
 	}
 
 	private static func defaultLoader() -> ImageDataLoader {
 		let cache = LoggingImageDataCache(
-			cache: SharedImageDataCache.instance
+			cache: SharedImageDataCache.instance,
+			logger: ImageDataCacheLoggers.makeLogger(.cache)
 		)
-		let dispatcher = MainQueueDispatcher()
 		let local = LoggingImageDataLoader(
 			loader: LocalImageDataLoader(
 				cache: cache,
-				dispatcher: dispatcher
+				dispatcher: MainQueueDispatcher()
 			),
-			tag: "local image"
+			logger: ImageDataLoadingLoggers.makeLogger(.local)
 		)
 		let remote = LoggingImageDataLoader(
-			loader: RemoteImageDataLoader(
-				client: URLSessionHTTPClient.shared,
-				dispatcher: dispatcher
-			),
-			tag: "remote image"
+			loader: RemoteImageDataLoader.shared,
+			logger: ImageDataLoadingLoggers.makeLogger(.remote)
 		)
 		let caching = CachingImageDataLoader(
 			loader: remote,
@@ -40,8 +37,20 @@ public enum SharedImageDataLoader {
 		)
 		let logging = LoggingImageDataLoader(
 			loader: local.fallback(to: caching),
-			tag: "image loading"
+			logger: ImageDataLoadingLoggers.makeLogger(.composite)
 		)
 		return logging
+	}
+
+	public static func configureLogging(enabled: Bool = true) {
+		let tags: [ImageDataLoaderLogTag] = [.local, .remote, .composite]
+
+		tags.forEach { tag in
+			if enabled {
+				Logger.enableTag(tag.tag)
+			} else {
+				Logger.disableTag(tag.tag)
+			}
+		}
 	}
 }

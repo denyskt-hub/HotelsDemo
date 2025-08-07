@@ -13,10 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		_ application: UIApplication,
 		didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 	) -> Bool {
+		configureLogging()
+		return true
+	}
+
+	private func configureLogging() {
 		Logger.configuration = .init(
 			level: .debug,
-			enabledTags: [.general, .networking]
+			enabledTags: [.general, .networking, .custom("cache")]
 		)
-		return true
+
+		SharedImageDataCache.configureLogging(enabled: false)
+		SharedImageDataLoader.configureLogging(enabled: true)
+		SharedImageDataPrefetcher.configureLogging(enabled: true)
 	}
 }

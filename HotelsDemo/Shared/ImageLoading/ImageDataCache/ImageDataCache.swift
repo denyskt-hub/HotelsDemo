@@ -8,8 +8,11 @@
 import Foundation
 
 public protocol ImageDataCache {
-	func save(_ data: Data, forKey key: String, completion: @escaping (Error?) -> Void)
-	func data(forKey key: String, completion: @escaping (Result<Data?, Error>) -> Void)
+	typealias SaveResult = Result<Void, Error>
+	typealias DataResult = Result<Data?, Error>
+
+	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void)
+	func data(forKey key: String, completion: @escaping (DataResult) -> Void)
 }
 
 extension ImageDataCache {

@@ -9,32 +9,25 @@ import Foundation
 
 public final class LoggingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader
-	private let tag: String
+	private let logger: ImageDataLoadingLogger
 
 	public init(
 		loader: ImageDataLoader,
-		tag: String
+		logger: ImageDataLoadingLogger
 	) {
 		self.loader = loader
-		self.tag = tag
+		self.logger = logger
 	}
 
 	@discardableResult
 	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		#if DEBUG
 		loader.load(url: url) { result in
-			self.log(url, result)
+			self.logger.log(loadResult: result, for: url)
 			completion(result)
 		}
 		#else
 		loader.load(url: url, completion: completion)
 		#endif
-	}
-
-	private func log(_ url: URL, _ result: ImageDataLoader.LoadResult) {
-		switch result {
-		case .success: Logger.log("success: \(url.lastPathComponent)", tag: .custom(tag))
-		case .failure: Logger.log("failure: \(url.lastPathComponent)", tag: .custom(tag))
-		}
 	}
 }

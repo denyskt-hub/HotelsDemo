@@ -8,24 +8,21 @@
 import Foundation
 
 public enum SharedImageDataPrefetcher {
-	private static var _instance: ImageDataPrefetcher?
+	private static var _instance: ImageDataPrefetcher = defaultPrefetcher()
 
 	public static var instance: ImageDataPrefetcher {
-		get { _instance ?? defaultPrefetcher() }
+		get { _instance }
 		set { _instance = newValue }
 	}
 
 	private static func defaultPrefetcher() -> ImageDataPrefetcher {
 		let cache = LoggingImageDataCache(
-			cache: SharedImageDataCache.instance
+			cache: SharedImageDataCache.instance,
+			logger: ImageDataCacheLoggers.makeLogger(.cache)
 		)
-		let dispatcher = MainQueueDispatcher()
 		let remote = LoggingImageDataLoader(
-			loader: RemoteImageDataLoader(
-				client: URLSessionHTTPClient.shared,
-				dispatcher: dispatcher
-			),
-			tag: "remote image"
+			loader: RemoteImageDataLoader.shared,
+			logger: ImageDataLoadingLoggers.makeLogger(.remote)
 		)
 		let caching = CachingImageDataLoader(
 			loader: remote,
@@ -35,10 +32,22 @@ public enum SharedImageDataPrefetcher {
 			loader: PrefetchingImageDataLoader(
 				loader: caching,
 				cache: cache,
-				dispatcher: dispatcher
+				dispatcher: MainQueueDispatcher()
 			),
-			tag: "prefetch image"
+			logger: ImageDataLoadingLoggers.makeLogger(.prefetch)
 		)
 		return ImageDataPrefetcher(loader: prefetching)
+	}
+
+	public static func configureLogging(enabled: Bool = true) {
+		let tags: [ImageDataLoaderLogTag] = [.remote, .prefetch]
+
+		tags.forEach { tag in
+			if enabled {
+				Logger.enableTag(tag.tag)
+			} else {
+				Logger.disableTag(tag.tag)
+			}
+		}
 	}
 }

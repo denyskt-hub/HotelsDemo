@@ -9,32 +9,35 @@ import Foundation
 
 public final class LoggingImageDataCache: ImageDataCache {
 	private let cache: ImageDataCache
+	private let logger: ImageDataCacheLogger
 
-	public init(cache: ImageDataCache) {
+	public init(
+		cache: ImageDataCache,
+		logger: ImageDataCacheLogger
+	) {
 		self.cache = cache
+		self.logger = logger
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping ((Error)?) -> Void) {
-		cache.save(data, forKey: key) { error in
-			if error == nil {
-				Logger.log("Save success for key: \(key)", tag: .custom("cache"))
-			} else {
-				Logger.log("Save failure for key: \(key)", tag: .custom("cache"))
-			}
-
-			completion(error)
-		}
-	}
-
-	public func data(forKey key: String, completion: @escaping (Result<Data?, Error>) -> Void) {
-		cache.data(forKey: key) { result in
-			if case let .success(data) = result, data != nil {
-				Logger.log("Load success for key: \(key)", tag: .custom("cache"))
-			} else {
-				Logger.log("Load failure for key: \(key)", tag: .custom("cache"))
-			}
-
+	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
+		#if DEBUG
+		cache.save(data, forKey: key) { result in
+			self.logger.log(saveResult: result, forKey: key)
 			completion(result)
 		}
+		#else
+		cache.save(data, forKey: key, completion: completion)
+		#endif
+	}
+
+	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
+		#if DEBUG
+		cache.data(forKey: key) { result in
+			self.logger.log(dataResult: result, forKey: key)
+			completion(result)
+		}
+		#else
+		cache.data(forKey: key, completion: completion)
+		#endif
 	}
 }

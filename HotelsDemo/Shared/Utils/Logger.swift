@@ -78,7 +78,7 @@ public struct Logger {
 
 		queue.async {
 			let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
-			print("[\(level.rawValue)] [\(tag)] \(fileName):\(line) \(function) ➝ \(evaluatedMessage)")
+			print("[\(level.rawValue)] [\(tag.rawValue)] \(fileName):\(line) \(function) ➝ \(evaluatedMessage)")
 		}
 	}
 
@@ -91,7 +91,7 @@ public struct Logger {
 		let evaluatedMessage = message()
 
 		queue.async {
-			print("[\(level.rawValue)] [\(tag)] ➝ \(evaluatedMessage)")
+			print("[\(level.rawValue)] [\(tag.rawValue)] ➝ \(evaluatedMessage)")
 		}
 	}
 
