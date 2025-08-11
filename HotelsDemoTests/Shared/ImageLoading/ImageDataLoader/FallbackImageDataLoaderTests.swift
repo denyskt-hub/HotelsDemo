@@ -53,9 +53,17 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 }
 
 final class ImageDataLoaderSpy: ImageDataLoader {
-	private(set) var messages = [URL]()
-	private(set) var tasks = [TaskSpy]()
-	private var completions = [LoadCompletion]()
+	private(set) var messages = [(url: URL, task: TaskSpy, completion: LoadCompletion)]()
+
+	var loadedURLs: [URL] { messages.map { $0.url } }
+
+	var cancelledURLs: [URL] {
+		messages
+			.filter { $0.task.cancelCallCount > 0 }
+			.map { $0.url }
+	}
+
+	var tasks: [TaskSpy] { messages.map { $0.task } }
 
 	final class TaskSpy: ImageDataLoaderTask {
 		private(set) var cancelCallCount = 0
@@ -66,15 +74,16 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 	}
 
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
-		messages.append(url)
-		completions.append(completion)
-
 		let task = TaskSpy()
-		tasks.append(task)
+		messages.append((url, task, completion))
 		return task
 	}
 
+	func task(for url: URL) -> TaskSpy? {
+		messages.first(where: { $0.url == url })?.task
+	}
+
 	func completeWith(_ result: LoadResult, at index: Int = 0) {
-		completions[index](result)
+		messages[index].completion(result)
 	}
 }

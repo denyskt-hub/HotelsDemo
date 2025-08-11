@@ -36,12 +36,12 @@ final class PrefetchingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase
 		let url1 = anyURL()
 		sut.load(url: url1) { _ in }
 		cache.completeDataWith(.failure(anyNSError()))
-		XCTAssertEqual(loader.messages, [url1])
+		XCTAssertEqual(loader.loadedURLs, [url1])
 
 		let url2 = anyURL()
 		sut.load(url: url2) { _ in }
 		cache.completeDataWith(.success(.none))
-		XCTAssertEqual(loader.messages, [url1, url2])
+		XCTAssertEqual(loader.loadedURLs, [url1, url2])
 	}
 
 	func test_load_deliversErrorOnLoaderErrorOnCacheError() {

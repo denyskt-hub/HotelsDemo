@@ -40,7 +40,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 		sut.load(url: url) { _ in }
 		sut.load(url: url) { _ in }
 
-		XCTAssertEqual(loader.messages, [url], "Expected only one underlying load for same URL")
+		XCTAssertEqual(loader.loadedURLs, [url], "Expected only one underlying load for same URL")
 	}
 
 	func test_load_requestsDifferentURLsIndependently() {
@@ -51,7 +51,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 		_ = sut.load(url: url1) { _ in }
 		_ = sut.load(url: url2) { _ in }
 
-		XCTAssertEqual(loader.messages, [url1, url2], "Expected separate loads for different URLs")
+		XCTAssertEqual(loader.loadedURLs, [url1, url2], "Expected separate loads for different URLs")
 	}
 
 	func test_load_deliversSameResultToAllConsumersForSameURL() throws {
@@ -112,7 +112,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 
 		wait(for: [exp], timeout: 2.0)
 
-		XCTAssertEqual(loader.messages, [url])
+		XCTAssertEqual(loader.loadedURLs, [url])
 	}
 
 	func test_stressTest_loadAndCancelFromMultipleThreads() {
