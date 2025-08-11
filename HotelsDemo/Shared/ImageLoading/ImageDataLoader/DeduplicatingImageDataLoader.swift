@@ -33,6 +33,7 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 		self.dispatcher = dispatcher
 	}
 
+	@discardableResult
 	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		let id = UUID()
 		var shouldStart = false

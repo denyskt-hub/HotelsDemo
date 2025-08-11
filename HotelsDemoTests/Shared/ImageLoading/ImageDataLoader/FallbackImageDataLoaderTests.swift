@@ -54,16 +54,24 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 final class ImageDataLoaderSpy: ImageDataLoader {
 	private(set) var messages = [URL]()
+	private(set) var tasks = [TaskSpy]()
 	private var completions = [LoadCompletion]()
 
-	struct Task: ImageDataLoaderTask {
-		func cancel() {}
+	final class TaskSpy: ImageDataLoaderTask {
+		private(set) var cancelCallCount = 0
+
+		func cancel() {
+			cancelCallCount += 1
+		}
 	}
 
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		messages.append(url)
 		completions.append(completion)
-		return Task()
+
+		let task = TaskSpy()
+		tasks.append(task)
+		return task
 	}
 
 	func completeWith(_ result: LoadResult, at index: Int = 0) {
