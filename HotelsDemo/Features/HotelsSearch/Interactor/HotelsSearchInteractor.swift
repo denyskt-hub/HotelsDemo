@@ -72,6 +72,6 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	}
 
 	private func applyFilters(_ filters: HotelFilters) -> [Hotel] {
-		repository.filter(with: HotelsSpecificationFactory.make(from: filters))
+		repository.filter(with: HotelFiltersSpecificationFactory.make(from: filters))
 	}
 }

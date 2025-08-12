@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum HotelsSpecificationFactory {
+public enum HotelFiltersSpecificationFactory {
 	public static func make(from filters: HotelFilters) -> any HotelSpecification {
 		var spec = AnySpecification(AlwaysTrueHotelSpecification())
 
