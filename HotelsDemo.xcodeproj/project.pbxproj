@@ -38,6 +38,11 @@
 			path = Screenshots;
 			sourceTree = "<group>";
 		};
+		92513F0B2E4B80C500F0E6AE /* Docs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Docs;
+			sourceTree = "<group>";
+		};
 		92806DA62E03E0A2005263A8 /* HotelsDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -79,6 +84,7 @@
 		92806D3C2E03DBD6005263A8 = {
 			isa = PBXGroup;
 			children = (
+				92513F0B2E4B80C500F0E6AE /* Docs */,
 				925135A42E4B4A7600F0E6AE /* Screenshots */,
 				9242851D2E1EB976003FDDA9 /* HotelsDemo.xctestplan */,
 				92BBCF342E16748B000A1560 /* Configs */,
@@ -115,6 +121,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				925135A42E4B4A7600F0E6AE /* Screenshots */,
+				92513F0B2E4B80C500F0E6AE /* Docs */,
 				92806DA62E03E0A2005263A8 /* HotelsDemo */,
 				92BBCF342E16748B000A1560 /* Configs */,
 			);
