@@ -35,10 +35,20 @@ The project follows the **Clean Swift (VIP)** pattern, ensuring separation of co
 
 ## Features
 
-- Search Criteria Management
-- Hotel Search with filters (price, rating, review score)
-- Reusable UI Components
-- Comprehensive Unit Tests
+- **Hotel Search Criteria** (destination, dates, room guests)
+  - Choose destination (country, city, area)
+  - Pick check-in and check-out date range
+  - Specify number of rooms and guests (adults, children, children’s ages)
+  - Store selected search criteria between app launches
+  - Validate search criteria before performing a search
+- **Hotel Search**
+  - Fetch hotels matching the selected search criteria
+- **Hotel Filters** (price, rating, review score)
+  - Apply filters to hotel search results locally on the device
+- **Image Prefetching / Loading / Caching**
+  - Prefetch hotel images before they appear on screen
+  - Load images efficiently to reduce flicker
+  - Cache images to avoid repeated network requests
 
 ## Screenshots
 
@@ -88,13 +98,14 @@ open HotelsDemo.xcodeproj
 
 - ✅ Unit tests covering business logic, data mapping, and edge cases
 - ✅ Automated builds & tests via GitHub Actions
+- ✅ SwiftLint style checks in CI
 
 ## Roadmap
 
 - [ ] Sort hotels on search screen
-- [ ] Add cache EvictionPolicy
+- [ ] Add cache eviction policy
 - [ ] Add localization
-- [ ] Display filters metadata
+- [ ] Display filters metadata on filters screen
 - [ ] Hotels search criteria editing on search screen
 
 ## License
