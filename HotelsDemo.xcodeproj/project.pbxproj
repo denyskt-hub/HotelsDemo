@@ -33,6 +33,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		925135A42E4B4A7600F0E6AE /* Screenshots */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Screenshots;
+			sourceTree = "<group>";
+		};
 		92806DA62E03E0A2005263A8 /* HotelsDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -74,6 +79,7 @@
 		92806D3C2E03DBD6005263A8 = {
 			isa = PBXGroup;
 			children = (
+				925135A42E4B4A7600F0E6AE /* Screenshots */,
 				9242851D2E1EB976003FDDA9 /* HotelsDemo.xctestplan */,
 				92BBCF342E16748B000A1560 /* Configs */,
 				92806DA62E03E0A2005263A8 /* HotelsDemo */,
@@ -108,6 +114,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				925135A42E4B4A7600F0E6AE /* Screenshots */,
 				92806DA62E03E0A2005263A8 /* HotelsDemo */,
 				92BBCF342E16748B000A1560 /* Configs */,
 			);
