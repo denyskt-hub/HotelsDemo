@@ -41,7 +41,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 				photoURL: nil
 			)
 		]
-		let cellControllers = viewModels.map(HotelCellController.init)
+		let cellControllers = viewModels.map { HotelCellController(viewModel: $0) }
 		let (sut, _, _) = makeSUT()
 
 		sut.simulateAppearanceInWindow()
@@ -64,7 +64,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		let filter = anyHotelFilters()
 		let (sut, _, router) = makeSUT()
 
-		sut.displayFilter(viewModel: .init(filters: filter))
+		sut.displayFilters(viewModel: .init(filters: filter))
 
 		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(.init(filters: filter))])
 	}
@@ -156,7 +156,7 @@ final class HotelsSearchRoutingLogicSpy: HotelsSearchRoutingLogic {
 
 	private(set) var messages = [Message]()
 
-	func routeToHotelsFilterPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
 		messages.append(.routeToHotelsFilterPicker(viewModel))
 	}
 }

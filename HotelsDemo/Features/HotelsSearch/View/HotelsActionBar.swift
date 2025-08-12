@@ -22,6 +22,7 @@ public class HotelsActionBar: NiblessView {
 	public let filterButton: UIButton = {
 		let button = UIButton()
 		button.configure(.filled, title: "Filter")
+		button.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
 		button.roundAllCorners(radius: 10)
 		button.heightAnchor.constraint(equalToConstant: 44).isActive = true
 		return button

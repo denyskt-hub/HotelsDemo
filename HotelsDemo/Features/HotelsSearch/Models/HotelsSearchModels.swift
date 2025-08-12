@@ -63,17 +63,21 @@ public enum HotelsSearchModels {
 
 		public struct Response: Equatable {
 			public let hotels: [Hotel]
+			public let hasSelectedFilters: Bool
 
-			public init(hotels: [Hotel]) {
+			public init(hotels: [Hotel], hasSelectedFilters: Bool = false) {
 				self.hotels = hotels
+				self.hasSelectedFilters = hasSelectedFilters
 			}
 		}
 
 		public struct ViewModel: Equatable {
 			public let hotels: [HotelViewModel]
+			public let hasSelectedFilters: Bool
 
-			public init(hotels: [HotelViewModel]) {
+			public init(hotels: [HotelViewModel], hasSelectedFilters: Bool = false) {
 				self.hotels = hotels
+				self.hasSelectedFilters = hasSelectedFilters
 			}
 		}
 	}

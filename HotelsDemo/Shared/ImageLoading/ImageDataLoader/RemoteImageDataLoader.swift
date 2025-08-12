@@ -11,6 +11,16 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
+	public static let shared: ImageDataLoader = {
+		DeduplicatingImageDataLoader(
+			loader: RemoteImageDataLoader(
+				client: URLSessionHTTPClient.shared,
+				dispatcher: ImmediateDispatcher()
+			),
+			dispatcher: MainQueueDispatcher()
+		)
+	}()
+
 	public init(
 		client: HTTPClient,
 		dispatcher: Dispatcher

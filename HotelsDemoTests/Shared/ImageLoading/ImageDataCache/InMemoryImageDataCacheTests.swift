@@ -208,8 +208,10 @@ final class InMemoryImageDataCacheTests: XCTestCase {
 		let exp = expectation(description: "Wait for completion")
 
 		var receivedError: Error?
-		sut.save(data, forKey: key) { error in
-			receivedError = error
+		sut.save(data, forKey: key) { result in
+			if case let .failure(error) = result {
+				receivedError = error
+			}
 			exp.fulfill()
 		}
 

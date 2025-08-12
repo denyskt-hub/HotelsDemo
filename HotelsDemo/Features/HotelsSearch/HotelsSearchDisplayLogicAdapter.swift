@@ -27,11 +27,12 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	}
 
 	public func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
-		viewController?.displayFilter(viewModel: viewModel)
+		viewController?.displayFilters(viewModel: viewModel)
 	}
 
 	public func displayUpdateFilters(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
 		display(viewModel.hotels)
+		viewController?.display(viewModel.hasSelectedFilters)
 	}
 
 	private func display(_ hotels: [HotelsSearchModels.HotelViewModel]) {

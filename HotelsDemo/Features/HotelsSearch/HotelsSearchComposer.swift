@@ -13,14 +13,9 @@ public protocol HotelsSearchFactory {
 
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
-	private let imageDataCache: ImageDataCache
 
-	public init(
-		client: HTTPClient,
-		imageDataCache: ImageDataCache
-	) {
+	public init(client: HTTPClient) {
 		self.client = client
-		self.imageDataCache = imageDataCache
 	}
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {

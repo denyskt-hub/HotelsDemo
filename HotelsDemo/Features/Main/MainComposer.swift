@@ -32,10 +32,7 @@ public final class MainComposer: MainFactory {
 		let interactor = MainInteractor()
 		let presenter = MainPresenter()
 		let router = MainRouter(
-			searchFactory: HotelsSearchComposer(
-				client: client,
-				imageDataCache: InMemoryImageDataCache(countLimit: 100)
-			)
+			searchFactory: HotelsSearchComposer(client: client)
 		)
 
 		viewController.interactor = interactor

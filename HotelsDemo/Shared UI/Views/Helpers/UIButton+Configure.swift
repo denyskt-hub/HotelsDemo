@@ -48,6 +48,8 @@ extension UIButton {
 			config.setDefaultContentInsets()
 		}
 
+		config.imagePadding = 4
+
 		configuration = config
 	}
 }

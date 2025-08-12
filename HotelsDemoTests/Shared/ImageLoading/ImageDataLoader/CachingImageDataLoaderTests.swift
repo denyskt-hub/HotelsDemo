@@ -27,7 +27,7 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 		sut.load(url: url) { _ in }
 
-		XCTAssertEqual(loader.messages, [url])
+		XCTAssertEqual(loader.loadedURLs, [url])
 	}
 
 	func test_load_deliversErrorOnLoaderError() {

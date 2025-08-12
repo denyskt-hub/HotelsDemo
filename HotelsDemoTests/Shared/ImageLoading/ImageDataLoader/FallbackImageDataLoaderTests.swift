@@ -53,20 +53,51 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 }
 
 final class ImageDataLoaderSpy: ImageDataLoader {
-	private(set) var messages = [URL]()
-	private var completions = [LoadCompletion]()
+	private(set) var messages = [(url: URL, task: TaskSpy, completion: LoadCompletion)]()
 
-	struct Task: ImageDataLoaderTask {
-		func cancel() {}
+	var loadedURLs: [URL] { messages.map { $0.url } }
+
+	var cancelledURLs: [URL] {
+		messages
+			.filter { $0.task.cancelCallCount > 0 }
+			.map { $0.url }
+	}
+
+	var tasks: [TaskSpy] { messages.map { $0.task } }
+
+	var onLoad: (() -> Void)?
+	var onCancel: (() -> Void)?
+
+	final class TaskSpy: ImageDataLoaderTask {
+		private(set) var cancelCallCount = 0
+
+		var onCancel: (() -> Void)?
+
+		func cancel() {
+			cancelCallCount += 1
+			onCancel?()
+		}
 	}
 
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
-		messages.append(url)
-		completions.append(completion)
-		return Task()
+		let task = TaskSpy()
+		task.onCancel = { [weak self] in self?.cancel() }
+
+		messages.append((url, task, completion))
+		
+		onLoad?()
+		return task
+	}
+
+	func task(for url: URL) -> TaskSpy? {
+		messages.first(where: { $0.url == url })?.task
 	}
 
 	func completeWith(_ result: LoadResult, at index: Int = 0) {
-		completions[index](result)
+		messages[index].completion(result)
+	}
+
+	private func cancel() {
+		onCancel?()
 	}
 }

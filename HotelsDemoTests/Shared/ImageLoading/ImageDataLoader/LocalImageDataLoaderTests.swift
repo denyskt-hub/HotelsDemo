@@ -74,24 +74,24 @@ final class ImageDataCacheSpy: ImageDataCache {
 
 	private(set) var messages = [Message]()
 
-	private var saveCompletions = [(Error?) -> Void]()
-	private var dataCompletions = [(Result<Data?, Error>) -> Void]()
+	private var saveCompletions = [(SaveResult) -> Void]()
+	private var dataCompletions = [(DataResult) -> Void]()
 
-	func save(_ data: Data, forKey key: String, completion: @escaping (Error?) -> Void) {
+	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
 		messages.append(.save(data, key))
 		saveCompletions.append(completion)
 	}
 	
-	func data(forKey key: String, completion: @escaping (Result<Data?, Error>) -> Void) {
+	func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
 		messages.append(.data(key))
 		dataCompletions.append(completion)
 	}
 
-	func completeSaveWith(_ error: Error?, at index: Int = 0) {
-		saveCompletions[index](error)
+	func completeSaveWith(_ error: Error, at index: Int = 0) {
+		saveCompletions[index](.failure(error))
 	}
 
-	func completeDataWith(_ result: Result<Data?, Error>, at index: Int = 0) {
+	func completeDataWith(_ result: DataResult, at index: Int = 0) {
 		dataCompletions[index](result)
 	}
 }

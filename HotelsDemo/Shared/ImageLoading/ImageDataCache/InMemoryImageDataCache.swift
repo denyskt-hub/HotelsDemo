@@ -34,7 +34,7 @@ public final class InMemoryImageDataCache: ImageDataCache {
 		self.sizeLimitInBytes = sizeLimitInBytes
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping (Error?) -> Void) {
+	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
 		queue.async(flags: .barrier) { [weak self] in
 			guard let self = self else { return }
 
@@ -45,11 +45,11 @@ public final class InMemoryImageDataCache: ImageDataCache {
 
 			self.evictIfNeeded()
 
-			completion(nil)
+			completion(.success(()))
 		}
 	}
 
-	public func data(forKey key: String, completion: @escaping (Result<Data?, Error>) -> Void) {
+	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
 		queue.async(flags: .barrier) { [weak self] in
 			guard let self = self else { return }
 
