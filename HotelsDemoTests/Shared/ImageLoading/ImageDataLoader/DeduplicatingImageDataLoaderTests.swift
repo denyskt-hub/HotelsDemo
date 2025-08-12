@@ -103,14 +103,12 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 		exp.expectedFulfillmentCount = 10
 
 		DispatchQueue.concurrentPerform(iterations: 10) { _ in
-			sut.load(url: url) { _ in
-				exp.fulfill()
-			}
+			sut.load(url: url) { _ in exp.fulfill() }
 		}
 
 		loader.completeWith(.success(anyData()))
 
-		wait(for: [exp], timeout: 2.0)
+		wait(for: [exp], timeout: 1.0)
 
 		XCTAssertEqual(loader.loadedURLs, [url])
 	}
@@ -130,7 +128,9 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 
 		loader.completeWith(.success(anyData()))
 
-		wait(for: [exp], timeout: 5.0)
+		wait(for: [exp], timeout: 2.0)
+
+		// No asserts — the test passes if it doesn’t crash
 	}
 
 	// MARK: - Helpers

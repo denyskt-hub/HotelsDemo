@@ -65,17 +65,27 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 
 	var tasks: [TaskSpy] { messages.map { $0.task } }
 
+	var onLoad: (() -> Void)?
+	var onCancel: (() -> Void)?
+
 	final class TaskSpy: ImageDataLoaderTask {
 		private(set) var cancelCallCount = 0
 
+		var onCancel: (() -> Void)?
+
 		func cancel() {
 			cancelCallCount += 1
+			onCancel?()
 		}
 	}
 
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		let task = TaskSpy()
+		task.onCancel = { [weak self] in self?.cancel() }
+
 		messages.append((url, task, completion))
+		
+		onLoad?()
 		return task
 	}
 
@@ -85,5 +95,9 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 
 	func completeWith(_ result: LoadResult, at index: Int = 0) {
 		messages[index].completion(result)
+	}
+
+	private func cancel() {
+		onCancel?()
 	}
 }

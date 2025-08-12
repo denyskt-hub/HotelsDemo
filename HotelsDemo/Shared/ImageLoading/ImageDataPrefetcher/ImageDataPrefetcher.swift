@@ -8,6 +8,8 @@
 import Foundation
 
 public final class ImageDataPrefetcher {
+	private let queue = DispatchQueue(label: "\(ImageDataPrefetcher.self)Queue")
+
 	private let loader: ImageDataLoader
 	private var tasks = [URL: ImageDataLoaderTask]()
 
@@ -16,17 +18,25 @@ public final class ImageDataPrefetcher {
 	}
 
 	public func prefetch(urls: [URL]) {
-		for url in urls where tasks[url] == nil {
-			tasks[url] = loader.load(url: url) { [weak self] _ in
-				self?.tasks[url] = nil
+		queue.async { [weak self] in
+			guard let self else { return }
+
+			for url in urls where self.tasks[url] == nil {
+				self.tasks[url] = loader.load(url: url) { _ in
+					self.tasks[url] = nil
+				}
 			}
 		}
 	}
 
 	public func cancelPrefetching(urls: [URL]) {
-		for url in urls {
-			tasks[url]?.cancel()
-			tasks[url] = nil
+		queue.async { [weak self] in
+			guard let self else { return }
+
+			for url in urls {
+				self.tasks[url]?.cancel()
+				self.tasks[url] = nil
+			}
 		}
 	}
 }
