@@ -36,8 +36,6 @@ The project follows the **Clean Swift (VIP)** pattern, ensuring separation of co
 - **Shared UI** – Reusable UI components
 - **Helpers** – Utility functions and extensions
 
-![Architecture Diagram](Docs/architecture.png)
-
 ---
 
 ## Technical Stack
