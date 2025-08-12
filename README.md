@@ -1,28 +1,28 @@
 # HotelsDemo
 
-*A clean-architecture iOS app showcasing hotel search, filtering, and booking with modern Swift.*
+*A clean-architecture iOS app showcasing hotel search, filtering with modern Swift.*
 
 > [!NOTE]
 > This project was created as a personal learning exercise to practice building applications using the VIP (View–Interactor–Presenter) architecture. The focus is on clean separation of concerns, modularity, and testability rather than on complete product features or UI polish. It is intended for demonstration in a portfolio to showcase architectural decision-making, code organization, and implementation skills.
 
 ## Screenshots
 
-| Screen 1 | Screen 2 |
-|----------|----------|
-|![Screen 1](Screenshots/screenshot1.png)|
-|![Screen 2](Screenshots/screenshot2.png)|
+<p align="center">
+  <img src="Screenshots/screenshot1.png" width="400">
+  <img src="Screenshots/screenshot2.png" width="400">
+</p>
 
-| Screen 3 | Screen 4 |
-|----------|----------|
-|![Screen 3](Screenshots/screenshot3.png)|
-|![Screen 4](Screenshots/screenshot4.png)|
+<p align="center">
+  <img src="Screenshots/screenshot3.png" width="400">
+  <img src="Screenshots/screenshot4.png" width="400">
+</p>
 
 ---
 
 ## Overview
 
 HotelsDemo demonstrates how to build a modern iOS application using **Clean Swift (VIP)** architecture.  
-It includes a fully functional hotels search, filtering, and booking flow — all backed by a clean, testable design.
+It includes a fully functional hotels search, and filtering flow — all backed by a clean, testable design.
 
 ---
 
@@ -31,7 +31,7 @@ It includes a fully functional hotels search, filtering, and booking flow — al
 The project follows the **Clean Swift (VIP)** pattern, ensuring separation of concerns and testability.
 
 **Core layers:**
-- **Features** – Main functionality modules organized by domain (e.g., Hotels Search, Booking)
+- **Features** – Main functionality modules organized by domain (e.g., Hotels Search)
 - **Shared** – Common utilities and base components
 - **Shared UI** – Reusable UI components
 - **Helpers** – Utility functions and extensions
