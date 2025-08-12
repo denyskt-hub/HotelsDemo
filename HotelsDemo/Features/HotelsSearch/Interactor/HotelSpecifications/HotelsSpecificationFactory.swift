@@ -27,28 +27,4 @@ public enum HotelsSpecificationFactory {
 	}
 }
 
-public struct AlwaysTrueHotelSpecification: HotelSpecification {
-	public func isSatisfied(by hotel: Hotel) -> Bool { true }
-}
-
-public struct AnySpecification<T>: Specification {
-	private let _isSatisfied: (T) -> Bool
-
-	public init<S: Specification>(_ spec: S) where S.Item == T {
-		self._isSatisfied = spec.isSatisfied(by:)
-	}
-
-	public func isSatisfied(by item: T) -> Bool {
-		_isSatisfied(item)
-	}
-
-	public func and(_ other: AnySpecification<T>) -> AnySpecification<T> {
-		AnySpecification(AndSpecification(lhs: self, rhs: other))
-	}
-
-	public func or(_ other: AnySpecification<T>) -> AnySpecification<T> {
-		AnySpecification(OrSpecification(lhs: self, rhs: other))
-	}
-}
-
 extension AnySpecification: HotelSpecification where Item == Hotel {}
