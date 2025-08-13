@@ -2,7 +2,8 @@
 .DS_Store
 
 # Configs
-*.xcconfig
+Secrets.Debug.xcconfig
+Secrets.Release.xcconfig
 
 # Created by https://www.toptal.com/developers/gitignore/api/xcode,swift
 # Edit at https://www.toptal.com/developers/gitignore?templates=xcode,swift

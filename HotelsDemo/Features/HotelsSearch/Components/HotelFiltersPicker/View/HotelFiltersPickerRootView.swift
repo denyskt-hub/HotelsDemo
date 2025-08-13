@@ -23,6 +23,7 @@ public class HotelFiltersPickerRootView: NiblessView {
 	public let scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
 		scrollView.alwaysBounceVertical = true
+		scrollView.showsVerticalScrollIndicator = false
 		return scrollView
 	}()
 

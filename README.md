@@ -90,9 +90,18 @@ git clone https://github.com/denyskt-hub/HotelsDemo.git
 open HotelsDemo.xcodeproj
 ```
 
-3. **Select the `HotelsDemo` scheme**
+3. Copy `Config/Secrets.Template.xcconfig` to:
+   - `Config/Secrets.Debug.xcconfig`
+   - `Config/Secrets.Release.xcconfig`
 
-4. **Build & Run** on your desired simulator or device
+4. Replace the placeholder values with your actual keys.
+
+⚠️ Never commit the real `Secrets.Debug.xcconfig` or `Secrets.Release.xcconfig`.
+They are in `.gitignore` by default.
+
+5. **Select the `HotelsDemo` scheme**
+
+6. **Build & Run** on your desired simulator or device
 
 ## Quality Assurance
 
