@@ -7,6 +7,19 @@
 
 import Foundation
 
+///
+/// A `HotelsSearchCriteriaStore` decorator that validates criteria on both save and read.
+///
+/// Validation happens twice to ensure the store always returns valid search criteria:
+/// - **Multiple sources of criteria:** Data may be set by different parts of the app. Validation before
+///   saving ensures only valid data is persisted.
+/// - **Time-sensitive fields:** Check-in/out dates may expire between app launches. Validation on read
+///   corrects outdated data before use.
+/// - **Auto-persistence after read validation:** If read validation changes the data, the corrected
+///   version is saved back immediately, keeping storage consistent.
+///
+/// This design guarantees consistent, valid search criteria regardless of when or how it is set.
+///
 public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 	private let decoratee: HotelsSearchCriteriaStore
 	private let validator: HotelsSearchCriteriaValidator

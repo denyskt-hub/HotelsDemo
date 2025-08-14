@@ -84,6 +84,14 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
+	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+		read { result in
+			self.dispatcher.dispatch {
+				completion(result)
+			}
+		}
+	}
+
 	private func write(_ criteria: HotelsSearchCriteria, completion: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
@@ -92,14 +100,6 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 				completion(.none)
 			} catch {
 				completion(error)
-			}
-		}
-	}
-
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		read { result in
-			self.dispatcher.dispatch {
-				completion(result)
 			}
 		}
 	}
