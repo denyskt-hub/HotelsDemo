@@ -19,6 +19,8 @@ public final class DispatchingImageDataLoader: ImageDataLoader {
 		self.dispatcher = dispatcher
 	}
 
+	/// Guarantees the completion is delivered on the provided Dispatcher
+	/// (unlike the base ImageDataLoader contract).
 	@discardableResult
 	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
 		loader.load(url: url) { [weak self] result in

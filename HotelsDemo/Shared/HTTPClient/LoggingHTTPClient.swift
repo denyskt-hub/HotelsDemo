@@ -15,7 +15,7 @@ public final class LoggingHTTPClient: HTTPClient {
 	}
 
 	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
-#if DEBUG
+		#if DEBUG
 		let startTime = Date()
 		let requestID = String(UUID().uuidString.prefix(6))
 		print("🔍 [\(requestID)] Starting request...")
@@ -25,12 +25,12 @@ public final class LoggingHTTPClient: HTTPClient {
 			self.log(requestID, request, result, duration)
 			completion(result)
 		}
-#else
+		#else
 		return client.perform(request, completion: completion)
-#endif
+		#endif
 	}
 
-#if DEBUG
+	#if DEBUG
 	private func log(
 		_ requestID: String,
 		_ request: URLRequest,
@@ -80,5 +80,5 @@ public final class LoggingHTTPClient: HTTPClient {
 
 		return components.joined(separator: " \\\n  ")
 	}
-#endif
+	#endif
 }
