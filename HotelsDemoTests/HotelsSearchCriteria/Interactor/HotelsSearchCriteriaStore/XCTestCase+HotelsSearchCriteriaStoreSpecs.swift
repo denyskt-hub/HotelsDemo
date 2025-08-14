@@ -33,9 +33,9 @@ extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
-		let savingError = save(anySearchCriteria(), to: sut)
+		let saveResult = save(anySearchCriteria(), to: sut)
 
-		XCTAssertNil(savingError, "Expected to save criteria successfully", file: file, line: line)
+		assertSaveResultEqual(saveResult, .success(()), "Expected to save criteria successfully", file: file, line: line)
 	}
 
 	func assertThatSaveDeliversNoErrorOnNonEmptyStore(
@@ -45,9 +45,9 @@ extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 	) {
 		save(anySearchCriteria(), to: sut)
 
-		let savingError = save(anySearchCriteria(), to: sut)
+		let saveResult = save(anySearchCriteria(), to: sut)
 
-		XCTAssertNil(savingError, "Expected to override criteria successfully", file: file, line: line)
+		assertSaveResultEqual(saveResult, .success(()), "Expected to override criteria successfully", file: file, line: line)
 	}
 
 	func assertThatSaveOverridesPreviouslySavedSearchCriteria(
@@ -92,6 +92,23 @@ extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 
 		XCTAssertEqual(completedOperationsInOrder, [op1, op2, op3], "Expected side-effects to run serially but operations finished in the wrong order", file: file, line: line)
 	}
+
+	private func assertSaveResultEqual(
+		_ result: HotelsSearchCriteriaStore.SaveResult,
+		_ expectedResult: HotelsSearchCriteriaStore.SaveResult,
+		_ message: String = "",
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		switch (result, expectedResult) {
+		case (.success, .success):
+			return
+		case let (.failure(error as NSError), .failure(expectedError as NSError)):
+			XCTAssertEqual(error, expectedError, file: file, line: line)
+		default:
+			XCTFail(message, file: file, line: line)
+		}
+	}
 }
 
 extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
@@ -128,16 +145,16 @@ extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 	}
 
 	@discardableResult
-	func save(_ criteria: HotelsSearchCriteria, to sut: HotelsSearchCriteriaStore) -> Error? {
+	func save(_ criteria: HotelsSearchCriteria, to sut: HotelsSearchCriteriaStore) -> HotelsSearchCriteriaStore.SaveResult {
 		let exp = expectation(description: "Wait for save")
 
-		var savingError: Error?
-		sut.save(criteria) { error in
-			savingError = error
+		var saveResult: HotelsSearchCriteriaStore.SaveResult!
+		sut.save(criteria) { result in
+			saveResult = result
 			exp.fulfill()
 		}
 
 		wait(for: [exp], timeout: 1.0)
-		return savingError
+		return saveResult
 	}
 }

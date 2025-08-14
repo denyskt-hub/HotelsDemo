@@ -34,6 +34,11 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 
 	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		let validated = validator.validate(criteria)
+
+		if validated != criteria {
+			Logger.log("Criteria validated: \(criteria) -> \(validated)", level: .debug)
+		}
+
 		decoratee.save(validated, completion: completion)
 	}
 
@@ -44,11 +49,20 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 			switch result {
 			case let .success(criteria):
 				let validated = self.validator.validate(criteria)
+
 				if validated != criteria {
-					self.decoratee.saveIgnoringResult(validated)
+					Logger.log("Retrieved criteria validated: \(criteria) -> \(validated)", level: .debug)
+
+					self.decoratee.save(validated) { saveResult in
+						if case .failure(let error) = saveResult {
+							Logger.log("Failed to save validated criteria: \(error)", level: .error)
+						}
+					}
 				}
+
 				completion(.success(validated))
 			case let .failure(error):
+				Logger.log("Retrieve failed: \(error)", level: .error)
 				completion(.failure(error))
 			}
 		}

@@ -121,7 +121,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		provider.retrieve(completion: completion)
 	}
 
-	private func save(_ criteria: HotelsSearchCriteria, _ completion: @escaping (Error?) -> Void) {
+	private func save(_ criteria: HotelsSearchCriteria, _ completion: @escaping (Result<Void, Error>) -> Void) {
 		cache.save(criteria, completion: completion)
 	}
 
@@ -134,8 +134,8 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 			case .success(var criteria):
 				transform(&criteria)
 
-				self.save(criteria) { error in
-					if let error = error {
+				self.save(criteria) { saveResult in
+					if case let .failure(error) = saveResult {
 						completion(.failure(error))
 					} else {
 						completion(.success(criteria))

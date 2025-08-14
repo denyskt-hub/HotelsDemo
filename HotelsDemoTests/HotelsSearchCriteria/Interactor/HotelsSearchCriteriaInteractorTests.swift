@@ -95,7 +95,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		
 		sut.updateDestination(request: .init(destination: anyDestination()))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
-		cache.completeSave(with: cacheError)
+		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
@@ -109,7 +109,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 
 		sut.updateDestination(request: .init(destination: destination))
 		provider.completeRetrieve(with: .success(criteria))
-		cache.completeSave(with: .none)
+		cache.completeSave(with: .success(()))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
 	}
@@ -130,7 +130,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 
 		sut.updateDates(request: .init(checkInDate: Date(), checkOutDate: Date()))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
-		cache.completeSave(with: cacheError)
+		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
@@ -146,7 +146,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 
 		sut.updateDates(request: .init(checkInDate: checkInDate, checkOutDate: checkOutDate))
 		provider.completeRetrieve(with: .success(criteria))
-		cache.completeSave(with: .none)
+		cache.completeSave(with: .success(()))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateDates(.init(criteria: expectedCriteria))])
 	}
@@ -167,7 +167,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 
 		sut.updateRoomGuests(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
-		cache.completeSave(with: cacheError)
+		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
@@ -185,7 +185,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		
 		sut.updateRoomGuests(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
 		provider.completeRetrieve(with: .success(criteria))
-		cache.completeSave(with: .none)
+		cache.completeSave(with: .success(()))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
 	}

@@ -92,14 +92,14 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
-	private func write(_ criteria: HotelsSearchCriteria, completion: @escaping (Error?) -> Void) {
+	private func write(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
 				try data.write(to: self.storeURL)
-				completion(.none)
+				completion(.success(()))
 			} catch {
-				completion(error)
+				completion(.failure(error))
 			}
 		}
 	}

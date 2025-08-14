@@ -22,7 +22,7 @@ public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore 
 		queue.async {
 			self.criteria = criteria
 			self.dispatcher.dispatch {
-				completion(.none)
+				completion(.success(()))
 			}
 		}
 	}

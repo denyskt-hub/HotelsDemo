@@ -41,12 +41,18 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 
 		let exp = expectation(description: "Wait for completion")
 
-		sut.save(anySearchCriteria()) { error in
-			XCTAssertEqual(error as? NSError, storeError)
+		sut.save(anySearchCriteria()) { saveResult in
+			switch saveResult {
+			case let .failure(error):
+				XCTAssertEqual(error as NSError, storeError)
+			default:
+				XCTFail("Expected to fail with store error")
+			}
+
 			exp.fulfill()
 		}
 
-		store.completeSave(with: storeError)
+		store.completeSave(with: .failure(storeError))
 
 		wait(for: [exp], timeout: 1.0)
 	}
@@ -56,12 +62,15 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 
 		let exp = expectation(description: "Wait for completion")
 		
-		sut.save(anySearchCriteria()) { error in
-			XCTAssertNil(error, "Expected no error on successful save")
+		sut.save(anySearchCriteria()) { saveResult in
+			if case .failure = saveResult {
+				XCTFail("Expected no error on successful save")
+			}
+
 			exp.fulfill()
 		}
 
-		store.completeSave(with: nil)
+		store.completeSave(with: .success(()))
 
 		wait(for: [exp], timeout: 1.0)
 	}
