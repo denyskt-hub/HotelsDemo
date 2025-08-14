@@ -33,7 +33,7 @@ jobs:
           xcodebuild clean build test \
             -project HotelsDemo.xcodeproj \
             -scheme "HotelsDemo" \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
+            -destination "platform=iOS Simulator,OS=18.4,name=iPhone 16" \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             ONLY_ACTIVE_ARCH=YES
