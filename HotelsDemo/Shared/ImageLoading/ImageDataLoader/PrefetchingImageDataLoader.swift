@@ -10,16 +10,13 @@ import Foundation
 public final class PrefetchingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader
 	private let cache: ImageDataCache
-	private let dispatcher: Dispatcher
 
 	public init(
 		loader: ImageDataLoader,
-		cache: ImageDataCache,
-		dispatcher: Dispatcher
+		cache: ImageDataCache
 	) {
 		self.loader = loader
 		self.cache = cache
-		self.dispatcher = dispatcher
 	}
 
 	private final class PrefetchingImageDataLoaderTaskWrapper: ImageDataLoaderTask {
@@ -38,9 +35,7 @@ public final class PrefetchingImageDataLoader: ImageDataLoader {
 			guard let self else { return }
 
 			if case let .success(data) = result, let data = data {
-				self.dispatcher.dispatch {
-					completion(.success(data))
-				}
+				completion(.success(data))
 			} else {
 				task.wrapped = self.loader.load(url: url, completion: completion)
 			}

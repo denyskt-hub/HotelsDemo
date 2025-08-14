@@ -75,8 +75,7 @@ final class PrefetchingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase
 		let cache = ImageDataCacheSpy()
 		let sut = PrefetchingImageDataLoader(
 			loader: loader,
-			cache: cache,
-			dispatcher: ImmediateDispatcher()
+			cache: cache
 		)
 		return (sut, loader, cache)
 	}

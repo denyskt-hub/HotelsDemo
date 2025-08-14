@@ -23,9 +23,15 @@ public final class ImageDataPrefetcher {
 
 			for url in urls where self.tasks[url] == nil {
 				self.tasks[url] = loader.load(url: url) { _ in
-					self.tasks[url] = nil
+					self.removeTask(for: url)
 				}
 			}
+		}
+	}
+
+	private func removeTask(for url: URL) {
+		queue.async { [weak self] in
+			self?.tasks[url] = nil
 		}
 	}
 

@@ -31,8 +31,7 @@ public enum SharedImageDataPrefetcher {
 		let prefetching = LoggingImageDataLoader(
 			loader: PrefetchingImageDataLoader(
 				loader: caching,
-				cache: cache,
-				dispatcher: MainQueueDispatcher()
+				cache: cache
 			),
 			logger: ImageDataLoadingLoggers.makeLogger(.prefetch)
 		)

@@ -58,10 +58,7 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		cache: ImageDataCacheSpy
 	) {
 		let cache = ImageDataCacheSpy()
-		let sut = LocalImageDataLoader(
-			cache: cache,
-			dispatcher: ImmediateDispatcher()
-		)
+		let sut = LocalImageDataLoader(cache: cache)
 		return (sut, cache)
 	}
 }

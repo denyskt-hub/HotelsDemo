@@ -9,7 +9,6 @@ import Foundation
 
 public final class DeduplicatingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader
-	private let dispatcher: Dispatcher
 
 	private let queue = DispatchQueue(label: "\(DeduplicatingImageDataLoader.self)Queue")
 	private var ongoingTasks = [URL: TaskEntry]()
@@ -25,12 +24,8 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 		func cancel() { onCancel() }
 	}
 
-	public init(
-		loader: ImageDataLoader,
-		dispatcher: Dispatcher
-	) {
+	public init(loader: ImageDataLoader) {
 		self.loader = loader
-		self.dispatcher = dispatcher
 	}
 
 	@discardableResult
@@ -72,7 +67,7 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 		}
 
 		completions?.forEach { completion in
-			dispatcher.dispatch { completion(result) }
+			completion(result)
 		}
 	}
 

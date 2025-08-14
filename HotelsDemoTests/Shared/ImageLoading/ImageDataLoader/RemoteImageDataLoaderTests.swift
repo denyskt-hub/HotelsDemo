@@ -72,10 +72,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		client: HTTPClientSpy
 	) {
 		let client = HTTPClientSpy()
-		let sut = RemoteImageDataLoader(
-			client: client,
-			dispatcher: ImmediateDispatcher()
-		)
+		let sut = RemoteImageDataLoader(client: client)
 		return (sut, client)
 	}
 }

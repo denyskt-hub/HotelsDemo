@@ -21,10 +21,7 @@ public enum SharedImageDataLoader {
 			logger: ImageDataCacheLoggers.makeLogger(.cache)
 		)
 		let local = LoggingImageDataLoader(
-			loader: LocalImageDataLoader(
-				cache: cache,
-				dispatcher: MainQueueDispatcher()
-			),
+			loader: LocalImageDataLoader(cache: cache),
 			logger: ImageDataLoadingLoggers.makeLogger(.local)
 		)
 		let remote = LoggingImageDataLoader(
@@ -39,7 +36,7 @@ public enum SharedImageDataLoader {
 			loader: local.fallback(to: caching),
 			logger: ImageDataLoadingLoggers.makeLogger(.composite)
 		)
-		return logging
+		return logging.dispatch(to: MainQueueDispatcher())
 	}
 
 	public static func configureLogging(enabled: Bool = true) {

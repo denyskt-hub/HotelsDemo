@@ -27,7 +27,9 @@ It includes a fully functional hotels search, and filtering flow — all backed 
 
 The project follows the **Clean Swift (VIP)** pattern, ensuring separation of concerns and testability.
 
-**Core layers:**
+### Physical Structure
+
+The folders in the project are organized as follows:
 - **Features** – Main functionality modules organized by domain (e.g., Hotels Search)
 - **Shared** – Common utilities and base components
 - **Shared UI** – Reusable UI components
@@ -95,6 +97,14 @@ open HotelsDemo.xcodeproj
    - `Config/Secrets.Release.xcconfig`
 
 4. Replace the placeholder values with your actual keys.
+
+```
+API_KEY – your RapidAPI key  
+API_HOST – the API host from RapidAPI  
+BASE_URL – the API base URL (often `https://<API_HOST>`)  
+```
+
+**Note**: Without a valid API_KEY and API_HOST, API requests will fail.
 
 ⚠️ Never commit the real `Secrets.Debug.xcconfig` or `Secrets.Release.xcconfig`.
 They are in `.gitignore` by default.

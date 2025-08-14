@@ -140,10 +140,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 		loader: ImageDataLoaderSpy
 	) {
 		let loader = ImageDataLoaderSpy()
-		let sut = DeduplicatingImageDataLoader(
-			loader: loader,
-			dispatcher: ImmediateDispatcher()
-		)
+		let sut = DeduplicatingImageDataLoader(loader: loader)
 		return (sut, loader)
 	}
 }

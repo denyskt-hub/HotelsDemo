@@ -13,14 +13,9 @@ public struct EmptyImageDataLoaderTask: ImageDataLoaderTask {
 
 public final class LocalImageDataLoader: ImageDataLoader {
 	private let cache: ImageDataCache
-	private let dispatcher: Dispatcher
 
-	public init(
-		cache: ImageDataCache,
-		dispatcher: Dispatcher
-	) {
+	public init(cache: ImageDataCache) {
 		self.cache = cache
-		self.dispatcher = dispatcher
 	}
 
 	public enum Error: Swift.Error {
@@ -29,9 +24,7 @@ public final class LocalImageDataLoader: ImageDataLoader {
 
 	@discardableResult
 	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
-		cache.data(forKey: url.absoluteString) { [weak self] result in
-			guard let self else { return }
-
+		cache.data(forKey: url.absoluteString) { result in
 			let loadResult = LoadResult {
 				switch result {
 				case let .success(data):
@@ -44,10 +37,9 @@ public final class LocalImageDataLoader: ImageDataLoader {
 				}
 			}
 
-			self.dispatcher.dispatch {
-				completion(loadResult)
-			}
+			completion(loadResult)
 		}
+
 		return EmptyImageDataLoaderTask()
 	}
 }

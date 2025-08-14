@@ -9,24 +9,15 @@ import Foundation
 
 public final class RemoteImageDataLoader: ImageDataLoader {
 	private let client: HTTPClient
-	private let dispatcher: Dispatcher
 
 	public static let shared: ImageDataLoader = {
 		DeduplicatingImageDataLoader(
-			loader: RemoteImageDataLoader(
-				client: URLSessionHTTPClient.shared,
-				dispatcher: ImmediateDispatcher()
-			),
-			dispatcher: MainQueueDispatcher()
+			loader: RemoteImageDataLoader(client: URLSessionHTTPClient.shared)
 		)
 	}()
 
-	public init(
-		client: HTTPClient,
-		dispatcher: Dispatcher
-	) {
+	public init(client: HTTPClient) {
 		self.client = client
-		self.dispatcher = dispatcher
 	}
 
 	private struct HTTPClientTaskWrapper: ImageDataLoaderTask {
@@ -41,9 +32,7 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let request = makeRequest(url: url)
 
-		let task = client.perform(request) { [weak self] result in
-			guard let self else { return }
-
+		let task = client.perform(request) { result in
 			let loadResult = LoadResult {
 				switch result {
 				case let .success((data, response)):
@@ -53,9 +42,7 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 				}
 			}
 
-			self.dispatcher.dispatch {
-				completion(loadResult)
-			}
+			completion(loadResult)
 		}
 
 		return HTTPClientTaskWrapper(wrapped: task)
