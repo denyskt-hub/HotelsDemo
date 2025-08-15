@@ -8,8 +8,6 @@
 import Foundation
 
 public protocol HotelsSearchCriteriaStore: HotelsSearchCriteriaProvider, HotelsSearchCriteriaCache {
-	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void)
-	func retrieve(completion: @escaping (RetrieveResult) -> Void)
 }
 
 extension HotelsSearchCriteriaStore {

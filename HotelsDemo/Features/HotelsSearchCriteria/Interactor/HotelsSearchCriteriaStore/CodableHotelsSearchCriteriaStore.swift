@@ -69,30 +69,12 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 	private let queue = DispatchQueue(label: "\(CodableHotelsSearchCriteriaStore.self)Queue")
 
 	private let storeURL: URL
-	private let dispatcher: Dispatcher
 
-	public init(storeURL: URL, dispatcher: Dispatcher) {
+	public init(storeURL: URL) {
 		self.storeURL = storeURL
-		self.dispatcher = dispatcher
 	}
 
 	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		write(criteria) { error in
-			self.dispatcher.dispatch {
-				completion(error)
-			}
-		}
-	}
-
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		read { result in
-			self.dispatcher.dispatch {
-				completion(result)
-			}
-		}
-	}
-
-	private func write(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
@@ -104,7 +86,7 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
-	private func read(completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void) {
+	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try Data(contentsOf: self.storeURL)

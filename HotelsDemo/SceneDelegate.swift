@@ -29,15 +29,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	private lazy var searchCriteriaStore: HotelsSearchCriteriaStore = {
 		ValidatingHotelsSearchCriteriaStore(
-			decoratee: CodableHotelsSearchCriteriaStore(
-				storeURL: storeURL,
-				dispatcher: MainQueueDispatcher()
-			),
+			decoratee: CodableHotelsSearchCriteriaStore(storeURL: storeURL),
 			validator: DefaultHotelsSearchCriteriaValidator(
 				calendar: calendar,
 				currentDate: Date.init
 			)
-		)
+		).dispatch(to: MainQueueDispatcher())
 	}()
 
 	private lazy var defaultSearchCriteriaProvider: HotelsSearchCriteriaProvider = {
