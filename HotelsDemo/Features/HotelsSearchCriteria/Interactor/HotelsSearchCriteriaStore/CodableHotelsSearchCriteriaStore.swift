@@ -96,7 +96,7 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		queue.async {
 			do {
 				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
-				try data.write(to: self.storeURL)
+				try data.write(to: self.storeURL, options: [.atomic])
 				completion(.success(()))
 			} catch {
 				completion(.failure(error))
@@ -106,14 +106,12 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 
 	private func read(completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void) {
 		queue.async {
-			guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
-				return completion(.failure(SearchCriteriaError.notFound))
-			}
-
 			do {
 				let data = try Data(contentsOf: self.storeURL)
 				let criteria = try JSONDecoder().decode(CodableSearchCriteria.self, from: data)
 				completion(.success(criteria.model))
+			} catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+				completion(.failure(SearchCriteriaError.notFound))
 			} catch {
 				completion(.failure(error))
 			}
