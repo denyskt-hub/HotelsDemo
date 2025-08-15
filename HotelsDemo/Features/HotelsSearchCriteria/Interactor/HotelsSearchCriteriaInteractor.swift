@@ -129,7 +129,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		_ transform: @escaping (inout HotelsSearchCriteria) -> Void,
 		completion: @escaping ((Result<HotelsSearchCriteria, Error>) -> Void)
 	) {
-		load { result in
+		load { [weak self] result in
+			guard let self else { return }
+			
 			switch result {
 			case .success(var criteria):
 				transform(&criteria)
