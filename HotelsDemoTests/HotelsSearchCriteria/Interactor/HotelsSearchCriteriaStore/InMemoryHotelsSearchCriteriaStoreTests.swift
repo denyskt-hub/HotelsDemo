@@ -36,6 +36,6 @@ final class InMemoryHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCrit
 	// MARK: - Helpers
 
 	private func makeSUT() -> InMemoryHotelsSearchCriteriaStore {
-		InMemoryHotelsSearchCriteriaStore(dispatcher: ImmediateDispatcher())
+		InMemoryHotelsSearchCriteriaStore()
 	}
 }

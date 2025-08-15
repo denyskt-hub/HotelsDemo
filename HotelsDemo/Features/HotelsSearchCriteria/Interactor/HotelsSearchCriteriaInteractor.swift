@@ -131,7 +131,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	) {
 		load { [weak self] result in
 			guard let self else { return }
-			
+
 			switch result {
 			case .success(var criteria):
 				transform(&criteria)
