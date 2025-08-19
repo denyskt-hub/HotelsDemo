@@ -108,6 +108,8 @@ API_HOST – the API host from RapidAPI
 BASE_URL – the API base URL (often `https://<API_HOST>`)  
 ```
 
+Register for a free API key here: [link](https://rapidapi.com/DataCrawler/api/booking-com15).
+
 **Note**: Without a valid API_KEY and API_HOST, API requests will fail.
 
 ⚠️ Never commit the real `Secrets.Debug.xcconfig` or `Secrets.Release.xcconfig`.
