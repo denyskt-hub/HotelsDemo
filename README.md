@@ -1,5 +1,9 @@
 # HotelsDemo
 
+![CI](https://github.com/denyskt-hub/HotelsDemo/actions/workflows/CI.yml/badge.svg)
+![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 *A clean-architecture iOS app showcasing hotel search, filtering with modern Swift.*
 
 > [!NOTE]
