@@ -44,7 +44,7 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		[
 			makePriceRangeViewController(
 				selectedPriceRange: filters.priceRange,
-				currencyCode: "USD",
+				currencyCode: CurrencyCode.usd.rawValue,
 				delegate: delegate
 			),
 			makeStarRatingViewController(
