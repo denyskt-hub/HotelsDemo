@@ -12,7 +12,7 @@ public enum APIResponseMapper {
 		_ data: Data,
 		_ response: HTTPURLResponse
 	) throws -> T {
-		guard response.isOK else {
+		guard response.isSuccess else {
 			throw HTTPError.unexpectedStatusCode(response.statusCode)
 		}
 
