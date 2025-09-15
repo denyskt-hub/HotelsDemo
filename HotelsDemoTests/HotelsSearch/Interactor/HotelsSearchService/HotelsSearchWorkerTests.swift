@@ -49,7 +49,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		for (index, data) in samples.enumerated() {
-			expect(sut, toCompleteWith: .failure(APIError.decoding), when: {
+			expect(sut, toCompleteWith: .failure(APIError.decoding(anyNSError())), when: {
 				client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))), at: index)
 			})
 		}

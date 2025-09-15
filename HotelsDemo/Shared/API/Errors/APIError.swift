@@ -9,5 +9,5 @@ import Foundation
 
 public enum APIError: Error {
 	case serverError(String)
-	case decoding
+	case decoding(Error)
 }

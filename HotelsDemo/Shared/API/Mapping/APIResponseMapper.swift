@@ -27,7 +27,7 @@ public enum APIResponseMapper {
 		} catch {
 			Logger.log("Decoding error: \(error)", level: .error, tag: .networking)
 			Logger.log("Raw response: \(String(data: data, encoding: .utf8) ?? "Invalid UTF-8")", level: .debug, tag: .networking)
-			throw APIError.decoding
+			throw APIError.decoding(error)
 		}
 	}
 }
