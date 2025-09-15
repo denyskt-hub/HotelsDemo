@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol DateRangePickerPresentationLogic {
-	func present(response: DateRangePickerModels.Load.Response)
+	func present(response: DateRangePickerModels.FetchCalendar.Response)
 	func presentSelectDate(response: DateRangePickerModels.DateSelection.Response)
-	func presentSelectedDateRange(response: DateRangePickerModels.Select.Response)
+	func presentSelectedDateRange(response: DateRangePickerModels.DateRangeSelection.Response)
 }

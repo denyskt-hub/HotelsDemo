@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol DateRangePickerDisplayLogic: AnyObject {
-	func display(viewModel: DateRangePickerModels.Load.ViewModel)
+	func display(viewModel: DateRangePickerModels.FetchCalendar.ViewModel)
 	func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel)
-	func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel)
+	func displaySelectedDateRange(viewModel: DateRangePickerModels.DateRangeSelection.ViewModel)
 }

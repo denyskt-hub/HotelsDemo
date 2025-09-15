@@ -16,8 +16,8 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		self.dateFormatter = dateFormatter
 	}
 
-	public func present(response: DateRangePickerModels.Load.Response) {
-		let viewModel = DateRangePickerModels.Load.ViewModel(
+	public func present(response: DateRangePickerModels.FetchCalendar.Response) {
+		let viewModel = DateRangePickerModels.FetchCalendar.ViewModel(
 			calendar: makeCalendarViewModel(response.calendar),
 			isApplyEnabled: response.canApply
 		)
@@ -32,8 +32,8 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 		viewController?.displaySelectDate(viewModel: viewModel)
 	}
 
-	public func presentSelectedDateRange(response: DateRangePickerModels.Select.Response) {
-		let viewModel = DateRangePickerModels.Select.ViewModel(
+	public func presentSelectedDateRange(response: DateRangePickerModels.DateRangeSelection.Response) {
+		let viewModel = DateRangePickerModels.DateRangeSelection.ViewModel(
 			startDate: response.startDate,
 			endDate: response.endDate
 		)

@@ -38,7 +38,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		setupCollectionView()
 		setupApplyButton()
 
-		interactor?.load(request: DateRangePickerModels.Load.Request())
+		interactor?.doFetchCalendar(request: .init())
 	}
 
 	private func setupWeekdaysCollectionView() {
@@ -59,7 +59,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
 	}
 
-	public func display(viewModel: DateRangePickerModels.Load.ViewModel) {
+	public func display(viewModel: DateRangePickerModels.FetchCalendar.ViewModel) {
 		weekdaysDataSource.weekdays = viewModel.calendar.weekdays
 		weekdaysCollectionView.reloadData()
 
@@ -79,7 +79,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		applyButton.isEnabled = viewModel.isApplyEnabled
 	}
 
-	public func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel) {
+	public func displaySelectedDateRange(viewModel: DateRangePickerModels.DateRangeSelection.ViewModel) {
 		delegate?.didSelectDateRange(
 			startDate: viewModel.startDate,
 			endDate: viewModel.endDate
@@ -88,7 +88,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	@objc private func didApply() {
-		interactor?.selectDateRange(request: DateRangePickerModels.Select.Request())
+		interactor?.handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request())
 	}
 }
 
@@ -199,6 +199,6 @@ extension DateRangePickerViewController: DateCellDelegate {
 			return
 		}
 
-		interactor?.didSelectDate(request: .init(date: date))
+		interactor?.handleDateSelection(request: .init(date: date))
 	}
 }

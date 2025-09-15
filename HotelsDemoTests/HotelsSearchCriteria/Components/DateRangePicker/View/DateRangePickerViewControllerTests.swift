@@ -261,22 +261,22 @@ extension DateRangePickerViewController {
 
 final class DateRangePickerBusinessLogicSpy: DateRangePickerBusinessLogic {
 	enum Message: Equatable {
-		case load(DateRangePickerModels.Load.Request)
+		case load(DateRangePickerModels.FetchCalendar.Request)
 		case didSelectDate(DateRangePickerModels.DateSelection.Request)
-		case selectDateRange(DateRangePickerModels.Select.Request)
+		case selectDateRange(DateRangePickerModels.DateRangeSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func load(request: DateRangePickerModels.Load.Request) {
+	func doFetchCalendar(request: DateRangePickerModels.FetchCalendar.Request) {
 		messages.append(.load(request))
 	}
 
-	func didSelectDate(request: DateRangePickerModels.DateSelection.Request) {
+	func handleDateSelection(request: DateRangePickerModels.DateSelection.Request) {
 		messages.append(.didSelectDate(request))
 	}
 
-	func selectDateRange(request: DateRangePickerModels.Select.Request) {
+	func handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request) {
 		messages.append(.selectDateRange(request))
 	}
 }

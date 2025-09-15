@@ -11,13 +11,13 @@ import HotelsDemo
 final class DateRangePickerInteractorTests: XCTestCase {
 	func test_load_presentCalendarData() {
 		let calendarData = anyCalendarData()
-		let expectedResponse = DateRangePickerModels.Load.Response(
+		let expectedResponse = DateRangePickerModels.FetchCalendar.Response(
 			calendar: calendarData,
 			canApply: true
 		)
 		let (sut, _, presenter) = makeSUT(stub: calendarData)
 
-		sut.load(request: .init())
+		sut.doFetchCalendar(request: .init())
 
 		XCTAssertEqual(presenter.messages, [.present(expectedResponse)])
 	}
@@ -30,7 +30,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		)
 		let (sut, _, presenter) = makeSUT(stub: calendarData)
 
-		sut.didSelectDate(request: .init(date: "29.06.2025".date()))
+		sut.handleDateSelection(request: .init(date: "29.06.2025".date()))
 
 		XCTAssertEqual(presenter.messages, [.presentSelectDate(expectedResponse)])
 	}
@@ -39,7 +39,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		let calendarData = anyCalendarData()
 		let selectedStartDate = "29.06.2025".date()
 		let selectedEndDate = "30.06.2025".date()
-		let expectedResponse = DateRangePickerModels.Select.Response(
+		let expectedResponse = DateRangePickerModels.DateRangeSelection.Response(
 			startDate: selectedStartDate,
 			endDate: selectedEndDate
 		)
@@ -49,7 +49,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 			selectedEndDate: selectedEndDate
 		)
 
-		sut.selectDateRange(request: .init())
+		sut.handleDateRangeSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [.presentSelectedDateRange(expectedResponse)])
 	}
@@ -94,14 +94,14 @@ final class CalendarDataGeneratorStub: CalendarDataGenerator {
 
 final class DateRangePickerPresentationLogicSpy: DateRangePickerPresentationLogic {
 	enum Message: Equatable {
-		case present(DateRangePickerModels.Load.Response)
+		case present(DateRangePickerModels.FetchCalendar.Response)
 		case presentSelectDate(DateRangePickerModels.DateSelection.Response)
-		case presentSelectedDateRange(DateRangePickerModels.Select.Response)
+		case presentSelectedDateRange(DateRangePickerModels.DateRangeSelection.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func present(response: DateRangePickerModels.Load.Response) {
+	func present(response: DateRangePickerModels.FetchCalendar.Response) {
 		messages.append(.present(response))
 	}
 
@@ -109,7 +109,7 @@ final class DateRangePickerPresentationLogicSpy: DateRangePickerPresentationLogi
 		messages.append(.presentSelectDate(response))
 	}
 
-	func presentSelectedDateRange(response: DateRangePickerModels.Select.Response) {
+	func presentSelectedDateRange(response: DateRangePickerModels.DateRangeSelection.Response) {
 		messages.append(.presentSelectedDateRange(response))
 	}
 }

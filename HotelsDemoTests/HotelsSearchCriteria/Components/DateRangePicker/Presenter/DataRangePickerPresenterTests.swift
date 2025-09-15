@@ -21,7 +21,7 @@ final class DataRangePickerPresenterTests: XCTestCase {
 			weekdays: fixtures.weekdays,
 			sections: [makeCalendarMonth(date: fixtures.date)]
 		)
-		let expectedViewModel = DateRangePickerModels.Load.ViewModel(
+		let expectedViewModel = DateRangePickerModels.FetchCalendar.ViewModel(
 			calendar: makeCalendarViewModel(fixtures),
 			isApplyEnabled: false
 		)
@@ -51,7 +51,7 @@ final class DataRangePickerPresenterTests: XCTestCase {
 	func test_presentSelectedDateRange_displaysSelectedDateRange() {
 		let startDate = "29.06.2025".date()
 		let endDate = "30.06.2025".date()
-		let expectedViewModel = DateRangePickerModels.Select.ViewModel(
+		let expectedViewModel = DateRangePickerModels.DateRangeSelection.ViewModel(
 			startDate: startDate,
 			endDate: endDate
 		)
@@ -115,14 +115,14 @@ final class DataRangePickerPresenterTests: XCTestCase {
 
 final class DateRangePickerDisplayLogicSpy: DateRangePickerDisplayLogic {
 	enum Message: Equatable {
-		case display(DateRangePickerModels.Load.ViewModel)
+		case display(DateRangePickerModels.FetchCalendar.ViewModel)
 		case displaySelectDate(DateRangePickerModels.DateSelection.ViewModel)
-		case displaySelectedDateRange(DateRangePickerModels.Select.ViewModel)
+		case displaySelectedDateRange(DateRangePickerModels.DateRangeSelection.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func display(viewModel: DateRangePickerModels.Load.ViewModel) {
+	func display(viewModel: DateRangePickerModels.FetchCalendar.ViewModel) {
 		messages.append(.display(viewModel))
 	}
 	
@@ -130,7 +130,7 @@ final class DateRangePickerDisplayLogicSpy: DateRangePickerDisplayLogic {
 		messages.append(.displaySelectDate(viewModel))
 	}
 	
-	func displaySelectedDateRange(viewModel: DateRangePickerModels.Select.ViewModel) {
+	func displaySelectedDateRange(viewModel: DateRangePickerModels.DateRangeSelection.ViewModel) {
 		messages.append(.displaySelectedDateRange(viewModel))
 	}
 }

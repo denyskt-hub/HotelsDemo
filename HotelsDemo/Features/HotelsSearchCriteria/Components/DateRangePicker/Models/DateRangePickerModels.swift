@@ -8,7 +8,7 @@
 import Foundation
 
 public enum DateRangePickerModels {
-	public enum Load {
+	public enum FetchCalendar {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -64,7 +64,7 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public enum Select {
+	public enum DateRangeSelection {
 		public struct Request: Equatable {
 			public init() {}
 		}
