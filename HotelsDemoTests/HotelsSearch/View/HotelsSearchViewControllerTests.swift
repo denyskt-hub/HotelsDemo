@@ -14,7 +14,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.search(.init())])
+		XCTAssertEqual(interactor.messages, [.doSearch(.init())])
 	}
 
 	func test_displayLoading_rendersLoadingIndicator() {
@@ -75,7 +75,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 		sut.simulateFilterButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .filter(.init()))
+		XCTAssertEqual(interactor.messages.last, .doFetchFilters(.init()))
 	}
 
 	func test_didSelectFilters_updatesFiters() {
@@ -84,7 +84,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 		sut.didSelectFilters(filters)
 
-		XCTAssertEqual(interactor.messages, [.updateFilter(.init(filters: filters))])
+		XCTAssertEqual(interactor.messages, [.handleFilterSelection(.init(filters: filters))])
 	}
 
 	// MARK: - Helpers
@@ -124,39 +124,39 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	enum Message: Equatable {
-		case search(HotelsSearchModels.Search.Request)
-		case cancelSearch
-		case filter(HotelsSearchModels.Filter.Request)
-		case updateFilter(HotelsSearchModels.UpdateFilter.Request)
+		case doSearch(HotelsSearchModels.Search.Request)
+		case doCancelSearch
+		case doFetchFilters(HotelsSearchModels.FetchFilters.Request)
+		case handleFilterSelection(HotelsSearchModels.FilterSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func search(request: HotelsSearchModels.Search.Request) {
-		messages.append(.search(request))
+	func doSearch(request: HotelsSearchModels.Search.Request) {
+		messages.append(.doSearch(request))
 	}
 
-	func cancelSearch() {
-		messages.append(.cancelSearch)
+	func doCancelSearch() {
+		messages.append(.doCancelSearch)
 	}
 
-	func filters(request: HotelsSearchModels.Filter.Request) {
-		messages.append(.filter(request))
+	func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
+		messages.append(.doFetchFilters(request))
 	}
 
-	func updateFilters(request: HotelsSearchModels.UpdateFilter.Request) {
-		messages.append(.updateFilter(request))
+	func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
+		messages.append(.handleFilterSelection(request))
 	}
 }
 
 final class HotelsSearchRoutingLogicSpy: HotelsSearchRoutingLogic {
 	enum Message: Equatable {
-		case routeToHotelsFilterPicker(HotelsSearchModels.Filter.ViewModel)
+		case routeToHotelsFilterPicker(HotelsSearchModels.FetchFilters.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
 		messages.append(.routeToHotelsFilterPicker(viewModel))
 	}
 }

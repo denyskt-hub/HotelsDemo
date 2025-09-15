@@ -33,7 +33,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 		onViewIsAppearing = { viewController in
 			viewController.onViewIsAppearing = nil
-			viewController.interactor?.search(request: .init())
+			viewController.interactor?.doSearch(request: .init())
 		}
 	}
 
@@ -41,7 +41,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 		super.viewWillDisappear(animated)
 
 		if isMovingFromParent {
-			interactor?.cancelSearch()
+			interactor?.doCancelSearch()
 		}
 	}
 
@@ -90,7 +90,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 		displayErrorMessage(viewModel.message)
 	}
 
-	public func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
 		router?.routeToHotelFiltersPicker(viewModel: viewModel)
 	}
 
@@ -102,7 +102,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 	}
 
 	@objc private func filterTapHandler() {
-		interactor?.filters(request: .init())
+		interactor?.doFetchFilters(request: .init())
 	}
 }
 
@@ -157,6 +157,8 @@ extension HotelsSearchViewController: UITableViewDelegate {
 
 extension HotelsSearchViewController: HotelFiltersPickerDelegate {
 	public func didSelectFilters(_ filters: HotelFilters) {
-		interactor?.updateFilters(request: .init(filters: filters))
+		interactor?.handleFilterSelection(
+			request: .init(filters: filters)
+		)
 	}
 }

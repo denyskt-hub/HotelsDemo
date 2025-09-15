@@ -30,7 +30,7 @@ public enum HotelsSearchModels {
 		}
 	}
 
-	public enum Filter {
+	public enum FetchFilters {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -52,7 +52,7 @@ public enum HotelsSearchModels {
 		}
 	}
 
-	public enum UpdateFilter {
+	public enum FilterSelection {
 		public struct Request: Equatable {
 			public let filters: HotelFilters
 

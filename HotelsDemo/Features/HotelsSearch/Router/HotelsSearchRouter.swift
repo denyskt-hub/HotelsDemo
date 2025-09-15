@@ -8,7 +8,7 @@
 import UIKit
 
 public protocol HotelsSearchRoutingLogic {
-	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.Filter.ViewModel)
+	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel)
 }
 
 public final class HotelsSearchRouter: HotelsSearchRoutingLogic {
@@ -20,7 +20,7 @@ public final class HotelsSearchRouter: HotelsSearchRoutingLogic {
 		self.hotelFiltersPickerFactory = hotelFiltersPickerFactory
 	}
 
-	public func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	public func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
 		let filterVC = hotelFiltersPickerFactory
 			.makeHotelFiltersPicker(filters: viewModel.filters, delegate: viewController)
 			.embeddedInNavigationController()

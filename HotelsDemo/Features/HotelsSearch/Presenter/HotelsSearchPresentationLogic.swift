@@ -12,6 +12,6 @@ public protocol HotelsSearchPresentationLogic {
 	func presentSearchLoading(_ isLoading: Bool)
 	func presentSearchError(_ error: Error)
 
-	func presentFilters(response: HotelsSearchModels.Filter.Response)
-	func presentUpdateFilters(response: HotelsSearchModels.UpdateFilter.Response)
+	func presentFilters(response: HotelsSearchModels.FetchFilters.Response)
+	func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response)
 }

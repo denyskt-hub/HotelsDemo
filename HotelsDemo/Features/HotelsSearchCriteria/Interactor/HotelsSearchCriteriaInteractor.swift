@@ -21,7 +21,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		self.cache = cache
 	}
 
-	public func doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request) {
+	public func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -186,7 +186,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
 		presenter?.presentLoadCriteria(
-			response: HotelsSearchCriteriaModels.Fetch.Response(criteria: criteria)
+			response: HotelsSearchCriteriaModels.FetchCriteria.Response(criteria: criteria)
 		)
 	}
 

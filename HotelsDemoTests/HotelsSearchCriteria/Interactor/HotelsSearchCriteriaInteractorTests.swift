@@ -256,7 +256,7 @@ final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 
 final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLogic {
 	enum Message: Equatable {
-		case presentCriteria(HotelsSearchCriteriaModels.Fetch.Response)
+		case presentCriteria(HotelsSearchCriteriaModels.FetchCriteria.Response)
 		case presentLoadError(NSError)
 		case presentDates(HotelsSearchCriteriaModels.FetchDates.Response)
 		case presentRoomGuests(HotelsSearchCriteriaModels.FetchRoomGuests.Response)
@@ -269,7 +269,7 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 
 	private(set) var messages = [Message]()
 
-	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response) {
+	func presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response) {
 		messages.append(.presentCriteria(response))
 	}
 

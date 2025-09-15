@@ -8,7 +8,7 @@
 import Foundation
 
 public enum HotelsSearchCriteriaModels {
-	public enum Fetch {
+	public enum FetchCriteria {
 		public struct Request: Equatable {
 			public init() {}
 		}

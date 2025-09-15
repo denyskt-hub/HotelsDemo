@@ -19,7 +19,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let criteria = anySearchCriteria()
 		let (sut, service, _) = makeSUT(criteria: criteria)
 
-		sut.search(request: .init())
+		sut.doSearch(request: .init())
 
 		XCTAssertEqual(service.messages, [.search(criteria)])
 	}
@@ -28,7 +28,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let serviceError = anyNSError()
 		let (sut, service, presenter) = makeSUT()
 
-		sut.search(request: .init())
+		sut.doSearch(request: .init())
 		service.completeWithResult(.failure(serviceError))
 
 		XCTAssertEqual(presenter.messages.last, .presentSearchError(serviceError))
@@ -38,7 +38,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let hotels = [anyHotel(), anyHotel()]
 		let (sut, service, presenter) = makeSUT()
 
-		sut.search(request: .init())
+		sut.doSearch(request: .init())
 		service.completeWithResult(.success(hotels))
 
 		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
@@ -48,7 +48,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let filters = anyHotelFilters()
 		let (sut, _, presenter) = makeSUT()
 
-		sut.filters(request: .init())
+		sut.doFetchFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages.last, .presentFilters(.init(filters: filters)))
 	}
@@ -57,7 +57,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let filters = anyHotelFilters()
 		let (sut, _, presenter) = makeSUT()
 
-		sut.updateFilters(request: .init(filters: filters))
+		sut.handleFilterSelection(request: .init(filters: filters))
 
 		XCTAssertEqual(presenter.messages.last, .presentUpdateFilter(.init(hotels: [])))
 	}
@@ -109,8 +109,8 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 		case presentSearch(HotelsSearchModels.Search.Response)
 		case presentSearchLoading(Bool)
 		case presentSearchError(NSError)
-		case presentFilters(HotelsSearchModels.Filter.Response)
-		case presentUpdateFilter(HotelsSearchModels.UpdateFilter.Response)
+		case presentFilters(HotelsSearchModels.FetchFilters.Response)
+		case presentUpdateFilter(HotelsSearchModels.FilterSelection.Response)
 	}
 
 	private(set) var messages = [Message]()
@@ -127,11 +127,11 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 		messages.append(.presentSearchError(error as NSError))
 	}
 
-	func presentFilters(response: HotelsSearchModels.Filter.Response) {
+	func presentFilters(response: HotelsSearchModels.FetchFilters.Response) {
 		messages.append(.presentFilters(response))
 	}
 
-	func presentUpdateFilters(response: HotelsSearchModels.UpdateFilter.Response) {
+	func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response) {
 		messages.append(.presentUpdateFilter(response))
 	}
 }

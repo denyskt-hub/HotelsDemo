@@ -33,13 +33,13 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 		viewController?.displaySearchError(viewModel: viewModel)
 	}
 
-	public func presentFilters(response: HotelsSearchModels.Filter.Response) {
-		let viewModel = HotelsSearchModels.Filter.ViewModel(filters: response.filters)
+	public func presentFilters(response: HotelsSearchModels.FetchFilters.Response) {
+		let viewModel = HotelsSearchModels.FetchFilters.ViewModel(filters: response.filters)
 		viewController?.displayFilters(viewModel: viewModel)
 	}
 
-	public func presentUpdateFilters(response: HotelsSearchModels.UpdateFilter.Response) {
-		let viewModel = HotelsSearchModels.UpdateFilter.ViewModel(
+	public func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response) {
+		let viewModel = HotelsSearchModels.FilterSelection.ViewModel(
 			hotels: makeHotelViewModels(response.hotels),
 			hasSelectedFilters: response.hasSelectedFilters
 		)

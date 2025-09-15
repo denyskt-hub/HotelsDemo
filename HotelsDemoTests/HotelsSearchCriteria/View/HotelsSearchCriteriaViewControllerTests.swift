@@ -169,7 +169,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 	private func assertThat(
 		_ sut: HotelsSearchCriteriaViewController,
-		isRendering viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel,
+		isRendering viewModel: HotelsSearchCriteriaModels.FetchCriteria.ViewModel,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -179,7 +179,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		XCTAssertEqual(sut.searchButton.isEnabled, viewModel.isSearchEnabled, file: file, line: line)
 	}
 
-	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Fetch.ViewModel {
+	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.FetchCriteria.ViewModel {
 		.init(
 			destination: "Any valid destination",
 			dateRange: "Any valid date range",
@@ -187,7 +187,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		)
 	}
 
-	private func invalidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Fetch.ViewModel {
+	private func invalidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.FetchCriteria.ViewModel {
 		.init(
 			destination: nil,
 			dateRange: "Any valid date range",
@@ -236,7 +236,7 @@ extension HotelsSearchCriteriaViewController {
 
 final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	enum Message: Equatable {
-		case doFetchCriteria(HotelsSearchCriteriaModels.Fetch.Request)
+		case doFetchCriteria(HotelsSearchCriteriaModels.FetchCriteria.Request)
 		case doFetchDates(HotelsSearchCriteriaModels.FetchDates.Request)
 		case doFetchRoomGuests(HotelsSearchCriteriaModels.FetchRoomGuests.Request)
 		case doSearch(HotelsSearchCriteriaModels.Search.Request)
@@ -247,7 +247,7 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 
 	private(set) var messages = [Message]()
 
-	func doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request) {
+	func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
 		messages.append(.doFetchCriteria(request))
 	}
 

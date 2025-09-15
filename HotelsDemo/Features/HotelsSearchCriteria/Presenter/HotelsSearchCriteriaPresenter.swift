@@ -19,7 +19,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 		dateFormatter.timeZone = calendar.timeZone
 	}
 
-	public func presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response) {
+	public func presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response) {
 		presentCriteria(response.criteria)
 	}
 
@@ -69,7 +69,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 			children: criteria.childrenAge.count
 		)
 
-		let viewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
+		let viewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: criteria.destination?.label,
 			dateRange: dareRange,
 			roomGuests: roomGuests

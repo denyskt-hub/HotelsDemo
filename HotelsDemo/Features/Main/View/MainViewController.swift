@@ -40,6 +40,6 @@ public final class MainViewController: NiblessViewController, MainDisplayLogic {
 
 extension MainViewController: HotelsSearchCriteriaDelegate {
 	public func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
-		interactor?.search(request: MainModels.Search.Request(criteria: searchCriteria))
+		interactor?.handleSearch(request: MainModels.Search.Request(criteria: searchCriteria))
 	}
 }

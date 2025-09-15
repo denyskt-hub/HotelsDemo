@@ -35,7 +35,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		setupRoomGuestsControl()
 		setupSearchButton()
 
-		interactor?.doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request())
+		interactor?.doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request())
 	}
 
 	private func setupDestionationControl() {
@@ -70,7 +70,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		interactor?.doSearch(request: HotelsSearchCriteriaModels.Search.Request())
 	}
 
-	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel) {
+	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.FetchCriteria.ViewModel) {
 		destinationControl.setTitle(viewModel.destination)
 		datesControl.setTitle(viewModel.dateRange)
 		roomGuestsControl.setTitle(viewModel.roomGuests)
@@ -103,13 +103,13 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 	public func didSelectDestination(_ destination: Destination) {
 		interactor?.handleDestinationSelection(
-			request: HotelsSearchCriteriaModels.DestinationSelection.Request(destination: destination)
+			request: .init(destination: destination)
 		)
 	}
 
 	public func didSelectDateRange(startDate: Date, endDate: Date) {
 		interactor?.handleDateRangeSelection(
-			request: HotelsSearchCriteriaModels.DateRangeSelection.Request(
+			request: .init(
 				checkInDate: startDate,
 				checkOutDate: endDate
 			)
@@ -118,7 +118,7 @@ extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 
 	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
 		interactor?.handleRoomGuestsSelection(
-			request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request(
+			request: .init(
 				rooms: rooms,
 				adults: adults,
 				childrenAge: childrenAges

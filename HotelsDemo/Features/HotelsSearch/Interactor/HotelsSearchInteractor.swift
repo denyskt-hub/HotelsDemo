@@ -29,7 +29,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		self.worker = worker
 	}
 
-	public func search(request: HotelsSearchModels.Search.Request) {
+	public func doSearch(request: HotelsSearchModels.Search.Request) {
 		presenter?.presentSearchLoading(true)
 		task = worker.search(criteria: criteria) { [weak self] result in
 			guard let self else { return }
@@ -49,15 +49,15 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		}
 	}
 
-	public func cancelSearch() {
+	public func doCancelSearch() {
 		task?.cancel()
 	}
 
-	public func filters(request: HotelsSearchModels.Filter.Request) {
+	public func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
 		presenter?.presentFilters(response: .init(filters: filters))
 	}
 
-	public func updateFilters(request: HotelsSearchModels.UpdateFilter.Request) {
+	public func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
 		filters = request.filters
 		presenter?.presentUpdateFilters(
 			response: .init(

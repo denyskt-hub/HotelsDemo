@@ -100,8 +100,8 @@ final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 		case displaySearch(HotelsSearchModels.Search.ViewModel)
 		case displayLoading(HotelsSearchModels.LoadingViewModel)
 		case displaySearchError(HotelsSearchModels.ErrorViewModel)
-		case displayFilters(HotelsSearchModels.Filter.ViewModel)
-		case displayUpdateFilters(HotelsSearchModels.UpdateFilter.ViewModel)
+		case displayFilters(HotelsSearchModels.FetchFilters.ViewModel)
+		case displayUpdateFilters(HotelsSearchModels.FilterSelection.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
@@ -118,11 +118,11 @@ final class SearchDisplayLogicSpy: HotelsSearchDisplayLogic {
 		messages.append(.displaySearchError(viewModel))
 	}
 
-	func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
 		messages.append(.displayFilters(viewModel))
 	}
 
-	func displayUpdateFilters(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
+	func displayUpdateFilters(viewModel: HotelsSearchModels.FilterSelection.ViewModel) {
 		messages.append(.displayUpdateFilters(viewModel))
 	}
 }

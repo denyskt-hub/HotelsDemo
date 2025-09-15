@@ -26,11 +26,11 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 		viewController?.displaySearchError(viewModel: viewModel)
 	}
 
-	public func displayFilters(viewModel: HotelsSearchModels.Filter.ViewModel) {
+	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
 		viewController?.displayFilters(viewModel: viewModel)
 	}
 
-	public func displayUpdateFilters(viewModel: HotelsSearchModels.UpdateFilter.ViewModel) {
+	public func displayUpdateFilters(viewModel: HotelsSearchModels.FilterSelection.ViewModel) {
 		display(viewModel.hotels)
 		viewController?.display(viewModel.hasSelectedFilters)
 	}

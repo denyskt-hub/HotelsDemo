@@ -18,14 +18,14 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [3],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: nil,
 			dateRange: "27 Jun – 28 Jun",
 			roomGuests: "1 room for 2 adults, 1 child"
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response(criteria: criteria))
+		sut.presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -92,7 +92,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [3],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: "London",
 			dateRange: "27 Jun – 28 Jun",
 			roomGuests: "1 room for 2 adults, 1 child"
@@ -113,7 +113,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [],
 			roomsQuantity: 2
 		)
-		let expectedViewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: nil,
 			dateRange: "10 Jul – 15 Jul",
 			roomGuests: "2 rooms for 3 adults"
@@ -134,7 +134,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 			childrenAge: [0],
 			roomsQuantity: 1
 		)
-		let expectedViewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
+		let expectedViewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: "New York, USA",
 			dateRange: "22 Aug – 23 Aug",
 			roomGuests: "1 room for 1 adult, 1 child"
@@ -170,7 +170,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 
 final class HotelsSearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogic {
 	enum Message: Equatable {
-		case displayCriteria(HotelsSearchCriteriaModels.Fetch.ViewModel)
+		case displayCriteria(HotelsSearchCriteriaModels.FetchCriteria.ViewModel)
 		case displayLoadError(HotelsSearchCriteriaModels.ErrorViewModel)
 		case displayUpdateError(HotelsSearchCriteriaModels.ErrorViewModel)
 		case displayDates(DateRangePickerModels.ViewModel)
@@ -180,7 +180,7 @@ final class HotelsSearchCriteriaDisplayLogicSpy: HotelsSearchCriteriaDisplayLogi
 
 	private(set) var messages = [Message]()
 
-	func displayCriteria(viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel) {
+	func displayCriteria(viewModel: HotelsSearchCriteriaModels.FetchCriteria.ViewModel) {
 		messages.append(.displayCriteria(viewModel))
 	}
 
