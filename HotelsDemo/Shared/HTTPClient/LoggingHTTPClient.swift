@@ -18,9 +18,11 @@ public final class LoggingHTTPClient: HTTPClient {
 		#if DEBUG
 		let startTime = Date()
 		let requestID = String(UUID().uuidString.prefix(6))
-		print("🔍 [\(requestID)] Starting request...")
+		Logger.log("🔍 [\(requestID)] Starting request...", tag: .networking)
 
-		return client.perform(request) { result in
+		return client.perform(request) { [weak self] result in
+			guard let self else { return }
+
 			let duration = Date().timeIntervalSince(startTime)
 			self.log(requestID, request, result, duration)
 			completion(result)
@@ -30,14 +32,13 @@ public final class LoggingHTTPClient: HTTPClient {
 		#endif
 	}
 
-	#if DEBUG
 	private func log(
 		_ requestID: String,
 		_ request: URLRequest,
 		_ result: HTTPClient.Result,
 		_ duration: TimeInterval
 	) {
-		var logOutput = "\n=== [\(requestID)] HTTP Request Start ===\n"
+		var logOutput = "=== [\(requestID)] HTTP Request Start ===\n"
 		logOutput += curlRepresentation(of: request)
 
 		switch result {
@@ -50,7 +51,7 @@ public final class LoggingHTTPClient: HTTPClient {
 
 		logOutput += String(format: "\n🕑 [\(requestID)] Duration: %.2f seconds", duration)
 		logOutput += "\n=== [\(requestID)] HTTP Request End ===\n"
-		print(logOutput)
+		Logger.log(logOutput, tag: .networking)
 	}
 
 	private func curlRepresentation(of request: URLRequest) -> String {
@@ -80,5 +81,4 @@ public final class LoggingHTTPClient: HTTPClient {
 
 		return components.joined(separator: " \\\n  ")
 	}
-	#endif
 }
