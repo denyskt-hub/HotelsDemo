@@ -31,8 +31,8 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		setupChildrenStepper()
 		setupApplyButton()
 
-		interactor?.loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request())
-		interactor?.load(request: RoomGuestsPickerModels.Load.Request())
+		interactor?.doFetchLimits(request: RoomGuestsPickerModels.FetchLimits.Request())
+		interactor?.doFetchRoomGuests(request: RoomGuestsPickerModels.FetchRoomGuests.Request())
 	}
 
 	private func setupRoomsStepper() {
@@ -60,7 +60,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		childrenStepper.setRange(minimumValue: 0, maximumValue: limits.maxChildren)
 	}
 
-	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel) {
+	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.FetchRoomGuests.ViewModel) {
 		roomsStepper.setValue(viewModel.rooms)
 		adultsStepper.setValue(viewModel.adults)
 		displayChildrenAge(viewModel.childrenAge)
@@ -103,7 +103,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 		) { [weak self] selectedIndex in
 			let index = viewModel.index
 			let age = viewModel.availableAges[selectedIndex].value
-			self?.interactor?.didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request(index: index, age: age))
+			self?.interactor?.handleAgeSelection(request: .init(index: index, age: age))
 		}
 		vc.title = viewModel.title
 
@@ -125,36 +125,36 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	}
 
 	@objc private func didDecrementRooms() {
-		interactor?.didDecrementRooms()
+		interactor?.handleDecrementRooms()
 	}
 
 	@objc private func didIncrementRooms() {
-		interactor?.didIncrementRooms()
+		interactor?.handleIncrementRooms()
 	}
 
 	@objc private func didDecrementAdults() {
-		interactor?.didDecrementAdults()
+		interactor?.handleDecrementAdults()
 	}
 
 	@objc private func didIncrementAdults() {
-		interactor?.didIncrementAdults()
+		interactor?.handleIncrementAdults()
 	}
 
 	@objc private func didDecrementChildren() {
-		interactor?.didDecrementChildrenAge()
+		interactor?.handleDecrementChildrenAge()
 	}
 
 	@objc private func didIncrementChildren() {
-		interactor?.didIncrementChildrenAge()
+		interactor?.handleIncrementChildrenAge()
 	}
 
 	@objc private func didApply() {
-		interactor?.selectRoomGuests(request: RoomGuestsPickerModels.Select.Request())
+		interactor?.handleRoomGuestsSelection(request: RoomGuestsPickerModels.Select.Request())
 	}
 }
 
 extension RoomGuestsPickerViewController: AgeInputViewDelegate {
 	public func ageInputViewDidRequestPicker(_ view: AgeInputView, index: Int) {
-		interactor?.didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request(index: index))
+		interactor?.handleAgePicker(request: .init(index: index))
 	}
 }

@@ -8,20 +8,20 @@
 import Foundation
 
 public protocol RoomGuestsPickerBusinessLogic {
-	func loadLimits(request: RoomGuestsPickerModels.LoadLimits.Request)
-	func load(request: RoomGuestsPickerModels.Load.Request)
+	func doFetchLimits(request: RoomGuestsPickerModels.FetchLimits.Request)
+	func doFetchRoomGuests(request: RoomGuestsPickerModels.FetchRoomGuests.Request)
 
-	func didDecrementRooms()
-	func didIncrementRooms()
+	func handleDecrementRooms()
+	func handleIncrementRooms()
 
-	func didDecrementAdults()
-	func didIncrementAdults()
+	func handleDecrementAdults()
+	func handleIncrementAdults()
 
-	func didDecrementChildrenAge()
-	func didIncrementChildrenAge()
+	func handleDecrementChildrenAge()
+	func handleIncrementChildrenAge()
 
-	func didRequestAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request)
-	func didSelectAge(request: RoomGuestsPickerModels.AgeSelected.Request)
+	func handleAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request)
+	func handleAgeSelection(request: RoomGuestsPickerModels.AgeSelected.Request)
 
-	func selectRoomGuests(request: RoomGuestsPickerModels.Select.Request)
+	func handleRoomGuestsSelection(request: RoomGuestsPickerModels.Select.Request)
 }

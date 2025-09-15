@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol RoomGuestsPickerPresentationLogic {
-	func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response)
-	func presentRoomGuests(response: RoomGuestsPickerModels.Load.Response)
+	func presentLimits(response: RoomGuestsPickerModels.FetchLimits.Response)
+	func presentRoomGuests(response: RoomGuestsPickerModels.FetchRoomGuests.Response)
 
 	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response)
 	func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response)

@@ -14,12 +14,12 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 		// Required for initialization in tests
 	}
 
-	public func presentLimits(response: RoomGuestsPickerModels.LoadLimits.Response) {
+	public func presentLimits(response: RoomGuestsPickerModels.FetchLimits.Response) {
 		viewController?.applyLimits(response.limits)
 	}
 
-	public func presentRoomGuests(response: RoomGuestsPickerModels.Load.Response) {
-		let viewModel = RoomGuestsPickerModels.Load.ViewModel(
+	public func presentRoomGuests(response: RoomGuestsPickerModels.FetchRoomGuests.Response) {
+		let viewModel = RoomGuestsPickerModels.FetchRoomGuests.ViewModel(
 			rooms: response.rooms,
 			adults: response.adults,
 			childrenAge: makeAgeInputViewModels(response.childrenAge)

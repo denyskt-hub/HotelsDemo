@@ -144,7 +144,7 @@ final class RoomGuestsPickerPresenterTests: XCTestCase {
 final class RoomGuestsPickerDisplayLogicSpy: RoomGuestsPickerDisplayLogic {
 	enum Message: Equatable {
 		case applyLimits(RoomGuestsLimits)
-		case displayRoomGuests(RoomGuestsPickerModels.Load.ViewModel)
+		case displayRoomGuests(RoomGuestsPickerModels.FetchRoomGuests.ViewModel)
 		case displayRooms(RoomGuestsPickerModels.UpdateRooms.ViewModel)
 		case displayAdults(RoomGuestsPickerModels.UpdateAdults.ViewModel)
 		case displayUpdateChildrenAge(RoomGuestsPickerModels.UpdateChildrenAge.ViewModel)
@@ -159,7 +159,7 @@ final class RoomGuestsPickerDisplayLogicSpy: RoomGuestsPickerDisplayLogic {
 		messages.append(.applyLimits(limits))
 	}
 	
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel) {
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.FetchRoomGuests.ViewModel) {
 		messages.append(.displayRoomGuests(viewModel))
 	}
 	

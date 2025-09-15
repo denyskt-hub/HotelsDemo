@@ -9,7 +9,7 @@ import Foundation
 
 public protocol RoomGuestsPickerDisplayLogic: AnyObject {
 	func applyLimits(_ limits: RoomGuestsLimits)
-	func displayRoomGuests(viewModel: RoomGuestsPickerModels.Load.ViewModel)
+	func displayRoomGuests(viewModel: RoomGuestsPickerModels.FetchRoomGuests.ViewModel)
 
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel)
 	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel)

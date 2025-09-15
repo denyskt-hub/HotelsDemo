@@ -8,7 +8,7 @@
 import Foundation
 
 public enum RoomGuestsPickerModels {
-	public enum Load {
+	public enum FetchRoomGuests {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -38,7 +38,7 @@ public enum RoomGuestsPickerModels {
 		}
 	}
 
-	public enum LoadLimits {
+	public enum FetchLimits {
 		public struct Request: Equatable {
 			public init() {}
 		}
