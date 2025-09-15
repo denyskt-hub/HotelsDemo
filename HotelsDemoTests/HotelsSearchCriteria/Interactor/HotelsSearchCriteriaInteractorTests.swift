@@ -79,63 +79,63 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_updateDestination_presentUpdateErrorOnProviderError() {
+	func test_handleDestinationSelection_presentUpdateErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
-		sut.updateDestination(request: .init(destination: anyDestination()))
+		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_updateDestination_presentUpdateErrorOnCacheError() {
+	func test_handleDestinationSelection_presentUpdateErrorOnCacheError() {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 		
-		sut.updateDestination(request: .init(destination: anyDestination()))
+		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_updateDestination_presentUpdateDestinationOnSucess() {
+	func test_handleDestinationSelection_presentUpdateDestinationOnSucess() {
 		let destination = anyDestination()
 		let criteria = anySearchCriteria()
 		var expectedCriteria = criteria
 		expectedCriteria.destination = destination
 		let (sut, provider, cache, presenter) = makeSUT()
 
-		sut.updateDestination(request: .init(destination: destination))
+		sut.handleDestinationSelection(request: .init(destination: destination))
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
 	}
 
-	func test_updateDates_presentUpdateErrorOnProviderError() {
+	func test_handleDateRangeSelection_presentUpdateErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
-		sut.updateDates(request: .init(checkInDate: Date(), checkOutDate: Date()))
+		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_updateDates_presentUpdateErrorOnCacheError() {
+	func test_handleDateRangeSelection_presentUpdateErrorOnCacheError() {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 
-		sut.updateDates(request: .init(checkInDate: Date(), checkOutDate: Date()))
+		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_updateDates_presentUpdateDatesOnSucess() {
+	func test_handleDateRangeSelection_presentUpdateDatesOnSucess() {
 		let checkInDate = "27.06.2025".date()
 		let checkOutDate = "28.06.2025".date()
 		let criteria = anySearchCriteria()
@@ -144,35 +144,35 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		expectedCriteria.checkOutDate = checkOutDate
 		let (sut, provider, cache, presenter) = makeSUT()
 
-		sut.updateDates(request: .init(checkInDate: checkInDate, checkOutDate: checkOutDate))
+		sut.handleDateRangeSelection(request: .init(checkInDate: checkInDate, checkOutDate: checkOutDate))
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateDates(.init(criteria: expectedCriteria))])
 	}
 
-	func test_updateRoomGuests_presentUpdateErrorOnProviderError() {
+	func test_handleRoomGuestsSelection_presentUpdateErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
-		sut.updateRoomGuests(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
+		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_updateRoomGuests_presentUpdateErrorOnCacheError() {
+	func test_handleRoomGuestsSelection_presentUpdateErrorOnCacheError() {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 
-		sut.updateRoomGuests(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
+		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_updateRoomGuests_presentUpdateRoomGuestsOnSuccess() {
+	func test_handleRoomGuestsSelection_presentUpdateRoomGuestsOnSuccess() {
 		let rooms = 2
 		let adults = 2
 		let childrenAge = [1]
@@ -183,7 +183,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		expectedCriteria.childrenAge = childrenAge
 		let (sut, provider, cache, presenter) = makeSUT()
 		
-		sut.updateRoomGuests(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
+		sut.handleRoomGuestsSelection(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
@@ -260,9 +260,9 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 		case presentLoadError(NSError)
 		case presentDates(HotelsSearchCriteriaModels.LoadDates.Response)
 		case presentRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Response)
-		case presentUpdateDestination(HotelsSearchCriteriaModels.UpdateDestination.Response)
-		case presentUpdateDates(HotelsSearchCriteriaModels.UpdateDates.Response)
-		case presentUpdateRoomGuests(HotelsSearchCriteriaModels.UpdateRoomGuests.Response)
+		case presentUpdateDestination(HotelsSearchCriteriaModels.DestinationSelection.Response)
+		case presentUpdateDates(HotelsSearchCriteriaModels.DateRangeSelection.Response)
+		case presentUpdateRoomGuests(HotelsSearchCriteriaModels.RoomGuestsSelection.Response)
 		case presentUpdateError(NSError)
 		case presentSearch(HotelsSearchCriteriaModels.Search.Response)
 	}
@@ -281,15 +281,15 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 		messages.append(.presentRoomGuests(response))
 	}
 	
-	func presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response) {
+	func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response) {
 		messages.append(.presentUpdateDestination(response))
 	}
 	
-	func presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response) {
+	func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response) {
 		messages.append(.presentUpdateDates(response))
 	}
 	
-	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response) {
+	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
 	}
 

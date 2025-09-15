@@ -68,7 +68,7 @@ public enum HotelsSearchCriteriaModels {
 		}
 	}
 
-	public enum UpdateDestination {
+	public enum DestinationSelection {
 		public struct Request: Equatable {
 			public let destination: Destination
 
@@ -86,7 +86,7 @@ public enum HotelsSearchCriteriaModels {
 		}
 	}
 
-	public enum UpdateDates {
+	public enum DateRangeSelection {
 		public struct Request: Equatable {
 			public let checkInDate: Date
 			public let checkOutDate: Date
@@ -106,7 +106,7 @@ public enum HotelsSearchCriteriaModels {
 		}
 	}
 
-	public enum UpdateRoomGuests {
+	public enum RoomGuestsSelection {
 		public struct Request: Equatable {
 			public let rooms: Int
 			public let adults: Int

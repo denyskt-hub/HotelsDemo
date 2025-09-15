@@ -99,7 +99,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response(criteria: criteria))
+		sut.presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -120,7 +120,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response(criteria: criteria))
+		sut.presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}
@@ -141,7 +141,7 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 		)
 		let (sut, viewController) = makeSUT()
 
-		sut.presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria))
+		sut.presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response(criteria: criteria))
 
 		XCTAssertEqual(viewController.messages, [.displayCriteria(expectedViewModel)])
 	}

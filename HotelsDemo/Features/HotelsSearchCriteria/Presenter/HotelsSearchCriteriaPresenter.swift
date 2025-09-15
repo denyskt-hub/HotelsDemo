@@ -36,15 +36,15 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 		presentDates(response.checkInDate, response.checkOutDate)
 	}
 
-	public func presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response) {
+	public func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response) {
 		presentCriteria(response.criteria)
 	}
 
-	public func presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response) {
+	public func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response) {
 		presentCriteria(response.criteria)
 	}
 
-	public func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response) {
+	public func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response) {
 		presentCriteria(response.criteria)
 	}
 

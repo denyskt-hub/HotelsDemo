@@ -102,20 +102,23 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 
 extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 	public func didSelectDestination(_ destination: Destination) {
-		interactor?.updateDestination(
-			request: HotelsSearchCriteriaModels.UpdateDestination.Request(destination: destination)
+		interactor?.handleDestinationSelection(
+			request: HotelsSearchCriteriaModels.DestinationSelection.Request(destination: destination)
 		)
 	}
 
 	public func didSelectDateRange(startDate: Date, endDate: Date) {
-		interactor?.updateDates(
-			request: HotelsSearchCriteriaModels.UpdateDates.Request(checkInDate: startDate, checkOutDate: endDate)
+		interactor?.handleDateRangeSelection(
+			request: HotelsSearchCriteriaModels.DateRangeSelection.Request(
+				checkInDate: startDate,
+				checkOutDate: endDate
+			)
 		)
 	}
 
 	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
-		interactor?.updateRoomGuests(
-			request: HotelsSearchCriteriaModels.UpdateRoomGuests.Request(
+		interactor?.handleRoomGuestsSelection(
+			request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request(
 				rooms: rooms,
 				adults: adults,
 				childrenAge: childrenAges

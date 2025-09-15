@@ -12,9 +12,9 @@ public protocol HotelsSearchCriteriaBusinessLogic {
 	func loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request)
 	func loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request)
 
-	func updateDestination(request: HotelsSearchCriteriaModels.UpdateDestination.Request)
-	func updateDates(request: HotelsSearchCriteriaModels.UpdateDates.Request)
-	func updateRoomGuests(request: HotelsSearchCriteriaModels.UpdateRoomGuests.Request)
+	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request)
+	func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request)
+	func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
 
 	func search(request: HotelsSearchCriteriaModels.Search.Request)
 }

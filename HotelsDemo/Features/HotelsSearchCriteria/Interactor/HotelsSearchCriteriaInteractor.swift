@@ -65,7 +65,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func updateDestination(request: HotelsSearchCriteriaModels.UpdateDestination.Request) {
+	public func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
 		update(request.destination) { [weak self] result in
 			guard let self else { return }
 
@@ -78,7 +78,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func updateDates(request: HotelsSearchCriteriaModels.UpdateDates.Request) {
+	public func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request) {
 		update(request.checkInDate, request.checkOutDate) { [weak self] result in
 			guard let self else { return }
 
@@ -91,7 +91,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func updateRoomGuests(request: HotelsSearchCriteriaModels.UpdateRoomGuests.Request) {
+	public func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request) {
 		update(request.rooms, request.adults, request.childrenAge) { [weak self] result in
 			guard let self else { return }
 
@@ -207,19 +207,19 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) {
 		presenter?.presentUpdateDestination(
-			response: HotelsSearchCriteriaModels.UpdateDestination.Response(criteria: criteria)
+			response: HotelsSearchCriteriaModels.DestinationSelection.Response(criteria: criteria)
 		)
 	}
 
 	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) {
 		presenter?.presentUpdateDates(
-			response: HotelsSearchCriteriaModels.UpdateDates.Response(criteria: criteria)
+			response: HotelsSearchCriteriaModels.DateRangeSelection.Response(criteria: criteria)
 		)
 	}
 
 	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) {
 		presenter?.presentUpdateRoomGuests(
-			response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response(criteria: criteria)
+			response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response(criteria: criteria)
 		)
 	}
 

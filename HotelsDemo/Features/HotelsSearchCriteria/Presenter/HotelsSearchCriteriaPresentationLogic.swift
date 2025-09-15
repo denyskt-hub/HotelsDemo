@@ -14,9 +14,9 @@ public protocol HotelsSearchCriteriaPresentationLogic {
 	func presentDates(response: HotelsSearchCriteriaModels.LoadDates.Response)
 	func presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response)
 
-	func presentUpdateDestination(response: HotelsSearchCriteriaModels.UpdateDestination.Response)
-	func presentUpdateDates(response: HotelsSearchCriteriaModels.UpdateDates.Response)
-	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.UpdateRoomGuests.Response)
+	func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response)
+	func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response)
+	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response)
 	func presentUpdateError(_ error: Error)
 
 	func presentSearch(response: HotelsSearchCriteriaModels.Search.Response)

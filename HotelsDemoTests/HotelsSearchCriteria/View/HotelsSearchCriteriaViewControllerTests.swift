@@ -125,7 +125,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.didSelectDestination(destination)
 
-		XCTAssertEqual(interactor.messages, [.updateDestination(.init(destination: destination))])
+		XCTAssertEqual(interactor.messages, [.handleDestinationSelection(.init(destination: destination))])
 	}
 
 	func test_didSelectDateRange_updatesDates() {
@@ -135,7 +135,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.didSelectDateRange(startDate: startDate, endDate: endDate)
 
-		XCTAssertEqual(interactor.messages, [.updateDates(.init(checkInDate: startDate, checkOutDate: endDate))])
+		XCTAssertEqual(interactor.messages, [.handleDateRangeSelection(.init(checkInDate: startDate, checkOutDate: endDate))])
 	}
 
 	func test_didSelectRoomGuests_updateRoomGuests() {
@@ -145,7 +145,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		sut.didSelectRoomGuests(rooms: rooms, adults: adults, childrenAges: childrenAges)
 
 		XCTAssertEqual(interactor.messages, [
-			.updateRoomGuests(.init(rooms: rooms, adults: adults, childrenAge: childrenAges))
+			.handleRoomGuestsSelection(.init(rooms: rooms, adults: adults, childrenAge: childrenAges))
 		])
 	}
 
@@ -239,9 +239,9 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 		case loadCriteria(HotelsSearchCriteriaModels.Load.Request)
 		case loadDates(HotelsSearchCriteriaModels.LoadDates.Request)
 		case loadRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Request)
-		case updateDestination(HotelsSearchCriteriaModels.UpdateDestination.Request)
-		case updateDates(HotelsSearchCriteriaModels.UpdateDates.Request)
-		case updateRoomGuests(HotelsSearchCriteriaModels.UpdateRoomGuests.Request)
+		case handleDestinationSelection(HotelsSearchCriteriaModels.DestinationSelection.Request)
+		case handleDateRangeSelection(HotelsSearchCriteriaModels.DateRangeSelection.Request)
+		case handleRoomGuestsSelection(HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
 		case search(HotelsSearchCriteriaModels.Search.Request)
 	}
 
@@ -259,16 +259,16 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 		messages.append(.loadRoomGuests(request))
 	}
 
-	func updateDestination(request: HotelsSearchCriteriaModels.UpdateDestination.Request) {
-		messages.append(.updateDestination(request))
+	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
+		messages.append(.handleDestinationSelection(request))
 	}
 
-	func updateDates(request: HotelsSearchCriteriaModels.UpdateDates.Request) {
-		messages.append(.updateDates(request))
+	func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request) {
+		messages.append(.handleDateRangeSelection(request))
 	}
 
-	func updateRoomGuests(request: HotelsSearchCriteriaModels.UpdateRoomGuests.Request) {
-		messages.append(.updateRoomGuests(request))
+	func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request) {
+		messages.append(.handleRoomGuestsSelection(request))
 	}
 
 	func search(request: HotelsSearchCriteriaModels.Search.Request) {
@@ -309,7 +309,3 @@ final class HotelsSearchCriteriaDelegateSpy: HotelsSearchCriteriaDelegate {
 		messages.append(.didRequestSearch(searchCriteria))
 	}
 }
-
-
-
-
