@@ -52,7 +52,7 @@ public enum DestinationPickerModels {
 		}
 	}
 
-	public enum Select {
+	public enum DestinationSelection {
 		public struct Request: Equatable {
 			public let index: Int
 

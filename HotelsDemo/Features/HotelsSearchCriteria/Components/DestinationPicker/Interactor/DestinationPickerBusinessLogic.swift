@@ -8,6 +8,6 @@
 import Foundation
 
 public protocol DestinationPickerBusinessLogic {
-	func searchDestinations(request: DestinationPickerModels.Search.Request)
-	func selectDestination(request: DestinationPickerModels.Select.Request)
+	func doSearchDestinations(request: DestinationPickerModels.Search.Request)
+	func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request)
 }

@@ -14,7 +14,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.load(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchCalendar(.init())])
 	}
 
 	func test_display_rendersCalendar() {
@@ -68,7 +68,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 
 		sut.simulateTapOnDate(item: 0, section: 0)
 
-		XCTAssertEqual(interactor.messages.last, .didSelectDate(.init(date: date)))
+		XCTAssertEqual(interactor.messages.last, .handleDateSelection(.init(date: date)))
 	}
 
 	func test_applyButtonTap_selectsDateRange() {
@@ -77,7 +77,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 
 		sut.simulateApplyButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .selectDateRange(.init()))
+		XCTAssertEqual(interactor.messages.last, .handleDateRangeSelection(.init()))
 	}
 
 	// MARK: - Helpers
@@ -261,23 +261,23 @@ extension DateRangePickerViewController {
 
 final class DateRangePickerBusinessLogicSpy: DateRangePickerBusinessLogic {
 	enum Message: Equatable {
-		case load(DateRangePickerModels.FetchCalendar.Request)
-		case didSelectDate(DateRangePickerModels.DateSelection.Request)
-		case selectDateRange(DateRangePickerModels.DateRangeSelection.Request)
+		case doFetchCalendar(DateRangePickerModels.FetchCalendar.Request)
+		case handleDateSelection(DateRangePickerModels.DateSelection.Request)
+		case handleDateRangeSelection(DateRangePickerModels.DateRangeSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
 	func doFetchCalendar(request: DateRangePickerModels.FetchCalendar.Request) {
-		messages.append(.load(request))
+		messages.append(.doFetchCalendar(request))
 	}
 
 	func handleDateSelection(request: DateRangePickerModels.DateSelection.Request) {
-		messages.append(.didSelectDate(request))
+		messages.append(.handleDateSelection(request))
 	}
 
 	func handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request) {
-		messages.append(.selectDateRange(request))
+		messages.append(.handleDateRangeSelection(request))
 	}
 }
 

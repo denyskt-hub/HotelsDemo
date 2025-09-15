@@ -22,18 +22,18 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 		self.debouncer = debouncer
 	}
 
-	public func searchDestinations(request: DestinationPickerModels.Search.Request) {
+	public func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
 		debouncer.execute { [weak self] in
 			self?.performSearch(query: request.query)
 		}
 	}
 
-	public func selectDestination(request: DestinationPickerModels.Select.Request) {
+	public func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
 		guard destinations.indices.contains(request.index) else { return }
 
 		let selected = destinations[request.index]
 		presenter?.presentSelectedDestination(
-			response: DestinationPickerModels.Select.Response(selected: selected)
+			response: DestinationPickerModels.DestinationSelection.Response(selected: selected)
 		)
 	}
 

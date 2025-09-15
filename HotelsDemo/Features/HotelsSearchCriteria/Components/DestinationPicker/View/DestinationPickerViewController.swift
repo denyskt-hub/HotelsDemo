@@ -53,7 +53,7 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 		tableView.reloadData()
 	}
 
-	public func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel) {
+	public func displaySelectedDestination(viewModel: DestinationPickerModels.DestinationSelection.ViewModel) {
 		delegate?.didSelectDestination(viewModel.selected)
 		dismiss(animated: true)
 	}
@@ -83,7 +83,7 @@ extension DestinationPickerViewController: UITableViewDataSource {
 
 extension DestinationPickerViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		interactor?.selectDestination(request: DestinationPickerModels.Select.Request(index: indexPath.row))
+		interactor?.handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request(index: indexPath.row))
 	}
 }
 
@@ -96,7 +96,7 @@ extension DestinationPickerViewController: UITextFieldDelegate {
 		if let currentText = textField.text, let textRange = Range(range, in: currentText) {
 			let updatedText = currentText.replacingCharacters(in: textRange, with: string)
 
-			interactor?.searchDestinations(request: DestinationPickerModels.Search.Request(query: updatedText))
+			interactor?.doSearchDestinations(request: DestinationPickerModels.Search.Request(query: updatedText))
 		}
 
 		return true

@@ -66,7 +66,7 @@ final class DestinationPickerPresenterTests: XCTestCase {
 final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 	enum Message: Equatable {
 		case displayDestinations(DestinationPickerModels.Search.ViewModel)
-		case displaySelectedDestination(DestinationPickerModels.Select.ViewModel)
+		case displaySelectedDestination(DestinationPickerModels.DestinationSelection.ViewModel)
 		case displaySearchError(DestinationPickerModels.Search.ErrorViewModel)
 		case hideSearchError
 	}
@@ -77,7 +77,7 @@ final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 		messages.append(.displayDestinations(viewModel))
 	}
 	
-	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel) {
+	func displaySelectedDestination(viewModel: DestinationPickerModels.DestinationSelection.ViewModel) {
 		messages.append(.displaySelectedDestination(viewModel))
 	}
 	

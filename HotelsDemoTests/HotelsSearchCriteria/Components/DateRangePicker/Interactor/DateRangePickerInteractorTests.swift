@@ -9,7 +9,7 @@ import XCTest
 import HotelsDemo
 
 final class DateRangePickerInteractorTests: XCTestCase {
-	func test_load_presentCalendarData() {
+	func test_doFetchCalendar_presentCalendarData() {
 		let calendarData = anyCalendarData()
 		let expectedResponse = DateRangePickerModels.FetchCalendar.Response(
 			calendar: calendarData,
@@ -22,7 +22,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.present(expectedResponse)])
 	}
 
-	func test_didSelectDate_presentSelectDate() {
+	func test_handleDateSelection_presentSelectDate() {
 		let calendarData = anyCalendarData()
 		let expectedResponse = DateRangePickerModels.DateSelection.Response(
 			calendar: calendarData,
@@ -35,7 +35,7 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentSelectDate(expectedResponse)])
 	}
 
-	func test_selectDateRange_presentSelectedDateRange() {
+	func test_handleDateRangeSelection_presentSelectedDateRange() {
 		let calendarData = anyCalendarData()
 		let selectedStartDate = "29.06.2025".date()
 		let selectedEndDate = "30.06.2025".date()

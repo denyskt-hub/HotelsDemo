@@ -29,8 +29,8 @@ public final class DestinationPickerPresenter: DestinationPickerPresentationLogi
 		viewController?.hideSearchError()
 	}
 
-	public func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {
-		let viewModel = DestinationPickerModels.Select.ViewModel(selected: response.selected)
+	public func presentSelectedDestination(response: DestinationPickerModels.DestinationSelection.Response) {
+		let viewModel = DestinationPickerModels.DestinationSelection.ViewModel(selected: response.selected)
 		viewController?.displaySelectedDestination(viewModel: viewModel)
 	}
 

@@ -9,7 +9,7 @@ import Foundation
 
 public protocol DestinationPickerDisplayLogic: AnyObject {
 	func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel)
-	func displaySelectedDestination(viewModel: DestinationPickerModels.Select.ViewModel)
+	func displaySelectedDestination(viewModel: DestinationPickerModels.DestinationSelection.ViewModel)
 	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel)
 	func hideSearchError()
 }

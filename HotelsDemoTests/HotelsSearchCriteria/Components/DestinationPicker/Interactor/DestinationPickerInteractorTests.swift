@@ -15,56 +15,56 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		XCTAssertTrue(service.queries.isEmpty)
 	}
 
-	func test_searchDestinations_presentSearchErrorOnServiceError() {
+	func test_doSearchDestinations_presentSearchErrorOnServiceError() {
 		let serviceError = anyNSError()
 		let (sut, service, presenter) = makeSUT()
 
-		sut.searchDestinations(request: .init(query: "any"))
+		sut.doSearchDestinations(request: .init(query: "any"))
 		service.completeWithResult(.failure(serviceError))
 
 		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
 	}
 
-	func test_searchDestinations_presentDestinationsOnServiceSuccess() {
+	func test_doSearchDestinations_presentDestinationsOnServiceSuccess() {
 		let destinations = [anyDestination()]
 		let (sut, service, presenter) = makeSUT()
 
-		sut.searchDestinations(request: .init(query: "any"))
+		sut.doSearchDestinations(request: .init(query: "any"))
 		service.completeWithResult(.success(destinations))
 
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
 	}
 
-	func test_searchDestinations_doesNotMessageServiceOnEmptyQuery() {
+	func test_doSearchDestinations_doesNotMessageServiceOnEmptyQuery() {
 		let (sut, service, _) = makeSUT()
 
-		sut.searchDestinations(request: .init(query: ""))
+		sut.doSearchDestinations(request: .init(query: ""))
 		XCTAssertTrue(service.queries.isEmpty)
 
-		sut.searchDestinations(request: .init(query: "  "))
+		sut.doSearchDestinations(request: .init(query: "  "))
 		XCTAssertTrue(service.queries.isEmpty)
 	}
 
-	func test_searchDestinations_presentEmptyDestinationsOnEmptyQuery() {
+	func test_doSearchDestinations_presentEmptyDestinationsOnEmptyQuery() {
 		let (sut, _, presenter) = makeSUT()
 
-		sut.searchDestinations(request: .init(query: ""))
+		sut.doSearchDestinations(request: .init(query: ""))
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: []))])
 
-		sut.searchDestinations(request: .init(query: "  "))
+		sut.doSearchDestinations(request: .init(query: "  "))
 		XCTAssertEqual(presenter.messages, [
 			.presentDestinations(.init(destinations: [])),
 			.presentDestinations(.init(destinations: []))
 		])
 	}
 
-	func test_selectDestination_presentSelectedDestination() {
+	func test_handleDestinationSelection_presentSelectedDestination() {
 		let destination = anyDestination()
 		let (sut, service, presenter) = makeSUT()
-		sut.searchDestinations(request: .init(query: "any"))
+		sut.doSearchDestinations(request: .init(query: "any"))
 		service.completeWithResult(.success([destination]))
 
-		sut.selectDestination(request: .init(index: 0))
+		sut.handleDestinationSelection(request: .init(index: 0))
 
 		XCTAssertEqual(presenter.messages.last, .presentSelectedDestination(.init(selected: destination)))
 	}
@@ -105,7 +105,7 @@ final class DestinationSearchServiceSpy: DestinationSearchService {
 final class DestinationPickerPresenterSpy: DestinationPickerPresentationLogic {
 	enum Message: Equatable {
 		case presentDestinations(DestinationPickerModels.Search.Response)
-		case presentSelectedDestination(DestinationPickerModels.Select.Response)
+		case presentSelectedDestination(DestinationPickerModels.DestinationSelection.Response)
 		case presentSearchError(NSError)
 	}
 
@@ -115,7 +115,7 @@ final class DestinationPickerPresenterSpy: DestinationPickerPresentationLogic {
 		messages.append(.presentDestinations(response))
 	}
 
-	func presentSelectedDestination(response: DestinationPickerModels.Select.Response) {
+	func presentSelectedDestination(response: DestinationPickerModels.DestinationSelection.Response) {
 		messages.append(.presentSelectedDestination(response))
 	}
 

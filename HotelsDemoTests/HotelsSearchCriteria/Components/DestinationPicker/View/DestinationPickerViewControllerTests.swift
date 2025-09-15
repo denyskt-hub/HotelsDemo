@@ -22,12 +22,12 @@ final class DestinationPickerViewControllerTests: XCTestCase, ListItemsRendererT
 		sut.simulateAppearance()
 
 		sut.simulateSearch("first query")
-		XCTAssertEqual(interactor.messages, [.searchDestinations(.init(query: "first query"))])
+		XCTAssertEqual(interactor.messages, [.doSearchDestinations(.init(query: "first query"))])
 
 		sut.simulateSearch("second query")
 		XCTAssertEqual(interactor.messages, [
-			.searchDestinations(.init(query: "first query")),
-			.searchDestinations(.init(query: "second query"))
+			.doSearchDestinations(.init(query: "first query")),
+			.doSearchDestinations(.init(query: "second query"))
 		])
 	}
 
@@ -53,7 +53,7 @@ final class DestinationPickerViewControllerTests: XCTestCase, ListItemsRendererT
 
 		sut.simulateTapOnDestination(at: 0)
 
-		XCTAssertEqual(interactor.messages, [.selectDestination(.init(index: 0))])
+		XCTAssertEqual(interactor.messages, [.handleDestinationSelection(.init(index: 0))])
 	}
 
 	func test_displaySelectedDestination_notifiesDelegateWithSelectedDestination() {
@@ -140,18 +140,18 @@ extension DestinationPickerViewController: TableViewRenderer {
 
 final class DestinationPickerBusinessLogicSpy: DestinationPickerBusinessLogic {
 	enum Message: Equatable {
-		case searchDestinations(DestinationPickerModels.Search.Request)
-		case selectDestination(DestinationPickerModels.Select.Request)
+		case doSearchDestinations(DestinationPickerModels.Search.Request)
+		case handleDestinationSelection(DestinationPickerModels.DestinationSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func searchDestinations(request: DestinationPickerModels.Search.Request) {
-		messages.append(.searchDestinations(request))
+	func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
+		messages.append(.doSearchDestinations(request))
 	}
 	
-	func selectDestination(request: DestinationPickerModels.Select.Request) {
-		messages.append(.selectDestination(request))
+	func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
+		messages.append(.handleDestinationSelection(request))
 	}
 }
 
