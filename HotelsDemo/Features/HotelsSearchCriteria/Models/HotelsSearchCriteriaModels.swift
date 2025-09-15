@@ -8,7 +8,7 @@
 import Foundation
 
 public enum HotelsSearchCriteriaModels {
-	public enum Load {
+	public enum Fetch {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -38,7 +38,7 @@ public enum HotelsSearchCriteriaModels {
 		}
 	}
 
-	public enum LoadRoomGuests {
+	public enum FetchRoomGuests {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -52,7 +52,7 @@ public enum HotelsSearchCriteriaModels {
 		}
 	}
 
-	public enum LoadDates {
+	public enum FetchDates {
 		public struct Request: Equatable {
 			public init() {}
 		}

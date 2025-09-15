@@ -14,7 +14,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.loadCriteria(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchCriteria(.init())])
 	}
 
 	func test_destinationButtonTap_routesToDestinationPicker() {
@@ -32,7 +32,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.simulateDatesButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .loadDates(.init()))
+		XCTAssertEqual(interactor.messages.last, .doFetchDates(.init()))
 	}
 
 	func test_roomGuestsButtonTap_loadsRoomGuests() {
@@ -41,7 +41,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		
 		sut.simulateRoomGuestsButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .loadRoomGuests(.init()))
+		XCTAssertEqual(interactor.messages.last, .doFetchRoomGuests(.init()))
 	}
 
 	func test_searchButtonTap_requestsSearch() {
@@ -50,7 +50,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.simulateSearchButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .search(.init()))
+		XCTAssertEqual(interactor.messages.last, .doSearch(.init()))
 	}
 
 	func test_displayCriteria_rendersCriteria() {
@@ -169,7 +169,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 	private func assertThat(
 		_ sut: HotelsSearchCriteriaViewController,
-		isRendering viewModel: HotelsSearchCriteriaModels.Load.ViewModel,
+		isRendering viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel,
 		file: StaticString = #filePath,
 		line: UInt = #line
 	) {
@@ -179,7 +179,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		XCTAssertEqual(sut.searchButton.isEnabled, viewModel.isSearchEnabled, file: file, line: line)
 	}
 
-	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Load.ViewModel {
+	private func anyValidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Fetch.ViewModel {
 		.init(
 			destination: "Any valid destination",
 			dateRange: "Any valid date range",
@@ -187,7 +187,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		)
 	}
 
-	private func invalidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Load.ViewModel {
+	private func invalidSearchCriteriaViewModel() -> HotelsSearchCriteriaModels.Fetch.ViewModel {
 		.init(
 			destination: nil,
 			dateRange: "Any valid date range",
@@ -236,27 +236,27 @@ extension HotelsSearchCriteriaViewController {
 
 final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	enum Message: Equatable {
-		case loadCriteria(HotelsSearchCriteriaModels.Load.Request)
-		case loadDates(HotelsSearchCriteriaModels.LoadDates.Request)
-		case loadRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Request)
+		case doFetchCriteria(HotelsSearchCriteriaModels.Fetch.Request)
+		case doFetchDates(HotelsSearchCriteriaModels.FetchDates.Request)
+		case doFetchRoomGuests(HotelsSearchCriteriaModels.FetchRoomGuests.Request)
+		case doSearch(HotelsSearchCriteriaModels.Search.Request)
 		case handleDestinationSelection(HotelsSearchCriteriaModels.DestinationSelection.Request)
 		case handleDateRangeSelection(HotelsSearchCriteriaModels.DateRangeSelection.Request)
 		case handleRoomGuestsSelection(HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
-		case search(HotelsSearchCriteriaModels.Search.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func loadCriteria(request: HotelsSearchCriteriaModels.Load.Request) {
-		messages.append(.loadCriteria(request))
+	func doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request) {
+		messages.append(.doFetchCriteria(request))
 	}
 
-	func loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request) {
-		messages.append(.loadDates(request))
+	func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request) {
+		messages.append(.doFetchDates(request))
 	}
 
-	func loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request) {
-		messages.append(.loadRoomGuests(request))
+	func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request) {
+		messages.append(.doFetchRoomGuests(request))
 	}
 
 	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
@@ -271,8 +271,8 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 		messages.append(.handleRoomGuestsSelection(request))
 	}
 
-	func search(request: HotelsSearchCriteriaModels.Search.Request) {
-		messages.append(.search(request))
+	func doSearch(request: HotelsSearchCriteriaModels.Search.Request) {
+		messages.append(.doSearch(request))
 	}
 }
 

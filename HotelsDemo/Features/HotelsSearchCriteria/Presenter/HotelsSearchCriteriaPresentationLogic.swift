@@ -8,11 +8,11 @@
 import Foundation
 
 public protocol HotelsSearchCriteriaPresentationLogic {
-	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response)
+	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response)
 	func presentLoadError(_ error: Error)
 
-	func presentDates(response: HotelsSearchCriteriaModels.LoadDates.Response)
-	func presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response)
+	func presentDates(response: HotelsSearchCriteriaModels.FetchDates.Response)
+	func presentRoomGuests(response: HotelsSearchCriteriaModels.FetchRoomGuests.Response)
 
 	func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response)
 	func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response)

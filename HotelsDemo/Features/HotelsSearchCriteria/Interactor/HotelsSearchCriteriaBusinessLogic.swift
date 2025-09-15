@@ -8,13 +8,12 @@
 import Foundation
 
 public protocol HotelsSearchCriteriaBusinessLogic {
-	func loadCriteria(request: HotelsSearchCriteriaModels.Load.Request)
-	func loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request)
-	func loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request)
+	func doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request)
+	func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request)
+	func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request)
+	func doSearch(request: HotelsSearchCriteriaModels.Search.Request)
 
 	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request)
 	func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request)
 	func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
-
-	func search(request: HotelsSearchCriteriaModels.Search.Request)
 }

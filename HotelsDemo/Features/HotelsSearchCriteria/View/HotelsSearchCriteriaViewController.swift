@@ -35,7 +35,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		setupRoomGuestsControl()
 		setupSearchButton()
 
-		interactor?.loadCriteria(request: HotelsSearchCriteriaModels.Load.Request())
+		interactor?.doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request())
 	}
 
 	private func setupDestionationControl() {
@@ -59,18 +59,18 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	}
 
 	@objc private func datesTapHandler() {
-		interactor?.loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request())
+		interactor?.doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request())
 	}
 
 	@objc private func roomGuestsTapHandler() {
-		interactor?.loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request())
+		interactor?.doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request())
 	}
 
 	@objc private func searchTapHandler() {
-		interactor?.search(request: HotelsSearchCriteriaModels.Search.Request())
+		interactor?.doSearch(request: HotelsSearchCriteriaModels.Search.Request())
 	}
 
-	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.Load.ViewModel) {
+	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel) {
 		destinationControl.setTitle(viewModel.destination)
 		datesControl.setTitle(viewModel.dateRange)
 		roomGuestsControl.setTitle(viewModel.roomGuests)

@@ -19,7 +19,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 		dateFormatter.timeZone = calendar.timeZone
 	}
 
-	public func presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response) {
+	public func presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response) {
 		presentCriteria(response.criteria)
 	}
 
@@ -28,11 +28,11 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 		viewController?.displayLoadError(viewModel: viewModel)
 	}
 
-	public func presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response) {
+	public func presentRoomGuests(response: HotelsSearchCriteriaModels.FetchRoomGuests.Response) {
 		presentRoomGuests(response.roomGuests)
 	}
 
-	public func presentDates(response: HotelsSearchCriteriaModels.LoadDates.Response) {
+	public func presentDates(response: HotelsSearchCriteriaModels.FetchDates.Response) {
 		presentDates(response.checkInDate, response.checkOutDate)
 	}
 
@@ -69,7 +69,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 			children: criteria.childrenAge.count
 		)
 
-		let viewModel = HotelsSearchCriteriaModels.Load.ViewModel(
+		let viewModel = HotelsSearchCriteriaModels.Fetch.ViewModel(
 			destination: criteria.destination?.label,
 			dateRange: dareRange,
 			roomGuests: roomGuests

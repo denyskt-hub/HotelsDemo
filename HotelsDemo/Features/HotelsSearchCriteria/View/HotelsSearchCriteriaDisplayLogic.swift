@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol HotelsSearchCriteriaDisplayLogic: AnyObject {
-	func displayCriteria(viewModel: HotelsSearchCriteriaModels.Load.ViewModel)
+	func displayCriteria(viewModel: HotelsSearchCriteriaModels.Fetch.ViewModel)
 	func displayLoadError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel)
 	func displayUpdateError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel)
 	func displayDates(viewModel: DateRangePickerModels.ViewModel)

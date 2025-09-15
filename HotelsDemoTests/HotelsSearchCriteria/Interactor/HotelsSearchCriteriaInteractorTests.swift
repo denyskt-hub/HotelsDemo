@@ -9,63 +9,63 @@ import XCTest
 import HotelsDemo
 
 final class HotelsSearchCriteriaInteractorTests: XCTestCase {
-	func test_loadCriteria_presentLoadErrorOnProviderError() {
+	func test_doFetchCriteria_presentLoadErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
-		sut.loadCriteria(request: .init())
+		sut.doFetchCriteria(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_loadCriteria_presentCriteriaOnProviderSuccess() {
+	func test_doFetchCriteria_presentCriteriaOnProviderSuccess() {
 		let criteria = anySearchCriteria()
 		let (sut, provider, _, presenter) = makeSUT()
 
-		sut.loadCriteria(request: .init())
+		sut.doFetchCriteria(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
 		XCTAssertEqual(presenter.messages, [.presentCriteria(.init(criteria: criteria))])
 	}
 
-	func test_loadDates_presentLoadErrorOnProviderError() {
+	func test_doFetchDateRange_presentLoadErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
-		sut.loadDates(request: .init())
+		sut.doFetchDateRange(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_loadDates_presentDatesOnProviderSuccess() {
+	func test_doFetchDateRange_presentDatesOnProviderSuccess() {
 		let checkInDate = "27.06.2025".date()
 		let checkOutDate = "28.06.2025".date()
 		let criteria = makeSearchCriteria(checkInDate: checkInDate, checkOutDate: checkOutDate)
 		let (sut, provider, _, presenter) = makeSUT()
 		
-		sut.loadDates(request: .init())
+		sut.doFetchDateRange(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
 		XCTAssertEqual(presenter.messages, [.presentDates(.init(checkInDate: checkInDate, checkOutDate: checkOutDate))])
 	}
 
-	func test_loadRoomGuests_presentLoadErrorOnProviderError() {
+	func test_doFetchRoomGuests_presentLoadErrorOnProviderError() {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
-		sut.loadRoomGuests(request: .init())
+		sut.doFetchRoomGuests(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_loadRoomGuests_presentRoomGuestsOnProviderSuccess() {
+	func test_doFetchRoomGuests_presentRoomGuestsOnProviderSuccess() {
 		let criteria = anySearchCriteria()
 		let (sut, provider, _, presenter) = makeSUT()
 
-		sut.loadRoomGuests(request: .init())
+		sut.doFetchRoomGuests(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
 		XCTAssertEqual(presenter.messages, [
@@ -77,6 +77,26 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 				))
 			)
 		])
+	}
+
+	func test_doSearch_presentLoadErrorOnProviderError() {
+		let providerError = anyNSError()
+		let (sut, provider, _, presenter) = makeSUT()
+
+		sut.doSearch(request: .init())
+		provider.completeRetrieve(with: .failure(providerError))
+
+		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
+	}
+
+	func test_doSearch_presentSearchOnSuccess() {
+		let criteria = anySearchCriteria()
+		let (sut, provider, _, presenter) = makeSUT()
+
+		sut.doSearch(request: .init())
+		provider.completeRetrieve(with: .success(criteria))
+
+		XCTAssertEqual(presenter.messages, [.presentSearch(.init(criteria: criteria))])
 	}
 
 	func test_handleDestinationSelection_presentUpdateErrorOnProviderError() {
@@ -190,26 +210,6 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
 	}
 
-	func test_search_presentLoadErrorOnProviderError() {
-		let providerError = anyNSError()
-		let (sut, provider, _, presenter) = makeSUT()
-		
-		sut.search(request: .init())
-		provider.completeRetrieve(with: .failure(providerError))
-		
-		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
-	}
-
-	func test_search_presentSearchOnSuccess() {
-		let criteria = anySearchCriteria()
-		let (sut, provider, _, presenter) = makeSUT()
-
-		sut.search(request: .init())
-		provider.completeRetrieve(with: .success(criteria))
-
-		XCTAssertEqual(presenter.messages, [.presentSearch(.init(criteria: criteria))])
-	}
-
 	// MARK: - Helpers
 
 	private func makeSUT() -> (
@@ -256,10 +256,10 @@ final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 
 final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLogic {
 	enum Message: Equatable {
-		case presentCriteria(HotelsSearchCriteriaModels.Load.Response)
+		case presentCriteria(HotelsSearchCriteriaModels.Fetch.Response)
 		case presentLoadError(NSError)
-		case presentDates(HotelsSearchCriteriaModels.LoadDates.Response)
-		case presentRoomGuests(HotelsSearchCriteriaModels.LoadRoomGuests.Response)
+		case presentDates(HotelsSearchCriteriaModels.FetchDates.Response)
+		case presentRoomGuests(HotelsSearchCriteriaModels.FetchRoomGuests.Response)
 		case presentUpdateDestination(HotelsSearchCriteriaModels.DestinationSelection.Response)
 		case presentUpdateDates(HotelsSearchCriteriaModels.DateRangeSelection.Response)
 		case presentUpdateRoomGuests(HotelsSearchCriteriaModels.RoomGuestsSelection.Response)
@@ -269,15 +269,15 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 
 	private(set) var messages = [Message]()
 
-	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Load.Response) {
+	func presentLoadCriteria(response: HotelsSearchCriteriaModels.Fetch.Response) {
 		messages.append(.presentCriteria(response))
 	}
 
-	func presentDates(response: HotelsSearchCriteriaModels.LoadDates.Response) {
+	func presentDates(response: HotelsSearchCriteriaModels.FetchDates.Response) {
 		messages.append(.presentDates(response))
 	}
 
-	func presentRoomGuests(response: HotelsSearchCriteriaModels.LoadRoomGuests.Response) {
+	func presentRoomGuests(response: HotelsSearchCriteriaModels.FetchRoomGuests.Response) {
 		messages.append(.presentRoomGuests(response))
 	}
 	

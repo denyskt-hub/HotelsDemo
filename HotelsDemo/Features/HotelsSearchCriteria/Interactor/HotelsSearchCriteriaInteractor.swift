@@ -21,7 +21,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		self.cache = cache
 	}
 
-	public func loadCriteria(request: HotelsSearchCriteriaModels.Load.Request) {
+	public func doFetchCriteria(request: HotelsSearchCriteriaModels.Fetch.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -34,7 +34,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func loadDates(request: HotelsSearchCriteriaModels.LoadDates.Request) {
+	public func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -47,7 +47,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func loadRoomGuests(request: HotelsSearchCriteriaModels.LoadRoomGuests.Request) {
+	public func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request) {
 		load { [weak self] result in
 			guard let self else { return }
 
@@ -59,6 +59,19 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 					childrenAge: criteria.childrenAge
 				)
 				self.presentLoadedRoomGuests(roomGuests)
+			case let .failure(error):
+				self.presentLoadError(error)
+			}
+		}
+	}
+
+	public func doSearch(request: HotelsSearchCriteriaModels.Search.Request) {
+		load { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.presentSearch(criteria)
 			case let .failure(error):
 				self.presentLoadError(error)
 			}
@@ -104,18 +117,7 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}
 	}
 
-	public func search(request: HotelsSearchCriteriaModels.Search.Request) {
-		load { [weak self] result in
-			guard let self else { return }
-
-			switch result {
-			case let .success(criteria):
-				self.presentSearch(criteria)
-			case let .failure(error):
-				self.presentLoadError(error)
-			}
-		}
-	}
+	// MARK: -
 
 	private func load(_ completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void) {
 		provider.retrieve(completion: completion)
@@ -180,9 +182,11 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		}, completion: completion)
 	}
 
+	// MARK: - 
+
 	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
 		presenter?.presentLoadCriteria(
-			response: HotelsSearchCriteriaModels.Load.Response(criteria: criteria)
+			response: HotelsSearchCriteriaModels.Fetch.Response(criteria: criteria)
 		)
 	}
 
@@ -192,13 +196,13 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
 		presenter?.presentRoomGuests(
-			response: HotelsSearchCriteriaModels.LoadRoomGuests.Response(roomGuests: roomGuests)
+			response: HotelsSearchCriteriaModels.FetchRoomGuests.Response(roomGuests: roomGuests)
 		)
 	}
 
 	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
 		presenter?.presentDates(
-			response: HotelsSearchCriteriaModels.LoadDates.Response(
+			response: HotelsSearchCriteriaModels.FetchDates.Response(
 				checkInDate: checkInDate,
 				checkOutDate: checkOutDate
 			)
