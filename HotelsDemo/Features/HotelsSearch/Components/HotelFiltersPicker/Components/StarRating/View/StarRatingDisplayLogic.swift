@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol StarRatingDisplayLogic: AnyObject {
-	func display(viewModel: StarRatingModels.Load.ViewModel)
-	func displayReset(viewModel: StarRatingModels.Reset.ViewModel)
-	func displaySelect(viewModel: StarRatingModels.Select.ViewModel)
+	func display(viewModel: StarRatingModels.FetchStarRating.ViewModel)
+	func displayReset(viewModel: StarRatingModels.StarRatingReset.ViewModel)
+	func displaySelect(viewModel: StarRatingModels.StarRatingSelection.ViewModel)
 }

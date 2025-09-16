@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol StarRatingBusinessLogic {
-	func load(request: StarRatingModels.Load.Request)
-	func reset(request: StarRatingModels.Reset.Request)
-	func select(request: StarRatingModels.Select.Request)
+	func doFetchStarRating(request: StarRatingModels.FetchStarRating.Request)
+	func handleStarRatingReset(request: StarRatingModels.StarRatingReset.Request)
+	func handleStarRatingSelection(request: StarRatingModels.StarRatingSelection.Request)
 }

@@ -16,16 +16,16 @@ public final class StarRatingInteractor: StarRatingBusinessLogic {
 		self.selectedStarRatings = selectedStarRatings
 	}
 
-	public func load(request: StarRatingModels.Load.Request) {
+	public func doFetchStarRating(request: StarRatingModels.FetchStarRating.Request) {
 		presenter?.present(response: .init(options: makeOptions(selectedStarRatings)))
 	}
 
-	public func reset(request: StarRatingModels.Reset.Request) {
+	public func handleStarRatingReset(request: StarRatingModels.StarRatingReset.Request) {
 		selectedStarRatings = []
 		presenter?.presentReset(response: .init(options: makeOptions(selectedStarRatings)))
 	}
 
-	public func select(request: StarRatingModels.Select.Request) {
+	public func handleStarRatingSelection(request: StarRatingModels.StarRatingSelection.Request) {
 		if selectedStarRatings.contains(request.starRating) {
 			selectedStarRatings.remove(request.starRating)
 		} else {

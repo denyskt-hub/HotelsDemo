@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol StarRatingPresentationLogic {
-	func present(response: StarRatingModels.Load.Response)
-	func presentReset(response: StarRatingModels.Reset.Response)
-	func presentSelect(response: StarRatingModels.Select.Response)
+	func present(response: StarRatingModels.FetchStarRating.Response)
+	func presentReset(response: StarRatingModels.StarRatingReset.Response)
+	func presentSelect(response: StarRatingModels.StarRatingSelection.Response)
 }

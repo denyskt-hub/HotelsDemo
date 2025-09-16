@@ -54,22 +54,22 @@ final class StarRatingPresenterTests: XCTestCase {
 
 final class StarRatingDisplayLogicSpy: StarRatingDisplayLogic {
 	enum Message: Equatable {
-		case display(StarRatingModels.Load.ViewModel)
-		case displayReset(StarRatingModels.Reset.ViewModel)
-		case displaySelect(StarRatingModels.Select.ViewModel)
+		case display(StarRatingModels.FetchStarRating.ViewModel)
+		case displayReset(StarRatingModels.StarRatingReset.ViewModel)
+		case displaySelect(StarRatingModels.StarRatingSelection.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func display(viewModel: StarRatingModels.Load.ViewModel) {
+	func display(viewModel: StarRatingModels.FetchStarRating.ViewModel) {
 		messages.append(.display(viewModel))
 	}
 	
-	func displayReset(viewModel: StarRatingModels.Reset.ViewModel) {
+	func displayReset(viewModel: StarRatingModels.StarRatingReset.ViewModel) {
 		messages.append(.displayReset(viewModel))
 	}
 	
-	func displaySelect(viewModel: StarRatingModels.Select.ViewModel) {
+	func displaySelect(viewModel: StarRatingModels.StarRatingSelection.ViewModel) {
 		messages.append(.displaySelect(viewModel))
 	}
 }

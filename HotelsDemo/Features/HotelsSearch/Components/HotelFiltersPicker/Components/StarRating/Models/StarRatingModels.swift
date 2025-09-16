@@ -8,7 +8,7 @@
 import Foundation
 
 public enum StarRatingModels {
-	public enum Load {
+	public enum FetchStarRating {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -30,7 +30,7 @@ public enum StarRatingModels {
 		}
 	}
 
-	public enum Reset {
+	public enum StarRatingReset {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -52,7 +52,7 @@ public enum StarRatingModels {
 		}
 	}
 
-	public enum Select {
+	public enum StarRatingSelection {
 		public struct Request: Equatable {
 			public let starRating: StarRating
 

@@ -17,7 +17,7 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.load(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchStarRating(.init())])
 	}
 
 	func test_reset_resetsSelectedOptions() {
@@ -25,7 +25,7 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 
 		sut.reset()
 
-		XCTAssertEqual(interactor.messages, [.reset(.init())])
+		XCTAssertEqual(interactor.messages, [.handleStarRatingReset(.init())])
 	}
 
 	func test_tapOnOption_selectsOptions() {
@@ -35,7 +35,7 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 
 		sut.simulateTapOnItem(at: 0)
 
-		XCTAssertEqual(interactor.messages.last, .select(.init(starRating: .five)))
+		XCTAssertEqual(interactor.messages.last, .handleStarRatingSelection(.init(starRating: .five)))
 	}
 
 	func test_display_rendersStarRatingOptions() {
@@ -109,23 +109,23 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 
 final class StarRatingBusinessLogicSpy: StarRatingBusinessLogic {
 	enum Message: Equatable {
-		case load(StarRatingModels.Load.Request)
-		case reset(StarRatingModels.Reset.Request)
-		case select(StarRatingModels.Select.Request)
+		case doFetchStarRating(StarRatingModels.FetchStarRating.Request)
+		case handleStarRatingReset(StarRatingModels.StarRatingReset.Request)
+		case handleStarRatingSelection(StarRatingModels.StarRatingSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func load(request: StarRatingModels.Load.Request) {
-		messages.append(.load(request))
+	func doFetchStarRating(request: StarRatingModels.FetchStarRating.Request) {
+		messages.append(.doFetchStarRating(request))
 	}
 
-	func reset(request: StarRatingModels.Reset.Request) {
-		messages.append(.reset(request))
+	func handleStarRatingReset(request: StarRatingModels.StarRatingReset.Request) {
+		messages.append(.handleStarRatingReset(request))
 	}
 
-	func select(request: StarRatingModels.Select.Request) {
-		messages.append(.select(request))
+	func handleStarRatingSelection(request: StarRatingModels.StarRatingSelection.Request) {
+		messages.append(.handleStarRatingSelection(request))
 	}
 }
 

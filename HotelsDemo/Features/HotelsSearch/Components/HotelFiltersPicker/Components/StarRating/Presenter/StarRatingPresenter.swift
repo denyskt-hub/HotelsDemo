@@ -14,22 +14,22 @@ public final class StarRatingPresenter: StarRatingPresentationLogic {
 		// Required for initialization in tests
 	}
 
-	public func present(response: StarRatingModels.Load.Response) {
-		let viewModel = StarRatingModels.Load.ViewModel(
+	public func present(response: StarRatingModels.FetchStarRating.Response) {
+		let viewModel = StarRatingModels.FetchStarRating.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentReset(response: StarRatingModels.Reset.Response) {
-		let viewModel = StarRatingModels.Reset.ViewModel(
+	public func presentReset(response: StarRatingModels.StarRatingReset.Response) {
+		let viewModel = StarRatingModels.StarRatingReset.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
 		viewController?.displayReset(viewModel: viewModel)
 	}
 
-	public func presentSelect(response: StarRatingModels.Select.Response) {
-		let viewModel = StarRatingModels.Select.ViewModel(
+	public func presentSelect(response: StarRatingModels.StarRatingSelection.Response) {
+		let viewModel = StarRatingModels.StarRatingSelection.ViewModel(
 			starRatings: response.starRatings,
 			options: makeOptionViewModels(response.options)
 		)
