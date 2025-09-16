@@ -17,7 +17,7 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.load(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchReviewScore(.init())])
 	}
 
 	func test_reset_resetsSelectedOptions() {
@@ -25,7 +25,7 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 
 		sut.reset()
 
-		XCTAssertEqual(interactor.messages, [.reset(.init())])
+		XCTAssertEqual(interactor.messages, [.handleReviewScoreReset(.init())])
 	}
 
 	func test_tapOnOption_selectsOptions() {
@@ -35,7 +35,7 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 
 		sut.simulateTapOnItem(at: 0)
 
-		XCTAssertEqual(interactor.messages.last, .select(.init(reviewScore: .good)))
+		XCTAssertEqual(interactor.messages.last, .handleReviewScoreSelection(.init(reviewScore: .good)))
 	}
 
 	func test_display_rendersReviewScoreOptions() {
@@ -109,23 +109,23 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 
 final class ReviewScoreBusinessLogicSpy: ReviewScoreBusinessLogic {
 	enum Message: Equatable {
-		case load(ReviewScoreModels.Load.Request)
-		case reset(ReviewScoreModels.Reset.Request)
-		case select(ReviewScoreModels.Select.Request)
+		case doFetchReviewScore(ReviewScoreModels.FetchReviewScore.Request)
+		case handleReviewScoreReset(ReviewScoreModels.ReviewScoreReset.Request)
+		case handleReviewScoreSelection(ReviewScoreModels.ReviewScoreSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func load(request: ReviewScoreModels.Load.Request) {
-		messages.append(.load(request))
+	func doFetchReviewScore(request: ReviewScoreModels.FetchReviewScore.Request) {
+		messages.append(.doFetchReviewScore(request))
 	}
 	
-	func reset(request: ReviewScoreModels.Reset.Request) {
-		messages.append(.reset(request))
+	func handleReviewScoreReset(request: ReviewScoreModels.ReviewScoreReset.Request) {
+		messages.append(.handleReviewScoreReset(request))
 	}
 	
-	func select(request: ReviewScoreModels.Select.Request) {
-		messages.append(.select(request))
+	func handleReviewScoreSelection(request: ReviewScoreModels.ReviewScoreSelection.Request) {
+		messages.append(.handleReviewScoreSelection(request))
 	}
 }
 

@@ -16,16 +16,16 @@ public final class ReviewScoreInteractor: ReviewScoreBusinessLogic {
 		self.selectedReviewScore = selectedReviewScore
 	}
 
-	public func load(request: ReviewScoreModels.Load.Request) {
+	public func doFetchReviewScore(request: ReviewScoreModels.FetchReviewScore.Request) {
 		presenter?.present(response: .init(options: makeOptions(selectedReviewScore)))
 	}
 
-	public func reset(request: ReviewScoreModels.Reset.Request) {
+	public func handleReviewScoreReset(request: ReviewScoreModels.ReviewScoreReset.Request) {
 		selectedReviewScore = nil
 		presenter?.presentReset(response: .init(options: makeOptions(selectedReviewScore)))
 	}
 
-	public func select(request: ReviewScoreModels.Select.Request) {
+	public func handleReviewScoreSelection(request: ReviewScoreModels.ReviewScoreSelection.Request) {
 		selectedReviewScore = selectedReviewScore != request.reviewScore ? request.reviewScore : nil
 		presenter?.presentSelect(
 			response: .init(

@@ -26,10 +26,10 @@ final class PriceRangeInteractorTests: XCTestCase {
 		}
 	}
 
-	func test_handleResetPriceRange_presentsResetState() {
+	func test_handlePriceRangeReset_presentsResetState() {
 		let (sut, presenter) = makeSUT(selectedPriceRange: 10...30, currencyCode: "USD")
 
-		sut.handleResetPriceRange(request: .init())
+		sut.handlePriceRangeReset(request: .init())
 
 		XCTAssertEqual(presenter.messages, [.presentReset(.init(availablePriceRange: 0...3000, currencyCode: "USD"))])
 	}
@@ -72,7 +72,7 @@ final class PriceRangeInteractorTests: XCTestCase {
 final class PriceRangePresentationLogicSpy: PriceRangePresentationLogic {
 	enum Message: Equatable {
 		case present(PriceRangeModels.FetchPriceRange.Response)
-		case presentReset(PriceRangeModels.ResetPriceRange.Response)
+		case presentReset(PriceRangeModels.PriceRangeReset.Response)
 		case presentSelect(PriceRangeModels.PriceRangeSelection.Response)
 		case presentSelecting(PriceRangeModels.SelectingPriceRange.Response)
 	}
@@ -83,7 +83,7 @@ final class PriceRangePresentationLogicSpy: PriceRangePresentationLogic {
 		messages.append(.present(response))
 	}
 
-	func presentReset(response: PriceRangeModels.ResetPriceRange.Response) {
+	func presentReset(response: PriceRangeModels.PriceRangeReset.Response) {
 		messages.append(.presentReset(response))
 	}
 

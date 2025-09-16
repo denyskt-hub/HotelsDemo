@@ -42,7 +42,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 		display(viewModel.priceRangeViewModel)
 	}
 
-	public func displayReset(viewModel: PriceRangeModels.ResetPriceRange.ViewModel) {
+	public func displayReset(viewModel: PriceRangeModels.PriceRangeReset.ViewModel) {
 		display(viewModel.priceRangeViewModel)
 	}
 
@@ -83,7 +83,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 extension PriceRangeViewController: ResetableFilterViewController {
 	public func reset() {
-		interactor?.handleResetPriceRange(request: .init())
+		interactor?.handlePriceRangeReset(request: .init())
 	}
 }
 

@@ -54,22 +54,22 @@ final class ReviewScorePresenterTests: XCTestCase {
 
 final class ReviewScoreDisplayLogicSpy: ReviewScoreDisplayLogic {
 	enum Message: Equatable {
-		case display(ReviewScoreModels.Load.ViewModel)
-		case displayReset(ReviewScoreModels.Reset.ViewModel)
-		case displaySelect(ReviewScoreModels.Select.ViewModel)
+		case display(ReviewScoreModels.FetchReviewScore.ViewModel)
+		case displayReset(ReviewScoreModels.ReviewScoreReset.ViewModel)
+		case displaySelect(ReviewScoreModels.ReviewScoreSelection.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func display(viewModel: ReviewScoreModels.Load.ViewModel) {
+	func display(viewModel: ReviewScoreModels.FetchReviewScore.ViewModel) {
 		messages.append(.display(viewModel))
 	}
 
-	func displayReset(viewModel: ReviewScoreModels.Reset.ViewModel) {
+	func displayReset(viewModel: ReviewScoreModels.ReviewScoreReset.ViewModel) {
 		messages.append(.displayReset(viewModel))
 	}
 
-	func displaySelect(viewModel: ReviewScoreModels.Select.ViewModel) {
+	func displaySelect(viewModel: ReviewScoreModels.ReviewScoreSelection.ViewModel) {
 		messages.append(.displaySelect(viewModel))
 	}
 }

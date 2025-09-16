@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol ReviewScorePresentationLogic {
-	func present(response: ReviewScoreModels.Load.Response)
-	func presentReset(response: ReviewScoreModels.Reset.Response)
-	func presentSelect(response: ReviewScoreModels.Select.Response)
+	func present(response: ReviewScoreModels.FetchReviewScore.Response)
+	func presentReset(response: ReviewScoreModels.ReviewScoreReset.Response)
+	func presentSelect(response: ReviewScoreModels.ReviewScoreSelection.Response)
 }

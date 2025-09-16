@@ -38,7 +38,7 @@ public enum PriceRangeModels {
 		}
 	}
 
-	public enum ResetPriceRange {
+	public enum PriceRangeReset {
 		public struct Request: Equatable {
 			public init() {}
 		}

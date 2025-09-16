@@ -32,7 +32,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 		)
 	}
 
-	public func handleResetPriceRange(request: PriceRangeModels.ResetPriceRange.Request) {
+	public func handlePriceRangeReset(request: PriceRangeModels.PriceRangeReset.Request) {
 		selectedPriceRange = nil
 		presenter?.presentReset(
 			response: .init(

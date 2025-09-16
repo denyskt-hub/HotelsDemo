@@ -9,7 +9,7 @@ import Foundation
 
 public protocol PriceRangeBusinessLogic {
 	func doFetchPriceRange(request: PriceRangeModels.FetchPriceRange.Request)
-	func handleResetPriceRange(request: PriceRangeModels.ResetPriceRange.Request)
+	func handlePriceRangeReset(request: PriceRangeModels.PriceRangeReset.Request)
 	func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request)
 	func handleSelectingPriceRange(request: PriceRangeModels.SelectingPriceRange.Request)
 }

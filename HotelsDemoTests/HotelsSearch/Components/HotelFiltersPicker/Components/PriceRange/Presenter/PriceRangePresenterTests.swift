@@ -77,7 +77,7 @@ final class PriceRangePresenterTests: XCTestCase {
 final class PriceRangeDisplayLogicSpy: PriceRangeDisplayLogic {
 	enum Message: Equatable {
 		case display(PriceRangeModels.FetchPriceRange.ViewModel)
-		case displayReset(PriceRangeModels.ResetPriceRange.ViewModel)
+		case displayReset(PriceRangeModels.PriceRangeReset.ViewModel)
 		case displaySelect(PriceRangeModels.PriceRangeSelection.ViewModel)
 		case displaySelecting(PriceRangeModels.SelectingPriceRange.ViewModel)
 	}
@@ -88,7 +88,7 @@ final class PriceRangeDisplayLogicSpy: PriceRangeDisplayLogic {
 		messages.append(.display(viewModel))
 	}
 
-	func displayReset(viewModel: PriceRangeModels.ResetPriceRange.ViewModel) {
+	func displayReset(viewModel: PriceRangeModels.PriceRangeReset.ViewModel) {
 		messages.append(.displayReset(viewModel))
 	}
 

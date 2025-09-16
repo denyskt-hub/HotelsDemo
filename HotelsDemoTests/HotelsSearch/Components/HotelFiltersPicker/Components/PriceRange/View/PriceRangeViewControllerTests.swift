@@ -22,7 +22,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 
 		sut.reset()
 
-		XCTAssertEqual(interactor.messages, [.handleResetPriceRange(.init())])
+		XCTAssertEqual(interactor.messages, [.handlePriceRangeReset(.init())])
 	}
 
 	func test_sliderValueChanged_slectingPriceRange() {
@@ -122,7 +122,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		availablePriceRange: ClosedRange<Decimal>,
 		lowerValue: String = "lower",
 		upperValue: String = "upper"
-	) -> PriceRangeModels.ResetPriceRange.ViewModel {
+	) -> PriceRangeModels.PriceRangeReset.ViewModel {
 		.init(
 			priceRangeViewModel: .init(
 				availablePriceRange: availablePriceRange,
@@ -153,7 +153,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 final class PriceRangeBusinessLogicSpy: PriceRangeBusinessLogic {
 	enum Message: Equatable {
 		case doFetchPriceRange(PriceRangeModels.FetchPriceRange.Request)
-		case handleResetPriceRange(PriceRangeModels.ResetPriceRange.Request)
+		case handlePriceRangeReset(PriceRangeModels.PriceRangeReset.Request)
 		case handlePriceRangeSelection(PriceRangeModels.PriceRangeSelection.Request)
 		case handleSelectingPriceRange(PriceRangeModels.SelectingPriceRange.Request)
 	}
@@ -164,8 +164,8 @@ final class PriceRangeBusinessLogicSpy: PriceRangeBusinessLogic {
 		messages.append(.doFetchPriceRange(request))
 	}
 	
-	func handleResetPriceRange(request: PriceRangeModels.ResetPriceRange.Request) {
-		messages.append(.handleResetPriceRange(request))
+	func handlePriceRangeReset(request: PriceRangeModels.PriceRangeReset.Request) {
+		messages.append(.handlePriceRangeReset(request))
 	}
 	
 	func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request) {

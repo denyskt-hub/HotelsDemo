@@ -14,22 +14,22 @@ public final class ReviewScorePresenter: ReviewScorePresentationLogic {
 		// Required for initialization in tests
 	}
 
-	public func present(response: ReviewScoreModels.Load.Response) {
-		let viewModel = ReviewScoreModels.Load.ViewModel(
+	public func present(response: ReviewScoreModels.FetchReviewScore.Response) {
+		let viewModel = ReviewScoreModels.FetchReviewScore.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentReset(response: ReviewScoreModels.Reset.Response) {
-		let viewModel = ReviewScoreModels.Reset.ViewModel(
+	public func presentReset(response: ReviewScoreModels.ReviewScoreReset.Response) {
+		let viewModel = ReviewScoreModels.ReviewScoreReset.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
 		viewController?.displayReset(viewModel: viewModel)
 	}
 
-	public func presentSelect(response: ReviewScoreModels.Select.Response) {
-		let viewModel = ReviewScoreModels.Select.ViewModel(
+	public func presentSelect(response: ReviewScoreModels.ReviewScoreSelection.Response) {
+		let viewModel = ReviewScoreModels.ReviewScoreSelection.ViewModel(
 			reviewScore: response.reviewScore,
 			options: makeOptionViewModels(response.options)
 		)

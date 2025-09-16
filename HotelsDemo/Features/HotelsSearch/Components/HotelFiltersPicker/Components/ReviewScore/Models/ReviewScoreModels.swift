@@ -8,7 +8,7 @@
 import Foundation
 
 public enum ReviewScoreModels {
-	public enum Load {
+	public enum FetchReviewScore {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -30,7 +30,7 @@ public enum ReviewScoreModels {
 		}
 	}
 
-	public enum Reset {
+	public enum ReviewScoreReset {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -52,7 +52,7 @@ public enum ReviewScoreModels {
 		}
 	}
 
-	public enum Select {
+	public enum ReviewScoreSelection {
 		public struct Request: Equatable {
 			public let reviewScore: ReviewScore?
 

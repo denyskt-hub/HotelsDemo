@@ -29,7 +29,7 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 
 		setupTableView()
 
-		interactor?.load(request: .init())
+		interactor?.doFetchReviewScore(request: .init())
 	}
 
 	private func setupTableView() {
@@ -39,15 +39,15 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 		tableView.register(ReviewScoreCell.self)
 	}
 
-	public func display(viewModel: ReviewScoreModels.Load.ViewModel) {
+	public func display(viewModel: ReviewScoreModels.FetchReviewScore.ViewModel) {
 		display(viewModel.options)
 	}
 
-	public func displayReset(viewModel: ReviewScoreModels.Reset.ViewModel) {
+	public func displayReset(viewModel: ReviewScoreModels.ReviewScoreReset.ViewModel) {
 		display(viewModel.options)
 	}
 
-	public func displaySelect(viewModel: ReviewScoreModels.Select.ViewModel) {
+	public func displaySelect(viewModel: ReviewScoreModels.ReviewScoreSelection.ViewModel) {
 		delegate?.didSelectReviewScore(viewModel.reviewScore)
 		display(viewModel.options)
 	}
@@ -62,7 +62,7 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 
 extension ReviewScoreViewController: ResetableFilterViewController {
 	public func reset() {
-		interactor?.reset(request: .init())
+		interactor?.handleReviewScoreReset(request: .init())
 	}
 }
 
@@ -85,6 +85,6 @@ extension ReviewScoreViewController: UITableViewDataSource {
 extension ReviewScoreViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let option = options[indexPath.row]
-		interactor?.select(request: .init(reviewScore: option.value))
+		interactor?.handleReviewScoreSelection(request: .init(reviewScore: option.value))
 	}
 }

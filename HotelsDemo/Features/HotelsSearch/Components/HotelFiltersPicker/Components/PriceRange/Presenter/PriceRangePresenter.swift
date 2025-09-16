@@ -29,8 +29,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentReset(response: PriceRangeModels.ResetPriceRange.Response) {
-		let viewModel = PriceRangeModels.ResetPriceRange.ViewModel(
+	public func presentReset(response: PriceRangeModels.PriceRangeReset.Response) {
+		let viewModel = PriceRangeModels.PriceRangeReset.ViewModel(
 			priceRangeViewModel: .init(
 				availablePriceRange: response.availablePriceRange,
 				priceRange: response.availablePriceRange,

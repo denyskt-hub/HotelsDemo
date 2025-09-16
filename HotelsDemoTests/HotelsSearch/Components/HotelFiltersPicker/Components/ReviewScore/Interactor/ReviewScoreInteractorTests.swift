@@ -9,7 +9,7 @@ import XCTest
 import HotelsDemo
 
 final class ReviewScoreInteractorTests: XCTestCase {
-	func test_load_presentsInitialState() {
+	func test_doFetchReviewScore_presentsInitialState() {
 		let cases: [(ReviewScore?, String)] = [
 			(nil, "when nothing selected"),
 			(.fair, "when .fair is selected"),
@@ -19,46 +19,46 @@ final class ReviewScoreInteractorTests: XCTestCase {
 		cases.forEach { selected, description in
 			let (sut, presenter) = makeSUT(selectedReviewScore: selected)
 
-			sut.load(request: .init())
+			sut.doFetchReviewScore(request: .init())
 
 			let expectedOptions = ReviewScore.allCases.toOptions(selected: selected)
 			XCTAssertEqual(presenter.messages.last, .present(.init(options: expectedOptions)), description)
 		}
 	}
 
-	func test_reset_presentsResetState() {
+	func test_handleReviewScoreReset_presentsResetState() {
 		let (sut, presenter) = makeSUT(selectedReviewScore: .pleasant)
 
-		sut.reset(request: .init())
+		sut.handleReviewScoreReset(request: .init())
 
 		let expectedOptions = ReviewScore.allCases.toOptions(selected: nil)
 		XCTAssertEqual(presenter.messages, [.presentReset(.init(options: expectedOptions))])
 	}
 
-	func test_select_presentsSelectedReviewScore() {
+	func test_handleReviewScoreSelection_presentsSelectedReviewScore() {
 		let (sut, presenter) = makeSUT(selectedReviewScore: nil)
 
-		sut.select(request: .init(reviewScore: .fair))
+		sut.handleReviewScoreSelection(request: .init(reviewScore: .fair))
 
 		XCTAssertEqual(presenter.messages, [
 			.presentSelect(.init(reviewScore: .fair, options: ReviewScore.allCases.toOptions(selected: .fair)))
 		])
 	}
 
-	func test_selectAlreadySelectedReviewScore_presentsDeselectedReviewScore() {
+	func test_handleReviewScoreSelectionWithAlreadySelectedReviewScore_presentsDeselectedReviewScore() {
 		let (sut, presenter) = makeSUT(selectedReviewScore: .fair)
 
-		sut.select(request: .init(reviewScore: .fair))
+		sut.handleReviewScoreSelection(request: .init(reviewScore: .fair))
 
 		XCTAssertEqual(presenter.messages, [
 			.presentSelect(.init(reviewScore: nil, options: ReviewScore.allCases.toOptions(selected: nil)))
 		])
 	}
 
-	func test_selectNewReviewScore_presentsNewReviewScore() {
+	func test_handleReviewScoreSelectionWithNewReviewScore_presentsNewReviewScore() {
 		let (sut, presenter) = makeSUT(selectedReviewScore: .fair)
 
-		sut.select(request: .init(reviewScore: .wonderful))
+		sut.handleReviewScoreSelection(request: .init(reviewScore: .wonderful))
 
 		XCTAssertEqual(presenter.messages, [
 			.presentSelect(.init(reviewScore: .wonderful, options: ReviewScore.allCases.toOptions(selected: .wonderful)))
@@ -88,22 +88,22 @@ final class ReviewScoreInteractorTests: XCTestCase {
 
 final class ReviewScorePresentationLogicSpy: ReviewScorePresentationLogic {
 	enum Message: Equatable {
-		case present(ReviewScoreModels.Load.Response)
-		case presentReset(ReviewScoreModels.Reset.Response)
-		case presentSelect(ReviewScoreModels.Select.Response)
+		case present(ReviewScoreModels.FetchReviewScore.Response)
+		case presentReset(ReviewScoreModels.ReviewScoreReset.Response)
+		case presentSelect(ReviewScoreModels.ReviewScoreSelection.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func present(response: ReviewScoreModels.Load.Response) {
+	func present(response: ReviewScoreModels.FetchReviewScore.Response) {
 		messages.append(.present(response))
 	}
 	
-	func presentReset(response: ReviewScoreModels.Reset.Response) {
+	func presentReset(response: ReviewScoreModels.ReviewScoreReset.Response) {
 		messages.append(.presentReset(response))
 	}
 	
-	func presentSelect(response: ReviewScoreModels.Select.Response) {
+	func presentSelect(response: ReviewScoreModels.ReviewScoreSelection.Response) {
 		messages.append(.presentSelect(response))
 	}
 }

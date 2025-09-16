@@ -9,7 +9,7 @@ import Foundation
 
 public protocol PriceRangePresentationLogic {
 	func present(response: PriceRangeModels.FetchPriceRange.Response)
-	func presentReset(response: PriceRangeModels.ResetPriceRange.Response)
+	func presentReset(response: PriceRangeModels.PriceRangeReset.Response)
 	func presentSelect(response: PriceRangeModels.PriceRangeSelection.Response)
 	func presentSelecting(response: PriceRangeModels.SelectingPriceRange.Response)
 }
