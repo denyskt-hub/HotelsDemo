@@ -76,27 +76,27 @@ final class PriceRangePresenterTests: XCTestCase {
 
 final class PriceRangeDisplayLogicSpy: PriceRangeDisplayLogic {
 	enum Message: Equatable {
-		case display(PriceRangeModels.Load.ViewModel)
-		case displayReset(PriceRangeModels.Reset.ViewModel)
-		case displaySelect(PriceRangeModels.Select.ViewModel)
-		case displaySelecting(PriceRangeModels.Selecting.ViewModel)
+		case display(PriceRangeModels.FetchPriceRange.ViewModel)
+		case displayReset(PriceRangeModels.ResetPriceRange.ViewModel)
+		case displaySelect(PriceRangeModels.PriceRangeSelection.ViewModel)
+		case displaySelecting(PriceRangeModels.SelectingPriceRange.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func display(viewModel: PriceRangeModels.Load.ViewModel) {
+	func display(viewModel: PriceRangeModels.FetchPriceRange.ViewModel) {
 		messages.append(.display(viewModel))
 	}
 
-	func displayReset(viewModel: PriceRangeModels.Reset.ViewModel) {
+	func displayReset(viewModel: PriceRangeModels.ResetPriceRange.ViewModel) {
 		messages.append(.displayReset(viewModel))
 	}
 
-	func displaySelect(viewModel: PriceRangeModels.Select.ViewModel) {
+	func displaySelect(viewModel: PriceRangeModels.PriceRangeSelection.ViewModel) {
 		messages.append(.displaySelect(viewModel))
 	}
 
-	func displaySelecting(viewModel: PriceRangeModels.Selecting.ViewModel) {
+	func displaySelecting(viewModel: PriceRangeModels.SelectingPriceRange.ViewModel) {
 		messages.append(.displaySelecting(viewModel))
 	}
 }

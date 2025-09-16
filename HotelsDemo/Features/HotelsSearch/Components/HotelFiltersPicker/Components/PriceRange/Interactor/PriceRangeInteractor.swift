@@ -22,7 +22,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 		self.currencyCode = currencyCode
 	}
 
-	public func load(request: PriceRangeModels.Load.Request) {
+	public func doFetchPriceRange(request: PriceRangeModels.FetchPriceRange.Request) {
 		presenter?.present(
 			response: .init(
 				availablePriceRange: availablePriceRange,
@@ -32,7 +32,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 		)
 	}
 
-	public func reset(request: PriceRangeModels.Reset.Request) {
+	public func handleResetPriceRange(request: PriceRangeModels.ResetPriceRange.Request) {
 		selectedPriceRange = nil
 		presenter?.presentReset(
 			response: .init(
@@ -42,12 +42,12 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 		)
 	}
 
-	public func select(request: PriceRangeModels.Select.Request) {
+	public func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request) {
 		selectedPriceRange = request.priceRange
 		presenter?.presentSelect(response: .init(priceRange: request.priceRange))
 	}
 
-	public func selecting(request: PriceRangeModels.Selecting.Request) {
+	public func handleSelectingPriceRange(request: PriceRangeModels.SelectingPriceRange.Request) {
 		selectedPriceRange = request.priceRange
 		presenter?.presentSelecting(
 			response: .init(

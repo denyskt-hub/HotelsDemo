@@ -9,7 +9,7 @@ import XCTest
 import HotelsDemo
 
 final class PriceRangeInteractorTests: XCTestCase {
-	func test_load_presentsInitialState() {
+	func test_doFetchPriceRange_presentsInitialState() {
 		let cases: [(ClosedRange<Decimal>?, String, String)] = [
 			(nil, "USD", "when nothing selected"),
 			(100...500, "THB", "when something is selected")
@@ -18,7 +18,7 @@ final class PriceRangeInteractorTests: XCTestCase {
 		cases.forEach { selectedPriceRange, currencyCode, description in
 			let (sut, presenter) = makeSUT(selectedPriceRange: selectedPriceRange, currencyCode: currencyCode)
 
-			sut.load(request: .init())
+			sut.doFetchPriceRange(request: .init())
 
 			XCTAssertEqual(presenter.messages, [
 				.present(.init(availablePriceRange: 0...3000, priceRange: selectedPriceRange, currencyCode: currencyCode))
@@ -26,26 +26,26 @@ final class PriceRangeInteractorTests: XCTestCase {
 		}
 	}
 
-	func test_reset_presentsResetState() {
+	func test_handleResetPriceRange_presentsResetState() {
 		let (sut, presenter) = makeSUT(selectedPriceRange: 10...30, currencyCode: "USD")
 
-		sut.reset(request: .init())
+		sut.handleResetPriceRange(request: .init())
 
 		XCTAssertEqual(presenter.messages, [.presentReset(.init(availablePriceRange: 0...3000, currencyCode: "USD"))])
 	}
 
-	func test_select_presentsSelectedPriceRange() {
+	func test_handlePriceRangeSelection_presentsSelectedPriceRange() {
 		let (sut, presenter) = makeSUT(selectedPriceRange: nil)
 
-		sut.select(request: .init(priceRange: 20...60))
+		sut.handlePriceRangeSelection(request: .init(priceRange: 20...60))
 
 		XCTAssertEqual(presenter.messages, [.presentSelect(.init(priceRange: 20...60))])
 	}
 
-	func test_selecting_prsentsSelectingPriceRange() {
+	func test_handleSelectingPriceRange_prsentsSelectingPriceRange() {
 		let (sut, presenter) = makeSUT(selectedPriceRange: nil, currencyCode: "THB")
 
-		sut.selecting(request: .init(priceRange: 300...900))
+		sut.handleSelectingPriceRange(request: .init(priceRange: 300...900))
 
 		XCTAssertEqual(presenter.messages, [.presentSelecting(.init(priceRange: 300...900, currencyCode: "THB"))])
 	}
@@ -71,27 +71,27 @@ final class PriceRangeInteractorTests: XCTestCase {
 
 final class PriceRangePresentationLogicSpy: PriceRangePresentationLogic {
 	enum Message: Equatable {
-		case present(PriceRangeModels.Load.Response)
-		case presentReset(PriceRangeModels.Reset.Response)
-		case presentSelect(PriceRangeModels.Select.Response)
-		case presentSelecting(PriceRangeModels.Selecting.Response)
+		case present(PriceRangeModels.FetchPriceRange.Response)
+		case presentReset(PriceRangeModels.ResetPriceRange.Response)
+		case presentSelect(PriceRangeModels.PriceRangeSelection.Response)
+		case presentSelecting(PriceRangeModels.SelectingPriceRange.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func present(response: PriceRangeModels.Load.Response) {
+	func present(response: PriceRangeModels.FetchPriceRange.Response) {
 		messages.append(.present(response))
 	}
 
-	func presentReset(response: PriceRangeModels.Reset.Response) {
+	func presentReset(response: PriceRangeModels.ResetPriceRange.Response) {
 		messages.append(.presentReset(response))
 	}
 
-	func presentSelect(response: PriceRangeModels.Select.Response) {
+	func presentSelect(response: PriceRangeModels.PriceRangeSelection.Response) {
 		messages.append(.presentSelect(response))
 	}
 
-	func presentSelecting(response: PriceRangeModels.Selecting.Response) {
+	func presentSelecting(response: PriceRangeModels.SelectingPriceRange.Response) {
 		messages.append(.presentSelecting(response))
 	}
 }

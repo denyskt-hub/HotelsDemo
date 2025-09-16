@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol PriceRangePresentationLogic {
-	func present(response: PriceRangeModels.Load.Response)
-	func presentReset(response: PriceRangeModels.Reset.Response)
-	func presentSelect(response: PriceRangeModels.Select.Response)
-	func presentSelecting(response: PriceRangeModels.Selecting.Response)
+	func present(response: PriceRangeModels.FetchPriceRange.Response)
+	func presentReset(response: PriceRangeModels.ResetPriceRange.Response)
+	func presentSelect(response: PriceRangeModels.PriceRangeSelection.Response)
+	func presentSelecting(response: PriceRangeModels.SelectingPriceRange.Response)
 }

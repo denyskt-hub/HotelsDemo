@@ -16,9 +16,9 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 		self.locale = locale
 	}
 
-	public func present(response: PriceRangeModels.Load.Response) {
+	public func present(response: PriceRangeModels.FetchPriceRange.Response) {
 		let priceRange = response.priceRange ?? response.availablePriceRange
-		let viewModel = PriceRangeModels.Load.ViewModel(
+		let viewModel = PriceRangeModels.FetchPriceRange.ViewModel(
 			priceRangeViewModel: .init(
 				availablePriceRange: response.availablePriceRange,
 				priceRange: priceRange,
@@ -29,8 +29,8 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentReset(response: PriceRangeModels.Reset.Response) {
-		let viewModel = PriceRangeModels.Reset.ViewModel(
+	public func presentReset(response: PriceRangeModels.ResetPriceRange.Response) {
+		let viewModel = PriceRangeModels.ResetPriceRange.ViewModel(
 			priceRangeViewModel: .init(
 				availablePriceRange: response.availablePriceRange,
 				priceRange: response.availablePriceRange,
@@ -41,15 +41,15 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 		viewController?.displayReset(viewModel: viewModel)
 	}
 
-	public func presentSelect(response: PriceRangeModels.Select.Response) {
-		let viewModel = PriceRangeModels.Select.ViewModel(
+	public func presentSelect(response: PriceRangeModels.PriceRangeSelection.Response) {
+		let viewModel = PriceRangeModels.PriceRangeSelection.ViewModel(
 			priceRange: response.priceRange
 		)
 		viewController?.displaySelect(viewModel: viewModel)
 	}
 
-	public func presentSelecting(response: PriceRangeModels.Selecting.Response) {
-		let viewModel = PriceRangeModels.Selecting.ViewModel(
+	public func presentSelecting(response: PriceRangeModels.SelectingPriceRange.Response) {
+		let viewModel = PriceRangeModels.SelectingPriceRange.ViewModel(
 			lowerValue: response.priceRange.lowerBound.formattedCurrency(code: response.currencyCode, locale: locale),
 			upperValue: response.priceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 		)

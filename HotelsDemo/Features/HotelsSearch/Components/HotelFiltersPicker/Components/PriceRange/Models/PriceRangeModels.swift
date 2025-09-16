@@ -8,7 +8,7 @@
 import Foundation
 
 public enum PriceRangeModels {
-	public enum Load {
+	public enum FetchPriceRange {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -38,7 +38,7 @@ public enum PriceRangeModels {
 		}
 	}
 
-	public enum Reset {
+	public enum ResetPriceRange {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -65,7 +65,7 @@ public enum PriceRangeModels {
 		}
 	}
 
-	public enum Select {
+	public enum PriceRangeSelection {
 		public struct Request: Equatable {
 			public let priceRange: ClosedRange<Decimal>
 
@@ -91,7 +91,7 @@ public enum PriceRangeModels {
 		}
 	}
 
-	public enum Selecting {
+	public enum SelectingPriceRange {
 		public struct Request: Equatable {
 			public let priceRange: ClosedRange<Decimal>
 

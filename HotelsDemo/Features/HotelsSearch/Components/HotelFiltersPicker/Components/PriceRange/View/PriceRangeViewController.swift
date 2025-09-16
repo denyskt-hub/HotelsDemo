@@ -30,7 +30,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 		setupSlider()
 
-		interactor?.load(request: .init())
+		interactor?.doFetchPriceRange(request: .init())
 	}
 
 	private func setupSlider() {
@@ -38,19 +38,19 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 		slider.addTarget(self, action: #selector(sliderEditingDidEnd(_:)), for: .editingDidEnd)
 	}
 
-	public func display(viewModel: PriceRangeModels.Load.ViewModel) {
+	public func display(viewModel: PriceRangeModels.FetchPriceRange.ViewModel) {
 		display(viewModel.priceRangeViewModel)
 	}
 
-	public func displayReset(viewModel: PriceRangeModels.Reset.ViewModel) {
+	public func displayReset(viewModel: PriceRangeModels.ResetPriceRange.ViewModel) {
 		display(viewModel.priceRangeViewModel)
 	}
 
-	public func displaySelect(viewModel: PriceRangeModels.Select.ViewModel) {
+	public func displaySelect(viewModel: PriceRangeModels.PriceRangeSelection.ViewModel) {
 		delegate?.didSelectPriceRange(viewModel.priceRange)
 	}
 
-	public func displaySelecting(viewModel: PriceRangeModels.Selecting.ViewModel) {
+	public func displaySelecting(viewModel: PriceRangeModels.SelectingPriceRange.ViewModel) {
 		lowerValueLabel.text = viewModel.lowerValue
 		upperValueLabel.text = viewModel.upperValue
 	}
@@ -67,11 +67,11 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	@objc private func sliderValueChanged(_ slider: RangeSlider) {
-		interactor?.selecting(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
+		interactor?.handleSelectingPriceRange(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
 	}
 
 	@objc private func sliderEditingDidEnd(_ slider: RangeSlider) {
-		interactor?.select(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
+		interactor?.handlePriceRangeSelection(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
 	}
 
 	private func makePriceRange(_ lowerValue: CGFloat, _ upperValue: CGFloat) -> ClosedRange<Decimal> {
@@ -83,7 +83,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 extension PriceRangeViewController: ResetableFilterViewController {
 	public func reset() {
-		interactor?.reset(request: .init())
+		interactor?.handleResetPriceRange(request: .init())
 	}
 }
 

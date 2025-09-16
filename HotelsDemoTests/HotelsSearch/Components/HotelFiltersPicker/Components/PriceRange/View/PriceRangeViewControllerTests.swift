@@ -14,7 +14,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.load(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchPriceRange(.init())])
 	}
 
 	func test_reset_resetsSelectedPriceRange() {
@@ -22,7 +22,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 
 		sut.reset()
 
-		XCTAssertEqual(interactor.messages, [.reset(.init())])
+		XCTAssertEqual(interactor.messages, [.handleResetPriceRange(.init())])
 	}
 
 	func test_sliderValueChanged_slectingPriceRange() {
@@ -31,10 +31,10 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		sut.display(viewModel: makeLoadViewModelWith(priceRange: .none, in: 0...500))
 
 		sut.simulateSliderLowerValueChanged(to: 20)
-		XCTAssertEqual(interactor.messages.last, .selecting(.init(priceRange: 20...500)))
+		XCTAssertEqual(interactor.messages.last, .handleSelectingPriceRange(.init(priceRange: 20...500)))
 
 		sut.simulateSliderUpperValueChanged(to: 30)
-		XCTAssertEqual(interactor.messages.last, .selecting(.init(priceRange: 20...30)))
+		XCTAssertEqual(interactor.messages.last, .handleSelectingPriceRange(.init(priceRange: 20...30)))
 	}
 
 	func test_sliderEditingDidEnd_selectsPriceRange() {
@@ -43,10 +43,10 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		sut.display(viewModel: makeLoadViewModelWith(priceRange: .none, in: 0...500))
 
 		sut.simulateSliderLowerEditingDidEnd(to: 20)
-		XCTAssertEqual(interactor.messages.last, .select(.init(priceRange: 20...500)))
+		XCTAssertEqual(interactor.messages.last, .handlePriceRangeSelection(.init(priceRange: 20...500)))
 
 		sut.simulateSliderUpperEditingDidEnd(to: 30)
-		XCTAssertEqual(interactor.messages.last, .select(.init(priceRange: 20...30)))
+		XCTAssertEqual(interactor.messages.last, .handlePriceRangeSelection(.init(priceRange: 20...30)))
 	}
 
 	func test_display_rendersPriceRange() {
@@ -107,7 +107,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		in availablePriceRange: ClosedRange<Decimal>,
 		lowerValue: String = "lower",
 		upperValue: String = "upper"
-	) -> PriceRangeModels.Load.ViewModel {
+	) -> PriceRangeModels.FetchPriceRange.ViewModel {
 		.init(
 			priceRangeViewModel: .init(
 				availablePriceRange: availablePriceRange,
@@ -122,7 +122,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		availablePriceRange: ClosedRange<Decimal>,
 		lowerValue: String = "lower",
 		upperValue: String = "upper"
-	) -> PriceRangeModels.Reset.ViewModel {
+	) -> PriceRangeModels.ResetPriceRange.ViewModel {
 		.init(
 			priceRangeViewModel: .init(
 				availablePriceRange: availablePriceRange,
@@ -152,28 +152,28 @@ final class PriceRangeViewControllerTests: XCTestCase {
 
 final class PriceRangeBusinessLogicSpy: PriceRangeBusinessLogic {
 	enum Message: Equatable {
-		case load(PriceRangeModels.Load.Request)
-		case reset(PriceRangeModels.Reset.Request)
-		case select(PriceRangeModels.Select.Request)
-		case selecting(PriceRangeModels.Selecting.Request)
+		case doFetchPriceRange(PriceRangeModels.FetchPriceRange.Request)
+		case handleResetPriceRange(PriceRangeModels.ResetPriceRange.Request)
+		case handlePriceRangeSelection(PriceRangeModels.PriceRangeSelection.Request)
+		case handleSelectingPriceRange(PriceRangeModels.SelectingPriceRange.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func load(request: PriceRangeModels.Load.Request) {
-		messages.append(.load(request))
+	func doFetchPriceRange(request: PriceRangeModels.FetchPriceRange.Request) {
+		messages.append(.doFetchPriceRange(request))
 	}
 	
-	func reset(request: PriceRangeModels.Reset.Request) {
-		messages.append(.reset(request))
+	func handleResetPriceRange(request: PriceRangeModels.ResetPriceRange.Request) {
+		messages.append(.handleResetPriceRange(request))
 	}
 	
-	func select(request: PriceRangeModels.Select.Request) {
-		messages.append(.select(request))
+	func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request) {
+		messages.append(.handlePriceRangeSelection(request))
 	}
 	
-	func selecting(request: PriceRangeModels.Selecting.Request) {
-		messages.append(.selecting(request))
+	func handleSelectingPriceRange(request: PriceRangeModels.SelectingPriceRange.Request) {
+		messages.append(.handleSelectingPriceRange(request))
 	}
 }
 

@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol PriceRangeDisplayLogic: AnyObject {
-	func display(viewModel: PriceRangeModels.Load.ViewModel)
-	func displayReset(viewModel: PriceRangeModels.Reset.ViewModel)
-	func displaySelect(viewModel: PriceRangeModels.Select.ViewModel)
-	func displaySelecting(viewModel: PriceRangeModels.Selecting.ViewModel)
+	func display(viewModel: PriceRangeModels.FetchPriceRange.ViewModel)
+	func displayReset(viewModel: PriceRangeModels.ResetPriceRange.ViewModel)
+	func displaySelect(viewModel: PriceRangeModels.PriceRangeSelection.ViewModel)
+	func displaySelecting(viewModel: PriceRangeModels.SelectingPriceRange.ViewModel)
 }
