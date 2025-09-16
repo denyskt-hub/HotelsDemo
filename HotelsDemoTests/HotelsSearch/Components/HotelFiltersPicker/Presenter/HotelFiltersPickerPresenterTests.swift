@@ -55,22 +55,22 @@ final class HotelFiltersPickerPresenterTests: XCTestCase {
 
 final class HotelFiltersPickerDisplayLogicSpy: HotelFiltersPickerDisplayLogic {
 	enum Message: Equatable {
-		case display(HotelFiltersPickerModels.Load.ViewModel)
-		case displaySelectedFilters(HotelFiltersPickerModels.Select.ViewModel)
-		case displayResetFilters(HotelFiltersPickerModels.Reset.ViewModel)
+		case display(HotelFiltersPickerModels.FetchFilters.ViewModel)
+		case displaySelectedFilters(HotelFiltersPickerModels.FilterSelection.ViewModel)
+		case displayResetFilters(HotelFiltersPickerModels.FilterReset.ViewModel)
 	}
 
 	private(set) var messages = [Message]()
 
-	func display(viewModel: HotelFiltersPickerModels.Load.ViewModel) {
+	func display(viewModel: HotelFiltersPickerModels.FetchFilters.ViewModel) {
 		messages.append(.display(viewModel))
 	}
 
-	func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel) {
+	func displaySelectedFilters(viewModel: HotelFiltersPickerModels.FilterSelection.ViewModel) {
 		messages.append(.displaySelectedFilters(viewModel))
 	}
 
-	func displayResetFilters(viewModel: HotelFiltersPickerModels.Reset.ViewModel) {
+	func displayResetFilters(viewModel: HotelFiltersPickerModels.FilterReset.ViewModel) {
 		messages.append(.displayResetFilters(viewModel))
 	}
 }

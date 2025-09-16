@@ -14,7 +14,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 
 		sut.simulateAppearance()
 		
-		XCTAssertEqual(interactor.messages, [.load(.init())])
+		XCTAssertEqual(interactor.messages, [.doFetchFilters(.init())])
 	}
 
 	func test_display_rendersHasSelectedFiltersState() {
@@ -57,8 +57,8 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		sut.simulateApplyButtonTap()
 
 		XCTAssertEqual(interactor.messages, [
-			.load(.init()),
-			.selectFilters(.init())
+			.doFetchFilters(.init()),
+			.handleFilterSelection(.init())
 		])
 	}
 
@@ -69,8 +69,8 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		sut.simulateResetButtonTap()
 
 		XCTAssertEqual(interactor.messages, [
-			.load(.init()),
-			.resetFilters(.init())
+			.doFetchFilters(.init()),
+			.handleFilterReset(.init())
 		])
 	}
 
@@ -78,39 +78,39 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		let (sut, interactor, _) = makeSUT()
 
 		sut.didSelectPriceRange(nil)
-		XCTAssertEqual(interactor.messages.last, .updatePriceRange(.init(priceRange: nil)))
+		XCTAssertEqual(interactor.messages.last, .handlePriceRangeSelection(.init(priceRange: nil)))
 
 		sut.didSelectPriceRange(10...200)
-		XCTAssertEqual(interactor.messages.last, .updatePriceRange(.init(priceRange: 10...200)))
+		XCTAssertEqual(interactor.messages.last, .handlePriceRangeSelection(.init(priceRange: 10...200)))
 
 		sut.didSelectPriceRange(100...300)
-		XCTAssertEqual(interactor.messages.last, .updatePriceRange(.init(priceRange: 100...300)))
+		XCTAssertEqual(interactor.messages.last, .handlePriceRangeSelection(.init(priceRange: 100...300)))
 	}
 
 	func test_didSelectStarRatings_updateStarRatings() {
 		let (sut, interactor, _) = makeSUT()
 
 		sut.didSelectStarRatings([])
-		XCTAssertEqual(interactor.messages.last, .updateStarRatings(.init(starRatings: [])))
+		XCTAssertEqual(interactor.messages.last, .handleStarRatingSelection(.init(starRatings: [])))
 
 		sut.didSelectStarRatings([.five])
-		XCTAssertEqual(interactor.messages.last, .updateStarRatings(.init(starRatings: [.five])))
+		XCTAssertEqual(interactor.messages.last, .handleStarRatingSelection(.init(starRatings: [.five])))
 
 		sut.didSelectStarRatings([.one, .two])
-		XCTAssertEqual(interactor.messages.last, .updateStarRatings(.init(starRatings: [.one, .two])))
+		XCTAssertEqual(interactor.messages.last, .handleStarRatingSelection(.init(starRatings: [.one, .two])))
 	}
 
 	func test_didSelectReviewScore_updateReviewScore() {
 		let (sut, interactor, _) = makeSUT()
 
 		sut.didSelectReviewScore(nil)
-		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: nil)))
+		XCTAssertEqual(interactor.messages.last, .handleReviewScoreSelection(.init(reviewScore: nil)))
 
 		sut.didSelectReviewScore(.fair)
-		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: .fair)))
+		XCTAssertEqual(interactor.messages.last, .handleReviewScoreSelection(.init(reviewScore: .fair)))
 
 		sut.didSelectReviewScore(.good)
-		XCTAssertEqual(interactor.messages.last, .updateReviewScore(.init(reviewScore: .good)))
+		XCTAssertEqual(interactor.messages.last, .handleReviewScoreSelection(.init(reviewScore: .good)))
 	}
 
 	// MARK: - Helpers
@@ -155,38 +155,38 @@ final class ResetableFilterViewControllerSpy: UIViewController, ResetableFilterV
 
 final class HotelFiltersPickerBusinessLogicSpy: HotelFiltersPickerBusinessLogic {
 	enum Message: Equatable {
-		case load(HotelFiltersPickerModels.Load.Request)
-		case updatePriceRange(HotelFiltersPickerModels.UpdatePriceRange.Request)
-		case updateStarRatings(HotelFiltersPickerModels.UpdateStarRatings.Request)
-		case updateReviewScore(HotelFiltersPickerModels.UpdateReviewScore.Request)
-		case selectFilters(HotelFiltersPickerModels.Select.Request)
-		case resetFilters(HotelFiltersPickerModels.Reset.Request)
+		case doFetchFilters(HotelFiltersPickerModels.FetchFilters.Request)
+		case handlePriceRangeSelection(HotelFiltersPickerModels.PriceRangeSelection.Request)
+		case handleStarRatingSelection(HotelFiltersPickerModels.StarRatingSelection.Request)
+		case handleReviewScoreSelection(HotelFiltersPickerModels.ReviewScoreSelection.Request)
+		case handleFilterSelection(HotelFiltersPickerModels.FilterSelection.Request)
+		case handleFilterReset(HotelFiltersPickerModels.FilterReset.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func load(request: HotelFiltersPickerModels.Load.Request) {
-		messages.append(.load(request))
+	func doFetchFilters(request: HotelFiltersPickerModels.FetchFilters.Request) {
+		messages.append(.doFetchFilters(request))
 	}
 
-	func updatePriceRange(request: HotelFiltersPickerModels.UpdatePriceRange.Request) {
-		messages.append(.updatePriceRange(request))
+	func handlePriceRangeSelection(request: HotelFiltersPickerModels.PriceRangeSelection.Request) {
+		messages.append(.handlePriceRangeSelection(request))
 	}
 
-	func updateStarRatings(request: HotelFiltersPickerModels.UpdateStarRatings.Request) {
-		messages.append(.updateStarRatings(request))
+	func handleStarRatingSelection(request: HotelFiltersPickerModels.StarRatingSelection.Request) {
+		messages.append(.handleStarRatingSelection(request))
 	}
 
-	func updateReviewScore(request: HotelFiltersPickerModels.UpdateReviewScore.Request) {
-		messages.append(.updateReviewScore(request))
+	func handleReviewScoreSelection(request: HotelFiltersPickerModels.ReviewScoreSelection.Request) {
+		messages.append(.handleReviewScoreSelection(request))
 	}
 
-	func selectFilters(request: HotelFiltersPickerModels.Select.Request) {
-		messages.append(.selectFilters(request))
+	func handleFilterSelection(request: HotelFiltersPickerModels.FilterSelection.Request) {
+		messages.append(.handleFilterSelection(request))
 	}
 
-	func resetFilters(request: HotelFiltersPickerModels.Reset.Request) {
-		messages.append(.resetFilters(request))
+	func handleFilterReset(request: HotelFiltersPickerModels.FilterReset.Request) {
+		messages.append(.handleFilterReset(request))
 	}
 }
 

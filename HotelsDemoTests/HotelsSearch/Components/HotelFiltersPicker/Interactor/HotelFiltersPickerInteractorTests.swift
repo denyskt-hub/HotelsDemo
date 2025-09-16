@@ -9,31 +9,31 @@ import XCTest
 import HotelsDemo
 
 final class HotelFiltersPickerInteractorTests: XCTestCase {
-	func test_load_presentsFilters() {
+	func test_doFetchFilters_presentsFilters() {
 		let filters = anyHotelFilters()
 		let (sut, presenter) = makeSUT(currentFilters: filters)
 
-		sut.load(request: .init())
+		sut.doFetchFilters(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: filters))
 		])
 	}
 
-	func test_selectFilters_presentsSelectedFilters() {
+	func test_handleFilterSelection_presentsSelectedFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: anyHotelFilters())
 
-		sut.selectFilters(request: .init())
+		sut.handleFilterSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.presentSelectedFilters(.init(filters: anyHotelFilters()))
 		])
 	}
 
-	func test_resetFilters_presentsResetFilters() {
+	func test_handleFilterReset_presentsResetFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: nonEmptyHotelFilters())
 
-		sut.resetFilters(request: .init())
+		sut.handleFilterReset(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: emptyHotelFilters())),
@@ -41,7 +41,7 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_resetFilters_resetsCurrentFilters() {
+	func test_handleFilterReset_resetsCurrentFilters() {
 		let emptyFilters = emptyHotelFilters()
 		let currentFilters = HotelFilters(
 			priceRange: 0...100,
@@ -50,8 +50,8 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		)
 		let (sut, presenter) = makeSUT(currentFilters: currentFilters)
 
-		sut.resetFilters(request: .init())
-		sut.selectFilters(request: .init())
+		sut.handleFilterReset(request: .init())
+		sut.handleFilterSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: emptyFilters)),
@@ -60,11 +60,11 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_updatePriceRange_updatesCurrentFilters() {
+	func test_handlePriceRangeSelection_updatesCurrentFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: HotelFilters())
 
-		sut.updatePriceRange(request: .init(priceRange: 10...20))
-		sut.selectFilters(request: .init())
+		sut.handlePriceRangeSelection(request: .init(priceRange: 10...20))
+		sut.handleFilterSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: HotelFilters(priceRange: 10...20))),
@@ -72,11 +72,11 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_updateStarRatings_updatesCurrentFilters() {
+	func test_handleStarRatingSelection_updatesCurrentFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: HotelFilters())
 
-		sut.updateStarRatings(request: .init(starRatings: [.five]))
-		sut.selectFilters(request: .init())
+		sut.handleStarRatingSelection(request: .init(starRatings: [.five]))
+		sut.handleFilterSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: HotelFilters(starRatings: [.five]))),
@@ -84,11 +84,11 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_updateReviewScore_updatesCurrentFilters() {
+	func test_handleReviewScoreSelection_updatesCurrentFilters() {
 		let (sut, presenter) = makeSUT(currentFilters: HotelFilters())
 
-		sut.updateReviewScore(request: .init(reviewScore: .wonderful))
-		sut.selectFilters(request: .init())
+		sut.handleReviewScoreSelection(request: .init(reviewScore: .wonderful))
+		sut.handleFilterSelection(request: .init())
 
 		XCTAssertEqual(presenter.messages, [
 			.present(.init(filters: HotelFilters(reviewScore: .wonderful))),
@@ -111,22 +111,22 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 
 final class HotelFiltersPickerPresentationLogicSpy: HotelFiltersPickerPresentationLogic {
 	enum Message: Equatable {
-		case present(HotelFiltersPickerModels.Load.Response)
-		case presentSelectedFilters(HotelFiltersPickerModels.Select.Response)
-		case presentResetFilters(HotelFiltersPickerModels.Reset.Response)
+		case present(HotelFiltersPickerModels.FetchFilters.Response)
+		case presentSelectedFilters(HotelFiltersPickerModels.FilterSelection.Response)
+		case presentResetFilters(HotelFiltersPickerModels.FilterReset.Response)
 	}
 
 	private(set) var messages = [Message]()
 
-	func present(response: HotelFiltersPickerModels.Load.Response) {
+	func present(response: HotelFiltersPickerModels.FetchFilters.Response) {
 		messages.append(.present(response))
 	}
 
-	func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
+	func presentSelectedFilters(response: HotelFiltersPickerModels.FilterSelection.Response) {
 		messages.append(.presentSelectedFilters(response))
 	}
 	
-	func presentResetFilters(response: HotelFiltersPickerModels.Reset.Response) {
+	func presentResetFilters(response: HotelFiltersPickerModels.FilterReset.Response) {
 		messages.append(.presentResetFilters(response))
 	}
 }

@@ -45,7 +45,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 		addChildren(filterViewControllers, to: contentStack)
 
-		interactor?.load(request: .init())
+		interactor?.doFetchFilters(request: .init())
 	}
 
 	private func setupTitle() {
@@ -73,25 +73,25 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 		resetButton.addTarget(self, action: #selector(resetTapHandler), for: .touchUpInside)
 	}
 
-	public func display(viewModel: HotelFiltersPickerModels.Load.ViewModel) {
+	public func display(viewModel: HotelFiltersPickerModels.FetchFilters.ViewModel) {
 		resetButton.isEnabled = viewModel.hasSelectedFilters
 	}
 
-	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.Select.ViewModel) {
+	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.FilterSelection.ViewModel) {
 		delegate?.didSelectFilters(viewModel.filters)
 		dismiss(animated: true)
 	}
 
-	public func displayResetFilters(viewModel: HotelFiltersPickerModels.Reset.ViewModel) {
+	public func displayResetFilters(viewModel: HotelFiltersPickerModels.FilterReset.ViewModel) {
 		filterViewControllers.forEach { $0.reset() }
 	}
 
 	@objc private func applyTapHandler() {
-		interactor?.selectFilters(request: HotelFiltersPickerModels.Select.Request())
+		interactor?.handleFilterSelection(request: .init())
 	}
 
 	@objc private func resetTapHandler() {
-		interactor?.resetFilters(request: HotelFiltersPickerModels.Reset.Request())
+		interactor?.handleFilterReset(request: .init())
 	}
 
 	@objc private func close() {
@@ -103,14 +103,14 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 extension HotelFiltersPickerViewController: HotelFiltersScene {
 	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
-		interactor?.updatePriceRange(request: .init(priceRange: priceRange))
+		interactor?.handlePriceRangeSelection(request: .init(priceRange: priceRange))
 	}
 
 	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
-		interactor?.updateStarRatings(request: .init(starRatings: starRatings))
+		interactor?.handleStarRatingSelection(request: .init(starRatings: starRatings))
 	}
 
 	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
-		interactor?.updateReviewScore(request: .init(reviewScore: reviewScore))
+		interactor?.handleReviewScoreSelection(request: .init(reviewScore: reviewScore))
 	}
 }

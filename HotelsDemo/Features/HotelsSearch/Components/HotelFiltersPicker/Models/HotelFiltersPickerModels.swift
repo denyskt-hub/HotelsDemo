@@ -8,7 +8,7 @@
 import Foundation
 
 public enum HotelFiltersPickerModels {
-	public enum Load {
+	public enum FetchFilters {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -30,7 +30,7 @@ public enum HotelFiltersPickerModels {
 		}
 	}
 
-	public enum Select {
+	public enum FilterSelection {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -52,7 +52,7 @@ public enum HotelFiltersPickerModels {
 		}
 	}
 
-	public enum Reset {
+	public enum FilterReset {
 		public struct Request: Equatable {
 			public init() {}
 		}
@@ -66,7 +66,7 @@ public enum HotelFiltersPickerModels {
 		}
 	}
 
-	public enum UpdatePriceRange {
+	public enum PriceRangeSelection {
 		public struct Request: Equatable {
 			public let priceRange: ClosedRange<Decimal>?
 
@@ -76,7 +76,7 @@ public enum HotelFiltersPickerModels {
 		}
 	}
 
-	public enum UpdateStarRatings {
+	public enum StarRatingSelection {
 		public struct Request: Equatable {
 			public let starRatings: Set<StarRating>
 
@@ -86,7 +86,7 @@ public enum HotelFiltersPickerModels {
 		}
 	}
 
-	public enum UpdateReviewScore {
+	public enum ReviewScoreSelection {
 		public struct Request: Equatable {
 			public let reviewScore: ReviewScore?
 

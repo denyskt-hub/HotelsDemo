@@ -8,10 +8,10 @@
 import Foundation
 
 public protocol HotelFiltersPickerBusinessLogic: AnyObject {
-	func load(request: HotelFiltersPickerModels.Load.Request)
-	func updatePriceRange(request: HotelFiltersPickerModels.UpdatePriceRange.Request)
-	func updateStarRatings(request: HotelFiltersPickerModels.UpdateStarRatings.Request)
-	func updateReviewScore(request: HotelFiltersPickerModels.UpdateReviewScore.Request)
-	func selectFilters(request: HotelFiltersPickerModels.Select.Request)
-	func resetFilters(request: HotelFiltersPickerModels.Reset.Request)
+	func doFetchFilters(request: HotelFiltersPickerModels.FetchFilters.Request)
+	func handlePriceRangeSelection(request: HotelFiltersPickerModels.PriceRangeSelection.Request)
+	func handleStarRatingSelection(request: HotelFiltersPickerModels.StarRatingSelection.Request)
+	func handleReviewScoreSelection(request: HotelFiltersPickerModels.ReviewScoreSelection.Request)
+	func handleFilterSelection(request: HotelFiltersPickerModels.FilterSelection.Request)
+	func handleFilterReset(request: HotelFiltersPickerModels.FilterReset.Request)
 }

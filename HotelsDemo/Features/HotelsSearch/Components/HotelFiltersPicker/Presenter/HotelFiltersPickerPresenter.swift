@@ -14,20 +14,20 @@ public final class HotelFiltersPickerPresenter: HotelFiltersPickerPresentationLo
 		// Required for initialization in tests
 	}
 
-	public func present(response: HotelFiltersPickerModels.Load.Response) {
-		let viewModel = HotelFiltersPickerModels.Load.ViewModel(
+	public func present(response: HotelFiltersPickerModels.FetchFilters.Response) {
+		let viewModel = HotelFiltersPickerModels.FetchFilters.ViewModel(
 			hasSelectedFilters: response.filters.hasSelectedFilters
 		)
 		viewController?.display(viewModel: viewModel)
 	}
 
-	public func presentSelectedFilters(response: HotelFiltersPickerModels.Select.Response) {
-		let viewModel = HotelFiltersPickerModels.Select.ViewModel(filters: response.filters)
+	public func presentSelectedFilters(response: HotelFiltersPickerModels.FilterSelection.Response) {
+		let viewModel = HotelFiltersPickerModels.FilterSelection.ViewModel(filters: response.filters)
 		viewController?.displaySelectedFilters(viewModel: viewModel)
 	}
 
-	public func presentResetFilters(response: HotelFiltersPickerModels.Reset.Response) {
-		let viewModel = HotelFiltersPickerModels.Reset.ViewModel()
+	public func presentResetFilters(response: HotelFiltersPickerModels.FilterReset.Response) {
+		let viewModel = HotelFiltersPickerModels.FilterReset.ViewModel()
 		viewController?.displayResetFilters(viewModel: viewModel)
 	}
 }
