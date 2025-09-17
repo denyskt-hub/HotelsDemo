@@ -84,9 +84,8 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 	) {
 		let interactor = ReviewScoreBusinessLogicSpy()
 		let delegate = ReviewScoreDelegateSpy()
-		let sut = ReviewScoreViewController()
+		let sut = ReviewScoreViewController(delegate: delegate)
 		sut.interactor = interactor
-		sut.delegate = delegate
 		return (sut, interactor, delegate)
 	}
 

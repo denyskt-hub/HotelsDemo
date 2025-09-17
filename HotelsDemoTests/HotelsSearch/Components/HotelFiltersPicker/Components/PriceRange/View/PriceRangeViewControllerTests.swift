@@ -96,9 +96,8 @@ final class PriceRangeViewControllerTests: XCTestCase {
 	) {
 		let interactor = PriceRangeBusinessLogicSpy()
 		let delegate = PriceRangeDelegateSpy()
-		let sut = PriceRangeViewController()
+		let sut = PriceRangeViewController(delegate: delegate)
 		sut.interactor = interactor
-		sut.delegate = delegate
 		return (sut, interactor, delegate)
 	}
 

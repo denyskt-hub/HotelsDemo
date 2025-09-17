@@ -12,14 +12,19 @@ public protocol PriceRangeDelegate: AnyObject {
 }
 
 public final class PriceRangeViewController: NiblessViewController, PriceRangeDisplayLogic {
+	private let delegate: PriceRangeDelegate
 	private let rootView = PriceRangeRootView()
 
 	public var interactor: PriceRangeBusinessLogic?
-	public var delegate: PriceRangeDelegate?
 
 	public var slider: RangeSlider { rootView.slider }
 	public var lowerValueLabel: UILabel { rootView.lowerValueLabel }
 	public var upperValueLabel: UILabel { rootView.upperValueLabel }
+
+	public init(delegate: PriceRangeDelegate) {
+		self.delegate = delegate
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -47,7 +52,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	public func displaySelect(viewModel: PriceRangeModels.PriceRangeSelection.ViewModel) {
-		delegate?.didSelectPriceRange(viewModel.priceRange)
+		delegate.didSelectPriceRange(viewModel.priceRange)
 	}
 
 	public func displaySelecting(viewModel: PriceRangeModels.SelectingPriceRange.ViewModel) {

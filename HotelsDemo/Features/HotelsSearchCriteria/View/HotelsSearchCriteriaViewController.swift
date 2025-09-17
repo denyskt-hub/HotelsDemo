@@ -12,16 +12,21 @@ public protocol HotelsSearchCriteriaDelegate: AnyObject {
 }
 
 public final class HotelsSearchCriteriaViewController: NiblessViewController, HotelsSearchCriteriaDisplayLogic {
+	private let delegate: HotelsSearchCriteriaDelegate
 	private let rootView = HotelsSearchCriteriaRootView()
 
 	public var interactor: HotelsSearchCriteriaBusinessLogic?
 	public var router: HotelsSearchCriteriaRoutingLogic?
-	public var delegate: HotelsSearchCriteriaDelegate?
 
 	public var destinationControl: IconTitleControl { rootView.destinationControl }
 	public var datesControl: IconTitleControl { rootView.datesControl }
 	public var roomGuestsControl: IconTitleControl { rootView.roomGuestsControl }
 	public var searchButton: UIButton { rootView.searchButton }
+
+	public init(delegate: HotelsSearchCriteriaDelegate) {
+		self.delegate = delegate
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -94,7 +99,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	}
 
 	public func displaySearch(viewModel: HotelsSearchCriteriaModels.Search.ViewModel) {
-		delegate?.didRequestSearch(with: viewModel.criteria)
+		delegate.didRequestSearch(with: viewModel.criteria)
 	}
 }
 

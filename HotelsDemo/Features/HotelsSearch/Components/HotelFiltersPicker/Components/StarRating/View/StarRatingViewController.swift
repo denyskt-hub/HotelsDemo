@@ -12,14 +12,19 @@ public protocol StarRatingDelegate: AnyObject {
 }
 
 public final class StarRatingViewController: NiblessViewController, StarRatingDisplayLogic {
+	private let delegate: StarRatingDelegate
 	private let rootView = StarRatingRootView()
 	private var options = [StarRatingModels.OptionViewModel]()
 
 	public var interactor: StarRatingBusinessLogic?
-	public var delegate: StarRatingDelegate?
 
 	public var tableView: UITableView { rootView.tableView }
 
+	public init(delegate: StarRatingDelegate) {
+		self.delegate = delegate
+		super.init()
+	}
+	
 	public override func loadView() {
 		view = rootView
 	}
@@ -48,7 +53,7 @@ public final class StarRatingViewController: NiblessViewController, StarRatingDi
 	}
 
 	public func displaySelect(viewModel: StarRatingModels.StarRatingSelection.ViewModel) {
-		delegate?.didSelectStarRatings(viewModel.starRatings)
+		delegate.didSelectStarRatings(viewModel.starRatings)
 		display(viewModel.options)
 	}
 

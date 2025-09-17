@@ -160,10 +160,9 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		let interactor = HotelsSearchCriteriaInteractorSpy()
 		let router = HotelsSearchCriteriaRouterSpy()
 		let delegate = HotelsSearchCriteriaDelegateSpy()
-		let sut = HotelsSearchCriteriaViewController()
+		let sut = HotelsSearchCriteriaViewController(delegate: delegate)
 		sut.interactor = interactor
 		sut.router = router
-		sut.delegate = delegate
 		return (sut, interactor, router, delegate)
 	}
 

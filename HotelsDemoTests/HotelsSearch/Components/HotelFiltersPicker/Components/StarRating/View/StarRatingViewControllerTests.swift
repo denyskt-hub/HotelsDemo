@@ -84,9 +84,8 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 	) {
 		let interactor = StarRatingBusinessLogicSpy()
 		let delegate = StarRatingDelegateSpy()
-		let sut = StarRatingViewController()
+		let sut = StarRatingViewController(delegate: delegate)
 		sut.interactor = interactor
-		sut.delegate = delegate
 		return (sut, interactor, delegate)
 	}
 

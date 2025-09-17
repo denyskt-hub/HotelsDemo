@@ -61,9 +61,11 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 	private func makePriceRangeViewController(
 		selectedPriceRange: ClosedRange<Decimal>?,
 		currencyCode: String,
-		delegate: PriceRangeDelegate?
+		delegate: PriceRangeDelegate
 	) -> ResetableFilterViewController {
-		let viewController = PriceRangeViewController()
+		let viewController = PriceRangeViewController(
+			delegate: delegate
+		)
 		let interactor = PriceRangeInteractor(
 			selectedPriceRange: selectedPriceRange,
 			currencyCode: currencyCode
@@ -71,7 +73,6 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		let presenter = PriceRangePresenter()
 
 		viewController.interactor = interactor
-		viewController.delegate = delegate
 		interactor.presenter = presenter
 		presenter.viewController = viewController
 
@@ -80,16 +81,17 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 
 	private func makeStarRatingViewController(
 		selectedStarRating: Set<StarRating>,
-		delegate: StarRatingDelegate?
+		delegate: StarRatingDelegate
 	) -> ResetableFilterViewController {
-		let viewController = StarRatingViewController()
+		let viewController = StarRatingViewController(
+			delegate: delegate
+		)
 		let interactor = StarRatingInteractor(
 			selectedStarRatings: selectedStarRating
 		)
 		let presenter = StarRatingPresenter()
 
 		viewController.interactor = interactor
-		viewController.delegate = delegate
 		interactor.presenter = presenter
 		presenter.viewController = viewController
 
@@ -98,16 +100,17 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 
 	private func makeReviewScoreViewController(
 		selectedReviewScore: ReviewScore?,
-		delegate: ReviewScoreDelegate?
+		delegate: ReviewScoreDelegate
 	) -> ResetableFilterViewController {
-		let viewController = ReviewScoreViewController()
+		let viewController = ReviewScoreViewController(
+			delegate: delegate
+		)
 		let interactor = ReviewScoreInteractor(
 			selectedReviewScore: selectedReviewScore
 		)
 		let presenter = ReviewScorePresenter()
 
 		viewController.interactor = interactor
-		viewController.delegate = delegate
 		interactor.presenter = presenter
 		presenter.viewController = viewController
 

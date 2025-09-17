@@ -12,13 +12,18 @@ public protocol ReviewScoreDelegate: AnyObject {
 }
 
 public final class ReviewScoreViewController: NiblessViewController, ReviewScoreDisplayLogic {
+	private let delegate: ReviewScoreDelegate
 	private let rootView = ReviewScoreRootView()
 	private var options = [ReviewScoreModels.OptionViewModel]()
 
 	public var interactor: ReviewScoreBusinessLogic?
-	public var delegate: ReviewScoreDelegate?
 
 	public var tableView: UITableView { rootView.tableView }
+
+	public init(delegate: ReviewScoreDelegate) {
+		self.delegate = delegate
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -48,7 +53,7 @@ public final class ReviewScoreViewController: NiblessViewController, ReviewScore
 	}
 
 	public func displaySelect(viewModel: ReviewScoreModels.ReviewScoreSelection.ViewModel) {
-		delegate?.didSelectReviewScore(viewModel.reviewScore)
+		delegate.didSelectReviewScore(viewModel.reviewScore)
 		display(viewModel.options)
 	}
 
