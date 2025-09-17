@@ -12,6 +12,10 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	private let client: HTTPClient
 	private let dispatcher: Dispatcher
 
+	private enum Error: Swift.Error {
+		case invalidQuery
+	}
+
 	public init(
 		factory: DestinationsRequestFactory,
 		client: HTTPClient,
@@ -23,7 +27,16 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	}
 
 	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		precondition(!query.trimmingCharacters(in: .whitespaces).isEmpty, "Query must not be empty")
+		#if DEBUG
+		assert(!query.trimmingCharacters(in: .whitespaces).isEmpty, "Query must not be empty")
+		#endif
+
+		guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+			dispatcher.dispatch {
+				completion(.failure(Error.invalidQuery))
+			}
+			return
+		}
 
 		let request = factory.makeSearchRequest(query: query)
 

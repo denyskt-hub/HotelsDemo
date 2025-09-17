@@ -24,7 +24,7 @@ public final class StarRatingViewController: NiblessViewController, StarRatingDi
 		self.delegate = delegate
 		super.init()
 	}
-	
+
 	public override func loadView() {
 		view = rootView
 	}
