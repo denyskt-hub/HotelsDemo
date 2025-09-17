@@ -35,7 +35,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 
-		setupDestionationControl()
+		setupDestinationControl()
 		setupDatesControl()
 		setupRoomGuestsControl()
 		setupSearchButton()
@@ -43,7 +43,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		interactor?.doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request())
 	}
 
-	private func setupDestionationControl() {
+	private func setupDestinationControl() {
 		destinationControl.addTarget(self, action: #selector(destinationTapHandler), for: .touchUpInside)
 	}
 
