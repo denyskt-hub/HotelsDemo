@@ -106,20 +106,28 @@ public struct Logger {
 
 public extension Logger {
 	static func setMinimumLogLevel(_ level: LogLevel) {
-		configuration.level = level
+		var config = configuration
+		config.level = level
+		configuration = config
 	}
 }
 
 public extension Logger {
 	static func enableTag(_ tag: LogTag) {
-		configuration.enabledTags.insert(tag)
+		var config = configuration
+		config.enabledTags.insert(tag)
+		configuration = config
 	}
 
 	static func disableTag(_ tag: LogTag) {
-		configuration.enabledTags.remove(tag)
+		var config = configuration
+		config.enabledTags.remove(tag)
+		configuration = config
 	}
 
 	static func disableAllLogs() {
-		configuration.level = .none
+		var config = configuration
+		config.level = .none
+		configuration = config
 	}
 }
