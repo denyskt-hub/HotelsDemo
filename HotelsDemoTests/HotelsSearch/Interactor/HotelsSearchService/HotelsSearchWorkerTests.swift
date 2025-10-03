@@ -85,8 +85,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let client = HTTPClientSpy()
 		let sut = HotelsSearchWorker(
 			factory: HotelsRequestFactoryStub(url: url),
-			client: client,
-			dispatcher: ImmediateDispatcher()
+			client: client
 		)
 		return (sut, client)
 	}

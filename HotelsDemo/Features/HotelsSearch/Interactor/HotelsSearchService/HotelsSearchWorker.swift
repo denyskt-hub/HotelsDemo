@@ -10,16 +10,13 @@ import Foundation
 public final class HotelsSearchWorker: HotelsSearchService {
 	private let factory: HotelsRequestFactory
 	private let client: HTTPClient
-	private let dispatcher: Dispatcher
 
 	public init(
 		factory: HotelsRequestFactory,
-		client: HTTPClient,
-		dispatcher: Dispatcher
+		client: HTTPClient
 	) {
 		self.factory = factory
 		self.client = client
-		self.dispatcher = dispatcher
 	}
 
 	@discardableResult
@@ -29,9 +26,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 	) -> HTTPClientTask {
 		let request = factory.makeSearchRequest(criteria: criteria)
 
-		return client.perform(request) { [weak self] result in
-			guard let self else { return }
-
+		return client.perform(request) { result in
 			let searchResult = HotelsSearchService.Result {
 				switch result {
 				case let .success((data, response)):
@@ -41,9 +36,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 				}
 			}
 
-			self.dispatcher.dispatch {
-				completion(searchResult)
-			}
+			completion(searchResult)
 		}
 	}
 }
