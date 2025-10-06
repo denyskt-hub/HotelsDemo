@@ -20,3 +20,12 @@ public protocol ImageDataLoader {
 	@discardableResult
 	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask
 }
+
+extension ImageDataLoader {
+	func logging(_ tag: ImageDataLoaderLogTag) -> LoggingImageDataLoader {
+		LoggingImageDataLoader(
+			loader: self,
+			logger: ImageDataLoadingLoggers.makeLogger(tag)
+		)
+	}
+}

@@ -7,55 +7,6 @@
 
 import Foundation
 
-public enum LogLevel: String {
-	case debug = "🔍 DEBUG"
-	case info = "ℹ️ INFO"
-	case warning = "⚠️ WARNING"
-	case error = "❌ ERROR"
-	case none = ""
-
-	public var priority: Int {
-		switch self {
-		case .debug:
-			return 0
-		case .info:
-			return 1
-		case .warning:
-			return 2
-		case .error:
-			return 3
-		case .none:
-			return 99
-		}
-	}
-}
-
-public enum LogTag: Hashable {
-	case general
-	case networking
-	case custom(String)
-
-	public var rawValue: String {
-		switch self {
-		case .general: return "general"
-		case .networking: return "networking"
-		case .custom(let value): return value
-		}
-	}
-}
-
-public struct LoggerConfiguration {
-	var level: LogLevel
-	var enabledTags: Set<LogTag>
-
-	public static var `default`: LoggerConfiguration {
-		.init(
-			level: .debug,
-			enabledTags: [.general, .networking]
-		)
-	}
-}
-
 public struct Logger {
 	private static let queue = DispatchQueue(label: "\(Logger.self)Queue")
 
@@ -129,5 +80,54 @@ public extension Logger {
 		var config = configuration
 		config.level = .none
 		configuration = config
+	}
+}
+
+public enum LogLevel: String {
+	case debug = "🔍 DEBUG"
+	case info = "ℹ️ INFO"
+	case warning = "⚠️ WARNING"
+	case error = "❌ ERROR"
+	case none = ""
+
+	public var priority: Int {
+		switch self {
+		case .debug:
+			return 0
+		case .info:
+			return 1
+		case .warning:
+			return 2
+		case .error:
+			return 3
+		case .none:
+			return 99
+		}
+	}
+}
+
+public enum LogTag: Hashable {
+	case general
+	case networking
+	case custom(String)
+
+	public var rawValue: String {
+		switch self {
+		case .general: return "general"
+		case .networking: return "networking"
+		case .custom(let value): return value
+		}
+	}
+}
+
+public struct LoggerConfiguration {
+	var level: LogLevel
+	var enabledTags: Set<LogTag>
+
+	public static var `default`: LoggerConfiguration {
+		.init(
+			level: .debug,
+			enabledTags: [.general, .networking]
+		)
 	}
 }

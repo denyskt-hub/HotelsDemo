@@ -25,3 +25,12 @@ extension ImageDataCache {
 		save(data, forKey: key) { _ in }
 	}
 }
+
+extension ImageDataCache {
+	func logging(_ tag: ImageDataCacheLogTag) -> LoggingImageDataCache {
+		LoggingImageDataCache(
+			cache: self,
+			logger: ImageDataCacheLoggers.makeLogger(tag)
+		)
+	}
+}

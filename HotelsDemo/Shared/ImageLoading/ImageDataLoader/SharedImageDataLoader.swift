@@ -16,26 +16,11 @@ public enum SharedImageDataLoader {
 	}
 
 	private static func defaultLoader() -> ImageDataLoader {
-		let cache = LoggingImageDataCache(
-			cache: SharedImageDataCache.instance,
-			logger: ImageDataCacheLoggers.makeLogger(.cache)
-		)
-		let local = LoggingImageDataLoader(
-			loader: LocalImageDataLoader(cache: cache),
-			logger: ImageDataLoadingLoggers.makeLogger(.local)
-		)
-		let remote = LoggingImageDataLoader(
-			loader: RemoteImageDataLoader.shared,
-			logger: ImageDataLoadingLoggers.makeLogger(.remote)
-		)
-		let caching = CachingImageDataLoader(
-			loader: remote,
-			cache: cache
-		)
-		let logging = LoggingImageDataLoader(
-			loader: local.fallback(to: caching),
-			logger: ImageDataLoadingLoggers.makeLogger(.composite)
-		)
+		let cache = SharedImageDataCache.instance.logging(.cache)
+		let local = LocalImageDataLoader(cache: cache).logging(.local)
+		let remote = RemoteImageDataLoader.shared.logging(.remote)
+		let caching = CachingImageDataLoader(loader: remote, cache: cache)
+		let logging = local.fallback(to: caching).logging(.composite)
 		return logging.dispatch(to: MainQueueDispatcher())
 	}
 
