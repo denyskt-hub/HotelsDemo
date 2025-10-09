@@ -10,6 +10,8 @@ import Foundation
 public protocol HotelsSearchService {
 	typealias Result = Swift.Result<[Hotel], Error>
 
+	/// The completion handler can be invoked in any thread.
+	/// Clients are responsible to dispatch to appropriate threads, if needed.
 	@discardableResult
 	func search(criteria: HotelsSearchCriteria, completion: @escaping (Result) -> Void) -> HTTPClientTask
 }

@@ -31,9 +31,8 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 				factory: DefaultHotelsRequestFactory(
 					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
 				),
-				client: client,
-				dispatcher: MainQueueDispatcher()
-			)
+				client: client
+			).dispatch(to: MainQueueDispatcher())
 		)
 		let presenter = HotelsSearchPresenter(
 			priceFormatter: PriceFormatter()

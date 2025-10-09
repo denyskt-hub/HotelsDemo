@@ -24,9 +24,8 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 			factory: DefaultDestinationRequestFactory(
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
-			client: client,
-			dispatcher: MainQueueDispatcher()
-		)
+			client: client
+		).dispatch(to: MainQueueDispatcher())
 		let interactor = DestinationPickerInteractor(
 			worker: worker,
 			debouncer: DefaultDebouncer(delay: 0.5)

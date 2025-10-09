@@ -82,8 +82,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let client = HTTPClientSpy()
 		let sut = DestinationSearchWorker(
 			factory: DestinationRequestFactoryStub(url: url),
-			client: client,
-			dispatcher: ImmediateDispatcher()
+			client: client
 		)
 		return (sut, client)
 	}

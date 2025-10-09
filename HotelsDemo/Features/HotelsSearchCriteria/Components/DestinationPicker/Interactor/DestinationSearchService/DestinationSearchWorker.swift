@@ -10,7 +10,6 @@ import Foundation
 public final class DestinationSearchWorker: DestinationSearchService {
 	private let factory: DestinationsRequestFactory
 	private let client: HTTPClient
-	private let dispatcher: Dispatcher
 
 	private enum Error: Swift.Error {
 		case invalidQuery
@@ -18,12 +17,10 @@ public final class DestinationSearchWorker: DestinationSearchService {
 
 	public init(
 		factory: DestinationsRequestFactory,
-		client: HTTPClient,
-		dispatcher: Dispatcher
+		client: HTTPClient
 	) {
 		self.factory = factory
 		self.client = client
-		self.dispatcher = dispatcher
 	}
 
 	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
@@ -32,17 +29,13 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		#endif
 
 		guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-			dispatcher.dispatch {
-				completion(.failure(Error.invalidQuery))
-			}
+			completion(.failure(Error.invalidQuery))
 			return
 		}
 
 		let request = factory.makeSearchRequest(query: query)
 
-		client.perform(request) { [weak self] result in
-			guard let self else { return }
-
+		client.perform(request) { result in
 			let searchResult = DestinationSearchService.Result {
 				switch result {
 				case let .success((data, response)):
@@ -52,9 +45,7 @@ public final class DestinationSearchWorker: DestinationSearchService {
 				}
 			}
 
-			self.dispatcher.dispatch {
-				completion(searchResult)
-			}
+			completion(searchResult)
 		}
 	}
 }
