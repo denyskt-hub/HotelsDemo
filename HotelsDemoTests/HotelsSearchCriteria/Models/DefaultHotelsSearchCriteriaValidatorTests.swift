@@ -35,7 +35,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 
 	// MARK: - Dates Tests
 
-	func test_validate_doesNotFixesValidDateCombinations() {
+	func test_validate_doesNotFixValidDateCombinations() {
 		let currentDate = TestDates.current
 		let calendar = Calendar.gregorian()
 		let validCriterias = [
@@ -88,7 +88,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 
 	// MARK: - Adults Tests
 
-	func test_validate_doesNotFixesValidAdults() {
+	func test_validate_doesNotFixValidAdults() {
 		let currentDate = TestDates.current
 		let calendar = Calendar.gregorian()
 		let validCriterias = makeValidAdultCriterias(calendar: calendar, currentDate: currentDate)
@@ -111,7 +111,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 				expected: make(calendar: calendar, currentDate: currentDate, adults: 1)
 			),
 			(
-				name: "adults greather then max valid adults",
+				name: "adults greater then max valid adults",
 				invalid: make(calendar: calendar, currentDate: currentDate, adults: 31),
 				expected: make(calendar: calendar, currentDate: currentDate, adults: 30)
 			)
@@ -127,7 +127,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 
 	// MARK: - Children Age Tests
 
-	func test_validate_doesNotFixesValidChildrenAge() {
+	func test_validate_doesNotFixValidChildrenAge() {
 		let currentDate = TestDates.current
 		let calendar = Calendar.gregorian()
 		let validCriterias = makeValidChildrenAgeCriterias(calendar: calendar, currentDate: currentDate)
@@ -166,7 +166,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 
 	// MARK: - Rooms Tests
 
-	func test_validate_doesNotFixesValidRooms() {
+	func test_validate_doesNotFixValidRooms() {
 		let currentDate = TestDates.current
 		let calendar = Calendar.gregorian()
 		let validCriterias = makeValidRoomCriterias(calendar: calendar, currentDate: currentDate)
@@ -189,7 +189,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 				expected: make(calendar: calendar, currentDate: currentDate, rooms: 1)
 			),
 			(
-				name: "rooms greather then max valid rooms",
+				name: "rooms greater then max valid rooms",
 				invalid: make(calendar: calendar, currentDate: currentDate, rooms: 31),
 				expected: make(calendar: calendar, currentDate: currentDate, rooms: 30)
 			)
