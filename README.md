@@ -7,7 +7,8 @@
 *A clean-architecture iOS app showcasing hotel search, filtering with modern Swift.*
 
 > [!NOTE]
-> This project was created as a personal learning exercise to practice building applications using the VIP (View–Interactor–Presenter) architecture. The focus is on clean separation of concerns, modularity, and testability rather than on complete product features or UI polish. It is intended for demonstration in a portfolio to showcase architectural decision-making, code organization, and implementation skills.
+> Demonstration of the VIP (View–Interactor–Presenter) architecture in iOS, focusing on clean design, modularity, and testability.
+Built to illustrate architectural decisions and code organization best practices.
 
 ## Table of Contents
 
@@ -127,6 +128,7 @@ They are in `.gitignore` by default.
 
 ## Roadmap
 
+- [ ] Refactor codebase to adopt Swift structured concurrency
 - [ ] Sort hotels on search screen
 - [ ] Add cache eviction policy
 - [ ] Add localization
