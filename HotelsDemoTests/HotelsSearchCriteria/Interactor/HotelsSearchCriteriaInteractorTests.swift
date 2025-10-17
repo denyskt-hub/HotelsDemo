@@ -230,6 +230,18 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	}
 }
 
+final class HotelsSearchCriteriaProviderStub: HotelsSearchCriteriaProvider {
+	let criteria: HotelsSearchCriteria
+
+	init(criteria: HotelsSearchCriteria) {
+		self.criteria = criteria
+	}
+
+	func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
+		completion(.success(criteria))
+	}
+}
+
 final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
 

@@ -14,7 +14,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.doSearch(.init())])
+		XCTAssertEqual(interactor.messages, [.handleViewDidAppear(.init())])
 	}
 
 	func test_displayLoading_rendersLoadingIndicator() {
@@ -124,24 +124,24 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 
 final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 	enum Message: Equatable {
-		case doSearch(HotelsSearchModels.Search.Request)
-		case doCancelSearch
 		case doFetchFilters(HotelsSearchModels.FetchFilters.Request)
+		case handleViewDidAppear(HotelsSearchModels.ViewDidAppear.Request)
+		case handleViewWillDisappearFromParent(HotelsSearchModels.ViewWillDisappearFromParent.Request)
 		case handleFilterSelection(HotelsSearchModels.FilterSelection.Request)
 	}
 
 	private(set) var messages = [Message]()
 
-	func doSearch(request: HotelsSearchModels.Search.Request) {
-		messages.append(.doSearch(request))
-	}
-
-	func doCancelSearch() {
-		messages.append(.doCancelSearch)
-	}
-
 	func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
 		messages.append(.doFetchFilters(request))
+	}
+
+	func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
+		messages.append(.handleViewDidAppear(request))
+	}
+
+	func handleViewWillDisappearFromParent(request: HotelsSearchModels.ViewWillDisappearFromParent.Request) {
+		messages.append(.handleViewWillDisappearFromParent(request))
 	}
 
 	func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {

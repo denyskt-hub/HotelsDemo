@@ -11,6 +11,19 @@ public protocol HotelsSearchFactory {
 	func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController
 }
 
+public struct HotelsSearchContext {
+	public let provider: HotelsSearchCriteriaProvider
+	public let service: HotelsSearchService
+
+	public init(
+		provider: HotelsSearchCriteriaProvider,
+		service: HotelsSearchService
+	) {
+		self.provider = provider
+		self.service = service
+	}
+}
+
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
 
@@ -23,16 +36,19 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
 			viewController: viewController
 		)
-		let interactor = HotelsSearchInteractor(
+		let context = HotelsSearchContext(
 			provider: InMemoryHotelsSearchCriteriaStore(criteria: criteria).dispatch(to: MainQueueDispatcher()),
-			filters: HotelFilters(),
-			repository: DefaultHotelsRepository(),
-			worker: HotelsSearchWorker(
+			service: HotelsSearchWorker(
 				factory: DefaultHotelsRequestFactory(
 					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
 				),
 				client: client
 			).dispatch(to: MainQueueDispatcher())
+		)
+		let interactor = HotelsSearchInteractor(
+			context: context,
+			filters: HotelFilters(),
+			repository: DefaultHotelsRepository(),
 		)
 		let presenter = HotelsSearchPresenter(
 			priceFormatter: PriceFormatter()

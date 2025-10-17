@@ -19,7 +19,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let criteria = anySearchCriteria()
 		let (sut, service, _) = makeSUT(criteria: criteria)
 
-		sut.doSearch(request: .init())
+		sut.handleViewDidAppear(request: .init())
 
 		XCTAssertEqual(service.messages, [.search(criteria)])
 	}
@@ -28,7 +28,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let serviceError = anyNSError()
 		let (sut, service, presenter) = makeSUT()
 
-		sut.doSearch(request: .init())
+		sut.handleViewDidAppear(request: .init())
 		service.completeWithResult(.failure(serviceError))
 
 		XCTAssertEqual(presenter.messages.last, .presentSearchError(serviceError))
@@ -38,7 +38,7 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let hotels = [anyHotel(), anyHotel()]
 		let (sut, service, presenter) = makeSUT()
 
-		sut.doSearch(request: .init())
+		sut.handleViewDidAppear(request: .init())
 		service.completeWithResult(.success(hotels))
 
 		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
@@ -72,13 +72,17 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		service: HotelsSearchServiceSpy,
 		presenter: SearchPresentationLogicSpy
 	) {
+		let provider = HotelsSearchCriteriaProviderStub(criteria: criteria)
 		let service = HotelsSearchServiceSpy()
 		let presenter = SearchPresentationLogicSpy()
+		let context = HotelsSearchContext(
+			provider: provider,
+			service: service
+		)
 		let sut = HotelsSearchInteractor(
-			criteria: criteria,
+			context: context,
 			filters: filters,
-			repository: DefaultHotelsRepository(),
-			worker: service
+			repository: DefaultHotelsRepository()
 		)
 		sut.presenter = presenter
 		return (sut, service, presenter)

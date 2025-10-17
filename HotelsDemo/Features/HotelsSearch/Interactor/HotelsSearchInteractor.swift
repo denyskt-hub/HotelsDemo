@@ -8,25 +8,25 @@
 import Foundation
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
-	private let provider: HotelsSearchCriteriaProvider
+	private let context: HotelsSearchContext
+	private var provider: HotelsSearchCriteriaProvider { context.provider }
+	private var worker: HotelsSearchService { context.service }
+
 	private let repository: HotelsRepository
 	private var filters: HotelFilters
 
-	private let worker: HotelsSearchService
 	private var task: HTTPClientTask?
 
 	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
-		provider: HotelsSearchCriteriaProvider,
+		context: HotelsSearchContext,
 		filters: HotelFilters,
-		repository: HotelsRepository,
-		worker: HotelsSearchService
+		repository: HotelsRepository
 	) {
-		self.provider = provider
+		self.context = context
 		self.filters = filters
 		self.repository = repository
-		self.worker = worker
 	}
 
 	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
