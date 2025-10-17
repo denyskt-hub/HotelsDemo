@@ -24,7 +24,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 			viewController: viewController
 		)
 		let interactor = HotelsSearchInteractor(
-			criteria: criteria,
+			provider: InMemoryHotelsSearchCriteriaStore(criteria: criteria).dispatch(to: MainQueueDispatcher()),
 			filters: HotelFilters(),
 			repository: DefaultHotelsRepository(),
 			worker: HotelsSearchWorker(

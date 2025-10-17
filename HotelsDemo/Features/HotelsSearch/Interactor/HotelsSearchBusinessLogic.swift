@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol HotelsSearchBusinessLogic {
-	func doSearch(request: HotelsSearchModels.Search.Request)
-	func doCancelSearch()
-
 	func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request)
+
+	func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request)
+	func handleViewWillDisappearFromParent(request: HotelsSearchModels.ViewWillDisappearFromParent.Request)
 	func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request)
 }

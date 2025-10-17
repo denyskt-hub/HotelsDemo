@@ -10,7 +10,7 @@ import UIKit
 public final class HotelsSearchViewController: NiblessViewController {
 	private let rootView = HotelsSearchRootView()
 	private var cellControllers = [HotelCellController]()
-	private var onViewIsAppearing: ((HotelsSearchViewController) -> Void)?
+	private var onViewDidAppear: ((HotelsSearchViewController) -> Void)?
 
 	public var interactor: HotelsSearchBusinessLogic?
 	public var router: HotelsSearchRoutingLogic?
@@ -31,9 +31,9 @@ public final class HotelsSearchViewController: NiblessViewController {
 		setupTableView()
 		setupFilterButton()
 
-		onViewIsAppearing = { viewController in
-			viewController.onViewIsAppearing = nil
-			viewController.interactor?.doSearch(request: .init())
+		onViewDidAppear = { viewController in
+			viewController.onViewDidAppear = nil
+			viewController.interactor?.handleViewDidAppear(request: .init())
 		}
 	}
 
@@ -41,14 +41,14 @@ public final class HotelsSearchViewController: NiblessViewController {
 		super.viewWillDisappear(animated)
 
 		if isMovingFromParent {
-			interactor?.doCancelSearch()
+			interactor?.handleViewWillDisappearFromParent(request: .init())
 		}
 	}
 
 	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
-		onViewIsAppearing?(self)
+		onViewDidAppear?(self)
 	}
 
 	public override func viewDidLayoutSubviews() {

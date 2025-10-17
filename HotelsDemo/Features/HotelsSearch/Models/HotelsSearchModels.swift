@@ -8,9 +8,25 @@
 import Foundation
 
 public enum HotelsSearchModels {
-	public enum Search {
+	public enum ViewDidAppear {
 		public struct Request: Equatable {
 			public init() {}
+		}
+	}
+
+	public enum ViewWillDisappearFromParent {
+		public struct Request: Equatable {
+			public init() {}
+		}
+	}
+
+	public enum Search {
+		public struct Request: Equatable {
+			public let criteria: HotelsSearchCriteria
+
+			public init(criteria: HotelsSearchCriteria) {
+				self.criteria = criteria
+			}
 		}
 
 		public struct Response: Equatable {

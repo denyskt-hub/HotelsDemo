@@ -12,8 +12,8 @@ public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore 
 
 	private var criteria: HotelsSearchCriteria?
 
-	public init() {
-		// Required for initialization in tests
+	public init(criteria: HotelsSearchCriteria? = nil) {
+		self.criteria = criteria
 	}
 
 	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {

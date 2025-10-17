@@ -8,7 +8,7 @@
 import Foundation
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
-	private let criteria: HotelsSearchCriteria
+	private let provider: HotelsSearchCriteriaProvider
 	private let repository: HotelsRepository
 	private var filters: HotelFilters
 
@@ -18,20 +18,37 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
-		criteria: HotelsSearchCriteria,
+		provider: HotelsSearchCriteriaProvider,
 		filters: HotelFilters,
 		repository: HotelsRepository,
 		worker: HotelsSearchService
 	) {
-		self.criteria = criteria
+		self.provider = provider
 		self.filters = filters
 		self.repository = repository
 		self.worker = worker
 	}
 
-	public func doSearch(request: HotelsSearchModels.Search.Request) {
+	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
+		provider.retrieve { [weak self] result in
+			guard let self else { return }
+
+			switch result {
+			case let .success(criteria):
+				self.doSearch(request: .init(criteria: criteria))
+			case let .failure(error):
+				self.presenter?.presentSearchError(error)
+			}
+		}
+	}
+
+	public func handleViewWillDisappearFromParent(request: HotelsSearchModels.ViewWillDisappearFromParent.Request) {
+		doCancelSearch()
+	}
+
+	private func doSearch(request: HotelsSearchModels.Search.Request) {
 		presenter?.presentSearchLoading(true)
-		task = worker.search(criteria: criteria) { [weak self] result in
+		task = worker.search(criteria: request.criteria) { [weak self] result in
 			guard let self else { return }
 
 			self.presenter?.presentSearchLoading(false)
@@ -49,7 +66,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		}
 	}
 
-	public func doCancelSearch() {
+	private func doCancelSearch() {
 		task?.cancel()
 	}
 
