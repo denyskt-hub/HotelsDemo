@@ -10,16 +10,17 @@ import Foundation
 public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
 	private let debouncer: Debouncer
+	private let presenter: DestinationPickerPresentationLogic
 	private var destinations = [Destination]()
-
-	public var presenter: DestinationPickerPresentationLogic?
 
 	public init(
 		worker: DestinationSearchService,
-		debouncer: Debouncer
+		debouncer: Debouncer,
+		presenter: DestinationPickerPresentationLogic
 	) {
 		self.worker = worker
 		self.debouncer = debouncer
+		self.presenter = presenter
 	}
 
 	public func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
@@ -32,7 +33,7 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 		guard destinations.indices.contains(request.index) else { return }
 
 		let selected = destinations[request.index]
-		presenter?.presentSelectedDestination(
+		presenter.presentSelectedDestination(
 			response: DestinationPickerModels.DestinationSelection.Response(selected: selected)
 		)
 	}
@@ -59,12 +60,12 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	}
 
 	private func presentDestinations(_ destinations: [Destination]) {
-		presenter?.presentDestinations(
+		presenter.presentDestinations(
 			response: DestinationPickerModels.Search.Response(destinations: destinations)
 		)
 	}
 
 	private func presentSearchError(_ error: Error) {
-		presenter?.presentSearchError(error)
+		presenter.presentSearchError(error)
 	}
 }

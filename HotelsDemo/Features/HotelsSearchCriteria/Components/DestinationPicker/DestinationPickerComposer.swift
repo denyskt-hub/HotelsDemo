@@ -19,24 +19,29 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 	}
 
 	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
-		let viewController = DestinationPickerViewController()
-		let worker = DestinationSearchWorker(
+		let worker = makeDestinationSearchService()
+		let presenter = DestinationPickerPresenter()
+		let interactor = DestinationPickerInteractor(
+			worker: worker,
+			debouncer: DefaultDebouncer(delay: 0.5),
+			presenter: presenter
+		)
+		let viewController = DestinationPickerViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
+
+		presenter.viewController = viewController
+
+		return viewController
+	}
+
+	private func makeDestinationSearchService() -> DestinationSearchService {
+		DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
 			client: client
 		).dispatch(to: MainQueueDispatcher())
-		let interactor = DestinationPickerInteractor(
-			worker: worker,
-			debouncer: DefaultDebouncer(delay: 0.5)
-		)
-		let presenter = DestinationPickerPresenter()
-
-		viewController.interactor = interactor
-		viewController.delegate = delegate
-		interactor.presenter = presenter
-		presenter.viewController = viewController
-
-		return viewController
 	}
 }

@@ -8,16 +8,25 @@
 import UIKit
 
 public final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
+	private let interactor: DestinationPickerBusinessLogic
+	private weak var delegate: DestinationPickerDelegate?
+
 	private let rootView = DestinationPickerRootView()
 	private var viewModel = DestinationPickerModels.Search.ViewModel(destinations: [])
-
-	public var interactor: DestinationPickerBusinessLogic?
-	public weak var delegate: DestinationPickerDelegate?
 
 	public var tableView: UITableView { rootView.tableView }
 	public var textField: UITextField { rootView.textField }
 	public var errorLabel: UILabel { rootView.errorLabel }
 	private var errorContainer: UIView { rootView.errorContainer }
+
+	public init(
+		interactor: DestinationPickerBusinessLogic,
+		delegate: DestinationPickerDelegate?
+	) {
+		self.interactor = interactor
+		self.delegate = delegate
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -83,7 +92,7 @@ extension DestinationPickerViewController: UITableViewDataSource {
 
 extension DestinationPickerViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		interactor?.handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request(index: indexPath.row))
+		interactor.handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request(index: indexPath.row))
 	}
 }
 
@@ -95,8 +104,7 @@ extension DestinationPickerViewController: UITextFieldDelegate {
 	) -> Bool {
 		if let currentText = textField.text, let textRange = Range(range, in: currentText) {
 			let updatedText = currentText.replacingCharacters(in: textRange, with: string)
-
-			interactor?.doSearchDestinations(request: DestinationPickerModels.Search.Request(query: updatedText))
+			interactor.doSearchDestinations(request: DestinationPickerModels.Search.Request(query: updatedText))
 		}
 
 		return true

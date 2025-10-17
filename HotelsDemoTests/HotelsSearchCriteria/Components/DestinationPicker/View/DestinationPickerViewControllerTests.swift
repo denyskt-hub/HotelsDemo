@@ -92,9 +92,10 @@ final class DestinationPickerViewControllerTests: XCTestCase, ListItemsRendererT
 	) {
 		let interactor = DestinationPickerBusinessLogicSpy()
 		let delegate = DestinationPickerDelegateSpy()
-		let sut = DestinationPickerViewController()
-		sut.interactor = interactor
-		sut.delegate = delegate
+		let sut = DestinationPickerViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
 		return (sut, interactor, delegate)
 	}
 
