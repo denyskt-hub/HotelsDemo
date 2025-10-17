@@ -70,9 +70,9 @@ final class DateRangePickerInteractorTests: XCTestCase {
 		let sut = DateRangePickerInteractor(
 			selectedStartDate: selectedStartDate,
 			selectedEndDate: selectedEndDate,
-			generator: generator
+			generator: generator,
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, generator, presenter)
 	}
 }

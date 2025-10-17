@@ -23,22 +23,23 @@ public final class DateRangePickerComposer: DateRangePickerFactory {
 		selectedEndDate: Date,
 		calendar: Calendar
 	) -> UIViewController {
-		let viewController = DateRangePickerViewController()
+		let presenter = DataRangePickerPresenter(
+			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
+		)
 		let interactor = DateRangePickerInteractor(
 			selectedStartDate: selectedStartDate,
 			selectedEndDate: selectedEndDate,
 			generator: DefaultCalendarDataGenerator(
 				calendar: calendar,
 				currentDate: Date.init
-			)
+			),
+			presenter: presenter
 		)
-		let presenter = DataRangePickerPresenter(
-			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
+		let viewController = DateRangePickerViewController(
+			interactor: interactor,
+			delegate: delegate
 		)
 
-		viewController.interactor = interactor
-		viewController.delegate = delegate
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		return viewController

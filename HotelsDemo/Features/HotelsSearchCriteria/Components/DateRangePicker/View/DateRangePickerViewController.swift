@@ -12,6 +12,9 @@ public protocol DateRangePickerDelegate: AnyObject {
 }
 
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
+	private let interactor: DateRangePickerBusinessLogic
+	private weak var delegate: DateRangePickerDelegate?
+
 	private let rootView = DateRangePickerRootView()
 
 	private let weekdaysDataSource = WeekdaysDataSource()
@@ -20,12 +23,18 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private let calendarDataSource = CalendarDataSource()
 	private let calendarLayoutDelegate = CalendarLayoutDelegate()
 
-	public var interactor: DateRangePickerBusinessLogic?
-	public weak var delegate: DateRangePickerDelegate?
-
 	public var weekdaysCollectionView: UICollectionView { rootView.weekdaysCollectionView }
 	public var collectionView: UICollectionView { rootView.collectionView }
 	public var applyButton: UIButton { rootView.applyButton }
+
+	public init(
+		interactor: DateRangePickerBusinessLogic,
+		delegate: DateRangePickerDelegate?
+	) {
+		self.interactor = interactor
+		self.delegate = delegate
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -38,7 +47,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		setupCollectionView()
 		setupApplyButton()
 
-		interactor?.doFetchCalendar(request: .init())
+		interactor.doFetchCalendar(request: .init())
 	}
 
 	private func setupWeekdaysCollectionView() {
@@ -88,7 +97,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	@objc private func didApply() {
-		interactor?.handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request())
+		interactor.handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request())
 	}
 }
 
@@ -199,6 +208,6 @@ extension DateRangePickerViewController: DateCellDelegate {
 			return
 		}
 
-		interactor?.handleDateSelection(request: .init(date: date))
+		interactor.handleDateSelection(request: .init(date: date))
 	}
 }

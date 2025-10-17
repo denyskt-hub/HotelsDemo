@@ -7,36 +7,42 @@
 
 import Foundation
 
-final class WeakRefVirtualProxy<T: AnyObject> {
-	weak var object: T?
+public final class WeakRefVirtualProxy<T: AnyObject> {
+	public weak var object: T?
 
-	init(object: T? = nil) {
+	public init(object: T? = nil) {
 		self.object = object
 	}
 }
 
 extension WeakRefVirtualProxy: HotelsSearchCriteriaDelegate where T: HotelsSearchCriteriaDelegate {
-	func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
+	public func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
 		object?.didRequestSearch(with: searchCriteria)
+	}
+}
+
+extension WeakRefVirtualProxy: DateRangePickerDelegate where T: DateRangePickerDelegate {
+	public func didSelectDateRange(startDate: Date, endDate: Date) {
+		object?.didSelectDateRange(startDate: startDate, endDate: endDate)
 	}
 }
 
 extension WeakRefVirtualProxy: HotelFiltersScene where T: HotelFiltersScene {}
 
 extension WeakRefVirtualProxy: PriceRangeDelegate where T: PriceRangeDelegate {
-	func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
+	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
 		object?.didSelectPriceRange(priceRange)
 	}
 }
 
 extension WeakRefVirtualProxy: StarRatingDelegate where T: StarRatingDelegate {
-	func didSelectStarRatings(_ starRatings: Set<StarRating>) {
+	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
 		object?.didSelectStarRatings(starRatings)
 	}
 }
 
 extension WeakRefVirtualProxy: ReviewScoreDelegate where T: ReviewScoreDelegate {
-	func didSelectReviewScore(_ reviewScore: ReviewScore?) {
+	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
 		object?.didSelectReviewScore(reviewScore)
 	}
 }

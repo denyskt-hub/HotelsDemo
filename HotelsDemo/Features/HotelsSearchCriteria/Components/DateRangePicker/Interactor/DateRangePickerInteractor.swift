@@ -10,23 +10,24 @@ import Foundation
 public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	private var dateRangeSelection: DateRangeSelection
 	private let generator: CalendarDataGenerator
-
-	public var presenter: DateRangePickerPresentationLogic?
+	private let presenter: DateRangePickerPresentationLogic
 
 	public init(
 		selectedStartDate: Date,
 		selectedEndDate: Date,
-		generator: CalendarDataGenerator
+		generator: CalendarDataGenerator,
+		presenter: DateRangePickerPresentationLogic
 	) {
 		self.dateRangeSelection = DateRangeSelection(
 			startDate: selectedStartDate,
 			endDate: selectedEndDate
 		)
 		self.generator = generator
+		self.presenter = presenter
 	}
 
 	public func doFetchCalendar(request: DateRangePickerModels.FetchCalendar.Request) {
-		presenter?.present(
+		presenter.present(
 			response: DateRangePickerModels.FetchCalendar.Response(
 				calendar: makeCalendarData(),
 				canApply: dateRangeSelection.canApply
@@ -37,7 +38,7 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	public func handleDateSelection(request: DateRangePickerModels.DateSelection.Request) {
 		dateRangeSelection = dateRangeSelection.selecting(request.date)
 
-		presenter?.presentSelectDate(
+		presenter.presentSelectDate(
 			response: DateRangePickerModels.DateSelection.Response(
 				calendar: makeCalendarData(),
 				canApply: dateRangeSelection.canApply
@@ -51,7 +52,7 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 			preconditionFailure("Can't select date range without start and end date")
 		}
 
-		presenter?.presentSelectedDateRange(
+		presenter.presentSelectedDateRange(
 			response: DateRangePickerModels.DateRangeSelection.Response(
 				startDate: startDate,
 				endDate: endDate

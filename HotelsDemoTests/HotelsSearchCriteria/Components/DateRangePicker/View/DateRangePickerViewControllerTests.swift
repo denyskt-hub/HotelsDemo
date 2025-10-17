@@ -89,9 +89,10 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 	) {
 		let interactor = DateRangePickerBusinessLogicSpy()
 		let delegate = DateRangePickerDelegateSpy()
-		let sut = DateRangePickerViewController()
-		sut.interactor = interactor
-		sut.delegate = delegate
+		let sut = DateRangePickerViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
 		return (sut, interactor, delegate)
 	}
 
