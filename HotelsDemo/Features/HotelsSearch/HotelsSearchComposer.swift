@@ -11,19 +11,6 @@ public protocol HotelsSearchFactory {
 	func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController
 }
 
-public struct HotelsSearchContext {
-	public let provider: HotelsSearchCriteriaProvider
-	public let service: HotelsSearchService
-
-	public init(
-		provider: HotelsSearchCriteriaProvider,
-		service: HotelsSearchService
-	) {
-		self.provider = provider
-		self.service = service
-	}
-}
-
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
 
