@@ -168,9 +168,9 @@ final class RoomGuestsPickerInteractorTests: XCTestCase {
 		let sut = RoomGuestsPickerInteractor(
 			rooms: rooms,
 			adults: adults,
-			childrenAge: childrenAge
+			childrenAge: childrenAge,
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, presenter)
 	}
 }

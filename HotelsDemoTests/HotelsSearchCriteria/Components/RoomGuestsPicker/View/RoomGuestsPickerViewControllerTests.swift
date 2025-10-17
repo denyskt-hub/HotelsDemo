@@ -56,7 +56,7 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 			selectedIndex: 1,
 			options: [(value: 0, title: "0"), (value: 1, title: "1")]
 		)
-		let sut = RoomGuestsPickerViewController()
+		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
 		sut.displayAgePicker(viewModel: viewModel)
@@ -243,9 +243,10 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 	) {
 		let interactor = RoomGuestsPickerBusinessLogicSpy()
 		let delegate = RoomGuestsPickerDelegateSpy()
-		let sut = RoomGuestsPickerViewController()
-		sut.interactor = interactor
-		sut.delegate = delegate
+		let sut = RoomGuestsPickerViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
 		return (sut, interactor, delegate)
 	}
 

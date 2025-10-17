@@ -23,17 +23,18 @@ public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
 		adults: Int,
 		childrenAge: [Int]
 	) -> UIViewController {
-		let viewController = RoomGuestsPickerViewController()
+		let presenter = RoomGuestsPickerPresenter()
 		let interactor = RoomGuestsPickerInteractor(
 			rooms: rooms,
 			adults: adults,
-			childrenAge: childrenAge
+			childrenAge: childrenAge,
+			presenter: presenter
 		)
-		let presenter = RoomGuestsPickerPresenter()
+		let viewController = RoomGuestsPickerViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
 
-		viewController.interactor = interactor
-		viewController.delegate = delegate
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		return viewController
