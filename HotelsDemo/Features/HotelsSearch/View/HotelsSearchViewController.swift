@@ -12,14 +12,23 @@ public final class HotelsSearchViewController: NiblessViewController {
 	private var cellControllers = [HotelCellController]()
 	private var onViewDidAppear: ((HotelsSearchViewController) -> Void)?
 
-	public var interactor: HotelsSearchBusinessLogic?
-	public var router: HotelsSearchRoutingLogic?
+	private let interactor: HotelsSearchBusinessLogic
+	private let router: HotelsSearchRoutingLogic
 
 	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
 
 	private var actionBar: HotelsActionBar { rootView.actionBar }
 	public var filterButton: UIButton { actionBar.filterButton }
+
+	public init(
+		interactor: HotelsSearchBusinessLogic,
+		router: HotelsSearchRoutingLogic
+	) {
+		self.interactor = interactor
+		self.router = router
+		super.init()
+	}
 
 	public override func loadView() {
 		view = rootView
@@ -33,7 +42,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 		onViewDidAppear = { viewController in
 			viewController.onViewDidAppear = nil
-			viewController.interactor?.handleViewDidAppear(request: .init())
+			viewController.interactor.handleViewDidAppear(request: .init())
 		}
 	}
 
@@ -41,7 +50,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 		super.viewWillDisappear(animated)
 
 		if isMovingFromParent {
-			interactor?.handleViewWillDisappearFromParent(request: .init())
+			interactor.handleViewWillDisappearFromParent(request: .init())
 		}
 	}
 
@@ -91,7 +100,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 	}
 
 	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
-		router?.routeToHotelFiltersPicker(viewModel: viewModel)
+		router.routeToHotelFiltersPicker(viewModel: viewModel)
 	}
 
 	private func cellController(at indexPath: IndexPath) -> HotelCellController? {
@@ -102,7 +111,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 	}
 
 	@objc private func filterTapHandler() {
-		interactor?.doFetchFilters(request: .init())
+		interactor.doFetchFilters(request: .init())
 	}
 }
 
@@ -157,7 +166,7 @@ extension HotelsSearchViewController: UITableViewDelegate {
 
 extension HotelsSearchViewController: HotelFiltersPickerDelegate {
 	public func didSelectFilters(_ filters: HotelFilters) {
-		interactor?.handleFilterSelection(
+		interactor.handleFilterSelection(
 			request: .init(filters: filters)
 		)
 	}

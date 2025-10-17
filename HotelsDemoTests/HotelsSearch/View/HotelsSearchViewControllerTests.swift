@@ -96,9 +96,10 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 	) {
 		let interactor = SearchBusinessLogicSpy()
 		let router = HotelsSearchRoutingLogicSpy()
-		let sut = HotelsSearchViewController()
-		sut.interactor = interactor
-		sut.router = router
+		let sut = HotelsSearchViewController(
+			interactor: interactor,
+			router: router
+		)
 		return (sut, interactor, router)
 	}
 

@@ -12,21 +12,22 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	private var provider: HotelsSearchCriteriaProvider { context.provider }
 	private var worker: HotelsSearchService { context.service }
 
-	private let repository: HotelsRepository
 	private var filters: HotelFilters
+	private let repository: HotelsRepository
+	private let presenter: HotelsSearchPresentationLogic
 
 	private var task: HTTPClientTask?
-
-	public var presenter: HotelsSearchPresentationLogic?
 
 	public init(
 		context: HotelsSearchContext,
 		filters: HotelFilters,
-		repository: HotelsRepository
+		repository: HotelsRepository,
+		presenter: HotelsSearchPresentationLogic
 	) {
 		self.context = context
 		self.filters = filters
 		self.repository = repository
+		self.presenter = presenter
 	}
 
 	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
@@ -37,7 +38,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 			case let .success(criteria):
 				self.doSearch(request: .init(criteria: criteria))
 			case let .failure(error):
-				self.presenter?.presentSearchError(error)
+				self.presenter.presentSearchError(error)
 			}
 		}
 	}
@@ -47,11 +48,11 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	}
 
 	private func doSearch(request: HotelsSearchModels.Search.Request) {
-		presenter?.presentSearchLoading(true)
+		presenter.presentSearchLoading(true)
 		task = worker.search(criteria: request.criteria) { [weak self] result in
 			guard let self else { return }
 
-			self.presenter?.presentSearchLoading(false)
+			self.presenter.presentSearchLoading(false)
 			self.handleSearchResult(result)
 		}
 	}
@@ -60,9 +61,9 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		switch result {
 		case let .success(hotels):
 			setHotels(hotels)
-			presenter?.presentSearch(response: .init(hotels: applyFilters(filters)))
+			presenter.presentSearch(response: .init(hotels: applyFilters(filters)))
 		case let .failure(error):
-			presenter?.presentSearchError(error)
+			presenter.presentSearchError(error)
 		}
 	}
 
@@ -71,12 +72,12 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 	}
 
 	public func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
-		presenter?.presentFilters(response: .init(filters: filters))
+		presenter.presentFilters(response: .init(filters: filters))
 	}
 
 	public func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
 		filters = request.filters
-		presenter?.presentUpdateFilters(
+		presenter.presentUpdateFilters(
 			response: .init(
 				hotels: applyFilters(filters),
 				hasSelectedFilters: filters.hasSelectedFilters

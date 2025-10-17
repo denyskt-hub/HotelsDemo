@@ -19,37 +19,48 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 	}
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
-		let viewController = HotelsSearchViewController()
-		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
-			viewController: viewController
-		)
-		let context = HotelsSearchContext(
-			provider: InMemoryHotelsSearchCriteriaStore(criteria: criteria).dispatch(to: MainQueueDispatcher()),
-			service: HotelsSearchWorker(
-				factory: DefaultHotelsRequestFactory(
-					url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
-				),
-				client: client
-			).dispatch(to: MainQueueDispatcher())
+		let context = makeHotelsSearchContext(with: criteria)
+		let presenter = HotelsSearchPresenter(
+			priceFormatter: PriceFormatter()
 		)
 		let interactor = HotelsSearchInteractor(
 			context: context,
 			filters: HotelFilters(),
 			repository: DefaultHotelsRepository(),
-		)
-		let presenter = HotelsSearchPresenter(
-			priceFormatter: PriceFormatter()
+			presenter: presenter
 		)
 		let router = HotelsSearchRouter(
 			hotelFiltersPickerFactory: HotelFiltersPickerComposer()
 		)
+		let viewController = HotelsSearchViewController(
+			interactor: interactor,
+			router: router
+		)
+		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
+			viewController: viewController
+		)
 
-		viewController.interactor = interactor
-		viewController.router = router
-		interactor.presenter = presenter
 		presenter.viewController = viewControllerAdapter
 		router.viewController = viewController
 
 		return viewController
+	}
+
+	private func makeHotelsSearchContext(with criteria: HotelsSearchCriteria) -> HotelsSearchContext {
+		let provider = InMemoryHotelsSearchCriteriaStore(
+			criteria: criteria
+		).dispatch(to: MainQueueDispatcher())
+
+		let service = HotelsSearchWorker(
+			factory: DefaultHotelsRequestFactory(
+				url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
+			),
+			client: client
+		).dispatch(to: MainQueueDispatcher())
+
+		return HotelsSearchContext(
+			provider: provider,
+			service: service
+		)
 	}
 }

@@ -82,9 +82,9 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		let sut = HotelsSearchInteractor(
 			context: context,
 			filters: filters,
-			repository: DefaultHotelsRepository()
+			repository: DefaultHotelsRepository(),
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, service, presenter)
 	}
 }
