@@ -12,18 +12,23 @@ public protocol HotelsSearchCriteriaDelegate: AnyObject {
 }
 
 public final class HotelsSearchCriteriaViewController: NiblessViewController, HotelsSearchCriteriaDisplayLogic {
+	private let interactor: HotelsSearchCriteriaBusinessLogic
+	private let router: HotelsSearchCriteriaRoutingLogic
 	private let delegate: HotelsSearchCriteriaDelegate
 	private let rootView = HotelsSearchCriteriaRootView()
-
-	public var interactor: HotelsSearchCriteriaBusinessLogic?
-	public var router: HotelsSearchCriteriaRoutingLogic?
 
 	public var destinationControl: IconTitleControl { rootView.destinationControl }
 	public var datesControl: IconTitleControl { rootView.datesControl }
 	public var roomGuestsControl: IconTitleControl { rootView.roomGuestsControl }
 	public var searchButton: UIButton { rootView.searchButton }
 
-	public init(delegate: HotelsSearchCriteriaDelegate) {
+	public init(
+		interactor: HotelsSearchCriteriaBusinessLogic,
+		router: HotelsSearchCriteriaRoutingLogic,
+		delegate: HotelsSearchCriteriaDelegate
+	) {
+		self.interactor = interactor
+		self.router = router
 		self.delegate = delegate
 		super.init()
 	}
@@ -40,7 +45,7 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 		setupRoomGuestsControl()
 		setupSearchButton()
 
-		interactor?.doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request())
+		interactor.doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request())
 	}
 
 	private func setupDestinationControl() {
@@ -60,19 +65,19 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	}
 
 	@objc private func destinationTapHandler() {
-		router?.routeToDestinationPicker()
+		router.routeToDestinationPicker()
 	}
 
 	@objc private func datesTapHandler() {
-		interactor?.doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request())
+		interactor.doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request())
 	}
 
 	@objc private func roomGuestsTapHandler() {
-		interactor?.doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request())
+		interactor.doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request())
 	}
 
 	@objc private func searchTapHandler() {
-		interactor?.doSearch(request: HotelsSearchCriteriaModels.Search.Request())
+		interactor.doSearch(request: HotelsSearchCriteriaModels.Search.Request())
 	}
 
 	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.FetchCriteria.ViewModel) {
@@ -91,11 +96,11 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 	}
 
 	public func displayDates(viewModel: DateRangePickerModels.ViewModel) {
-		router?.routeToDateRangePicker(viewModel: viewModel)
+		router.routeToDateRangePicker(viewModel: viewModel)
 	}
 
 	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
-		router?.routeToRoomGuestsPicker(viewModel: viewModel)
+		router.routeToRoomGuestsPicker(viewModel: viewModel)
 	}
 
 	public func displaySearch(viewModel: HotelsSearchCriteriaModels.Search.ViewModel) {
@@ -107,13 +112,13 @@ public final class HotelsSearchCriteriaViewController: NiblessViewController, Ho
 
 extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 	public func didSelectDestination(_ destination: Destination) {
-		interactor?.handleDestinationSelection(
+		interactor.handleDestinationSelection(
 			request: .init(destination: destination)
 		)
 	}
 
 	public func didSelectDateRange(startDate: Date, endDate: Date) {
-		interactor?.handleDateRangeSelection(
+		interactor.handleDateRangeSelection(
 			request: .init(
 				checkInDate: startDate,
 				checkOutDate: endDate
@@ -122,7 +127,7 @@ extension HotelsSearchCriteriaViewController: HotelsSearchCriteriaScene {
 	}
 
 	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
-		interactor?.handleRoomGuestsSelection(
+		interactor.handleRoomGuestsSelection(
 			request: .init(
 				rooms: rooms,
 				adults: adults,

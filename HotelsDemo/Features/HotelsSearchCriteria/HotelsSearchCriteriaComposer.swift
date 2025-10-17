@@ -29,24 +29,24 @@ public final class HotelsSearchCriteriaComposer: HotelsSearchCriteriaFactory {
 		cache: HotelsSearchCriteriaCache,
 		calendar: Calendar
 	) -> UIViewController {
-		let viewController = HotelsSearchCriteriaViewController(
-			delegate: delegate
-		)
-		let interactor = HotelsSearchCriteriaInteractor(
-			provider: provider,
-			cache: cache
-		)
 		let presenter = HotelsSearchCriteriaPresenter(calendar: calendar)
+		let interactor = HotelsSearchCriteriaInteractor(
+			cache: cache,
+			provider: provider,
+			presenter: presenter
+		)
 		let router = HotelsSearchCriteriaRouter(
 			calendar: calendar,
 			destinationPickerFactory: DestinationPickerComposer(client: client),
 			dateRangePickerFactory: DateRangePickerComposer(),
 			roomGuestsPickerFactory: RoomGuestsPickerComposer()
 		)
+		let viewController = HotelsSearchCriteriaViewController(
+			interactor: interactor,
+			router: router,
+			delegate: delegate
+		)
 
-		viewController.interactor = interactor
-		viewController.router = router
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 		router.viewController = viewController
 

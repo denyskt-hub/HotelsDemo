@@ -8,17 +8,18 @@
 import Foundation
 
 public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessLogic {
-	private let provider: HotelsSearchCriteriaProvider
 	private let cache: HotelsSearchCriteriaCache
-
-	public var presenter: HotelsSearchCriteriaPresentationLogic?
+	private let provider: HotelsSearchCriteriaProvider
+	private let presenter: HotelsSearchCriteriaPresentationLogic
 
 	public init(
+		cache: HotelsSearchCriteriaCache,
 		provider: HotelsSearchCriteriaProvider,
-		cache: HotelsSearchCriteriaCache
+		presenter: HotelsSearchCriteriaPresentationLogic
 	) {
-		self.provider = provider
 		self.cache = cache
+		self.provider = provider
+		self.presenter = presenter
 	}
 
 	public func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
@@ -185,23 +186,23 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	// MARK: - 
 
 	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentLoadCriteria(
+		presenter.presentLoadCriteria(
 			response: HotelsSearchCriteriaModels.FetchCriteria.Response(criteria: criteria)
 		)
 	}
 
 	private func presentLoadError(_ error: Error) {
-		presenter?.presentLoadError(error)
+		presenter.presentLoadError(error)
 	}
 
 	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
-		presenter?.presentRoomGuests(
+		presenter.presentRoomGuests(
 			response: HotelsSearchCriteriaModels.FetchRoomGuests.Response(roomGuests: roomGuests)
 		)
 	}
 
 	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
-		presenter?.presentDates(
+		presenter.presentDates(
 			response: HotelsSearchCriteriaModels.FetchDates.Response(
 				checkInDate: checkInDate,
 				checkOutDate: checkOutDate
@@ -210,28 +211,28 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateDestination(
+		presenter.presentUpdateDestination(
 			response: HotelsSearchCriteriaModels.DestinationSelection.Response(criteria: criteria)
 		)
 	}
 
 	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateDates(
+		presenter.presentUpdateDates(
 			response: HotelsSearchCriteriaModels.DateRangeSelection.Response(criteria: criteria)
 		)
 	}
 
 	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentUpdateRoomGuests(
+		presenter.presentUpdateRoomGuests(
 			response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response(criteria: criteria)
 		)
 	}
 
 	private func presentUpdateError(_ error: Error) {
-		presenter?.presentUpdateError(error)
+		presenter.presentUpdateError(error)
 	}
 
 	private func presentSearch(_ criteria: HotelsSearchCriteria) {
-		presenter?.presentSearch(response: HotelsSearchCriteriaModels.Search.Response(criteria: criteria))
+		presenter.presentSearch(response: HotelsSearchCriteriaModels.Search.Response(criteria: criteria))
 	}
 }

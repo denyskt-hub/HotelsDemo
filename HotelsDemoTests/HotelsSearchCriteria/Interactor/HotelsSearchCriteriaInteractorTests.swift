@@ -222,10 +222,10 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let cache = HotelsSearchCriteriaCacheSpy()
 		let presenter = HotelsSearchCriteriaPresenterSpy()
 		let sut = HotelsSearchCriteriaInteractor(
+			cache: cache,
 			provider: provider,
-			cache: cache
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, provider, cache, presenter)
 	}
 }
