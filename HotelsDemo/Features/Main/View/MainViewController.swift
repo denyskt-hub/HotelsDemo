@@ -9,15 +9,20 @@ import UIKit
 
 public final class MainViewController: NiblessViewController, MainDisplayLogic {
 	private let rootView = MainRootView()
-	private let searchCriteriaViewController: UIViewController
-
 	private var searchCriteriaContainerView: UIView { rootView.searchCriteriaContainerView }
 
-	public var interactor: MainBusinessLogic?
-	public var router: MainRoutingLogic?
+	private let searchCriteriaViewController: UIViewController
+	private let interactor: MainBusinessLogic
+	private let router: MainRoutingLogic
 
-	public init(searchCriteriaViewController: UIViewController) {
+	public init(
+		searchCriteriaViewController: UIViewController,
+		interactor: MainBusinessLogic,
+		router: MainRoutingLogic
+	) {
 		self.searchCriteriaViewController = searchCriteriaViewController
+		self.interactor = interactor
+		self.router = router
 		super.init()
 	}
 
@@ -32,7 +37,7 @@ public final class MainViewController: NiblessViewController, MainDisplayLogic {
 	}
 
 	public func displaySearch(viewModel: MainModels.Search.ViewModel) {
-		router?.routeToSearch(viewModel: viewModel)
+		router.routeToSearch(viewModel: viewModel)
 	}
 }
 
@@ -40,6 +45,6 @@ public final class MainViewController: NiblessViewController, MainDisplayLogic {
 
 extension MainViewController: HotelsSearchCriteriaDelegate {
 	public func didRequestSearch(with searchCriteria: HotelsSearchCriteria) {
-		interactor?.handleSearch(request: MainModels.Search.Request(criteria: searchCriteria))
+		interactor.handleSearch(request: MainModels.Search.Request(criteria: searchCriteria))
 	}
 }

@@ -8,9 +8,13 @@
 import Foundation
 
 public final class MainInteractor: MainBusinessLogic {
-	public var presenter: MainPresentationLogic?
+	private let presenter: MainPresentationLogic
+
+	public init(presenter: MainPresentationLogic) {
+		self.presenter = presenter
+	}
 
 	public func handleSearch(request: MainModels.Search.Request) {
-		presenter?.presentSearch(response: .init(criteria: request.criteria))
+		presenter.presentSearch(response: .init(criteria: request.criteria))
 	}
 }

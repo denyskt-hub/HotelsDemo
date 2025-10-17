@@ -26,18 +26,17 @@ public final class MainComposer: MainFactory {
 	public func makeMain() -> UIViewController {
 		let delegateProxy = WeakRefVirtualProxy<MainViewController>()
 		let searchCriteriaViewController = makeSearchCriteria(delegateProxy)
-		let viewController = MainViewController(
-			searchCriteriaViewController: searchCriteriaViewController
-		)
-		let interactor = MainInteractor()
 		let presenter = MainPresenter()
+		let interactor = MainInteractor(presenter: presenter)
 		let router = MainRouter(
 			searchFactory: HotelsSearchComposer(client: client)
 		)
+		let viewController = MainViewController(
+			searchCriteriaViewController: searchCriteriaViewController,
+			interactor: interactor,
+			router: router
+		)
 
-		viewController.interactor = interactor
-		viewController.router = router
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 		router.viewController = viewController
 
