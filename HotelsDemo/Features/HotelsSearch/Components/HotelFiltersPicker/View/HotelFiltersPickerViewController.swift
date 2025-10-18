@@ -12,11 +12,11 @@ public protocol HotelFiltersPickerDelegate: AnyObject {
 }
 
 public final class HotelFiltersPickerViewController: NiblessViewController, HotelFiltersPickerDisplayLogic {
-	private let rootView = HotelFiltersPickerRootView()
 	private let filterViewControllers: [ResetableFilterViewController]
+	private var interactor: HotelFiltersPickerBusinessLogic
+	private weak var delegate: HotelFiltersPickerDelegate?
 
-	public var interactor: HotelFiltersPickerBusinessLogic?
-	public weak var delegate: HotelFiltersPickerDelegate?
+	private let rootView = HotelFiltersPickerRootView()
 
 	public var contentStack: UIStackView { rootView.contentStack }
 	public var applyButton: UIButton { rootView.applyButton }
@@ -26,8 +26,14 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 		return button
 	}()
 
-	public init(filterViewControllers: [ResetableFilterViewController]) {
+	public init(
+		filterViewControllers: [ResetableFilterViewController],
+		interactor: HotelFiltersPickerBusinessLogic,
+		delegate: HotelFiltersPickerDelegate?
+	) {
 		self.filterViewControllers = filterViewControllers
+		self.interactor = interactor
+		self.delegate = delegate
 		super.init()
 	}
 
@@ -45,7 +51,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 		addChildren(filterViewControllers, to: contentStack)
 
-		interactor?.doFetchFilters(request: .init())
+		interactor.doFetchFilters(request: .init())
 	}
 
 	private func setupTitle() {
@@ -87,11 +93,11 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	}
 
 	@objc private func applyTapHandler() {
-		interactor?.handleFilterSelection(request: .init())
+		interactor.handleFilterSelection(request: .init())
 	}
 
 	@objc private func resetTapHandler() {
-		interactor?.handleFilterReset(request: .init())
+		interactor.handleFilterReset(request: .init())
 	}
 
 	@objc private func close() {
@@ -103,14 +109,14 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 
 extension HotelFiltersPickerViewController: HotelFiltersScene {
 	public func didSelectPriceRange(_ priceRange: ClosedRange<Decimal>?) {
-		interactor?.handlePriceRangeSelection(request: .init(priceRange: priceRange))
+		interactor.handlePriceRangeSelection(request: .init(priceRange: priceRange))
 	}
 
 	public func didSelectStarRatings(_ starRatings: Set<StarRating>) {
-		interactor?.handleStarRatingSelection(request: .init(starRatings: starRatings))
+		interactor.handleStarRatingSelection(request: .init(starRatings: starRatings))
 	}
 
 	public func didSelectReviewScore(_ reviewScore: ReviewScore?) {
-		interactor?.handleReviewScoreSelection(request: .init(reviewScore: reviewScore))
+		interactor.handleReviewScoreSelection(request: .init(reviewScore: reviewScore))
 	}
 }

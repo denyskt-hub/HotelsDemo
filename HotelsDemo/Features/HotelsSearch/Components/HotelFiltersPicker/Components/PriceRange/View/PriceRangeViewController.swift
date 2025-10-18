@@ -12,16 +12,20 @@ public protocol PriceRangeDelegate: AnyObject {
 }
 
 public final class PriceRangeViewController: NiblessViewController, PriceRangeDisplayLogic {
+	private let interactor: PriceRangeBusinessLogic
 	private let delegate: PriceRangeDelegate
-	private let rootView = PriceRangeRootView()
 
-	public var interactor: PriceRangeBusinessLogic?
+	private let rootView = PriceRangeRootView()
 
 	public var slider: RangeSlider { rootView.slider }
 	public var lowerValueLabel: UILabel { rootView.lowerValueLabel }
 	public var upperValueLabel: UILabel { rootView.upperValueLabel }
 
-	public init(delegate: PriceRangeDelegate) {
+	public init(
+		interactor: PriceRangeBusinessLogic,
+		delegate: PriceRangeDelegate
+	) {
+		self.interactor = interactor
 		self.delegate = delegate
 		super.init()
 	}
@@ -35,7 +39,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 		setupSlider()
 
-		interactor?.doFetchPriceRange(request: .init())
+		interactor.doFetchPriceRange(request: .init())
 	}
 
 	private func setupSlider() {
@@ -72,11 +76,11 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 	}
 
 	@objc private func sliderValueChanged(_ slider: RangeSlider) {
-		interactor?.handleSelectingPriceRange(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
+		interactor.handleSelectingPriceRange(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
 	}
 
 	@objc private func sliderEditingDidEnd(_ slider: RangeSlider) {
-		interactor?.handlePriceRangeSelection(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
+		interactor.handlePriceRangeSelection(request: .init(priceRange: makePriceRange(slider.lowerValue, slider.upperValue)))
 	}
 
 	private func makePriceRange(_ lowerValue: CGFloat, _ upperValue: CGFloat) -> ClosedRange<Decimal> {
@@ -88,7 +92,7 @@ public final class PriceRangeViewController: NiblessViewController, PriceRangeDi
 
 extension PriceRangeViewController: ResetableFilterViewController {
 	public func reset() {
-		interactor?.handlePriceRangeReset(request: .init())
+		interactor.handlePriceRangeReset(request: .init())
 	}
 }
 

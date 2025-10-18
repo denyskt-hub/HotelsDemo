@@ -103,8 +103,10 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 		presenter: HotelFiltersPickerPresentationLogicSpy
 	) {
 		let presenter = HotelFiltersPickerPresentationLogicSpy()
-		let sut = HotelFiltersPickerInteractor(currentFilters: currentFilters)
-		sut.presenter = presenter
+		let sut = HotelFiltersPickerInteractor(
+			currentFilters: currentFilters,
+			presenter: presenter
+		)
 		return (sut, presenter)
 	}
 }

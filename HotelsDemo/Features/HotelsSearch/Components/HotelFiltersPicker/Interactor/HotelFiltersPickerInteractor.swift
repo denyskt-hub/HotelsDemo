@@ -9,11 +9,14 @@ import Foundation
 
 public final class HotelFiltersPickerInteractor: HotelFiltersPickerBusinessLogic {
 	private var currentFilters: HotelFilters
+	private let presenter: HotelFiltersPickerPresentationLogic
 
-	public var presenter: HotelFiltersPickerPresentationLogic?
-
-	public init(currentFilters: HotelFilters) {
+	public init(
+		currentFilters: HotelFilters,
+		presenter: HotelFiltersPickerPresentationLogic
+	) {
 		self.currentFilters = currentFilters
+		self.presenter = presenter
 	}
 
 	public func doFetchFilters(request: HotelFiltersPickerModels.FetchFilters.Request) {
@@ -36,16 +39,16 @@ public final class HotelFiltersPickerInteractor: HotelFiltersPickerBusinessLogic
 	}
 
 	public func handleFilterSelection(request: HotelFiltersPickerModels.FilterSelection.Request) {
-		presenter?.presentSelectedFilters(response: .init(filters: currentFilters))
+		presenter.presentSelectedFilters(response: .init(filters: currentFilters))
 	}
 
 	public func handleFilterReset(request: HotelFiltersPickerModels.FilterReset.Request) {
 		currentFilters = HotelFilters()
 		present(currentFilters)
-		presenter?.presentResetFilters(response: .init())
+		presenter.presentResetFilters(response: .init())
 	}
 
 	private func present(_ filter: HotelFilters) {
-		presenter?.present(response: .init(filters: filter))
+		presenter.present(response: .init(filters: filter))
 	}
 }

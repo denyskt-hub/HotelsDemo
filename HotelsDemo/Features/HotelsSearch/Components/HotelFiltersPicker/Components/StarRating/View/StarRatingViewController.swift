@@ -12,15 +12,20 @@ public protocol StarRatingDelegate: AnyObject {
 }
 
 public final class StarRatingViewController: NiblessViewController, StarRatingDisplayLogic {
+	private let interactor: StarRatingBusinessLogic
 	private let delegate: StarRatingDelegate
-	private let rootView = StarRatingRootView()
-	private var options = [StarRatingModels.OptionViewModel]()
 
-	public var interactor: StarRatingBusinessLogic?
+	private let rootView = StarRatingRootView()
+
+	private var options = [StarRatingModels.OptionViewModel]()
 
 	public var tableView: UITableView { rootView.tableView }
 
-	public init(delegate: StarRatingDelegate) {
+	public init(
+		interactor: StarRatingBusinessLogic,
+		delegate: StarRatingDelegate
+	) {
+		self.interactor = interactor
 		self.delegate = delegate
 		super.init()
 	}
@@ -34,7 +39,7 @@ public final class StarRatingViewController: NiblessViewController, StarRatingDi
 
 		setupTableView()
 
-		interactor?.doFetchStarRating(request: .init())
+		interactor.doFetchStarRating(request: .init())
 	}
 
 	private func setupTableView() {
@@ -67,7 +72,7 @@ public final class StarRatingViewController: NiblessViewController, StarRatingDi
 
 extension StarRatingViewController: ResetableFilterViewController {
 	public func reset() {
-		interactor?.handleStarRatingReset(request: .init())
+		interactor.handleStarRatingReset(request: .init())
 	}
 }
 
@@ -90,6 +95,6 @@ extension StarRatingViewController: UITableViewDataSource {
 extension StarRatingViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let option = options[indexPath.row]
-		interactor?.handleStarRatingSelection(request: .init(starRating: option.value))
+		interactor.handleStarRatingSelection(request: .init(starRating: option.value))
 	}
 }

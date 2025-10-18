@@ -62,8 +62,10 @@ final class StarRatingInteractorTests: XCTestCase {
 		presenter: StarRatingPresentationLogicSpy
 	) {
 		let presenter = StarRatingPresentationLogicSpy()
-		let sut = StarRatingInteractor(selectedStarRatings: selectedStarRatings)
-		sut.presenter = presenter
+		let sut = StarRatingInteractor(
+			selectedStarRatings: selectedStarRatings,
+			presenter: presenter
+		)
 		return (sut, presenter)
 	}
 }

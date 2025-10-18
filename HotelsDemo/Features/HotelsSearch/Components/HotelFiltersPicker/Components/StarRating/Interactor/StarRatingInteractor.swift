@@ -9,20 +9,23 @@ import Foundation
 
 public final class StarRatingInteractor: StarRatingBusinessLogic {
 	private var selectedStarRatings = Set<StarRating>()
+	private let presenter: StarRatingPresentationLogic
 
-	public var presenter: StarRatingPresentationLogic?
-
-	public init(selectedStarRatings: Set<StarRating>) {
+	public init(
+		selectedStarRatings: Set<StarRating>,
+		presenter: StarRatingPresentationLogic
+	) {
 		self.selectedStarRatings = selectedStarRatings
+		self.presenter = presenter
 	}
 
 	public func doFetchStarRating(request: StarRatingModels.FetchStarRating.Request) {
-		presenter?.present(response: .init(options: makeOptions(selectedStarRatings)))
+		presenter.present(response: .init(options: makeOptions(selectedStarRatings)))
 	}
 
 	public func handleStarRatingReset(request: StarRatingModels.StarRatingReset.Request) {
 		selectedStarRatings = []
-		presenter?.presentReset(response: .init(options: makeOptions(selectedStarRatings)))
+		presenter.presentReset(response: .init(options: makeOptions(selectedStarRatings)))
 	}
 
 	public func handleStarRatingSelection(request: StarRatingModels.StarRatingSelection.Request) {
@@ -32,7 +35,7 @@ public final class StarRatingInteractor: StarRatingBusinessLogic {
 			selectedStarRatings.insert(request.starRating)
 		}
 
-		presenter?.presentSelect(
+		presenter.presentSelect(
 			response: .init(
 				starRatings: selectedStarRatings,
 				options: makeOptions(selectedStarRatings)

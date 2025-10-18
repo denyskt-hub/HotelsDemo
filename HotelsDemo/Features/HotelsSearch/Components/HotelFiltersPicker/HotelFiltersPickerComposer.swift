@@ -16,21 +16,21 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		filters: HotelFilters,
 		delegate: HotelFiltersPickerDelegate?
 	) -> UIViewController {
+		let presenter = HotelFiltersPickerPresenter()
+		let interactor = HotelFiltersPickerInteractor(
+			currentFilters: filters,
+			presenter: presenter
+		)
 		let delegateProxy = WeakRefVirtualProxy<HotelFiltersPickerViewController>()
 		let viewController = HotelFiltersPickerViewController(
 			filterViewControllers: makeFilterViewControllers(
 				filters: filters,
 				delegate: delegateProxy
-			)
+			),
+			interactor: interactor,
+			delegate: delegate
 		)
-		let interactor = HotelFiltersPickerInteractor(
-			currentFilters: filters
-		)
-		let presenter = HotelFiltersPickerPresenter()
 
-		viewController.interactor = interactor
-		viewController.delegate = delegate
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		delegateProxy.object = viewController
@@ -63,17 +63,17 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		currencyCode: String,
 		delegate: PriceRangeDelegate
 	) -> ResetableFilterViewController {
-		let viewController = PriceRangeViewController(
-			delegate: delegate
-		)
+		let presenter = PriceRangePresenter()
 		let interactor = PriceRangeInteractor(
 			selectedPriceRange: selectedPriceRange,
-			currencyCode: currencyCode
+			currencyCode: currencyCode,
+			presenter: presenter
 		)
-		let presenter = PriceRangePresenter()
+		let viewController = PriceRangeViewController(
+			interactor: interactor,
+			delegate: delegate
+		)
 
-		viewController.interactor = interactor
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		return viewController
@@ -83,16 +83,16 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		selectedStarRating: Set<StarRating>,
 		delegate: StarRatingDelegate
 	) -> ResetableFilterViewController {
+		let presenter = StarRatingPresenter()
+		let interactor = StarRatingInteractor(
+			selectedStarRatings: selectedStarRating,
+			presenter: presenter
+		)
 		let viewController = StarRatingViewController(
+			interactor: interactor,
 			delegate: delegate
 		)
-		let interactor = StarRatingInteractor(
-			selectedStarRatings: selectedStarRating
-		)
-		let presenter = StarRatingPresenter()
 
-		viewController.interactor = interactor
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		return viewController
@@ -102,16 +102,16 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		selectedReviewScore: ReviewScore?,
 		delegate: ReviewScoreDelegate
 	) -> ResetableFilterViewController {
+		let presenter = ReviewScorePresenter()
+		let interactor = ReviewScoreInteractor(
+			selectedReviewScore: selectedReviewScore,
+			presenter: presenter
+		)
 		let viewController = ReviewScoreViewController(
+			interactor: interactor,
 			delegate: delegate
 		)
-		let interactor = ReviewScoreInteractor(
-			selectedReviewScore: selectedReviewScore
-		)
-		let presenter = ReviewScorePresenter()
 
-		viewController.interactor = interactor
-		interactor.presenter = presenter
 		presenter.viewController = viewController
 
 		return viewController

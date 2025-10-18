@@ -73,9 +73,9 @@ final class ReviewScoreInteractorTests: XCTestCase {
 	) {
 		let presenter = ReviewScorePresentationLogicSpy()
 		let sut = ReviewScoreInteractor(
-			selectedReviewScore: selectedReviewScore
+			selectedReviewScore: selectedReviewScore,
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, presenter)
 	}
 

@@ -9,25 +9,28 @@ import Foundation
 
 public final class ReviewScoreInteractor: ReviewScoreBusinessLogic {
 	private var selectedReviewScore: ReviewScore?
+	private let presenter: ReviewScorePresentationLogic
 
-	public var presenter: ReviewScorePresentationLogic?
-
-	public init(selectedReviewScore: ReviewScore?) {
+	public init(
+		selectedReviewScore: ReviewScore?,
+		presenter: ReviewScorePresentationLogic
+	) {
 		self.selectedReviewScore = selectedReviewScore
+		self.presenter = presenter
 	}
 
 	public func doFetchReviewScore(request: ReviewScoreModels.FetchReviewScore.Request) {
-		presenter?.present(response: .init(options: makeOptions(selectedReviewScore)))
+		presenter.present(response: .init(options: makeOptions(selectedReviewScore)))
 	}
 
 	public func handleReviewScoreReset(request: ReviewScoreModels.ReviewScoreReset.Request) {
 		selectedReviewScore = nil
-		presenter?.presentReset(response: .init(options: makeOptions(selectedReviewScore)))
+		presenter.presentReset(response: .init(options: makeOptions(selectedReviewScore)))
 	}
 
 	public func handleReviewScoreSelection(request: ReviewScoreModels.ReviewScoreSelection.Request) {
 		selectedReviewScore = selectedReviewScore != request.reviewScore ? request.reviewScore : nil
-		presenter?.presentSelect(
+		presenter.presentSelect(
 			response: .init(
 				reviewScore: selectedReviewScore,
 				options: makeOptions(selectedReviewScore)

@@ -9,21 +9,23 @@ import Foundation
 
 public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 	private let availablePriceRange: ClosedRange<Decimal> = 0...3000
+
 	private var selectedPriceRange: ClosedRange<Decimal>?
 	private let currencyCode: String
-
-	public var presenter: PriceRangePresentationLogic?
+	private let presenter: PriceRangePresentationLogic
 
 	public init(
 		selectedPriceRange: ClosedRange<Decimal>?,
-		currencyCode: String
+		currencyCode: String,
+		presenter: PriceRangePresentationLogic
 	) {
 		self.selectedPriceRange = selectedPriceRange
 		self.currencyCode = currencyCode
+		self.presenter = presenter
 	}
 
 	public func doFetchPriceRange(request: PriceRangeModels.FetchPriceRange.Request) {
-		presenter?.present(
+		presenter.present(
 			response: .init(
 				availablePriceRange: availablePriceRange,
 				priceRange: selectedPriceRange,
@@ -34,7 +36,7 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 
 	public func handlePriceRangeReset(request: PriceRangeModels.PriceRangeReset.Request) {
 		selectedPriceRange = nil
-		presenter?.presentReset(
+		presenter.presentReset(
 			response: .init(
 				availablePriceRange: availablePriceRange,
 				currencyCode: currencyCode
@@ -44,12 +46,12 @@ public final class PriceRangeInteractor: PriceRangeBusinessLogic {
 
 	public func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request) {
 		selectedPriceRange = request.priceRange
-		presenter?.presentSelect(response: .init(priceRange: request.priceRange))
+		presenter.presentSelect(response: .init(priceRange: request.priceRange))
 	}
 
 	public func handleSelectingPriceRange(request: PriceRangeModels.SelectingPriceRange.Request) {
 		selectedPriceRange = request.priceRange
-		presenter?.presentSelecting(
+		presenter.presentSelecting(
 			response: .init(
 				priceRange: request.priceRange,
 				currencyCode: currencyCode

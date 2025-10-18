@@ -123,10 +123,10 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		let interactor = HotelFiltersPickerBusinessLogicSpy()
 		let delegate = HotelFiltersPickerDelegateSpy()
 		let sut = HotelFiltersPickerViewController(
-			filterViewControllers: filterViewControllers
+			filterViewControllers: filterViewControllers,
+			interactor: interactor,
+			delegate: delegate
 		)
-		sut.interactor = interactor
-		sut.delegate = delegate
 		return (sut, interactor, delegate)
 	}
 }

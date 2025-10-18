@@ -62,9 +62,9 @@ final class PriceRangeInteractorTests: XCTestCase {
 		let presenter = PriceRangePresentationLogicSpy()
 		let sut = PriceRangeInteractor(
 			selectedPriceRange: selectedPriceRange,
-			currencyCode: currencyCode
+			currencyCode: currencyCode,
+			presenter: presenter
 		)
-		sut.presenter = presenter
 		return (sut, presenter)
 	}
 }
