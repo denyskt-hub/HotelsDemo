@@ -38,6 +38,56 @@ extension WeakRefVirtualProxy: HotelsSearchCriteriaDelegate where T: HotelsSearc
 	}
 }
 
+extension WeakRefVirtualProxy: HotelsSearchCriteriaDisplayLogic where T: HotelsSearchCriteriaDisplayLogic {
+	public func displayCriteria(viewModel: HotelsSearchCriteriaModels.FetchCriteria.ViewModel) {
+		object?.displayCriteria(viewModel: viewModel)
+	}
+	
+	public func displayLoadError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel) {
+		object?.displayLoadError(viewModel: viewModel)
+	}
+	
+	public func displayUpdateError(viewModel: HotelsSearchCriteriaModels.ErrorViewModel) {
+		object?.displayUpdateError(viewModel: viewModel)
+	}
+	
+	public func displayDates(viewModel: DateRangePickerModels.ViewModel) {
+		object?.displayDates(viewModel: viewModel)
+	}
+	
+	public func displayRoomGuests(viewModel: RoomGuestsPickerModels.ViewModel) {
+		object?.displayRoomGuests(viewModel: viewModel)
+	}
+	
+	public func displaySearch(viewModel: HotelsSearchCriteriaModels.Search.ViewModel) {
+		object?.displaySearch(viewModel: viewModel)
+	}
+}
+
+// MARK: - HotelsSearchCriteriaScene
+
+extension WeakRefVirtualProxy: HotelsSearchCriteriaScene where T: HotelsSearchCriteriaScene {}
+
+extension WeakRefVirtualProxy: DestinationPickerDelegate where T: DestinationPickerDelegate {
+	public func didSelectDestination(_ destination: Destination) {
+		object?.didSelectDestination(destination)
+	}
+}
+
+extension WeakRefVirtualProxy: DateRangePickerDelegate where T: DateRangePickerDelegate {
+	public func didSelectDateRange(startDate: Date, endDate: Date) {
+		object?.didSelectDateRange(startDate: startDate, endDate: endDate)
+	}
+}
+
+extension WeakRefVirtualProxy: RoomGuestsPickerDelegate where T: RoomGuestsPickerDelegate {
+	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
+		object?.didSelectRoomGuests(rooms: rooms, adults: adults, childrenAges: childrenAges)
+	}
+}
+
+// MARK: - HotelFiltersScene
+
 extension WeakRefVirtualProxy: HotelFiltersScene where T: HotelFiltersScene {}
 
 extension WeakRefVirtualProxy: PriceRangeDelegate where T: PriceRangeDelegate {

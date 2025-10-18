@@ -12,35 +12,36 @@ public final class HotelsSearchCriteriaRouter: HotelsSearchCriteriaRoutingLogic 
 	private let destinationPickerFactory: DestinationPickerFactory
 	private let dateRangePickerFactory: DateRangePickerFactory
 	private let roomGuestsPickerFactory: RoomGuestsPickerFactory
-
-	public weak var viewController: HotelsSearchCriteriaScene?
+	private let scene: HotelsSearchCriteriaScene
 
 	public init(
 		calendar: Calendar,
 		destinationPickerFactory: DestinationPickerFactory,
 		dateRangePickerFactory: DateRangePickerFactory,
-		roomGuestsPickerFactory: RoomGuestsPickerFactory
+		roomGuestsPickerFactory: RoomGuestsPickerFactory,
+		scene: HotelsSearchCriteriaScene
 	) {
 		self.calendar = calendar
 		self.destinationPickerFactory = destinationPickerFactory
 		self.dateRangePickerFactory = dateRangePickerFactory
 		self.roomGuestsPickerFactory = roomGuestsPickerFactory
+		self.scene = scene
 	}
 
 	public func routeToDestinationPicker() {
-		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: viewController)
+		let destinationVC = destinationPickerFactory.makeDestinationPicker(delegate: scene)
 
 		if let sheet = destinationVC.sheetPresentationController {
 			sheet.detents = [.large()]
 			sheet.prefersGrabberVisible = true
 		}
 
-		viewController?.present(destinationVC, animated: true)
+		scene.present(destinationVC)
 	}
 
 	public func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel) {
 		let dateRangeVC = dateRangePickerFactory.makeDateRangePicker(
-			delegate: viewController,
+			delegate: scene,
 			selectedStartDate: viewModel.startDate,
 			selectedEndDate: viewModel.endDate,
 			calendar: calendar
@@ -51,12 +52,12 @@ public final class HotelsSearchCriteriaRouter: HotelsSearchCriteriaRoutingLogic 
 			sheet.prefersGrabberVisible = true
 		}
 
-		viewController?.present(dateRangeVC, animated: true)
+		scene.present(dateRangeVC)
 	}
 
 	public func routeToRoomGuestsPicker(viewModel: RoomGuestsPickerModels.ViewModel) {
 		let roomGuestsVC = roomGuestsPickerFactory.makeRoomGuestsPicker(
-			delegate: viewController,
+			delegate: scene,
 			rooms: viewModel.rooms,
 			adults: viewModel.adults,
 			childrenAge: viewModel.childrenAge
@@ -67,6 +68,6 @@ public final class HotelsSearchCriteriaRouter: HotelsSearchCriteriaRoutingLogic 
 			sheet.prefersGrabberVisible = true
 		}
 
-		viewController?.present(roomGuestsVC, animated: true)
+		scene.present(roomGuestsVC)
 	}
 }

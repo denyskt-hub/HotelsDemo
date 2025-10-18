@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HotelsSearchCriteriaScene: UIViewController,
+public protocol HotelsSearchCriteriaScene: Routable,
 	DestinationPickerDelegate,
 	DateRangePickerDelegate,
 	RoomGuestsPickerDelegate {}

@@ -29,27 +29,34 @@ public final class HotelsSearchCriteriaComposer: HotelsSearchCriteriaFactory {
 		cache: HotelsSearchCriteriaCache,
 		calendar: Calendar
 	) -> UIViewController {
-		let presenter = HotelsSearchCriteriaPresenter(calendar: calendar)
+		let viewControllerProxy = WeakRefVirtualProxy<HotelsSearchCriteriaViewController>()
+
+		let presenter = HotelsSearchCriteriaPresenter(
+			calendar: calendar,
+			viewController: viewControllerProxy
+		)
+
 		let interactor = HotelsSearchCriteriaInteractor(
 			cache: cache,
 			provider: provider,
 			presenter: presenter
 		)
+
 		let router = HotelsSearchCriteriaRouter(
 			calendar: calendar,
 			destinationPickerFactory: DestinationPickerComposer(client: client),
 			dateRangePickerFactory: DateRangePickerComposer(),
-			roomGuestsPickerFactory: RoomGuestsPickerComposer()
+			roomGuestsPickerFactory: RoomGuestsPickerComposer(),
+			scene: viewControllerProxy
 		)
+
 		let viewController = HotelsSearchCriteriaViewController(
 			interactor: interactor,
 			router: router,
 			delegate: delegate
 		)
 
-		presenter.viewController = viewController
-		router.viewController = viewController
-
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 }

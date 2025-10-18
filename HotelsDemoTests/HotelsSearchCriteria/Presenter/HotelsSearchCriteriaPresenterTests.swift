@@ -162,8 +162,10 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 		viewController: HotelsSearchCriteriaDisplayLogicSpy
 	) {
 		let viewController = HotelsSearchCriteriaDisplayLogicSpy()
-		let sut = HotelsSearchCriteriaPresenter(calendar: .gregorian())
-		sut.viewController = viewController
+		let sut = HotelsSearchCriteriaPresenter(
+			calendar: .gregorian(),
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }

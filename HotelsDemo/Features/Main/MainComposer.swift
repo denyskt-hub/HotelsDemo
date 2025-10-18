@@ -32,10 +32,12 @@ public final class MainComposer: MainFactory {
 		)
 
 		let interactor = MainInteractor(presenter: presenter)
+
 		let router = MainRouter(
 			searchFactory: HotelsSearchComposer(client: client),
 			routable: viewControllerProxy
 		)
+
 		let viewController = MainViewController(
 			searchCriteriaViewController: searchCriteriaViewController,
 			interactor: interactor,

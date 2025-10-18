@@ -9,14 +9,17 @@ import Foundation
 
 public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentationLogic {
 	private let dateFormatter: DateFormatter
+	private let viewController: HotelsSearchCriteriaDisplayLogic
 
-	public weak var viewController: HotelsSearchCriteriaDisplayLogic?
-
-	public init(calendar: Calendar) {
-		self.dateFormatter = DateFormatter()
+	public init(
+		calendar: Calendar,
+		viewController: HotelsSearchCriteriaDisplayLogic
+	) {
+		dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "d MMM"
 		dateFormatter.calendar = calendar
 		dateFormatter.timeZone = calendar.timeZone
+		self.viewController = viewController
 	}
 
 	public func presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response) {
@@ -25,7 +28,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 
 	public func presentLoadError(_ error: Error) {
 		let viewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: error.localizedDescription)
-		viewController?.displayLoadError(viewModel: viewModel)
+		viewController.displayLoadError(viewModel: viewModel)
 	}
 
 	public func presentRoomGuests(response: HotelsSearchCriteriaModels.FetchRoomGuests.Response) {
@@ -50,12 +53,12 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 
 	public func presentUpdateError(_ error: Error) {
 		let viewModel = HotelsSearchCriteriaModels.ErrorViewModel(message: error.localizedDescription)
-		viewController?.displayUpdateError(viewModel: viewModel)
+		viewController.displayUpdateError(viewModel: viewModel)
 	}
 
 	public func presentSearch(response: HotelsSearchCriteriaModels.Search.Response) {
 		let viewModel = HotelsSearchCriteriaModels.Search.ViewModel(criteria: response.criteria)
-		viewController?.displaySearch(viewModel: viewModel)
+		viewController.displaySearch(viewModel: viewModel)
 	}
 
 	private func presentCriteria(_ criteria: HotelsSearchCriteria) {
@@ -75,7 +78,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 			roomGuests: roomGuests
 		)
 
-		viewController?.displayCriteria(viewModel: viewModel)
+		viewController.displayCriteria(viewModel: viewModel)
 	}
 
 	private func formatRoomGuests(rooms: Int, adults: Int, children: Int) -> String {
@@ -91,7 +94,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 			adults: roomGuests.adults,
 			childrenAge: roomGuests.childrenAge
 		)
-		viewController?.displayRoomGuests(viewModel: viewModel)
+		viewController.displayRoomGuests(viewModel: viewModel)
 	}
 
 	private func presentDates(_ checkInDate: Date, _ checkOutDate: Date) {
@@ -99,6 +102,6 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 			startDate: checkInDate,
 			endDate: checkOutDate
 		)
-		viewController?.displayDates(viewModel: viewModel)
+		viewController.displayDates(viewModel: viewModel)
 	}
 }

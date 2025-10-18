@@ -99,9 +99,9 @@ final class HotelsSearchCriteriaRouterTests: XCTestCase {
 			calendar: calendar,
 			destinationPickerFactory: destinationPickerFactory,
 			dateRangePickerFactory: dateRangePickerFactory,
-			roomGuestsPickerFactory: roomGuestsPickerFactory
+			roomGuestsPickerFactory: roomGuestsPickerFactory,
+			scene: viewController
 		)
-		sut.viewController = viewController
 
 		return SUTContainer(
 			sut: sut,
