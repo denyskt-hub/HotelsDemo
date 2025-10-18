@@ -8,9 +8,13 @@
 import Foundation
 
 public final class MainPresenter: MainPresentationLogic {
-	public weak var viewController: MainDisplayLogic?
+	private let viewController: MainDisplayLogic
+
+	public init(viewController: MainDisplayLogic) {
+		self.viewController = viewController
+	}
 
 	public func presentSearch(response: MainModels.Search.Response) {
-		viewController?.displaySearch(viewModel: .init(criteria: response.criteria))
+		viewController.displaySearch(viewModel: .init(criteria: response.criteria))
 	}
 }

@@ -24,12 +24,17 @@ public final class MainComposer: MainFactory {
 	}
 
 	public func makeMain() -> UIViewController {
-		let delegateProxy = WeakRefVirtualProxy<MainViewController>()
-		let searchCriteriaViewController = makeSearchCriteria(delegateProxy)
-		let presenter = MainPresenter()
+		let viewControllerProxy = WeakRefVirtualProxy<MainViewController>()
+		let searchCriteriaViewController = makeSearchCriteria(viewControllerProxy)
+
+		let presenter = MainPresenter(
+			viewController: viewControllerProxy
+		)
+
 		let interactor = MainInteractor(presenter: presenter)
 		let router = MainRouter(
-			searchFactory: HotelsSearchComposer(client: client)
+			searchFactory: HotelsSearchComposer(client: client),
+			routable: viewControllerProxy
 		)
 		let viewController = MainViewController(
 			searchCriteriaViewController: searchCriteriaViewController,
@@ -37,10 +42,7 @@ public final class MainComposer: MainFactory {
 			router: router
 		)
 
-		presenter.viewController = viewController
-		router.viewController = viewController
-
-		delegateProxy.object = viewController
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 }
