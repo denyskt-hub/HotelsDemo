@@ -23,10 +23,10 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 		let context = makeHotelsSearchContext(with: criteria)
 
 		let presenter = HotelsSearchPresenter(
-			priceFormatter: PriceFormatter(),
 			viewController: HotelsSearchDisplayLogicAdapter(
 				viewController: viewControllerProxy
-			)
+			),
+			priceFormatter: PriceFormatter()
 		)
 
 		let interactor = HotelsSearchInteractor(

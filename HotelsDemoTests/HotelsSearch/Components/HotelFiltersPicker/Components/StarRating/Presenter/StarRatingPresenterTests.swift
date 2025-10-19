@@ -46,8 +46,9 @@ final class StarRatingPresenterTests: XCTestCase {
 		viewController: StarRatingDisplayLogicSpy
 	) {
 		let viewController = StarRatingDisplayLogicSpy()
-		let sut = StarRatingPresenter()
-		sut.viewController = viewController
+		let sut = StarRatingPresenter(
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }

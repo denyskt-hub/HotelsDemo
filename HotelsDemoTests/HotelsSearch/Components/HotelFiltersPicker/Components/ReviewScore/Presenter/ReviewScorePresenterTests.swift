@@ -46,8 +46,9 @@ final class ReviewScorePresenterTests: XCTestCase {
 		viewController: ReviewScoreDisplayLogicSpy
 	) {
 		let viewController = ReviewScoreDisplayLogicSpy()
-		let sut = ReviewScorePresenter()
-		sut.viewController = viewController
+		let sut = ReviewScorePresenter(
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }

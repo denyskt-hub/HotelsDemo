@@ -8,11 +8,14 @@
 import Foundation
 
 public final class PriceRangePresenter: PriceRangePresentationLogic {
+	private let viewController: PriceRangeDisplayLogic
 	private let locale: Locale
 
-	public weak var viewController: PriceRangeDisplayLogic?
-
-	public init(locale: Locale = .current) {
+	public init(
+		viewController: PriceRangeDisplayLogic,
+		locale: Locale = .current
+	) {
+		self.viewController = viewController
 		self.locale = locale
 	}
 
@@ -26,7 +29,7 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 				upperValue: priceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 			)
 		)
-		viewController?.display(viewModel: viewModel)
+		viewController.display(viewModel: viewModel)
 	}
 
 	public func presentReset(response: PriceRangeModels.PriceRangeReset.Response) {
@@ -38,14 +41,14 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 				upperValue: response.availablePriceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 			)
 		)
-		viewController?.displayReset(viewModel: viewModel)
+		viewController.displayReset(viewModel: viewModel)
 	}
 
 	public func presentSelect(response: PriceRangeModels.PriceRangeSelection.Response) {
 		let viewModel = PriceRangeModels.PriceRangeSelection.ViewModel(
 			priceRange: response.priceRange
 		)
-		viewController?.displaySelect(viewModel: viewModel)
+		viewController.displaySelect(viewModel: viewModel)
 	}
 
 	public func presentSelecting(response: PriceRangeModels.SelectingPriceRange.Response) {
@@ -53,7 +56,7 @@ public final class PriceRangePresenter: PriceRangePresentationLogic {
 			lowerValue: response.priceRange.lowerBound.formattedCurrency(code: response.currencyCode, locale: locale),
 			upperValue: response.priceRange.upperBound.formattedCurrency(code: response.currencyCode, locale: locale)
 		)
-		viewController?.displaySelecting(viewModel: viewModel)
+		viewController.displaySelecting(viewModel: viewModel)
 	}
 }
 

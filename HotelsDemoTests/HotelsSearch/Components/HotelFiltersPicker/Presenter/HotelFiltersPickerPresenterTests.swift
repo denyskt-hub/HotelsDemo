@@ -47,8 +47,9 @@ final class HotelFiltersPickerPresenterTests: XCTestCase {
 		viewController: HotelFiltersPickerDisplayLogicSpy
 	) {
 		let viewController = HotelFiltersPickerDisplayLogicSpy()
-		let sut = HotelFiltersPickerPresenter()
-		sut.viewController = viewController
+		let sut = HotelFiltersPickerPresenter(
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }

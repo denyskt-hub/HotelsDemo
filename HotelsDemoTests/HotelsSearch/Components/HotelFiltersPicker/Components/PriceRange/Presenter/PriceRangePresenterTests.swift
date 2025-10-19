@@ -68,8 +68,10 @@ final class PriceRangePresenterTests: XCTestCase {
 		viewController: PriceRangeDisplayLogicSpy
 	) {
 		let viewController = PriceRangeDisplayLogicSpy()
-		let sut = PriceRangePresenter(locale: locale)
-		sut.viewController = viewController
+		let sut = PriceRangePresenter(
+			viewController: viewController,
+			locale: locale
+		)
 		return (sut, viewController)
 	}
 }

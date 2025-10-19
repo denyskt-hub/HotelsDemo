@@ -8,24 +8,24 @@
 import Foundation
 
 public final class ReviewScorePresenter: ReviewScorePresentationLogic {
-	public weak var viewController: ReviewScoreDisplayLogic?
+	private let viewController: ReviewScoreDisplayLogic
 
-	public init() {
-		// Required for initialization in tests
+	public init(viewController: ReviewScoreDisplayLogic) {
+		self.viewController = viewController
 	}
 
 	public func present(response: ReviewScoreModels.FetchReviewScore.Response) {
 		let viewModel = ReviewScoreModels.FetchReviewScore.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.display(viewModel: viewModel)
+		viewController.display(viewModel: viewModel)
 	}
 
 	public func presentReset(response: ReviewScoreModels.ReviewScoreReset.Response) {
 		let viewModel = ReviewScoreModels.ReviewScoreReset.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.displayReset(viewModel: viewModel)
+		viewController.displayReset(viewModel: viewModel)
 	}
 
 	public func presentSelect(response: ReviewScoreModels.ReviewScoreSelection.Response) {
@@ -33,7 +33,7 @@ public final class ReviewScorePresenter: ReviewScorePresentationLogic {
 			reviewScore: response.reviewScore,
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.displaySelect(viewModel: viewModel)
+		viewController.displaySelect(viewModel: viewModel)
 	}
 
 	private func makeOptionViewModels(_ options: [ReviewScoreModels.Option]) -> [ReviewScoreModels.OptionViewModel] {

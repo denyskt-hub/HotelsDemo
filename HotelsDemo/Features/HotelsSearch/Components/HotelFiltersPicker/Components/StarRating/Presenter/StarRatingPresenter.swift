@@ -8,24 +8,24 @@
 import Foundation
 
 public final class StarRatingPresenter: StarRatingPresentationLogic {
-	public weak var viewController: StarRatingDisplayLogic?
+	private let viewController: StarRatingDisplayLogic
 
-	public init() {
-		// Required for initialization in tests
+	public init(viewController: StarRatingDisplayLogic) {
+		self.viewController = viewController
 	}
 
 	public func present(response: StarRatingModels.FetchStarRating.Response) {
 		let viewModel = StarRatingModels.FetchStarRating.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.display(viewModel: viewModel)
+		viewController.display(viewModel: viewModel)
 	}
 
 	public func presentReset(response: StarRatingModels.StarRatingReset.Response) {
 		let viewModel = StarRatingModels.StarRatingReset.ViewModel(
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.displayReset(viewModel: viewModel)
+		viewController.displayReset(viewModel: viewModel)
 	}
 
 	public func presentSelect(response: StarRatingModels.StarRatingSelection.Response) {
@@ -33,7 +33,7 @@ public final class StarRatingPresenter: StarRatingPresentationLogic {
 			starRatings: response.starRatings,
 			options: makeOptionViewModels(response.options)
 		)
-		viewController?.displaySelect(viewModel: viewModel)
+		viewController.displaySelect(viewModel: viewModel)
 	}
 
 	private func makeOptionViewModels(_ options: [StarRatingModels.Option]) -> [StarRatingModels.OptionViewModel] {

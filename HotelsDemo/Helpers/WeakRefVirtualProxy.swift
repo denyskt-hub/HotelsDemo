@@ -178,6 +178,68 @@ extension WeakRefVirtualProxy: HotelsDisplayLogic where T: HotelsDisplayLogic {
 	}
 }
 
+// MARK: - HotelFiltersPickerDisplayLogic
+
+extension WeakRefVirtualProxy: HotelFiltersPickerDisplayLogic where T: HotelFiltersPickerDisplayLogic {
+	public func display(viewModel: HotelFiltersPickerModels.FetchFilters.ViewModel) {
+		object?.display(viewModel: viewModel)
+	}
+
+	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.FilterSelection.ViewModel) {
+		object?.displaySelectedFilters(viewModel: viewModel)
+	}
+
+	public func displayResetFilters(viewModel: HotelFiltersPickerModels.FilterReset.ViewModel) {
+		object?.displayResetFilters(viewModel: viewModel)
+	}
+}
+
+extension WeakRefVirtualProxy: PriceRangeDisplayLogic where T: PriceRangeDisplayLogic {
+	public func display(viewModel: PriceRangeModels.FetchPriceRange.ViewModel) {
+		object?.display(viewModel: viewModel)
+	}
+
+	public func displayReset(viewModel: PriceRangeModels.PriceRangeReset.ViewModel) {
+		object?.displayReset(viewModel: viewModel)
+	}
+
+	public func displaySelect(viewModel: PriceRangeModels.PriceRangeSelection.ViewModel) {
+		object?.displaySelect(viewModel: viewModel)
+	}
+
+	public func displaySelecting(viewModel: PriceRangeModels.SelectingPriceRange.ViewModel) {
+		object?.displaySelecting(viewModel: viewModel)
+	}
+}
+
+extension WeakRefVirtualProxy: StarRatingDisplayLogic where T: StarRatingDisplayLogic {
+	public func display(viewModel: StarRatingModels.FetchStarRating.ViewModel) {
+		object?.display(viewModel: viewModel)
+	}
+
+	public func displayReset(viewModel: StarRatingModels.StarRatingReset.ViewModel) {
+		object?.displayReset(viewModel: viewModel)
+	}
+
+	public func displaySelect(viewModel: StarRatingModels.StarRatingSelection.ViewModel) {
+		object?.displaySelect(viewModel: viewModel)
+	}
+}
+
+extension WeakRefVirtualProxy: ReviewScoreDisplayLogic where T: ReviewScoreDisplayLogic {
+	public func display(viewModel: ReviewScoreModels.FetchReviewScore.ViewModel) {
+		object?.display(viewModel: viewModel)
+	}
+
+	public func displayReset(viewModel: ReviewScoreModels.ReviewScoreReset.ViewModel) {
+		object?.displayReset(viewModel: viewModel)
+	}
+
+	public func displaySelect(viewModel: ReviewScoreModels.ReviewScoreSelection.ViewModel) {
+		object?.displaySelect(viewModel: viewModel)
+	}
+}
+
 // MARK: - HotelsSearchCriteriaScene
 
 extension WeakRefVirtualProxy: HotelsSearchCriteriaScene where T: HotelsSearchCriteriaScene {}

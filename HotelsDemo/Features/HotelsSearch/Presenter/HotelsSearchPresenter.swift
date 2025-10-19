@@ -8,15 +8,15 @@
 import Foundation
 
 public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
-	private let priceFormatter: PriceFormatter
 	private let viewController: HotelsSearchDisplayLogic
+	private let priceFormatter: PriceFormatter
 
 	public init(
-		priceFormatter: PriceFormatter,
-		viewController: HotelsSearchDisplayLogic
+		viewController: HotelsSearchDisplayLogic,
+		priceFormatter: PriceFormatter
 	) {
-		self.priceFormatter = priceFormatter
 		self.viewController = viewController
+		self.priceFormatter = priceFormatter
 	}
 
 	public func presentSearch(response: HotelsSearchModels.Search.Response) {
