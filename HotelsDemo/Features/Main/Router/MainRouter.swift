@@ -9,19 +9,19 @@ import UIKit
 
 public final class MainRouter: MainRoutingLogic {
 	private let searchFactory: HotelsSearchFactory
-	private let routable: Routable
+	private let scene: MainScene
 
 	public init(
 		searchFactory: HotelsSearchFactory,
-		routable: Routable
+		scene: MainScene
 	) {
 		self.searchFactory = searchFactory
-		self.routable = routable
+		self.scene = scene
 	}
 
 	public func routeToSearch(viewModel: MainModels.Search.ViewModel) {
 		let searchVC = searchFactory.makeSearch(with: viewModel.criteria)
 
-		routable.show(searchVC)
+		scene.show(searchVC)
 	}
 }

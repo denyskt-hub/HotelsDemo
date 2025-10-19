@@ -35,7 +35,7 @@ public final class MainComposer: MainFactory {
 
 		let router = MainRouter(
 			searchFactory: HotelsSearchComposer(client: client),
-			routable: viewControllerProxy
+			scene: viewControllerProxy
 		)
 
 		let viewController = MainViewController(

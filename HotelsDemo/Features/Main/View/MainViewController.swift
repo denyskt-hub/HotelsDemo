@@ -48,3 +48,7 @@ extension MainViewController: HotelsSearchCriteriaDelegate {
 		interactor.handleSearch(request: MainModels.Search.Request(criteria: searchCriteria))
 	}
 }
+
+// MARK: - MainScene
+
+extension MainViewController: MainScene {}
