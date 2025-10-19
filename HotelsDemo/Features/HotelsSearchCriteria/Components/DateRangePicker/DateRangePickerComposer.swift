@@ -23,9 +23,13 @@ public final class DateRangePickerComposer: DateRangePickerFactory {
 		selectedEndDate: Date,
 		calendar: Calendar
 	) -> UIViewController {
+		let viewControllerProxy = WeakRefVirtualProxy<DateRangePickerViewController>()
+
 		let presenter = DataRangePickerPresenter(
-			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar)
+			dateFormatter: DefaultCalendarDateFormatter(calendar: calendar),
+			viewController: viewControllerProxy
 		)
+
 		let interactor = DateRangePickerInteractor(
 			selectedStartDate: selectedStartDate,
 			selectedEndDate: selectedEndDate,
@@ -35,13 +39,13 @@ public final class DateRangePickerComposer: DateRangePickerFactory {
 			),
 			presenter: presenter
 		)
+
 		let viewController = DateRangePickerViewController(
 			interactor: interactor,
 			delegate: delegate
 		)
 
-		presenter.viewController = viewController
-
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 }

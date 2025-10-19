@@ -8,14 +8,14 @@
 import Foundation
 
 public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic {
-	public weak var viewController: RoomGuestsPickerDisplayLogic?
+	private let viewController: RoomGuestsPickerDisplayLogic
 
-	public init() {
-		// Required for initialization in tests
+	public init(viewController: RoomGuestsPickerDisplayLogic) {
+		self.viewController = viewController
 	}
 
 	public func presentLimits(response: RoomGuestsPickerModels.FetchLimits.Response) {
-		viewController?.applyLimits(response.limits)
+		viewController.applyLimits(response.limits)
 	}
 
 	public func presentRoomGuests(response: RoomGuestsPickerModels.FetchRoomGuests.Response) {
@@ -24,24 +24,24 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 			adults: response.adults,
 			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
-		viewController?.displayRoomGuests(viewModel: viewModel)
+		viewController.displayRoomGuests(viewModel: viewModel)
 	}
 
 	public func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response) {
 		let viewModel = RoomGuestsPickerModels.UpdateRooms.ViewModel(rooms: response.rooms)
-		viewController?.displayRooms(viewModel: viewModel)
+		viewController.displayRooms(viewModel: viewModel)
 	}
 
 	public func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response) {
 		let viewModel = RoomGuestsPickerModels.UpdateAdults.ViewModel(adults: response.adults)
-		viewController?.displayAdults(viewModel: viewModel)
+		viewController.displayAdults(viewModel: viewModel)
 	}
 
 	public func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response) {
 		let viewModel = RoomGuestsPickerModels.UpdateChildrenAge.ViewModel(
 			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
-		viewController?.displayUpdateChildrenAge(viewModel: viewModel)
+		viewController.displayUpdateChildrenAge(viewModel: viewModel)
 	}
 
 	public func presentAgePicker(response: RoomGuestsPickerModels.AgeSelection.Response) {
@@ -55,14 +55,14 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 				.init(value: $0, title: AgeFormatter.string(for: $0))
 			})
 		)
-		viewController?.displayAgePicker(viewModel: viewModel)
+		viewController.displayAgePicker(viewModel: viewModel)
 	}
 
 	public func presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response) {
 		let viewModel = RoomGuestsPickerModels.AgeSelected.ViewModel(
 			childrenAge: makeAgeInputViewModels(response.childrenAge)
 		)
-		viewController?.displayChildrenAge(viewModel: viewModel)
+		viewController.displayChildrenAge(viewModel: viewModel)
 	}
 
 	public func presentSelectedRoomGuests(response: RoomGuestsPickerModels.Select.Response) {
@@ -71,7 +71,7 @@ public final class RoomGuestsPickerPresenter: RoomGuestsPickerPresentationLogic 
 			adults: response.adults,
 			childrenAge: response.childrenAge
 		)
-		viewController?.displaySelectedRoomGuests(viewModel: viewModel)
+		viewController.displaySelectedRoomGuests(viewModel: viewModel)
 	}
 
 	private func makeAgeInputViewModels(_ childrenAge: [Int?]) -> [RoomGuestsPickerModels.AgeInputViewModel] {

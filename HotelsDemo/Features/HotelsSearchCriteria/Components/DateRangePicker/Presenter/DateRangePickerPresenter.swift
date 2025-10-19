@@ -9,11 +9,14 @@ import Foundation
 
 public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 	private let dateFormatter: CalendarDateFormatter
+	private let viewController: DateRangePickerDisplayLogic
 
-	public weak var viewController: DateRangePickerDisplayLogic?
-
-	public init(dateFormatter: CalendarDateFormatter) {
+	public init(
+		dateFormatter: CalendarDateFormatter,
+		viewController: DateRangePickerDisplayLogic
+	) {
 		self.dateFormatter = dateFormatter
+		self.viewController = viewController
 	}
 
 	public func present(response: DateRangePickerModels.FetchCalendar.Response) {
@@ -21,7 +24,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 			calendar: makeCalendarViewModel(response.calendar),
 			isApplyEnabled: response.canApply
 		)
-		viewController?.display(viewModel: viewModel)
+		viewController.display(viewModel: viewModel)
 	}
 
 	public func presentSelectDate(response: DateRangePickerModels.DateSelection.Response) {
@@ -29,7 +32,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 			calendar: makeCalendarViewModel(response.calendar),
 			isApplyEnabled: response.canApply
 		)
-		viewController?.displaySelectDate(viewModel: viewModel)
+		viewController.displaySelectDate(viewModel: viewModel)
 	}
 
 	public func presentSelectedDateRange(response: DateRangePickerModels.DateRangeSelection.Response) {
@@ -37,7 +40,7 @@ public final class DataRangePickerPresenter: DateRangePickerPresentationLogic {
 			startDate: response.startDate,
 			endDate: response.endDate
 		)
-		viewController?.displaySelectedDateRange(viewModel: viewModel)
+		viewController.displaySelectedDateRange(viewModel: viewModel)
 	}
 
 	private func makeCalendarViewModel(

@@ -57,8 +57,9 @@ final class DestinationPickerPresenterTests: XCTestCase {
 		viewController: DestinationPickerDisplayLogicSpy
 	) {
 		let viewController = DestinationPickerDisplayLogicSpy()
-		let sut = DestinationPickerPresenter()
-		sut.viewController = viewController
+		let sut = DestinationPickerPresenter(
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }

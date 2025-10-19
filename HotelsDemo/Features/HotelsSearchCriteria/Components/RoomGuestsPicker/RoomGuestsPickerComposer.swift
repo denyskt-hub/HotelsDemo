@@ -23,20 +23,25 @@ public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
 		adults: Int,
 		childrenAge: [Int]
 	) -> UIViewController {
-		let presenter = RoomGuestsPickerPresenter()
+		let viewControllerProxy = WeakRefVirtualProxy<RoomGuestsPickerViewController>()
+
+		let presenter = RoomGuestsPickerPresenter(
+			viewController: viewControllerProxy
+		)
+
 		let interactor = RoomGuestsPickerInteractor(
 			rooms: rooms,
 			adults: adults,
 			childrenAge: childrenAge,
 			presenter: presenter
 		)
+
 		let viewController = RoomGuestsPickerViewController(
 			interactor: interactor,
 			delegate: delegate
 		)
 
-		presenter.viewController = viewController
-
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 }

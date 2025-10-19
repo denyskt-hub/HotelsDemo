@@ -131,8 +131,9 @@ final class RoomGuestsPickerPresenterTests: XCTestCase {
 		viewController: RoomGuestsPickerDisplayLogicSpy
 	) {
 		let viewController = RoomGuestsPickerDisplayLogicSpy()
-		let sut = RoomGuestsPickerPresenter()
-		sut.viewController = viewController
+		let sut = RoomGuestsPickerPresenter(
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 

@@ -70,9 +70,9 @@ final class DataRangePickerPresenterTests: XCTestCase {
 	) {
 		let viewController = DateRangePickerDisplayLogicSpy()
 		let sut = DataRangePickerPresenter(
-			dateFormatter: DefaultCalendarDateFormatter()
+			dateFormatter: DefaultCalendarDateFormatter(),
+			viewController: viewController
 		)
-		sut.viewController = viewController
 		return (sut, viewController)
 	}
 

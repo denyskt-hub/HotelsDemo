@@ -8,10 +8,10 @@
 import Foundation
 
 public final class DestinationPickerPresenter: DestinationPickerPresentationLogic {
-	public weak var viewController: DestinationPickerDisplayLogic?
+	private let viewController: DestinationPickerDisplayLogic
 
-	public init() {
-		// Required for initialization in tests
+	public init(viewController: DestinationPickerDisplayLogic) {
+		self.viewController = viewController
 	}
 
 	public func presentDestinations(response: DestinationPickerModels.Search.Response) {
@@ -25,17 +25,17 @@ public final class DestinationPickerPresenter: DestinationPickerPresentationLogi
 				)
 			}
 		)
-		viewController?.displayDestinations(viewModel: viewModel)
-		viewController?.hideSearchError()
+		viewController.displayDestinations(viewModel: viewModel)
+		viewController.hideSearchError()
 	}
 
 	public func presentSelectedDestination(response: DestinationPickerModels.DestinationSelection.Response) {
 		let viewModel = DestinationPickerModels.DestinationSelection.ViewModel(selected: response.selected)
-		viewController?.displaySelectedDestination(viewModel: viewModel)
+		viewController.displaySelectedDestination(viewModel: viewModel)
 	}
 
 	public func presentSearchError(_ error: Error) {
 		let viewModel = DestinationPickerModels.Search.ErrorViewModel(message: error.localizedDescription)
-		viewController?.displaySearchError(viewModel: viewModel)
+		viewController.displaySearchError(viewModel: viewModel)
 	}
 }

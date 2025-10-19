@@ -19,20 +19,25 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 	}
 
 	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
+		let viewControllerProxy = WeakRefVirtualProxy<DestinationPickerViewController>()
 		let worker = makeDestinationSearchService()
-		let presenter = DestinationPickerPresenter()
+
+		let presenter = DestinationPickerPresenter(
+			viewController: viewControllerProxy
+		)
+
 		let interactor = DestinationPickerInteractor(
 			worker: worker,
 			debouncer: DefaultDebouncer(delay: 0.5),
 			presenter: presenter
 		)
+
 		let viewController = DestinationPickerViewController(
 			interactor: interactor,
 			delegate: delegate
 		)
 
-		presenter.viewController = viewController
-
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 
