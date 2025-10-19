@@ -19,30 +19,34 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 	}
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
+		let viewControllerProxy = WeakRefVirtualProxy<HotelsSearchViewController>()
 		let context = makeHotelsSearchContext(with: criteria)
+
 		let presenter = HotelsSearchPresenter(
-			priceFormatter: PriceFormatter()
+			priceFormatter: PriceFormatter(),
+			viewController: HotelsSearchDisplayLogicAdapter(
+				viewController: viewControllerProxy
+			)
 		)
+
 		let interactor = HotelsSearchInteractor(
 			context: context,
 			filters: HotelFilters(),
 			repository: DefaultHotelsRepository(),
 			presenter: presenter
 		)
+
 		let router = HotelsSearchRouter(
-			hotelFiltersPickerFactory: HotelFiltersPickerComposer()
+			hotelFiltersPickerFactory: HotelFiltersPickerComposer(),
+			scene: viewControllerProxy
 		)
+
 		let viewController = HotelsSearchViewController(
 			interactor: interactor,
 			router: router
 		)
-		let viewControllerAdapter = HotelsSearchDisplayLogicAdapter(
-			viewController: viewController
-		)
 
-		presenter.viewController = viewControllerAdapter
-		router.viewController = viewController
-
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 

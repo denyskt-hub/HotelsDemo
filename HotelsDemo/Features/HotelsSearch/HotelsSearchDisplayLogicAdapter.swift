@@ -8,9 +8,9 @@
 import UIKit
 
 public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
-	private weak var viewController: HotelsSearchViewController?
+	private let viewController: HotelsDisplayLogic
 
-	public init(viewController: HotelsSearchViewController) {
+	public init(viewController: HotelsDisplayLogic) {
 		self.viewController = viewController
 	}
 
@@ -19,27 +19,25 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	}
 
 	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
-		viewController?.displayLoading(viewModel: viewModel)
+		viewController.displayLoading(viewModel.isLoading)
 	}
 
 	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
-		viewController?.displaySearchError(viewModel: viewModel)
+		viewController.displayErrorMessage(viewModel.message)
 	}
 
 	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
-		viewController?.displayFilters(viewModel: viewModel)
+		viewController.displayFilters(viewModel.filters)
 	}
 
 	public func displayUpdateFilters(viewModel: HotelsSearchModels.FilterSelection.ViewModel) {
 		display(viewModel.hotels)
-		viewController?.display(viewModel.hasSelectedFilters)
+		viewController.displayFiltersBadge(viewModel.hasSelectedFilters)
 	}
 
 	private func display(_ hotels: [HotelsSearchModels.HotelViewModel]) {
-		guard let viewController = viewController else { return }
-
 		let hotels = hotels.map { HotelCellController(viewModel: $0) }
 
-		viewController.display(hotels)
+		viewController.displayCellControllers(hotels)
 	}
 }

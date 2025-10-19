@@ -78,31 +78,6 @@ public final class HotelsSearchViewController: NiblessViewController {
 		filterButton.addTarget(self, action: #selector(filterTapHandler), for: .touchUpInside)
 	}
 
-	public func display(_ cellControllers: [HotelCellController]) {
-		self.cellControllers = cellControllers
-		tableView.reloadData()
-	}
-
-	public func display(_ hasSelectedFilters: Bool) {
-		filterButton.setBadgeVisible(hasSelectedFilters)
-	}
-
-	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
-		guard viewModel.isLoading else {
-			return loadingView.hide()
-		}
-
-		loadingView.show(in: view)
-	}
-
-	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
-		displayErrorMessage(viewModel.message)
-	}
-
-	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
-		router.routeToHotelFiltersPicker(viewModel: viewModel)
-	}
-
 	private func cellController(at indexPath: IndexPath) -> HotelCellController? {
 		guard cellControllers.indices.contains(indexPath.row) else {
 			return nil
@@ -112,6 +87,41 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 	@objc private func filterTapHandler() {
 		interactor.doFetchFilters(request: .init())
+	}
+}
+
+// MARK: - HotelsDisplayLogic
+
+extension HotelsSearchViewController: HotelsDisplayLogic {
+	public func displayCellControllers(_ cellControllers: [HotelCellController]) {
+		self.cellControllers = cellControllers
+		tableView.reloadData()
+	}
+
+	public func displayFiltersBadge(_ isBadgeVisible: Bool) {
+		filterButton.setBadgeVisible(isBadgeVisible)
+	}
+
+	public func displayLoading(_ isLoading: Bool) {
+		guard isLoading else {
+			return loadingView.hide()
+		}
+
+		loadingView.show(in: view)
+	}
+
+	public func displayFilters(_ filters: HotelFilters) {
+		router.routeToHotelFiltersPicker(filters)
+	}
+}
+
+// MARK: - HotelsSearchScene
+
+extension HotelsSearchViewController: HotelsSearchScene {
+	public func didSelectFilters(_ filters: HotelFilters) {
+		interactor.handleFilterSelection(
+			request: .init(filters: filters)
+		)
 	}
 }
 
@@ -159,15 +169,5 @@ extension HotelsSearchViewController: UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let cellController = cellController(at: indexPath)
 		cellController?.tableView(tableView, didEndDisplaying: cell, forRowAt: indexPath)
-	}
-}
-
-// MARK: - HotelFiltersPickerDelegate
-
-extension HotelsSearchViewController: HotelFiltersPickerDelegate {
-	public func didSelectFilters(_ filters: HotelFilters) {
-		interactor.handleFilterSelection(
-			request: .init(filters: filters)
-		)
 	}
 }

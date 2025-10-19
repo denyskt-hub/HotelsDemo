@@ -8,23 +8,26 @@
 import UIKit
 
 public protocol HotelsSearchRoutingLogic {
-	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel)
+	func routeToHotelFiltersPicker(_ filters: HotelFilters)
 }
 
 public final class HotelsSearchRouter: HotelsSearchRoutingLogic {
-	public weak var viewController: HotelsSearchViewController?
-
 	private let hotelFiltersPickerFactory: HotelFiltersPickerFactory
+	private let scene: HotelsSearchScene
 
-	public init(hotelFiltersPickerFactory: HotelFiltersPickerFactory) {
+	public init(
+		hotelFiltersPickerFactory: HotelFiltersPickerFactory,
+		scene: HotelsSearchScene
+	) {
 		self.hotelFiltersPickerFactory = hotelFiltersPickerFactory
+		self.scene = scene
 	}
 
-	public func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
+	public func routeToHotelFiltersPicker(_ filters: HotelFilters) {
 		let filterVC = hotelFiltersPickerFactory
-			.makeHotelFiltersPicker(filters: viewModel.filters, delegate: viewController)
+			.makeHotelFiltersPicker(filters: filters, delegate: scene)
 			.embeddedInNavigationController()
 		filterVC.modalPresentationStyle = .fullScreen
-		viewController?.present(filterVC, animated: true)
+		scene.present(filterVC)
 	}
 }

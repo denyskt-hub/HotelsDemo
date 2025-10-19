@@ -130,6 +130,54 @@ extension WeakRefVirtualProxy: RoomGuestsPickerDisplayLogic where T: RoomGuestsP
 	}
 }
 
+// MARK: - HotelsSearchDisplayLogic
+
+extension WeakRefVirtualProxy: HotelsSearchDisplayLogic where T: HotelsSearchDisplayLogic {
+	public func displaySearch(viewModel: HotelsSearchModels.Search.ViewModel) {
+		object?.displaySearch(viewModel: viewModel)
+	}
+
+	public func displayLoading(viewModel: HotelsSearchModels.LoadingViewModel) {
+		object?.displayLoading(viewModel: viewModel)
+	}
+
+	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
+		object?.displaySearchError(viewModel: viewModel)
+	}
+
+	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
+		object?.displayFilters(viewModel: viewModel)
+	}
+
+	public func displayUpdateFilters(viewModel: HotelsSearchModels.FilterSelection.ViewModel) {
+		object?.displayUpdateFilters(viewModel: viewModel)
+	}
+}
+
+// MARK: - HotelsDisplayLogic
+
+extension WeakRefVirtualProxy: HotelsDisplayLogic where T: HotelsDisplayLogic {
+	public func displayCellControllers(_ cellControllers: [HotelCellController]) {
+		object?.displayCellControllers(cellControllers)
+	}
+
+	public func displayFiltersBadge(_ isBadgeVisible: Bool) {
+		object?.displayFiltersBadge(isBadgeVisible)
+	}
+
+	public func displayLoading(_ isLoading: Bool) {
+		object?.displayLoading(isLoading)
+	}
+
+	public func displayErrorMessage(_ message: String) {
+		object?.displayErrorMessage(message)
+	}
+
+	public func displayFilters(_ filters: HotelFilters) {
+		object?.displayFilters(filters)
+	}
+}
+
 // MARK: - HotelsSearchCriteriaScene
 
 extension WeakRefVirtualProxy: HotelsSearchCriteriaScene where T: HotelsSearchCriteriaScene {}
@@ -149,6 +197,16 @@ extension WeakRefVirtualProxy: DateRangePickerDelegate where T: DateRangePickerD
 extension WeakRefVirtualProxy: RoomGuestsPickerDelegate where T: RoomGuestsPickerDelegate {
 	public func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int]) {
 		object?.didSelectRoomGuests(rooms: rooms, adults: adults, childrenAges: childrenAges)
+	}
+}
+
+// MARK: - HotelsSearchScene
+
+extension WeakRefVirtualProxy: HotelsSearchScene where T: HotelsSearchScene {}
+
+extension WeakRefVirtualProxy: HotelFiltersPickerDelegate where T: HotelFiltersPickerDelegate {
+	public func didSelectFilters(_ filters: HotelFilters) {
+		object?.didSelectFilters(filters)
 	}
 }
 

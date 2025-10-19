@@ -9,33 +9,36 @@ import Foundation
 
 public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 	private let priceFormatter: PriceFormatter
+	private let viewController: HotelsSearchDisplayLogic
 
-	public var viewController: HotelsSearchDisplayLogic?
-
-	public init(priceFormatter: PriceFormatter) {
+	public init(
+		priceFormatter: PriceFormatter,
+		viewController: HotelsSearchDisplayLogic
+	) {
 		self.priceFormatter = priceFormatter
+		self.viewController = viewController
 	}
 
 	public func presentSearch(response: HotelsSearchModels.Search.Response) {
 		let viewModel = HotelsSearchModels.Search.ViewModel(
 			hotels: makeHotelViewModels(response.hotels)
 		)
-		viewController?.displaySearch(viewModel: viewModel)
+		viewController.displaySearch(viewModel: viewModel)
 	}
 
 	public func presentSearchLoading(_ isLoading: Bool) {
 		let viewModel = HotelsSearchModels.LoadingViewModel(isLoading: isLoading)
-		viewController?.displayLoading(viewModel: viewModel)
+		viewController.displayLoading(viewModel: viewModel)
 	}
 
 	public func presentSearchError(_ error: Error) {
 		let viewModel = HotelsSearchModels.ErrorViewModel(message: error.localizedDescription)
-		viewController?.displaySearchError(viewModel: viewModel)
+		viewController.displaySearchError(viewModel: viewModel)
 	}
 
 	public func presentFilters(response: HotelsSearchModels.FetchFilters.Response) {
 		let viewModel = HotelsSearchModels.FetchFilters.ViewModel(filters: response.filters)
-		viewController?.displayFilters(viewModel: viewModel)
+		viewController.displayFilters(viewModel: viewModel)
 	}
 
 	public func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response) {
@@ -43,7 +46,7 @@ public final class HotelsSearchPresenter: HotelsSearchPresentationLogic {
 			hotels: makeHotelViewModels(response.hotels),
 			hasSelectedFilters: response.hasSelectedFilters
 		)
-		viewController?.displayUpdateFilters(viewModel: viewModel)
+		viewController.displayUpdateFilters(viewModel: viewModel)
 	}
 
 	private func makeHotelViewModels(_ hotels: [Hotel]) -> [HotelsSearchModels.HotelViewModel] {

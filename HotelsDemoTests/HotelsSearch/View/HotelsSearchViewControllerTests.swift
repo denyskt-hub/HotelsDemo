@@ -21,10 +21,10 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		let (sut, _, _) = makeSUT()
 		XCTAssertFalse(sut.isShowingLoadingIndicator)
 
-		sut.displayLoading(viewModel: .init(isLoading: true))
+		sut.displayLoading(true)
 		XCTAssertTrue(sut.isShowingLoadingIndicator)
 
-		sut.displayLoading(viewModel: .init(isLoading: false))
+		sut.displayLoading(false)
 		XCTAssertFalse(sut.isShowingLoadingIndicator)
 	}
 
@@ -47,7 +47,7 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		sut.simulateAppearanceInWindow()
 		assertThat(sut, isRendering: [])
 
-		sut.display(cellControllers)
+		sut.displayCellControllers(cellControllers)
 		assertThat(sut, isRendering: viewModels)
 	}
 
@@ -55,18 +55,18 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
-		sut.displaySearchError(viewModel: .init(message: "Some error message"))
+		sut.displayErrorMessage("Some error message")
 
 		XCTAssertEqual(sut.errorMessage, "Some error message")
 	}
 
 	func test_displayFilter_routesToHotelFiltersPicker() {
-		let filter = anyHotelFilters()
+		let filters = anyHotelFilters()
 		let (sut, _, router) = makeSUT()
 
-		sut.displayFilters(viewModel: .init(filters: filter))
+		sut.displayFilters(filters)
 
-		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(.init(filters: filter))])
+		XCTAssertEqual(router.messages, [.routeToHotelsFilterPicker(filters)])
 	}
 
 	func test_filterTap_presentsFilter() {
@@ -152,13 +152,13 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 
 final class HotelsSearchRoutingLogicSpy: HotelsSearchRoutingLogic {
 	enum Message: Equatable {
-		case routeToHotelsFilterPicker(HotelsSearchModels.FetchFilters.ViewModel)
+		case routeToHotelsFilterPicker(HotelFilters)
 	}
 
 	private(set) var messages = [Message]()
 
-	func routeToHotelFiltersPicker(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
-		messages.append(.routeToHotelsFilterPicker(viewModel))
+	func routeToHotelFiltersPicker(_ filters: HotelFilters) {
+		messages.append(.routeToHotelsFilterPicker(filters))
 	}
 }
 

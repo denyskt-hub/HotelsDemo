@@ -89,8 +89,10 @@ final class HotelsSearchPresenterTests: XCTestCase {
 		viewController: SearchDisplayLogicSpy
 	) {
 		let viewController = SearchDisplayLogicSpy()
-		let sut = HotelsSearchPresenter(priceFormatter: PriceFormatter(locale: locale))
-		sut.viewController = viewController
+		let sut = HotelsSearchPresenter(
+			priceFormatter: PriceFormatter(locale: locale),
+			viewController: viewController
+		)
 		return (sut, viewController)
 	}
 }
