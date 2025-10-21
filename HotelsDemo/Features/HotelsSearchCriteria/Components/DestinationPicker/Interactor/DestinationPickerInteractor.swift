@@ -9,24 +9,19 @@ import Foundation
 
 public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	private let worker: DestinationSearchService
-	private let debouncer: Debouncer
 	private let presenter: DestinationPickerPresentationLogic
 	private var destinations = [Destination]()
 
 	public init(
 		worker: DestinationSearchService,
-		debouncer: Debouncer,
 		presenter: DestinationPickerPresentationLogic
 	) {
 		self.worker = worker
-		self.debouncer = debouncer
 		self.presenter = presenter
 	}
 
 	public func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
-		debouncer.execute { [weak self] in
-			self?.performSearch(query: request.query)
-		}
+		performSearch(query: request.query)
 	}
 
 	public func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {

@@ -80,7 +80,6 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		let presenter = DestinationPickerPresenterSpy()
 		let sut = DestinationPickerInteractor(
 			worker: service,
-			debouncer: ImmediateDebouncer(),
 			presenter: presenter
 		)
 		return (sut, service, presenter)

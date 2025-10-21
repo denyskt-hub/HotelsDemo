@@ -28,7 +28,6 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 
 		let interactor = DestinationPickerInteractor(
 			worker: worker,
-			debouncer: DefaultDebouncer(delay: 0.5),
 			presenter: presenter
 		)
 
@@ -42,11 +41,16 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 	}
 
 	private func makeDestinationSearchService() -> DestinationSearchService {
-		DestinationSearchWorker(
+		let worker = DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
 			client: client
 		).dispatch(to: MainQueueDispatcher())
+
+		return DebouncedDestinationSearchService(
+			decoratee: worker,
+			debouncer: DefaultDebouncer(delay: 0.5)
+		)
 	}
 }
