@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import Synchronization
 
 public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, Sendable {
 	private let worker: DestinationSearchService
 	private let presenter: DestinationPickerPresentationLogic
 	private let destinations = DestinationsStore()
-	private let currentSearchTask = Mutex<Task<Void, Never>?>(nil)
+	private let currentSearchTask = TaskStore()
 
 	public init(
 		worker: DestinationSearchService,
@@ -23,7 +22,9 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	}
 
 	public func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
-		performSearch(query: request.query)
+		Task {
+			await performSearch(query: request.query)
+		}
 	}
 
 	public func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
@@ -34,36 +35,35 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 		}
 	}
 
-	private func performSearch(query: String) {
+	private func performSearch(query: String) async {
 		let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
 		guard !trimmedQuery.isEmpty else {
-			clearSearchResults()
+			await clearSearchResults()
 			return
 		}
 
-		currentSearchTask.withLock { task in
-			task?.cancel()
-			task = Task { [weak self] in
-				guard let self else { return }
+		await currentSearchTask.cancel()
 
-				do {
-					let destinations = try await self.worker.search(query: trimmedQuery)
-					await self.destinations.update(destinations)
-					await self.presentDestinations(destinations)
-				} catch is CancellationError {
-					Logger.log("Search task was canceled.", level: .info)
-				} catch {
-					await self.presentSearchError(error)
-				}
+		let newTask = Task { [weak self] in
+			guard let self else { return }
+
+			do {
+				let destinations = try await self.worker.search(query: trimmedQuery)
+				await self.destinations.update(destinations)
+				await self.presentDestinations(destinations)
+			} catch is CancellationError {
+				Logger.log("Search task was canceled.", level: .info)
+			} catch {
+				await self.presentSearchError(error)
 			}
 		}
+
+		await currentSearchTask.set(newTask)
 	}
 
-	private func clearSearchResults() {
-		Task {
-			await destinations.update([])
-			await presentDestinations([])
-		}
+	private func clearSearchResults() async {
+		await destinations.update([])
+		await presentDestinations([])
 	}
 
 	private func presentSelectedDestination(_ selected: Destination) async {
@@ -80,5 +80,18 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 
 	private func presentSearchError(_ error: Error) async {
 		await presenter.presentSearchError(error)
+	}
+}
+
+fileprivate actor TaskStore {
+	private var task: Task<Void, Never>?
+
+	func set(_ newTask: Task<Void, Never>) {
+		task = newTask
+	}
+
+	func cancel() {
+		task?.cancel()
+		task = nil
 	}
 }
