@@ -11,7 +11,7 @@ import Synchronization
 public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, Sendable {
 	private let worker: DestinationSearchService
 	private let presenter: DestinationPickerPresentationLogic
-	private let destinations = Mutex<[Destination]>([])
+	private let destinations = DestinationsStore()
 	private let currentSearchTask = Mutex<Task<Void, Never>?>(nil)
 
 	public init(
@@ -27,13 +27,11 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	}
 
 	public func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
-		let selected: Destination? = destinations.withLock { current in
-			guard current.indices.contains(request.index) else { return nil }
-			return current[request.index]
-		}
-		guard let selected else { return }
+		Task {
+			guard let selected = await destinations.get(at: request.index) else { return }
 
-		Task { await presentSelectedDestination(selected) }
+			await presentSelectedDestination(selected)
+		}
 	}
 
 	private func performSearch(query: String) {
@@ -50,10 +48,10 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 
 				do {
 					let destinations = try await self.worker.search(query: trimmedQuery)
-					self.destinations.withLock { value in value = destinations }
+					await self.destinations.update(destinations)
 					await self.presentDestinations(destinations)
 				} catch is CancellationError {
-					// Ignore
+					Logger.log("Search task was canceled.", level: .info)
 				} catch {
 					await self.presentSearchError(error)
 				}
@@ -62,8 +60,10 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	}
 
 	private func clearSearchResults() {
-		destinations.withLock { $0 = [] }
-		Task { await presentDestinations([]) }
+		Task {
+			await destinations.update([])
+			await presentDestinations([])
+		}
 	}
 
 	private func presentSelectedDestination(_ selected: Destination) async {
