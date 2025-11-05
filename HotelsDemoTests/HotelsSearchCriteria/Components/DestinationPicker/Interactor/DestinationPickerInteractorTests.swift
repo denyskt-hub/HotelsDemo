@@ -7,13 +7,14 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 @MainActor
 final class DestinationPickerInteractorTests: XCTestCase {
 	func test_init_doesNotMessageService() {
 		let (_, service, _) = makeSUT()
 
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 	}
 
 	func test_doSearchDestinations_presentSearchErrorOnServiceError() async {
@@ -42,14 +43,23 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
 	}
 
+	func test_doSearchDestinations_trimsQueryBeforeSendingToService() async {
+		let (sut, service, _) = makeSUT()
+
+		sut.doSearchDestinations(request: .init(query: "  Rome  "))
+		await service.waitUntilStarted()
+
+		XCTAssertEqual(service.receivedQueries(), ["Rome"])
+	}
+
 	func test_doSearchDestinations_doesNotMessageServiceOnEmptyQuery() {
 		let (sut, service, _) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: ""))
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 
 		sut.doSearchDestinations(request: .init(query: "  "))
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 	}
 
 	func test_doSearchDestinations_presentEmptyDestinationsOnEmptyQuery() async {
@@ -102,11 +112,14 @@ final class DestinationPickerInteractorTests: XCTestCase {
 }
 
 final class DestinationSearchServiceSpy: DestinationSearchService {
-	private(set) var queries = [String]()
-
-	private var continuations = [CheckedContinuation<[Destination], Error>]()
+	private let queries = Mutex<[String]>([])
+	private let continuations = Mutex<[CheckedContinuation<[Destination], Error>]>([])
 
 	private let stream = AsyncStream<Void>.makeStream()
+
+	func receivedQueries() -> [String] {
+		queries.withLock { $0 }
+	}
 
 	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
 		// probably never called anymore
@@ -114,20 +127,22 @@ final class DestinationSearchServiceSpy: DestinationSearchService {
 	}
 
 	func search(query: String) async throws -> [Destination] {
-		queries.append(query)
+		queries.withLock { $0.append(query) }
 		stream.continuation.yield(())
 
 		return try await withCheckedThrowingContinuation { continuation in
-			continuations.append(continuation)
+			continuations.withLock { $0.append(continuation) }
 		}
 	}
 
 	func completeWithResult(_ result: DestinationSearchService.Result, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+
 		switch result {
 		case let .success(destinations):
-			continuations[index].resume(returning: destinations)
+			continuation.resume(returning: destinations)
 		case let .failure(error):
-			continuations[index].resume(throwing: error)
+			continuation.resume(throwing: error)
 		}
 	}
 

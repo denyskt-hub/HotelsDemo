@@ -12,7 +12,7 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	private let worker: DestinationSearchService
 	private let presenter: DestinationPickerPresentationLogic
 	private let destinations = Mutex<[Destination]>([])
-	private let currentTask = Mutex<Task<Void, Never>?>(nil)
+	private let currentSearchTask = Mutex<Task<Void, Never>?>(nil)
 
 	public init(
 		worker: DestinationSearchService,
@@ -39,18 +39,17 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	private func performSearch(query: String) {
 		let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
 		guard !trimmedQuery.isEmpty else {
-			destinations.withLock { value in value = [] }
-			Task { await presentDestinations([]) }
+			clearSearchResults()
 			return
 		}
 
-		currentTask.withLock { task in
+		currentSearchTask.withLock { task in
 			task?.cancel()
 			task = Task { [weak self] in
 				guard let self else { return }
 
 				do {
-					let destinations = try await self.worker.search(query: query)
+					let destinations = try await self.worker.search(query: trimmedQuery)
 					self.destinations.withLock { value in value = destinations }
 					await self.presentDestinations(destinations)
 				} catch is CancellationError {
@@ -60,6 +59,11 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 				}
 			}
 		}
+	}
+
+	private func clearSearchResults() {
+		destinations.withLock { $0 = [] }
+		Task { await presentDestinations([]) }
 	}
 
 	private func presentSelectedDestination(_ selected: Destination) async {
