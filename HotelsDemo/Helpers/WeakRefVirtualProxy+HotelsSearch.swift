@@ -154,4 +154,3 @@ extension WeakRefVirtualProxy: ReviewScoreDisplayLogic where T: ReviewScoreDispl
 		object?.displaySelect(viewModel: viewModel)
 	}
 }
-

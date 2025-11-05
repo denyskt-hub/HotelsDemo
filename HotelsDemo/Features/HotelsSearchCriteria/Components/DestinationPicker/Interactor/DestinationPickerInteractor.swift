@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Synchronization
 
-public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
+public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, Sendable {
 	private let worker: DestinationSearchService
 	private let presenter: DestinationPickerPresentationLogic
-	private var destinations = [Destination]()
+	private let destinations = Mutex<[Destination]>([])
+	private let currentTask = Mutex<Task<Void, Never>?>(nil)
 
 	public init(
 		worker: DestinationSearchService,
@@ -25,42 +27,54 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic {
 	}
 
 	public func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
-		guard destinations.indices.contains(request.index) else { return }
+		let selected: Destination? = destinations.withLock { current in
+			guard current.indices.contains(request.index) else { return nil }
+			return current[request.index]
+		}
+		guard let selected else { return }
 
-		let selected = destinations[request.index]
-		presenter.presentSelectedDestination(
-			response: DestinationPickerModels.DestinationSelection.Response(selected: selected)
-		)
+		Task { await presentSelectedDestination(selected) }
 	}
 
 	private func performSearch(query: String) {
 		let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
 		guard !trimmedQuery.isEmpty else {
-			destinations = []
-			presentDestinations([])
+			destinations.withLock { value in value = [] }
+			Task { await presentDestinations([]) }
 			return
 		}
 
-		worker.search(query: query) { [weak self] result in
-			guard let self = self else { return }
+		currentTask.withLock { task in
+			task?.cancel()
+			task = Task { [weak self] in
+				guard let self else { return }
 
-			switch result {
-			case let .success(destinations):
-				self.destinations = destinations
-				self.presentDestinations(destinations)
-			case let .failure(error):
-				self.presentSearchError(error)
+				do {
+					let destinations = try await self.worker.search(query: query)
+					self.destinations.withLock { value in value = destinations }
+					await self.presentDestinations(destinations)
+				} catch is CancellationError {
+					// Ignore
+				} catch {
+					await self.presentSearchError(error)
+				}
 			}
 		}
 	}
 
-	private func presentDestinations(_ destinations: [Destination]) {
-		presenter.presentDestinations(
+	private func presentSelectedDestination(_ selected: Destination) async {
+		await presenter.presentSelectedDestination(
+			response: DestinationPickerModels.DestinationSelection.Response(selected: selected)
+		)
+	}
+
+	private func presentDestinations(_ destinations: [Destination]) async {
+		await presenter.presentDestinations(
 			response: DestinationPickerModels.Search.Response(destinations: destinations)
 		)
 	}
 
-	private func presentSearchError(_ error: Error) {
-		presenter.presentSearchError(error)
+	private func presentSearchError(_ error: Error) async {
+		await presenter.presentSearchError(error)
 	}
 }

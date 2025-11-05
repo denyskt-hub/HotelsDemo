@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol DestinationSearchService {
+public protocol DestinationSearchService: Sendable {
 	typealias Result = Swift.Result<[Destination], Error>
 
 	/// The completion handler can be invoked in any thread.

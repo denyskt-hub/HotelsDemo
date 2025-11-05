@@ -11,6 +11,7 @@ public protocol DestinationPickerFactory {
 	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController
 }
 
+@MainActor
 public final class DestinationPickerComposer: DestinationPickerFactory {
 	private let client: HTTPClient
 
