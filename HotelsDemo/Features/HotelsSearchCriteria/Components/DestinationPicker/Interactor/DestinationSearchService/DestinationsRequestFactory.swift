@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol DestinationsRequestFactory {
+public protocol DestinationsRequestFactory: Sendable {
 	func makeSearchRequest(query: String) -> URLRequest
 }
 
