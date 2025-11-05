@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Destination: Equatable {
+public struct Destination: Equatable, Sendable {
 	public let id: Int
 	public let type: String
 	public let name: String
