@@ -19,20 +19,11 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		self.client = client
 	}
 
-	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
+	public func search(query: String) async throws -> [Destination] {
 		let request = factory.makeSearchRequest(query: query)
 
-		client.perform(request) { result in
-			let searchResult = DestinationSearchService.Result {
-				switch result {
-				case let .success((data, response)):
-					return try DestinationsResponseMapper.map(data, response)
-				case let .failure(error):
-					throw error
-				}
-			}
+		let (data, response) = try await client.perform(request)
 
-			completion(searchResult)
-		}
+		return try DestinationsResponseMapper.map(data, response)
 	}
 }

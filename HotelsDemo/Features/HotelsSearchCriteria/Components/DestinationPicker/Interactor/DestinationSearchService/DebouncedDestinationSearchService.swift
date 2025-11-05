@@ -19,9 +19,11 @@ public final class DebouncedDestinationSearchService: DestinationSearchService {
 		self.debouncer = debouncer
 	}
 
-	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		debouncer.execute { [weak self] in
-			self?.decoratee.search(query: query, completion: completion)
+	public func search(query: String) async throws -> [Destination] {
+		try await debouncer.asyncExecute { [weak self] in
+			guard let self else { return [] }
+
+			return try await self.decoratee.search(query: query)
 		}
 	}
 }

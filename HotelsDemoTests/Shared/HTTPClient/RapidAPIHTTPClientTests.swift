@@ -15,7 +15,7 @@ final class RapidAPIHTTPClientTests: XCTestCase {
 		let dummyRequest = URLRequest(url: URL(string: "https://example.com")!)
 		sut.perform(dummyRequest) { _ in }
 
-		let headers = client.requests.first?.allHTTPHeaderFields
+		let headers = client.receivedRequests().first?.allHTTPHeaderFields
 		XCTAssertEqual(headers?["X-RapidAPI-Host"], "test-host")
 		XCTAssertEqual(headers?["X-RapidAPI-Key"], "test-key")
 	}

@@ -12,7 +12,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotSendRequest() {
 		let (_, client) = makeSUT()
 
-		XCTAssertEqual(client.requests, [])
+		XCTAssertEqual(client.receivedRequests(), [])
 	}
 
 	func test_load_performsRequest() {
@@ -22,10 +22,10 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 		sut.load(url: url) { _ in }
 
-		XCTAssertEqual(client.requests.first?.url, url)
-		XCTAssertEqual(client.requests.first?.httpMethod, httpMethod)
-		XCTAssertEqual(client.requests.first?.allHTTPHeaderFields, [:])
-		XCTAssertEqual(client.requests.first?.httpBody, nil)
+		XCTAssertEqual(client.receivedRequests().first?.url, url)
+		XCTAssertEqual(client.receivedRequests().first?.httpMethod, httpMethod)
+		XCTAssertEqual(client.receivedRequests().first?.allHTTPHeaderFields, [:])
+		XCTAssertEqual(client.receivedRequests().first?.httpBody, nil)
 	}
 
 	func test_load_deliversErrorOnClientError() {

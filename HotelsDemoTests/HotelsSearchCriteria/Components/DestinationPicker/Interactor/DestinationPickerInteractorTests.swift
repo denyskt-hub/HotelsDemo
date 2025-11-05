@@ -24,7 +24,7 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		sut.doSearchDestinations(request: .init(query: "any"))
 
 		await service.waitUntilStarted()
-		service.completeWithResult(.failure(serviceError))
+		service.completeWithError(serviceError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
@@ -37,7 +37,7 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		sut.doSearchDestinations(request: .init(query: "any"))
 
 		await service.waitUntilStarted()
-		service.completeWithResult(.success(destinations))
+		service.completeWithDestinations(destinations)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
@@ -83,7 +83,7 @@ final class DestinationPickerInteractorTests: XCTestCase {
 		sut.doSearchDestinations(request: .init(query: "any"))
 
 		await service.waitUntilStarted()
-		service.completeWithResult(.success([destination]))
+		service.completeWithDestinations([destination])
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: [destination]))])
@@ -121,11 +121,6 @@ final class DestinationSearchServiceSpy: DestinationSearchService {
 		queries.withLock { $0 }
 	}
 
-	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		// probably never called anymore
-		fatalError("don’t use callback API in tests")
-	}
-
 	func search(query: String) async throws -> [Destination] {
 		queries.withLock { $0.append(query) }
 		stream.continuation.yield(())
@@ -135,15 +130,14 @@ final class DestinationSearchServiceSpy: DestinationSearchService {
 		}
 	}
 
-	func completeWithResult(_ result: DestinationSearchService.Result, at index: Int = 0) {
+	func completeWithDestinations(_ destinations: [Destination], at index: Int = 0) {
 		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: destinations)
+	}
 
-		switch result {
-		case let .success(destinations):
-			continuation.resume(returning: destinations)
-		case let .failure(error):
-			continuation.resume(throwing: error)
-		}
+	func completeWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
 	}
 
 	func waitUntilStarted() async {

@@ -47,7 +47,7 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
 			client: client
-		).dispatch(to: MainQueueDispatcher())
+		)
 
 		return DebouncedDestinationSearchService(
 			decoratee: worker,

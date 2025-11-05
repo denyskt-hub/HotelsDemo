@@ -12,7 +12,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 	func test_init_doesNotPerformRequest() {
 		let (_, client) = makeSUT()
 
-		XCTAssertTrue(client.requests.isEmpty)
+		XCTAssertTrue(client.receivedRequests().isEmpty)
 	}
 
 	func test_search_performsRequestWithCorrectURL() {
@@ -21,7 +21,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 
 		sut.search(criteria: anySearchCriteria()) { _ in }
 
-		XCTAssertEqual(client.requests.map(\.url), [expectedURL])
+		XCTAssertEqual(client.receivedRequests().map(\.url), [expectedURL])
 	}
 
 	func test_search_deliversErrorOnClientError() {
