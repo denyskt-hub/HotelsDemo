@@ -19,24 +19,31 @@ public final class HotelsSearchWorker: HotelsSearchService {
 		self.client = client
 	}
 
+	private struct TaskWrapper: HTTPClientTask {
+		let wrapped: Task<Void, Never>
+
+		func cancel() {
+			wrapped.cancel()
+		}
+	}
+
 	@discardableResult
 	public func search(
 		criteria: HotelsSearchCriteria,
-		completion: @escaping (HotelsSearchService.Result) -> Void
+		completion: @Sendable @escaping (HotelsSearchService.Result) -> Void
 	) -> HTTPClientTask {
 		let request = factory.makeSearchRequest(criteria: criteria)
 
-		return client.perform(request) { result in
-			let searchResult = HotelsSearchService.Result {
-				switch result {
-				case let .success((data, response)):
-					return try HotelsSearchResponseMapper.map(data, response)
-				case let .failure(error):
-					throw error
-				}
+		let task = Task {
+			do {
+				let (data, response) = try await client.perform(request)
+				let result = try HotelsSearchResponseMapper.map(data, response)
+				completion(.success(result))
+			} catch {
+				completion(.failure(error))
 			}
-
-			completion(searchResult)
 		}
+
+		return TaskWrapper(wrapped: task)
 	}
 }

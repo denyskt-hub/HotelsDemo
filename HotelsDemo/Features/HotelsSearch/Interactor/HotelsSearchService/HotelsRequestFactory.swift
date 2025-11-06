@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol HotelsRequestFactory {
+public protocol HotelsRequestFactory: Sendable {
 	func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest
 }
 

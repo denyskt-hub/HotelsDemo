@@ -15,3 +15,24 @@ public protocol HTTPClient: Sendable {
 
 	func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse)
 }
+
+extension HTTPClient {
+	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+		nonisolated(unsafe) var task: HTTPClientTask?
+
+		return try await withTaskCancellationHandler {
+			return try await withCheckedThrowingContinuation { continuation in
+				task = perform(request) { result in
+					switch result {
+					case let .success((data, response)):
+						continuation.resume(returning: (data, response))
+					case let .failure(error):
+						continuation.resume(throwing: error)
+					}
+				}
+			}
+		} onCancel: {
+			task?.cancel()
+		}
+	}
+}

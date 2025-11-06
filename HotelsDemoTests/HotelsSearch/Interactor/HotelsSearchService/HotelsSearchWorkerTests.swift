@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class HotelsSearchWorkerTests: XCTestCase {
 	func test_init_doesNotPerformRequest() {
 		let (_, client) = makeSUT()
@@ -19,6 +20,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let expectedURL = URL(string: "https://api.com/hotels/search")!
 		let (sut, client) = makeSUT(url: expectedURL)
 
+		client.completeWith(anyValidValues())
 		sut.search(criteria: anySearchCriteria()) { _ in }
 
 		XCTAssertEqual(client.receivedRequests().map(\.url), [expectedURL])
@@ -29,7 +31,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		expect(sut, toCompleteWith: .failure(clientError), when: {
-			client.completeWithResult(.failure(clientError))
+			client.completeWithError(clientError)
 		})
 	}
 
@@ -37,9 +39,9 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let samples = [199, 300, 350, 404, 500]
 		let (sut, client) = makeSUT()
 
-		for (index, statusCode) in samples.enumerated() {
+		for statusCode in samples {
 			expect(sut, toCompleteWith: .failure(HTTPError.unexpectedStatusCode(statusCode)), when: {
-				client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: statusCode))), at: index)
+				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
@@ -48,9 +50,9 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let samples = [emptyData(), invalidJSONData()]
 		let (sut, client) = makeSUT()
 
-		for (index, data) in samples.enumerated() {
+		for data in samples {
 			expect(sut, toCompleteWith: .failure(APIError.decoding(anyNSError())), when: {
-				client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))), at: index)
+				client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
 			})
 		}
 	}
@@ -72,7 +74,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		expect(sut, toCompleteWith: .success([item.model]), when: {
-			client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))))
+			client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
@@ -99,6 +101,8 @@ final class HotelsSearchWorkerTests: XCTestCase {
 	) {
 		let exp = expectation(description: "Wait for completion")
 
+		action()
+
 		sut.search(criteria: anySearchCriteria()) { receivedResult in
 			switch (receivedResult, expectedResult) {
 			case let (.success(received), .success(expected)):
@@ -111,9 +115,28 @@ final class HotelsSearchWorkerTests: XCTestCase {
 			exp.fulfill()
 		}
 
-		action()
-
 		wait(for: [exp], timeout: 0.1)
+	}
+
+	private func anyValidValues() -> (Data, HTTPURLResponse) {
+		let item = anyHotelJSON()
+		let hotelsJSON = makeAPIResponseJSON(hotels: [item.json])
+		let data = makeJSONData(hotelsJSON)
+		return (data, makeHTTPURLResponse(statusCode: 200))
+	}
+
+	private func anyHotelJSON() -> (model: Hotel, json: [String: Any]) {
+		makeHotelJSON(
+			id: 1,
+			position: 1,
+			name: "any name",
+			starRating: 1,
+			reviewCount: 1,
+			reviewScore: 1.0,
+			photoURLs: [],
+			grossPrice: 1.0,
+			currency: "USD"
+		)
 	}
 
 	private func makeHotelJSON(

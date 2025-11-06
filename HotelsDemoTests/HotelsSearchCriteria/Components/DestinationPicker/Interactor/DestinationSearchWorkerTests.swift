@@ -75,13 +75,6 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		})
 	}
 
-	private func anyValidValues() -> (Data, HTTPURLResponse) {
-		let item = anyDestinationJSON()
-		let destinationsJSON = makeAPIResponseJSON(data: [item.json])
-		let data = makeJSONData(destinationsJSON)
-		return (data, makeHTTPURLResponse(statusCode: 200))
-	}
-
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL = anyURL()) -> (
@@ -127,6 +120,13 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		}
 
 		XCTAssertEqual(expectedError as NSError, receivedError, file: file, line: line)
+	}
+
+	private func anyValidValues() -> (Data, HTTPURLResponse) {
+		let item = anyDestinationJSON()
+		let destinationsJSON = makeAPIResponseJSON(data: [item.json])
+		let data = makeJSONData(destinationsJSON)
+		return (data, makeHTTPURLResponse(statusCode: 200))
 	}
 
 	private func anyDestinationJSON() -> (model: Destination, json: [String: Any]) {
