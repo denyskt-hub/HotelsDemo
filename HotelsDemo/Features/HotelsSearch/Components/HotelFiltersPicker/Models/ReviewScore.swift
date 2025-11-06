@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum ReviewScore: Decimal, CaseIterable {
+public enum ReviewScore: Decimal, CaseIterable, Sendable {
 	case fair = 5.0
 	case pleasant = 6.0
 	case good = 7.0

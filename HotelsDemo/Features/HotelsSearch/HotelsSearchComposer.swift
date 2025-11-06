@@ -11,6 +11,7 @@ public protocol HotelsSearchFactory {
 	func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController
 }
 
+@MainActor
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
 

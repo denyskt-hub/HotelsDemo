@@ -6,17 +6,16 @@
 //
 
 import Foundation
+import Synchronization
 
-public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
+public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	private let context: HotelsSearchContext
 	private var provider: HotelsSearchCriteriaProvider { context.provider }
 	private var worker: HotelsSearchService { context.service }
 
-	private var filters: HotelFilters
+	private let filters: Mutex<HotelFilters>
 	private let repository: HotelsRepository
 	private let presenter: HotelsSearchPresentationLogic
-
-	private var task: HTTPClientTask?
 
 	public init(
 		context: HotelsSearchContext,
@@ -25,7 +24,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		presenter: HotelsSearchPresentationLogic
 	) {
 		self.context = context
-		self.filters = filters
+		self.filters = Mutex(filters)
 		self.repository = repository
 		self.presenter = presenter
 	}
@@ -36,9 +35,9 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 
 			switch result {
 			case let .success(criteria):
-				self.doSearch(request: .init(criteria: criteria))
+				self.performSearch(request: .init(criteria: criteria))
 			case let .failure(error):
-				self.presenter.presentSearchError(error)
+				Task { await self.presentSearchError(error) }
 			}
 		}
 	}
@@ -47,42 +46,46 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 		doCancelSearch()
 	}
 
-	private func doSearch(request: HotelsSearchModels.Search.Request) {
-		presenter.presentSearchLoading(true)
-		task = worker.search(criteria: request.criteria) { [weak self] result in
-			guard let self else { return }
+	private let currentSearchTask = Mutex<Task<Void, Never>?>(nil)
+	private func performSearch(request: HotelsSearchModels.Search.Request) {
+		currentSearchTask.withLock { task in
+			task?.cancel()
+			task = Task {
+				await presenter.presentSearchLoading(true)
 
-			self.presenter.presentSearchLoading(false)
-			self.handleSearchResult(result)
-		}
-	}
+				do {
+					let hotels = try await worker.search(criteria: request.criteria)
+					setHotels(hotels)
+					await presenter.presentSearch(response: .init(hotels: applyFilters(filters.withLock({ $0 }))))
+				} catch {
+					await presentSearchError(error)
+				}
 
-	private func handleSearchResult(_ result: HotelsSearchService.Result) {
-		switch result {
-		case let .success(hotels):
-			setHotels(hotels)
-			presenter.presentSearch(response: .init(hotels: applyFilters(filters)))
-		case let .failure(error):
-			presenter.presentSearchError(error)
+				await presenter.presentSearchLoading(false)
+			}
 		}
 	}
 
 	private func doCancelSearch() {
-		task?.cancel()
+		currentSearchTask.withLock { $0?.cancel() }
 	}
 
 	public func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
-		presenter.presentFilters(response: .init(filters: filters))
+		Task {
+			await presenter.presentFilters(response: .init(filters: filters.withLock({ $0 })))
+		}
 	}
 
 	public func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
-		filters = request.filters
-		presenter.presentUpdateFilters(
-			response: .init(
-				hotels: applyFilters(filters),
-				hasSelectedFilters: filters.hasSelectedFilters
+		Task {
+			filters.withLock { $0 = request.filters }
+			await presenter.presentUpdateFilters(
+				response: .init(
+					hotels: applyFilters(request.filters),
+					hasSelectedFilters: request.filters.hasSelectedFilters
+				)
 			)
-		)
+		}
 	}
 
 	private func setHotels(_ hotels: [Hotel]) {
@@ -91,5 +94,9 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic {
 
 	private func applyFilters(_ filters: HotelFilters) -> [Hotel] {
 		repository.filter(with: HotelFiltersSpecificationFactory.make(from: filters))
+	}
+
+	private func presentSearchError(_ error: Error) async {
+		await presenter.presentSearchError(error)
 	}
 }

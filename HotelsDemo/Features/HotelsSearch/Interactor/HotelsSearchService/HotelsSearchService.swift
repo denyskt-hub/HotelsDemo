@@ -14,4 +14,6 @@ public protocol HotelsSearchService: Sendable {
 	/// Clients are responsible to dispatch to appropriate threads, if needed.
 	@discardableResult
 	func search(criteria: HotelsSearchCriteria, completion: @Sendable @escaping (Result) -> Void) -> HTTPClientTask
+
+	func search(criteria: HotelsSearchCriteria) async throws -> [Hotel]
 }

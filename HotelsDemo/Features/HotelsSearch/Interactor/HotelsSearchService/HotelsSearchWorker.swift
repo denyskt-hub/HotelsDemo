@@ -46,4 +46,12 @@ public final class HotelsSearchWorker: HotelsSearchService {
 
 		return TaskWrapper(wrapped: task)
 	}
+
+	public func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
+		let request = factory.makeSearchRequest(criteria: criteria)
+
+		let (data, response) = try await client.perform(request)
+
+		return try HotelsSearchResponseMapper.map(data, response)
+	}
 }

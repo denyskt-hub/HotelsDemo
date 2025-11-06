@@ -10,9 +10,13 @@ import Foundation
 extension DispatchingDecorator: HotelsSearchService where T: HotelsSearchService {
 	public func search(
 		criteria: HotelsSearchCriteria,
-		completion: @escaping (HotelsSearchService.Result) -> Void
+		completion: @Sendable @escaping (HotelsSearchService.Result) -> Void
 	) -> HTTPClientTask {
 		decoratee.search(criteria: criteria, completion: dispatching(completion))
+	}
+
+	public func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
+		try await decoratee.search(criteria: criteria)
 	}
 }
 

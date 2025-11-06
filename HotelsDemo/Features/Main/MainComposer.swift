@@ -11,6 +11,7 @@ public protocol MainFactory {
 	func makeMain() -> UIViewController
 }
 
+@MainActor
 public final class MainComposer: MainFactory {
 	private let client: HTTPClient
 	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
