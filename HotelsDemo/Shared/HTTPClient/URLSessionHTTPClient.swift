@@ -17,24 +17,6 @@ public final class URLSessionHTTPClient: HTTPClient {
 		}
 	}
 
-	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
-		let task = session.dataTask(with: request) { data, response, error in
-			guard let data = data else {
-				completion(.failure(error ?? URLError(.badServerResponse)))
-				return
-			}
-
-			guard let httpResponse = response as? HTTPURLResponse else {
-				completion(.failure(URLError(.badServerResponse)))
-				return
-			}
-
-			completion(.success((data, httpResponse)))
-		}
-		task.resume()
-		return URLSessionTaskWrapper(wrapped: task)
-	}
-
 	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
 		let (data, response) = try await session.data(for: request)
 

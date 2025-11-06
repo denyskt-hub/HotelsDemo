@@ -20,6 +20,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let httpMethod = "GET"
 		let (sut, client) = makeSUT()
 
+		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
 		sut.load(url: url) { _ in }
 
 		XCTAssertEqual(client.receivedRequests().first?.url, url)

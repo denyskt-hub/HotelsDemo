@@ -8,12 +8,14 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class RapidAPIHTTPClientTests: XCTestCase {
-	func test_perform_addsRapidAPIHeaders() {
+	func test_perform_addsRapidAPIHeaders() async throws {
 		let (sut, client) = makeSUT(apiHost: "test-host", apiKey: "test-key")
 
+		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
 		let dummyRequest = URLRequest(url: URL(string: "https://example.com")!)
-		sut.perform(dummyRequest) { _ in }
+		_ = try await sut.perform(dummyRequest)
 
 		let headers = client.receivedRequests().first?.allHTTPHeaderFields
 		XCTAssertEqual(headers?["X-RapidAPI-Host"], "test-host")
