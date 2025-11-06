@@ -11,19 +11,22 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	private let worker: DestinationSearchService
 	private let presenter: DestinationPickerPresentationLogic
 	private let destinations = DestinationsStore()
-	private let currentSearchTask = TaskStore()
+	private let debouncer: Debouncer
 
 	public init(
 		worker: DestinationSearchService,
-		presenter: DestinationPickerPresentationLogic
+		presenter: DestinationPickerPresentationLogic,
+		debouncer: Debouncer = DefaultDebouncer(delay: 0.5)
 	) {
 		self.worker = worker
 		self.presenter = presenter
+		self.debouncer = debouncer
 	}
 
 	public func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
-		Task {
-			await performSearch(query: request.query)
+		debouncer.asyncExecute { [weak self] in
+			guard let self else { return }
+			await self.performSearch(query: request.query)
 		}
 	}
 
@@ -42,23 +45,15 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 			return
 		}
 
-		await currentSearchTask.cancel()
-
-		let newTask = Task { [weak self] in
-			guard let self else { return }
-
-			do {
-				let destinations = try await self.worker.search(query: trimmedQuery)
-				await self.destinations.update(destinations)
-				await self.presentDestinations(destinations)
-			} catch is CancellationError {
-				Logger.log("Search task was canceled.", level: .info)
-			} catch {
-				await self.presentSearchError(error)
-			}
+		do {
+			let destinations = try await self.worker.search(query: trimmedQuery)
+			await self.destinations.update(destinations)
+			await self.presentDestinations(destinations)
+		} catch is CancellationError {
+			Logger.log("Search task was canceled.", level: .info)
+		} catch {
+			await self.presentSearchError(error)
 		}
-
-		await currentSearchTask.set(newTask)
 	}
 
 	private func clearSearchResults() async {
@@ -83,14 +78,14 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 	}
 }
 
-fileprivate actor TaskStore {
+public actor TaskStore {
 	private var task: Task<Void, Never>?
 
-	func set(_ newTask: Task<Void, Never>) {
+	public func set(_ newTask: Task<Void, Never>) {
 		task = newTask
 	}
 
-	func cancel() {
+	public func cancel() {
 		task?.cancel()
 		task = nil
 	}
