@@ -77,16 +77,3 @@ public final class DestinationPickerInteractor: DestinationPickerBusinessLogic, 
 		await presenter.presentSearchError(error)
 	}
 }
-
-public actor TaskStore {
-	private var task: Task<Void, Never>?
-
-	public func set(_ newTask: Task<Void, Never>) {
-		task = newTask
-	}
-
-	public func cancel() {
-		task?.cancel()
-		task = nil
-	}
-}

@@ -16,7 +16,7 @@ public final class ImmediateDebouncer: Debouncer {
 		action()
 	}
 
-	public func asyncExecute(_ action: @Sendable @escaping () async throws -> Void) {
-		Task { try await action() }
+	public func asyncExecute(_ action: @Sendable @escaping () async -> Void) {
+		Task { await action() }
 	}
 }

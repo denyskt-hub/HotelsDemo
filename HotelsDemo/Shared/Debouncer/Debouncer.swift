@@ -8,6 +8,6 @@
 import Foundation
 
 public protocol Debouncer: Sendable {
-	func execute(_ action: @escaping () -> Void)
-	func asyncExecute(_ action: @Sendable @escaping () async throws -> Void)
+	func execute(_ action: @Sendable @escaping () -> Void)
+	func asyncExecute(_ action: @Sendable @escaping () async -> Void)
 }
