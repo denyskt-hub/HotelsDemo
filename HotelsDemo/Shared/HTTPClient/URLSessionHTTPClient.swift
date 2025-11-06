@@ -34,4 +34,14 @@ public final class URLSessionHTTPClient: HTTPClient {
 		task.resume()
 		return URLSessionTaskWrapper(wrapped: task)
 	}
+
+	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+		let (data, response) = try await session.data(for: request)
+
+		guard let httpResponse = response as? HTTPURLResponse else {
+			throw URLError(.badServerResponse)
+		}
+
+		return (data, httpResponse)
+	}
 }

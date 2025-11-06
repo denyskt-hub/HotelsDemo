@@ -36,10 +36,10 @@ final class HTTPClientSpy: HTTPClient {
 		stream.continuation.yield(())
 
 		return try await withCheckedThrowingContinuation { continuation in
-			if let stubbedValues = stubbedValues {
+			if let stubbedValues = stubbedValues.withLock({ $0 }) {
 				continuation.resume(returning: stubbedValues)
 			}
-			if let stubbedError = stubbedError {
+			if let stubbedError = stubbedError.withLock({ $0 }) {
 				continuation.resume(throwing: stubbedError)
 			}
 		}
@@ -50,15 +50,15 @@ final class HTTPClientSpy: HTTPClient {
 		completion(result)
 	}
 
-	private var stubbedValues: (Data, HTTPURLResponse)?
-	private var stubbedError: Error?
+	private let stubbedValues = Mutex<(Data, HTTPURLResponse)?>(nil)
+	private let stubbedError = Mutex<Error?>(nil)
 
 	func completeWith(_ values: (Data, HTTPURLResponse)) {
-		stubbedValues = values
+		stubbedValues.withLock { $0 = values }
 	}
 
 	func completeWithError(_ error: Error) {
-		stubbedError = error
+		stubbedError.withLock { $0 = error }
 	}
 
 	func waitUntilStarted() async {

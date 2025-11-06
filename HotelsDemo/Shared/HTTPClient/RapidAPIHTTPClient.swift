@@ -35,4 +35,12 @@ public final class RapidAPIHTTPClient: HTTPClient {
 
 		return client.perform(request, completion: completion)
 	}
+
+	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+		var request = request
+		request.setValue(apiHost, forHTTPHeaderField: Headers.rapidAPIHost)
+		request.setValue(apiKey, forHTTPHeaderField: Headers.rapidAPIKey)
+
+		return try await client.perform(request)
+	}
 }
