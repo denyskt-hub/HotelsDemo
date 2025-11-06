@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ImageDataCache {
+public protocol ImageDataCache: Sendable {
 	typealias SaveResult = Result<Void, Error>
 	typealias DataResult = Result<Data?, Error>
 

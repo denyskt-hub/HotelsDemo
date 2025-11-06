@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotRequestDataFromCache() {
 		let (_, cache) = makeSUT()

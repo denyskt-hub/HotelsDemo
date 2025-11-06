@@ -19,7 +19,7 @@ public final class DispatchingDecorator<T> {
 		self.dispatcher = dispatcher
 	}
 
-	public func dispatching<Output>(_ completion: @escaping (Output) -> Void) -> (Output) -> Void {
+	public func dispatching<Output>(_ completion: @Sendable @escaping (Output) -> Void) -> @Sendable (Output) -> Void {
 		{ [weak self] value in
 			self?.dispatcher.dispatch {
 				completion(value)

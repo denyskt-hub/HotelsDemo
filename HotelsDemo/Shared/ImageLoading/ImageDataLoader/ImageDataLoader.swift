@@ -7,18 +7,17 @@
 
 import Foundation
 
-public protocol ImageDataLoaderTask {
+public protocol ImageDataLoaderTask: Sendable {
 	func cancel()
 }
 
-public protocol ImageDataLoader {
+public protocol ImageDataLoader: Sendable {
 	typealias LoadResult = Result<Data, Error>
-	typealias LoadCompletion = (LoadResult) -> Void
 
 	/// The completion handler can be invoked in any thread.
 	/// Clients are responsible to dispatch to appropriate threads, if needed.
 	@discardableResult
-	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask
+	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask
 }
 
 extension ImageDataLoader {

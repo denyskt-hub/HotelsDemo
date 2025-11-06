@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol ImageDataLoadingLogger {
+public protocol ImageDataLoadingLogger: Sendable {
 	func log(loadResult result: ImageDataLoader.LoadResult, for url: URL)
 }

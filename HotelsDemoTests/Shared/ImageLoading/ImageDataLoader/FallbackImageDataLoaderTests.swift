@@ -53,7 +53,7 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 }
 
 final class ImageDataLoaderSpy: ImageDataLoader {
-	private(set) var messages = [(url: URL, task: TaskSpy, completion: LoadCompletion)]()
+	private(set) var messages = [(url: URL, task: TaskSpy, completion: (LoadResult) -> Void)]()
 
 	var loadedURLs: [URL] { messages.map { $0.url } }
 
@@ -79,7 +79,7 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		}
 	}
 
-	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let task = TaskSpy()
 		task.onCancel = { [weak self] in self?.cancel() }
 

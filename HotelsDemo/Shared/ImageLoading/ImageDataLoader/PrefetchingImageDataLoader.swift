@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class PrefetchingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader
@@ -20,15 +21,19 @@ public final class PrefetchingImageDataLoader: ImageDataLoader {
 	}
 
 	private final class PrefetchingImageDataLoaderTaskWrapper: ImageDataLoaderTask {
-		var wrapped: ImageDataLoaderTask?
+		private let wrappedTask = Mutex<ImageDataLoaderTask?>(nil)
+
+		public func setWrappedTask(_ task: ImageDataLoaderTask?) {
+			wrappedTask.withLock { $0 = task }
+		}
 
 		public func cancel() {
-			wrapped?.cancel()
+			wrappedTask.withLock { $0?.cancel() }
 		}
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let task = PrefetchingImageDataLoaderTaskWrapper()
 
 		cache.data(forKey: url.absoluteString) { [weak self] result in
@@ -37,7 +42,7 @@ public final class PrefetchingImageDataLoader: ImageDataLoader {
 			if case let .success(data) = result, let data = data {
 				completion(.success(data))
 			} else {
-				task.wrapped = self.loader.load(url: url, completion: completion)
+				task.setWrappedTask(self.loader.load(url: url, completion: completion))
 			}
 		}
 

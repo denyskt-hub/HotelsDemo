@@ -33,7 +33,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		expect(sut, toLoad: .failure(clientError), when: {
-			client.completeWithResult(.failure(clientError))
+			client.completeWithError(clientError)
 		})
 	}
 
@@ -41,9 +41,9 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		let samples = [199, 201, 300, 400, 500]
-		for (index, statusCode) in samples.enumerated() {
+		for statusCode in samples {
 			expect(sut, toLoad: .failure(HTTPError.unexpectedStatusCode(statusCode)), when: {
-				client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: statusCode))), at: index)
+				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
@@ -52,7 +52,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		expect(sut, toLoad: .failure(ImageDataMapper.Error.invalidData), when: {
-			client.completeWithResult(.success((emptyData(), makeHTTPURLResponse(statusCode: 200))))
+			client.completeWith((emptyData(), makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
@@ -61,7 +61,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		expect(sut, toLoad: .success(nonEmptyData), when: {
-			client.completeWithResult(.success((nonEmptyData, makeHTTPURLResponse(statusCode: 200))))
+			client.completeWith((nonEmptyData, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
@@ -74,5 +74,24 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let client = HTTPClientSpy()
 		let sut = RemoteImageDataLoader(client: client)
 		return (sut, client)
+	}
+
+	func expect(
+		_ sut: ImageDataLoader,
+		toLoad expectedResult: ImageDataLoader.LoadResult,
+		when action: () -> Void,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) {
+		let exp = expectation(description: "Wait to complete")
+
+		action()
+
+		sut.load(url: anyURL()) { receivedResult in
+			XCTAssertDataResultEqual(receivedResult, expectedResult, file: file, line: line)
+			exp.fulfill()
+		}
+
+		wait(for: [exp], timeout: 1.0)
 	}
 }

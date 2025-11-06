@@ -23,7 +23,7 @@ public final class LocalImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		cache.data(forKey: url.absoluteString) { result in
 			let loadResult = LoadResult {
 				switch result {

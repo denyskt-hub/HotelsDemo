@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class DeduplicatingImageDataLoader: ImageDataLoader {
+public final class DeduplicatingImageDataLoader: ImageDataLoader, @unchecked Sendable {
 	private let loader: ImageDataLoader
 
 	private let queue = DispatchQueue(label: "\(DeduplicatingImageDataLoader.self)Queue")
@@ -15,11 +15,11 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 
 	private struct TaskEntry {
 		var task: ImageDataLoaderTask?
-		var completions: [UUID: LoadCompletion]
+		var completions: [UUID: (LoadResult) -> Void]
 	}
 
 	private struct CallbackTask: ImageDataLoaderTask {
-		let onCancel: () -> Void
+		let onCancel: @Sendable () -> Void
 
 		func cancel() { onCancel() }
 	}
@@ -29,7 +29,7 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let id = UUID()
 		var shouldStart = false
 

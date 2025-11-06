@@ -20,7 +20,7 @@ public final class LoggingImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		#if DEBUG
 		loader.load(url: url) { result in
 			self.logger.log(loadResult: result, for: url)

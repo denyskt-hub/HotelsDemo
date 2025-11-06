@@ -8,7 +8,7 @@
 import Foundation
 
 extension DispatchingDecorator: ImageDataLoader where T: ImageDataLoader {
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		decoratee.load(url: url, completion: dispatching(completion))
 	}
 }
