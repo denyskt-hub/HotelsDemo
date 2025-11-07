@@ -16,6 +16,9 @@ struct TaskStub: HTTPClientTask {
 final class HTTPClientSpy: HTTPClient {
 	let requests = Mutex<[URLRequest]>([])
 
+	private let stubbedValues = Mutex<(Data, HTTPURLResponse)?>(nil)
+	private let stubbedError = Mutex<Error?>(nil)
+
 	private let stream = AsyncStream<Void>.makeStream()
 
 	func receivedRequests() -> [URLRequest] {
@@ -35,9 +38,6 @@ final class HTTPClientSpy: HTTPClient {
 			}
 		}
 	}
-
-	private let stubbedValues = Mutex<(Data, HTTPURLResponse)?>(nil)
-	private let stubbedError = Mutex<Error?>(nil)
 
 	func completeWith(_ values: (Data, HTTPURLResponse)) {
 		stubbedValues.withLock { $0 = values }

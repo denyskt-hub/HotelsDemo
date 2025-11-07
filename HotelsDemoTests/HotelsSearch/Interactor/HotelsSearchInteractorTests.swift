@@ -7,58 +7,77 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class HotelsSearchInteractorTests: XCTestCase {
 	func test_init_doesNotRequestSearch() {
 		let (_, service, _) = makeSUT()
 
-		XCTAssertTrue(service.messages.isEmpty)
+		XCTAssertTrue(service.receivedMessages().isEmpty)
 	}
 
-	func test_search_requestsSearchWithCorrectCriteria() {
+	func test_search_requestsSearchWithCorrectCriteria() async {
 		let criteria = anySearchCriteria()
 		let (sut, service, _) = makeSUT(criteria: criteria)
 
 		sut.handleViewDidAppear(request: .init())
+		await service.waitUntilStarted()
 
-		XCTAssertEqual(service.messages, [.search(criteria)])
+		XCTAssertEqual(service.receivedMessages(), [.search(criteria)])
 	}
 
-	func test_search_presentsErrorOnServiceError() {
+	func test_search_presentsErrorOnServiceError() async {
 		let serviceError = anyNSError()
 		let (sut, service, presenter) = makeSUT()
 
 		sut.handleViewDidAppear(request: .init())
-		service.completeWithResult(.failure(serviceError))
 
-		XCTAssertEqual(presenter.messages.last, .presentSearchError(serviceError))
+		await service.waitUntilStarted()
+		service.completeWithError(serviceError)
+
+		await presenter.waitUntilPresented(expected: 3)
+		XCTAssertEqual(presenter.messages, [
+			.presentSearchLoading(true),
+			.presentSearchError(serviceError),
+			.presentSearchLoading(false)
+		])
 	}
 
-	func test_search_presentsHotelsOnServiceSuccess() {
+	func test_search_presentsHotelsOnServiceSuccess() async {
 		let hotels = [anyHotel(), anyHotel()]
 		let (sut, service, presenter) = makeSUT()
 
 		sut.handleViewDidAppear(request: .init())
-		service.completeWithResult(.success(hotels))
 
-		XCTAssertEqual(presenter.messages.last, .presentSearch(.init(hotels: hotels)))
+		await service.waitUntilStarted()
+		service.completeWithHotels(hotels)
+
+		await presenter.waitUntilPresented(expected: 3)
+		XCTAssertEqual(presenter.messages, [
+			.presentSearchLoading(true),
+			.presentSearch(.init(hotels: hotels)),
+			.presentSearchLoading(false)
+		])
 	}
 
-	func test_filters_presentsFilters() {
+	func test_filters_presentsFilters() async {
 		let filters = anyHotelFilters()
 		let (sut, _, presenter) = makeSUT()
 
 		sut.doFetchFilters(request: .init())
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages.last, .presentFilters(.init(filters: filters)))
 	}
 
-	func test_updateFilters_presentsUpdateFilters() {
+	func test_updateFilters_presentsUpdateFilters() async {
 		let filters = anyHotelFilters()
 		let (sut, _, presenter) = makeSUT()
 
 		sut.handleFilterSelection(request: .init(filters: filters))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages.last, .presentUpdateFilter(.init(hotels: [])))
 	}
 
@@ -94,17 +113,37 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 		case search(HotelsSearchCriteria)
 	}
 
-	private(set) var messages = [Message]()
-	private var completions = [(HotelsSearchService.Result) -> Void]()
+	private let messages = Mutex<[Message]>([])
+	private let continuations = Mutex<[CheckedContinuation<[Hotel], Error>]>([])
 
-	func search(criteria: HotelsSearchCriteria, completion: @escaping (HotelsSearchService.Result) -> Void) -> HTTPClientTask {
-		messages.append(.search(criteria))
-		completions.append(completion)
-		return TaskStub()
+	private let stream = AsyncStream<Void>.makeStream()
+
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
 	}
 
-	func completeWithResult(_ result: HotelsSearchService.Result, at index: Int = 0) {
-		completions[index](result)
+	func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
+		messages.withLock { $0.append(.search(criteria)) }
+		stream.continuation.yield(())
+
+		return try await withCheckedThrowingContinuation { continuation in
+			continuations.withLock { $0.append(continuation) }
+		}
+	}
+
+	func completeWithHotels(_ hotels: [Hotel], at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: hotels)
+	}
+
+	func completeWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
+	}
+
+	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }
 
@@ -119,23 +158,37 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 
 	private(set) var messages = [Message]()
 
+	private let stream = AsyncStream<Void>.makeStream()
+
 	func presentSearch(response: HotelsSearchModels.Search.Response) {
 		messages.append(.presentSearch(response))
+		stream.continuation.yield(())
 	}
 
 	func presentSearchLoading(_ isLoading: Bool) {
 		messages.append(.presentSearchLoading(isLoading))
+		stream.continuation.yield(())
 	}
 
 	func presentSearchError(_ error: Error) {
 		messages.append(.presentSearchError(error as NSError))
+		stream.continuation.yield(())
 	}
 
 	func presentFilters(response: HotelsSearchModels.FetchFilters.Response) {
 		messages.append(.presentFilters(response))
+		stream.continuation.yield(())
 	}
 
 	func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response) {
 		messages.append(.presentUpdateFilter(response))
+		stream.continuation.yield(())
+	}
+
+	func waitUntilPresented(expected count: Int = 1) async {
+		var iterator = stream.stream.makeAsyncIterator()
+		for _ in 0..<count {
+			_ = await iterator.next()
+		}
 	}
 }

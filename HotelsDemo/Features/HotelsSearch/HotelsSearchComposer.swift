@@ -61,7 +61,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 				url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
 			),
 			client: client
-		).dispatch(to: MainQueueDispatcher())
+		)
 
 		return HotelsSearchContext(
 			provider: provider,

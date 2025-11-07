@@ -15,13 +15,14 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		XCTAssertEqual(client.receivedRequests(), [])
 	}
 
-	func test_load_performsRequest() {
+	func test_load_performsRequest() async {
 		let url = URL(string: "http://a-url.com/some-path/to/image.jpg")!
 		let httpMethod = "GET"
 		let (sut, client) = makeSUT()
 
 		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
 		sut.load(url: url) { _ in }
+		await client.waitUntilStarted()
 
 		XCTAssertEqual(client.receivedRequests().first?.url, url)
 		XCTAssertEqual(client.receivedRequests().first?.httpMethod, httpMethod)

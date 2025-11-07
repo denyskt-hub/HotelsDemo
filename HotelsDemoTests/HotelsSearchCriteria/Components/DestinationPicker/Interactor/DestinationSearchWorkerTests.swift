@@ -119,7 +119,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 			receivedError = error as NSError
 		}
 
-		XCTAssertEqual(expectedError as NSError, receivedError, file: file, line: line)
+		XCTAssertEqual(receivedError, expectedError as NSError, file: file, line: line)
 	}
 
 	private func anyValidValues() -> (Data, HTTPURLResponse) {

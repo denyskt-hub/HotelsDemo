@@ -19,34 +19,6 @@ public final class HotelsSearchWorker: HotelsSearchService {
 		self.client = client
 	}
 
-	private struct TaskWrapper: HTTPClientTask {
-		let wrapped: Task<Void, Never>
-
-		func cancel() {
-			wrapped.cancel()
-		}
-	}
-
-	@discardableResult
-	public func search(
-		criteria: HotelsSearchCriteria,
-		completion: @Sendable @escaping (HotelsSearchService.Result) -> Void
-	) -> HTTPClientTask {
-		let request = factory.makeSearchRequest(criteria: criteria)
-
-		let task = Task {
-			do {
-				let (data, response) = try await client.perform(request)
-				let result = try HotelsSearchResponseMapper.map(data, response)
-				completion(.success(result))
-			} catch {
-				completion(.failure(error))
-			}
-		}
-
-		return TaskWrapper(wrapped: task)
-	}
-
 	public func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
 		let request = factory.makeSearchRequest(criteria: criteria)
 
