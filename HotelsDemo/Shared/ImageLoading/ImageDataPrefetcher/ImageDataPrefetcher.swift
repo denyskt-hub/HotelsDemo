@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class ImageDataPrefetcher {
+public final class ImageDataPrefetcher: @unchecked Sendable {
 	private let queue = DispatchQueue(label: "\(ImageDataPrefetcher.self)Queue")
 
 	private let loader: ImageDataLoader

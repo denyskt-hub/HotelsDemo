@@ -14,11 +14,11 @@ public protocol MainFactory {
 @MainActor
 public final class MainComposer: MainFactory {
 	private let client: HTTPClient
-	private let makeSearchCriteria: (HotelsSearchCriteriaDelegate) -> UIViewController
+	private let makeSearchCriteria: @MainActor (HotelsSearchCriteriaDelegate) -> UIViewController
 
 	public init(
 		client: HTTPClient,
-		searchCriteriaFactory: @escaping (HotelsSearchCriteriaDelegate) -> UIViewController
+		searchCriteriaFactory: @escaping @MainActor (HotelsSearchCriteriaDelegate) -> UIViewController
 	) {
 		self.client = client
 		self.makeSearchCriteria = searchCriteriaFactory

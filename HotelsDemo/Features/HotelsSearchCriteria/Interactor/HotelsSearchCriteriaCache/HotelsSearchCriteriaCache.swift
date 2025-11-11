@@ -7,8 +7,8 @@
 
 import Foundation
 
-public protocol HotelsSearchCriteriaCache {
+public protocol HotelsSearchCriteriaCache: Sendable {
 	typealias SaveResult = Result<Void, Error>
 
-	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void)
+	func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void)
 }

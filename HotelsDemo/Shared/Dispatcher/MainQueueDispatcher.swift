@@ -10,7 +10,7 @@ import Foundation
 public final class MainQueueDispatcher: Dispatcher {
 	private let dispatcher = QueueDispatcher(queue: .main)
 
-	public func dispatch(_ completion: @escaping () -> Void) {
+	public func dispatch(_ completion: @Sendable @escaping () -> Void) {
 		dispatcher.dispatch(completion)
 	}
 }

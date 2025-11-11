@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ImageDataCacheLogger {
+public protocol ImageDataCacheLogger: Sendable {
 	func log(saveResult: ImageDataCache.SaveResult, forKey key: String)
 	func log(dataResult: ImageDataCache.DataResult, forKey key: String)
 }

@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class HotelsSearchCriteriaRouterTests: XCTestCase {
 	func test_routeToDestinationPicker_presentsDestinationVC() {
 		let container = makeSUT()

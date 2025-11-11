@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class DefaultHotelsSearchCriteriaProviderTests: XCTestCase {
 	func test_retrieve_deliversDefaultSearchCriteria() {
 		let currentDate = "26.06.2025".date()
@@ -15,7 +16,7 @@ final class DefaultHotelsSearchCriteriaProviderTests: XCTestCase {
 			calendar: .gregorian(),
 			currentDate: { currentDate }
 		)
-		let sut = makeSUT(calendar: .gregorian(), currentDate: { currentDate })
+		let sut = makeSUT(calendar: .gregorian(), currentDate: currentDate)
 
 		let exp = expectation(description: "Wait for completion")
 
@@ -36,11 +37,11 @@ final class DefaultHotelsSearchCriteriaProviderTests: XCTestCase {
 
 	private func makeSUT(
 		calendar: Calendar,
-		currentDate: @escaping () -> Date
+		currentDate: Date
 	) -> DefaultHotelsSearchCriteriaProvider {
 		DefaultHotelsSearchCriteriaProvider(
 			calendar: calendar,
-			currentDate: currentDate
+			currentDate: { currentDate }
 		)
 	}
 }

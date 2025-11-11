@@ -12,7 +12,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 	func test_init_doesNotMessageLoader() {
 		let (_, loader) = makeSUT()
 
-		XCTAssertTrue(loader.messages.isEmpty)
+		XCTAssertTrue(loader.receivedMessages().isEmpty)
 	}
 
 	func test_load_deliversErrorOnLoaderError() {

@@ -8,19 +8,23 @@
 import UIKit
 
 public final class ImageDataPresenter: ImageDataPresentationLogic {
-	public weak var view: ImageDisplayLogic?
+	private let view: ImageDisplayLogic
+
+	public init(view: ImageDisplayLogic) {
+		self.view = view
+	}
 
 	public func presentImageData(_ data: Data) {
 		guard let image = UIImage(data: data) else { return }
-		view?.displayImage(image)
+		view.displayImage(image)
 	}
 
 	public func presentImageDataError(_ error: Error) {
 		guard let placeholderImage = UIImage(systemName: "photo") else { return }
-		view?.displayPlaceholderImage(placeholderImage)
+		view.displayPlaceholderImage(placeholderImage)
 	}
 
 	public func presentLoading(_ isLoading: Bool) {
-		view?.displayLoading(isLoading)
+		view.displayLoading(isLoading)
 	}
 }

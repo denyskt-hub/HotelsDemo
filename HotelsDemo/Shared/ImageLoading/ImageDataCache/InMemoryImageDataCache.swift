@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class InMemoryImageDataCache: ImageDataCache {
+public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 	private let queue = DispatchQueue(
 		label: "\(InMemoryImageDataCache.self)Queue",
 		qos: .userInitiated,
@@ -34,7 +34,7 @@ public final class InMemoryImageDataCache: ImageDataCache {
 		self.sizeLimitInBytes = sizeLimitInBytes
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ data: Data, forKey key: String, completion: @Sendable @escaping (SaveResult) -> Void) {
 		queue.async(flags: .barrier) { [weak self] in
 			guard let self = self else { return }
 
@@ -49,7 +49,7 @@ public final class InMemoryImageDataCache: ImageDataCache {
 		}
 	}
 
-	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
+	public func data(forKey key: String, completion: @Sendable @escaping (DataResult) -> Void) {
 		queue.async(flags: .barrier) { [weak self] in
 			guard let self = self else { return }
 

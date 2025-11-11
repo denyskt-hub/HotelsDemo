@@ -7,13 +7,14 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 @MainActor
 final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotRequestDataFromCache() {
 		let (_, cache) = makeSUT()
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
 	func test_load_requestsDataFromCacheUsingURLKey() {
@@ -23,7 +24,7 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 		sut.load(url: url) { _ in }
 
-		XCTAssertEqual(cache.messages, [.data(key)])
+		XCTAssertEqual(cache.receivedMessages(), [.data(key)])
 	}
 
 	func test_load_deliversErrorOnCacheError() {
@@ -70,26 +71,30 @@ final class ImageDataCacheSpy: ImageDataCache {
 		case data(String)
 	}
 
-	private(set) var messages = [Message]()
+	private let messages = Mutex<[Message]>([])
 
-	private var saveCompletions = [(SaveResult) -> Void]()
-	private var dataCompletions = [(DataResult) -> Void]()
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
+	}
+
+	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
+	private let dataCompletions =  Mutex<[((DataResult) -> Void)]>([])
 
 	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
-		messages.append(.save(data, key))
-		saveCompletions.append(completion)
+		messages.withLock { $0.append(.save(data, key)) }
+		saveCompletions.withLock { $0.append(completion) }
 	}
 	
 	func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
-		messages.append(.data(key))
-		dataCompletions.append(completion)
+		messages.withLock { $0.append(.data(key)) }
+		dataCompletions.withLock { $0.append(completion) }
 	}
 
 	func completeSaveWith(_ error: Error, at index: Int = 0) {
-		saveCompletions[index](.failure(error))
+		saveCompletions.withLock({ $0 })[index](.failure(error))
 	}
 
 	func completeDataWith(_ result: DataResult, at index: Int = 0) {
-		dataCompletions[index](result)
+		dataCompletions.withLock({ $0 })[index](result)
 	}
 }

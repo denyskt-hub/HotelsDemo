@@ -124,10 +124,10 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 
 	func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
 		messages.withLock { $0.append(.search(criteria)) }
-		stream.continuation.yield(())
 
 		return try await withCheckedThrowingContinuation { continuation in
 			continuations.withLock { $0.append(continuation) }
+			stream.continuation.yield(())
 		}
 	}
 

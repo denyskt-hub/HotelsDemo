@@ -19,7 +19,7 @@ public final class FallbackHotelsSearchCriteriaProvider: HotelsSearchCriteriaPro
 		self.secondary = secondary
 	}
 
-	public func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
+	public func retrieve(completion: @Sendable @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
 		primary.retrieve { [weak self] result in
 			guard let self else { return }
 

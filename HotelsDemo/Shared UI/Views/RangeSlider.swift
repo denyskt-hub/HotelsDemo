@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class RangeSlider: UIControl {
+public class RangeSlider: UIControl, RangeSliderPositionProvider {
 	public override var frame: CGRect {
 		didSet {
 			updateLayerFrames()
@@ -76,7 +76,7 @@ public class RangeSlider: UIControl {
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
 
-		trackLayer.rangeSlider = self
+		trackLayer.positionProvider = self
 		trackLayer.contentsScale = UIScreen.main.scale
 		layer.addSublayer(trackLayer)
 
@@ -175,25 +175,41 @@ extension RangeSlider {
 	private func boundValue(_ value: CGFloat, toLowerValue lowerValue: CGFloat, upperValue: CGFloat) -> CGFloat {
 		min(max(value, lowerValue), upperValue)
 	}
+
+	public func positionForLowerValue() -> CGFloat {
+		positionForValue(lowerValue)
+	}
+
+	public func positionForUpperValue() -> CGFloat {
+		positionForValue(upperValue)
+	}
+}
+
+protocol RangeSliderPositionProvider: AnyObject {
+	func positionForLowerValue() -> CGFloat
+	func positionForUpperValue() -> CGFloat
 }
 
 private class RangeSliderTrackLayer: CALayer {
-	internal weak var rangeSlider: RangeSlider?
+	internal weak var positionProvider: RangeSliderPositionProvider?
+
+	internal var trackTintColor: UIColor = .gray
+	internal var trackHighlightTintColor: UIColor = .blue
 
 	public override func draw(in ctx: CGContext) {
-		guard let slider = rangeSlider else {
+		guard let positionProvider = positionProvider else {
 			return
 		}
 
 		let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
 		ctx.addPath(path.cgPath)
 
-		ctx.setFillColor(slider.trackTintColor.cgColor)
+		ctx.setFillColor(trackTintColor.cgColor)
 		ctx.fillPath()
 
-		ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
-		let lowerValuePosition = slider.positionForValue(slider.lowerValue)
-		let upperValuePosition = slider.positionForValue(slider.upperValue)
+		ctx.setFillColor(trackHighlightTintColor.cgColor)
+		let lowerValuePosition = positionProvider.positionForLowerValue()
+		let upperValuePosition = positionProvider.positionForUpperValue()
 		let rect = CGRect(
 			x: lowerValuePosition,
 			y: 0,

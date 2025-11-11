@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol HotelsSearchRoutingLogic {
 	func routeToHotelFiltersPicker(_ filters: HotelFilters)
 }

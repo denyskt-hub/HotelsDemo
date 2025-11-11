@@ -7,12 +7,13 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 	func test_init_doesNotMessageStore() {
 		let (_, store, _) = makeSUT()
 
-		XCTAssertTrue(store.messages.isEmpty)
+		XCTAssertTrue(store.receivedMessages().isEmpty)
 	}
 
 	func test_save_validatesSearchCriteria() {
@@ -21,18 +22,18 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 		
 		sut.save(criteria) { _ in }
 		
-		XCTAssertEqual(validator.validated, [criteria])
+		XCTAssertEqual(validator.validated(), [criteria])
 	}
 
 	func test_save_usesValidatedCriteriaForSaving() {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		validator.stub(valid)
 
 		sut.save(invalid) { _ in }
 
-		XCTAssertEqual(store.messages, [.save(valid)])
+		XCTAssertEqual(store.receivedMessages(), [.save(valid)])
 	}
 
 	func test_save_deliversErrorOnStoreError() {
@@ -100,7 +101,7 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		validator.stub(valid)
 
 		let exp = expectation(description: "Wait for completion")
 
@@ -108,7 +109,7 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 			switch result {
 			case let .success(retrieved):
 				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.messages, [.retrieve, .save(valid)])
+				XCTAssertEqual(store.receivedMessages(), [.retrieve, .save(valid)])
 
 			case let .failure(error):
 				XCTFail("Expected success, got \(error) instead")
@@ -124,7 +125,7 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() {
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		validator.stub(valid)
 
 		let exp = expectation(description: "Wait for completion")
 
@@ -132,7 +133,7 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 			switch result {
 			case let .success(retrieved):
 				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.messages, [.retrieve])
+				XCTAssertEqual(store.receivedMessages(), [.retrieve])
 
 			case let .failure(error):
 				XCTFail("Expected success, got \(error) instead")
@@ -148,7 +149,11 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (sut: ValidatingHotelsSearchCriteriaStore, store: HotelsSearchCriteriaStoreSpy, validator: HotelsSearchCriteriaValidatorSpy) {
+	private func makeSUT() -> (
+		sut: ValidatingHotelsSearchCriteriaStore,
+		store: HotelsSearchCriteriaStoreSpy,
+		validator: HotelsSearchCriteriaValidatorSpy
+	) {
 		let store = HotelsSearchCriteriaStoreSpy()
 		let validator = HotelsSearchCriteriaValidatorSpy()
 		let sut = ValidatingHotelsSearchCriteriaStore(
@@ -165,37 +170,48 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		case retrieve
 	}
 
-	private(set) var messages: [Message] = []
+	private let messages = Mutex<[Message]>([])
 
-	private var saveCompletions: [((SaveResult) -> Void)] = []
-	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
+	}
+
+	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
+	private let retrieveCompletions =  Mutex<[((RetrieveResult) -> Void)]>([])
 
 	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		messages.append(.save(criteria))
-		saveCompletions.append(completion)
+		messages.withLock { $0.append(.save(criteria)) }
+		saveCompletions.withLock { $0.append(completion) }
 	}
 	
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		messages.append(.retrieve)
-		retrieveCompletions.append(completion)
+		messages.withLock { $0.append(.retrieve) }
+		retrieveCompletions.withLock { $0.append(completion) }
 	}
 
 	func completeSave(with result: SaveResult, at index: Int = 0) {
-		saveCompletions[index](result)
+		saveCompletions.withLock({ $0 })[index](result)
 	}
 
 	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
-		retrieveCompletions[index](result)
+		retrieveCompletions.withLock({ $0 })[index](result)
 	}
 }
 
 final class HotelsSearchCriteriaValidatorSpy: HotelsSearchCriteriaValidator {
-	private(set) var validated = [HotelsSearchCriteria]()
+	private let validatedCriterias = Mutex<[HotelsSearchCriteria]>([])
+	private let stub = Mutex<HotelsSearchCriteria?>(nil)
 
-	var stubbedResult: HotelsSearchCriteria?
+	func validated() -> [HotelsSearchCriteria] {
+		validatedCriterias.withLock { $0 }
+	}
+
+	func stub(_ stub: HotelsSearchCriteria) {
+		self.stub.withLock { $0 = stub }
+	}
 
 	func validate(_ criteria: HotelsSearchCriteria) -> HotelsSearchCriteria {
-		validated.append(criteria)
-		return stubbedResult ?? criteria
+		validatedCriterias.withLock { $0.append(criteria) }
+		return stub.withLock({ $0 }) ?? criteria
 	}
 }

@@ -123,10 +123,10 @@ final class DestinationSearchServiceSpy: DestinationSearchService {
 
 	func search(query: String) async throws -> [Destination] {
 		queries.withLock { $0.append(query) }
-		stream.continuation.yield(())
 
 		return try await withCheckedThrowingContinuation { continuation in
 			continuations.withLock { $0.append(continuation) }
+			stream.continuation.yield(())
 		}
 	}
 

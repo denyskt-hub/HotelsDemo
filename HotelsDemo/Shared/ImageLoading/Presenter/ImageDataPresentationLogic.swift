@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol ImageDataPresentationLogic {
+@MainActor
+public protocol ImageDataPresentationLogic: Sendable {
 	func presentImageData(_ data: Data)
 	func presentImageDataError(_ error: Error)
 	func presentLoading(_ isLoading: Bool)

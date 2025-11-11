@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Synchronization
 
 public enum SharedImageDataPrefetcher {
-	private static var _instance: ImageDataPrefetcher = defaultPrefetcher()
+	private static let _instance = Mutex(defaultPrefetcher())
 
 	public static var instance: ImageDataPrefetcher {
-		get { _instance }
-		set { _instance = newValue }
+		get { _instance.withLock({ $0 }) }
+		set { _instance.withLock({ $0 = newValue }) }
 	}
 
 	private static func defaultPrefetcher() -> ImageDataPrefetcher {

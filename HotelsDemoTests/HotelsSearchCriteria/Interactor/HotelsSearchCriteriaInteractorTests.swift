@@ -7,39 +7,44 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class HotelsSearchCriteriaInteractorTests: XCTestCase {
-	func test_doFetchCriteria_presentLoadErrorOnProviderError() {
+	func test_doFetchCriteria_presentLoadErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchCriteria(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_doFetchCriteria_presentCriteriaOnProviderSuccess() {
+	func test_doFetchCriteria_presentCriteriaOnProviderSuccess() async {
 		let criteria = anySearchCriteria()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchCriteria(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentCriteria(.init(criteria: criteria))])
 	}
 
-	func test_doFetchDateRange_presentLoadErrorOnProviderError() {
+	func test_doFetchDateRange_presentLoadErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchDateRange(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_doFetchDateRange_presentDatesOnProviderSuccess() {
+	func test_doFetchDateRange_presentDatesOnProviderSuccess() async {
 		let checkInDate = "27.06.2025".date()
 		let checkOutDate = "28.06.2025".date()
 		let criteria = makeSearchCriteria(checkInDate: checkInDate, checkOutDate: checkOutDate)
@@ -48,26 +53,29 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		sut.doFetchDateRange(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDates(.init(checkInDate: checkInDate, checkOutDate: checkOutDate))])
 	}
 
-	func test_doFetchRoomGuests_presentLoadErrorOnProviderError() {
+	func test_doFetchRoomGuests_presentLoadErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.doFetchRoomGuests(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_doFetchRoomGuests_presentRoomGuestsOnProviderSuccess() {
+	func test_doFetchRoomGuests_presentRoomGuestsOnProviderSuccess() async {
 		let criteria = anySearchCriteria()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchRoomGuests(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [
 			.presentRoomGuests(
 				.init(roomGuests: .init(
@@ -79,37 +87,40 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		])
 	}
 
-	func test_doSearch_presentLoadErrorOnProviderError() {
+	func test_doSearch_presentLoadErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doSearch(request: .init())
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
 	}
 
-	func test_doSearch_presentSearchOnSuccess() {
+	func test_doSearch_presentSearchOnSuccess() async {
 		let criteria = anySearchCriteria()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doSearch(request: .init())
 		provider.completeRetrieve(with: .success(criteria))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentSearch(.init(criteria: criteria))])
 	}
 
-	func test_handleDestinationSelection_presentUpdateErrorOnProviderError() {
+	func test_handleDestinationSelection_presentUpdateErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_handleDestinationSelection_presentUpdateErrorOnCacheError() {
+	func test_handleDestinationSelection_presentUpdateErrorOnCacheError() async {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 		
@@ -117,10 +128,11 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_handleDestinationSelection_presentUpdateDestinationOnSucess() {
+	func test_handleDestinationSelection_presentUpdateDestinationOnSucess() async {
 		let destination = anyDestination()
 		let criteria = anySearchCriteria()
 		var expectedCriteria = criteria
@@ -131,20 +143,22 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
 	}
 
-	func test_handleDateRangeSelection_presentUpdateErrorOnProviderError() {
+	func test_handleDateRangeSelection_presentUpdateErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_handleDateRangeSelection_presentUpdateErrorOnCacheError() {
+	func test_handleDateRangeSelection_presentUpdateErrorOnCacheError() async {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 
@@ -152,10 +166,11 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_handleDateRangeSelection_presentUpdateDatesOnSucess() {
+	func test_handleDateRangeSelection_presentUpdateDatesOnSucess() async {
 		let checkInDate = "27.06.2025".date()
 		let checkOutDate = "28.06.2025".date()
 		let criteria = anySearchCriteria()
@@ -168,20 +183,22 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateDates(.init(criteria: expectedCriteria))])
 	}
 
-	func test_handleRoomGuestsSelection_presentUpdateErrorOnProviderError() {
+	func test_handleRoomGuestsSelection_presentUpdateErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
 		provider.completeRetrieve(with: .failure(providerError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
 	}
 
-	func test_handleRoomGuestsSelection_presentUpdateErrorOnCacheError() {
+	func test_handleRoomGuestsSelection_presentUpdateErrorOnCacheError() async {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
 
@@ -189,10 +206,11 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(anySearchCriteria()))
 		cache.completeSave(with: .failure(cacheError))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
 	}
 
-	func test_handleRoomGuestsSelection_presentUpdateRoomGuestsOnSuccess() {
+	func test_handleRoomGuestsSelection_presentUpdateRoomGuestsOnSuccess() async {
 		let rooms = 2
 		let adults = 2
 		let childrenAge = [1]
@@ -207,6 +225,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		provider.completeRetrieve(with: .success(criteria))
 		cache.completeSave(with: .success(()))
 
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
 	}
 
@@ -243,26 +262,26 @@ final class HotelsSearchCriteriaProviderStub: HotelsSearchCriteriaProvider {
 }
 
 final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
-	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
+	private let retrieveCompletions = Mutex<[((RetrieveResult) -> Void)]>([])
 
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		retrieveCompletions.append(completion)
+	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
+		retrieveCompletions.withLock { $0.append(completion) }
 	}
 
 	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
-		retrieveCompletions[index](result)
+		retrieveCompletions.withLock({ $0 })[index](result)
 	}
 }
 
 final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
-	private var saveCompletions: [((SaveResult) -> Void)] = []
+	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
 
-	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		saveCompletions.append(completion)
+	func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
+		saveCompletions.withLock { $0.append(completion) }
 	}
 
 	func completeSave(with result: SaveResult, at index: Int = 0) {
-		saveCompletions[index](result)
+		saveCompletions.withLock({ $0 })[index](result)
 	}
 }
 
@@ -281,39 +300,55 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 
 	private(set) var messages = [Message]()
 
+	private let stream = AsyncStream<Void>.makeStream()
+
 	func presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response) {
 		messages.append(.presentCriteria(response))
+		stream.continuation.yield(())
 	}
 
 	func presentDates(response: HotelsSearchCriteriaModels.FetchDates.Response) {
 		messages.append(.presentDates(response))
+		stream.continuation.yield(())
 	}
 
 	func presentRoomGuests(response: HotelsSearchCriteriaModels.FetchRoomGuests.Response) {
 		messages.append(.presentRoomGuests(response))
+		stream.continuation.yield(())
 	}
 	
 	func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response) {
 		messages.append(.presentUpdateDestination(response))
+		stream.continuation.yield(())
 	}
 	
 	func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response) {
 		messages.append(.presentUpdateDates(response))
+		stream.continuation.yield(())
 	}
 	
 	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
+		stream.continuation.yield(())
 	}
 
 	func presentSearch(response: HotelsSearchCriteriaModels.Search.Response) {
 		messages.append(.presentSearch(response))
+		stream.continuation.yield(())
 	}
 
 	func presentLoadError(_ error: Error) {
 		messages.append(.presentLoadError(error as NSError))
+		stream.continuation.yield(())
 	}
 
 	func presentUpdateError(_ error: Error) {
 		messages.append(.presentUpdateError(error as NSError))
+		stream.continuation.yield(())
+	}
+
+	func waitUntilPresented() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }

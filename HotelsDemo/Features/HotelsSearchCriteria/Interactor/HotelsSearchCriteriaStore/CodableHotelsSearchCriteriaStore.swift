@@ -74,7 +74,7 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		self.storeURL = storeURL
 	}
 
-	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
@@ -86,7 +86,7 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
 		queue.async {
 			do {
 				let data = try Data(contentsOf: self.storeURL)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RoomGuests: Equatable {
+public struct RoomGuests: Equatable, Sendable {
 	public let rooms: Int
 	public let adults: Int
 	public let childrenAge: [Int]

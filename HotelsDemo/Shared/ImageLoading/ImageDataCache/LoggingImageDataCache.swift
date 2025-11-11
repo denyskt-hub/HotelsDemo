@@ -19,7 +19,7 @@ public final class LoggingImageDataCache: ImageDataCache {
 		self.logger = logger
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ data: Data, forKey key: String, completion: @Sendable @escaping (SaveResult) -> Void) {
 		#if DEBUG
 		cache.save(data, forKey: key) { result in
 			self.logger.log(saveResult: result, forKey: key)
@@ -30,7 +30,7 @@ public final class LoggingImageDataCache: ImageDataCache {
 		#endif
 	}
 
-	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
+	public func data(forKey key: String, completion: @Sendable @escaping (DataResult) -> Void) {
 		#if DEBUG
 		cache.data(forKey: key) { result in
 			self.logger.log(dataResult: result, forKey: key)

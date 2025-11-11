@@ -7,6 +7,7 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 final class InMemoryImageDataCacheTests: XCTestCase {
 	func test_dataForKey_deliversNilOnEmptyCache() {
@@ -207,32 +208,32 @@ final class InMemoryImageDataCacheTests: XCTestCase {
 	private func save(to sut: ImageDataCache, data: Data, forKey key: String) -> Error? {
 		let exp = expectation(description: "Wait for completion")
 
-		var receivedError: Error?
+		let receivedError = Mutex<Error?>(nil)
 		sut.save(data, forKey: key) { result in
 			if case let .failure(error) = result {
-				receivedError = error
+				receivedError.withLock { $0 = error }
 			}
 			exp.fulfill()
 		}
 
 		wait(for: [exp], timeout: 0.1)
-		return receivedError
+		return receivedError.withLock { $0 }
 	}
 
 	@discardableResult
 	private func getData(from sut: ImageDataCache, forKey key: String) -> Data? {
 		let exp = expectation(description: "Wait for completion")
 
-		var receivedData: Data?
+		let receivedData = Mutex<Data?>(nil)
 		sut.data(forKey: key) { result in
 			if case let .success(data) = result {
-				receivedData = data
+				receivedData.withLock { $0 = data }
 			}
 			exp.fulfill()
 		}
 
 		wait(for: [exp], timeout: 0.1)
-		return receivedData
+		return receivedData.withLock { $0 }
 	}
 }
 

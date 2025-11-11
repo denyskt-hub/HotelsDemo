@@ -7,6 +7,7 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_load_deliversPrimaryResultOnSuccess() {
@@ -53,25 +54,44 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 }
 
 final class ImageDataLoaderSpy: ImageDataLoader {
-	private(set) var messages = [(url: URL, task: TaskSpy, completion: (LoadResult) -> Void)]()
+	typealias Message = (url: URL, task: TaskSpy, completion: (LoadResult) -> Void)
 
-	var loadedURLs: [URL] { messages.map { $0.url } }
+	private let messages = Mutex<[Message]>([])
+
+	var loadedURLs: [URL] { receivedMessages().map { $0.url } }
 
 	var cancelledURLs: [URL] {
-		messages
+		receivedMessages()
 			.filter { $0.task.cancelCallCount > 0 }
 			.map { $0.url }
 	}
 
-	var tasks: [TaskSpy] { messages.map { $0.task } }
+	var tasks: [TaskSpy] { receivedMessages().map { $0.task } }
 
-	var onLoad: (() -> Void)?
-	var onCancel: (() -> Void)?
+	private let _onLoad = Mutex<(() -> Void)?>(nil)
+	var onLoad: (() -> Void)? {
+		get { _onLoad.withLock { $0 } }
+		set { _onLoad.withLock { $0 = newValue } }
+	}
+
+	private let _onCancel = Mutex<(() -> Void)?>(nil)
+	var onCancel: (() -> Void)? {
+		get { _onCancel.withLock { $0 } }
+		set { _onCancel.withLock { $0 = newValue } }
+	}
 
 	final class TaskSpy: ImageDataLoaderTask {
-		private(set) var cancelCallCount = 0
+		private let _cancelCallCount = Mutex<Int>(0)
+		var cancelCallCount: Int {
+			get { _cancelCallCount.withLock({ $0 }) }
+			set { _cancelCallCount.withLock({ $0 = newValue }) }
+		}
 
-		var onCancel: (() -> Void)?
+		private let _onCancel = Mutex<(() -> Void)?>(nil)
+		var onCancel: (() -> Void)? {
+			get { _onCancel.withLock({ $0 }) }
+			set { _onCancel.withLock({ $0 = newValue }) }
+		}
 
 		func cancel() {
 			cancelCallCount += 1
@@ -79,22 +99,26 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		}
 	}
 
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
+	}
+
 	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		let task = TaskSpy()
 		task.onCancel = { [weak self] in self?.cancel() }
 
-		messages.append((url, task, completion))
-		
+		messages.withLock { $0.append((url, task, completion)) }
+
 		onLoad?()
 		return task
 	}
 
 	func task(for url: URL) -> TaskSpy? {
-		messages.first(where: { $0.url == url })?.task
+		messages.withLock({ $0 }).first(where: { $0.url == url })?.task
 	}
 
 	func completeWith(_ result: LoadResult, at index: Int = 0) {
-		messages[index].completion(result)
+		messages.withLock({ $0 })[index].completion(result)
 	}
 
 	private func cancel() {

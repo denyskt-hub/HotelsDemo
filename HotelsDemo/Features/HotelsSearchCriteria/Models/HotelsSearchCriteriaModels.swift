@@ -43,7 +43,7 @@ public enum HotelsSearchCriteriaModels {
 			public init() {}
 		}
 
-		public struct Response: Equatable {
+		public struct Response: Equatable, Sendable {
 			public let roomGuests: RoomGuests
 
 			public init(roomGuests: RoomGuests) {

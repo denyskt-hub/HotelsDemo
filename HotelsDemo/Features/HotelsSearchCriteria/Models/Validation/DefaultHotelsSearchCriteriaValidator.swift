@@ -9,11 +9,11 @@ import Foundation
 
 public final class DefaultHotelsSearchCriteriaValidator: HotelsSearchCriteriaValidator {
 	private let calendar: Calendar
-	private let currentDate: () -> Date
+	private let currentDate: @Sendable () -> Date
 
 	public init(
 		calendar: Calendar,
-		currentDate: @escaping () -> Date
+		currentDate: @Sendable @escaping () -> Date
 	) {
 		self.calendar = calendar
 		self.currentDate = currentDate

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class DispatchingDecorator<T> {
+public final class DispatchingDecorator<T: Sendable>: Sendable {
 	internal let decoratee: T
 	private let dispatcher: Dispatcher
 
@@ -19,7 +19,7 @@ public final class DispatchingDecorator<T> {
 		self.dispatcher = dispatcher
 	}
 
-	public func dispatching<Output>(_ completion: @Sendable @escaping (Output) -> Void) -> @Sendable (Output) -> Void {
+	public func dispatching<Output: Sendable>(_ completion: @Sendable @escaping (Output) -> Void) -> @Sendable (Output) -> Void {
 		{ [weak self] value in
 			self?.dispatcher.dispatch {
 				completion(value)

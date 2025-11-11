@@ -18,7 +18,7 @@ public extension HotelsSearchCriteriaStore {
 // MARK: - HotelsSearchCriteriaCache
 
 extension DispatchingDecorator: HotelsSearchCriteriaCache where T: HotelsSearchCriteriaCache {
-	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		decoratee.save(criteria, completion: dispatching(completion))
 	}
 }
@@ -26,7 +26,7 @@ extension DispatchingDecorator: HotelsSearchCriteriaCache where T: HotelsSearchC
 // MARK: - HotelsSearchCriteriaProvider
 
 extension DispatchingDecorator: HotelsSearchCriteriaProvider where T: HotelsSearchCriteriaProvider {
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
 		decoratee.retrieve(completion: dispatching(completion))
 	}
 }

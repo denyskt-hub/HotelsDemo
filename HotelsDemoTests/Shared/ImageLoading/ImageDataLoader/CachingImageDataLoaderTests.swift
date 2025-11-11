@@ -12,13 +12,13 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotMessageLoader() {
 		let (_, loader, _) = makeSUT()
 
-		XCTAssertTrue(loader.messages.isEmpty)
+		XCTAssertTrue(loader.receivedMessages().isEmpty)
 	}
 
 	func test_init_doesNotMessageCache() {
 		let (_, _, cache) = makeSUT()
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
 	func test_load_requestsDataFromLoader() {
@@ -54,7 +54,7 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		sut.load(url: anyURL()) { _ in }
 		loader.completeWith(.failure(anyNSError()))
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
 	func test_load_cachesDataOnLoaderSuccess() {
@@ -64,7 +64,7 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		sut.load(url: url) { _ in }
 		loader.completeWith(.success(data))
 
-		XCTAssertEqual(cache.messages, [.save(data, url.absoluteString)])
+		XCTAssertEqual(cache.receivedMessages(), [.save(data, url.absoluteString)])
 	}
 
 	func test_load_ignoresCacheError() async throws {

@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol Dispatcher {
-	func dispatch(_ action: @escaping () -> Void)
+public protocol Dispatcher: Sendable {
+	func dispatch(_ action: @Sendable @escaping () -> Void)
 }

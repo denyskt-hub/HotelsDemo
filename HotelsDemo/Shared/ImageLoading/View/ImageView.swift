@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol ImageViewDelegate: AnyObject {
+public protocol ImageViewDelegate: AnyObject, Sendable {
 	func didSetImageWith(_ url: URL)
 	func didCancel()
 }
@@ -39,16 +39,17 @@ public class ImageView: ShimmeringView, ImageDisplayLogic {
 	}
 
 	public override init(frame: CGRect) {
-		let presenter = ImageDataPresenter()
+		let viewProxy = WeakRefVirtualProxy<ImageView>()
+		let presenter = ImageDataPresenter(view: viewProxy)
 		let adapter = ImageDataLoaderAdapter(
-			loader: SharedImageDataLoader.instance
+			loader: SharedImageDataLoader.instance,
+			presenter: presenter
 		)
 
 		self.delegate = adapter
-		adapter.presenter = presenter
 
 		super.init(frame: frame)
-		presenter.view = self
+		viewProxy.object = self
 	}
 
 	required init?(coder: NSCoder) {

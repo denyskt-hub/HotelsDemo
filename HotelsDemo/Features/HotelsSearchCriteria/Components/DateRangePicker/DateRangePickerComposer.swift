@@ -16,6 +16,7 @@ public protocol DateRangePickerFactory {
 	) -> UIViewController
 }
 
+@MainActor
 public final class DateRangePickerComposer: DateRangePickerFactory {
 	public func makeDateRangePicker(
 		delegate: DateRangePickerDelegate?,

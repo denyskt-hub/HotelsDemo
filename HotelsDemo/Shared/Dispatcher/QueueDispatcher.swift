@@ -14,7 +14,7 @@ public final class QueueDispatcher: Dispatcher {
 		self.queue = queue
 	}
 
-	public func dispatch(_ action: @escaping () -> Void) {
+	public func dispatch(_ action: @Sendable @escaping () -> Void) {
 		queue.async { action() }
 	}
 }

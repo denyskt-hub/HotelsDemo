@@ -32,7 +32,7 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 		self.validator = validator
 	}
 
-	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		let validated = validator.validate(criteria)
 
 		if validated != criteria {
@@ -42,7 +42,7 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 		decoratee.save(validated, completion: completion)
 	}
 
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
+	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
 		decoratee.retrieve { [weak self] result in
 			guard let self else { return }
 

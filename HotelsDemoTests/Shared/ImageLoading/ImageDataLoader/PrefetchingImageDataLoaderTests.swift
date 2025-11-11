@@ -12,13 +12,13 @@ final class PrefetchingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase
 	func test_init_doesNotMessageLoader() {
 		let (_, loader, _) = makeSUT()
 
-		XCTAssertTrue(loader.messages.isEmpty)
+		XCTAssertTrue(loader.receivedMessages().isEmpty)
 	}
 
 	func test_init_doesNotMessageCache() {
 		let (_, _, cache) = makeSUT()
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
 	func test_load_deliversDataFromCacheOnCacheSuccess() {

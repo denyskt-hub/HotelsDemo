@@ -6,29 +6,24 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
-	private let queue = DispatchQueue(label: "\(InMemoryHotelsSearchCriteriaStore.self)Queue")
-
-	private var criteria: HotelsSearchCriteria?
+	private let criteria: Mutex<HotelsSearchCriteria?>
 
 	public init(criteria: HotelsSearchCriteria? = nil) {
-		self.criteria = criteria
+		self.criteria = Mutex(criteria)
 	}
 
 	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		queue.async {
-			self.criteria = criteria
-			completion(.success(()))
-		}
+		self.criteria.withLock { $0 = criteria }
+		completion(.success(()))
 	}
 
 	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		queue.async {
-			guard let criteria = self.criteria else {
-				return completion(.failure(SearchCriteriaError.notFound))
-			}
-			completion(.success(criteria))
+		guard let criteria = self.criteria.withLock({ $0 }) else {
+			return completion(.failure(SearchCriteriaError.notFound))
 		}
+		completion(.success(criteria))
 	}
 }

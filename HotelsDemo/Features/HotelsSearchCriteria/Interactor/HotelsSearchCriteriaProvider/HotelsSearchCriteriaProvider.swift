@@ -10,7 +10,7 @@ import Foundation
 public protocol HotelsSearchCriteriaProvider: Sendable {
 	typealias RetrieveResult = Result<HotelsSearchCriteria, Error>
 
-	func retrieve(completion: @escaping (RetrieveResult) -> Void)
+	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void)
 }
 
 extension HotelsSearchCriteriaProvider {

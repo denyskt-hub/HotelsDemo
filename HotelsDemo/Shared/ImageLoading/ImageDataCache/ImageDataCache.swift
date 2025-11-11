@@ -13,11 +13,11 @@ public protocol ImageDataCache: Sendable {
 
 	/// The completion handler can be invoked in any thread.
 	/// Clients are responsible to dispatch to appropriate threads, if needed.
-	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void)
+	func save(_ data: Data, forKey key: String, completion: @Sendable @escaping (SaveResult) -> Void)
 
 	/// The completion handler can be invoked in any thread.
 	/// Clients are responsible to dispatch to appropriate threads, if needed.
-	func data(forKey key: String, completion: @escaping (DataResult) -> Void)
+	func data(forKey key: String, completion: @Sendable @escaping (DataResult) -> Void)
 }
 
 extension ImageDataCache {
