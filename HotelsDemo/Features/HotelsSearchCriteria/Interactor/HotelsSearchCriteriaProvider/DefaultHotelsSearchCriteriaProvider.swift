@@ -26,4 +26,8 @@ public final class DefaultHotelsSearchCriteriaProvider: HotelsSearchCriteriaProv
 			)
 		)
 	}
+
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		HotelsSearchCriteriaDefaults.make(calendar: calendar, currentDate: currentDate)
+	}
 }

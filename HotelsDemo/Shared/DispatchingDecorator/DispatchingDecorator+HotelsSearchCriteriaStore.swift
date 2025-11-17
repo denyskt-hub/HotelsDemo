@@ -29,4 +29,8 @@ extension DispatchingDecorator: HotelsSearchCriteriaProvider where T: HotelsSear
 	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
 		decoratee.retrieve(completion: dispatching(completion))
 	}
+
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		try await decoratee.retrieve()
+	}
 }

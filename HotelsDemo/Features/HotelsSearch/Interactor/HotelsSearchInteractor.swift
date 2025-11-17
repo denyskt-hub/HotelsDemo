@@ -30,14 +30,12 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	}
 
 	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
-		provider.retrieve { [weak self] result in
-			guard let self else { return }
-
-			switch result {
-			case let .success(criteria):
+		Task {
+			do {
+				let criteria = try await provider.retrieve()
 				self.performSearch(request: .init(criteria: criteria))
-			case let .failure(error):
-				Task { await self.presentSearchError(error) }
+			} catch {
+				await self.presentSearchError(error)
 			}
 		}
 	}

@@ -121,7 +121,14 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	// MARK: -
 
 	private func load(_ completion: @Sendable @escaping (Result<HotelsSearchCriteria, Error>) -> Void) {
-		provider.retrieve(completion: completion)
+		Task {
+			do {
+				let criteria = try await provider.retrieve()
+				completion(.success(criteria))
+			} catch {
+				completion(.failure(error))
+			}
+		}
 	}
 
 	private func save(_ criteria: HotelsSearchCriteria, _ completion: @Sendable @escaping (Result<Void, Error>) -> Void) {

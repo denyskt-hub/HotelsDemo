@@ -17,21 +17,6 @@ public protocol HotelsSearchCriteriaProvider: Sendable {
 }
 
 extension HotelsSearchCriteriaProvider {
-	public func retrieve() async throws -> HotelsSearchCriteria {
-		try await withCheckedThrowingContinuation { continuation in
-			retrieve { result in
-				switch result {
-				case let .success(criteria):
-					continuation.resume(returning: criteria)
-				case let .failure(error):
-					continuation.resume(throwing: error)
-				}
-			}
-		}
-	}
-}
-
-extension HotelsSearchCriteriaProvider {
 	func fallback(to secondary: HotelsSearchCriteriaProvider) -> HotelsSearchCriteriaProvider {
 		FallbackHotelsSearchCriteriaProvider(primary: self, secondary: secondary)
 	}

@@ -31,4 +31,12 @@ public final class FallbackHotelsSearchCriteriaProvider: HotelsSearchCriteriaPro
 			}
 		}
 	}
+
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		do {
+			return try await primary.retrieve()
+		} catch {
+			return try await secondary.retrieve()
+		}
+	}
 }

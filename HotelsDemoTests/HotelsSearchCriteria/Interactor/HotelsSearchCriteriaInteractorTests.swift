@@ -16,7 +16,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchCriteria(request: .init())
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
@@ -27,7 +28,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchCriteria(request: .init())
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentCriteria(.init(criteria: criteria))])
@@ -38,7 +40,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchDateRange(request: .init())
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
@@ -51,7 +54,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.doFetchDateRange(request: .init())
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDates(.init(checkInDate: checkInDate, checkOutDate: checkOutDate))])
@@ -62,7 +66,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.doFetchRoomGuests(request: .init())
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
@@ -73,7 +78,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doFetchRoomGuests(request: .init())
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [
@@ -92,7 +98,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doSearch(request: .init())
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentLoadError(providerError)])
@@ -103,7 +110,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.doSearch(request: .init())
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentSearch(.init(criteria: criteria))])
@@ -114,7 +122,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 
 		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
@@ -125,7 +134,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 		
 		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
-		provider.completeRetrieve(with: .success(anySearchCriteria()))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(anySearchCriteria())
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .failure(cacheError))
 
 		await presenter.waitUntilPresented()
@@ -140,7 +151,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 
 		sut.handleDestinationSelection(request: .init(destination: destination))
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .success(()))
 
 		await presenter.waitUntilPresented()
@@ -152,7 +165,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
@@ -163,7 +177,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 
 		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
-		provider.completeRetrieve(with: .success(anySearchCriteria()))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(anySearchCriteria())
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .failure(cacheError))
 
 		await presenter.waitUntilPresented()
@@ -180,7 +196,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 
 		sut.handleDateRangeSelection(request: .init(checkInDate: checkInDate, checkOutDate: checkOutDate))
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .success(()))
 
 		await presenter.waitUntilPresented()
@@ -192,7 +210,8 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, _, presenter) = makeSUT()
 		
 		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
-		provider.completeRetrieve(with: .failure(providerError))
+		await provider.waitUntilStarted()
+		provider.completeWithError(providerError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(providerError)])
@@ -203,7 +222,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 
 		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
-		provider.completeRetrieve(with: .success(anySearchCriteria()))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(anySearchCriteria())
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .failure(cacheError))
 
 		await presenter.waitUntilPresented()
@@ -222,7 +243,9 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let (sut, provider, cache, presenter) = makeSUT()
 		
 		sut.handleRoomGuestsSelection(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
-		provider.completeRetrieve(with: .success(criteria))
+		await provider.waitUntilStarted()
+		provider.completeWithCriteria(criteria)
+		await cache.waitUntilStarted()
 		cache.completeSave(with: .success(()))
 
 		await presenter.waitUntilPresented()
@@ -259,29 +282,66 @@ final class HotelsSearchCriteriaProviderStub: HotelsSearchCriteriaProvider {
 	func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
 		completion(.success(criteria))
 	}
+
+	func retrieve() async throws -> HotelsSearchCriteria {
+		criteria
+	}
 }
 
 final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 	private let retrieveCompletions = Mutex<[((RetrieveResult) -> Void)]>([])
+	private let continuations = Mutex<[CheckedContinuation<HotelsSearchCriteria, Error>]>([])
+
+	private let stream = AsyncStream<Void>.makeStream()
 
 	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
 		retrieveCompletions.withLock { $0.append(completion) }
 	}
 
+	func retrieve() async throws -> HotelsSearchCriteria {
+		try await withCheckedThrowingContinuation { continuation in
+			continuations.withLock { $0.append(continuation) }
+			stream.continuation.yield(())
+		}
+	}
+
 	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
 		retrieveCompletions.withLock({ $0 })[index](result)
+	}
+
+	func completeWithCriteria(_ criteria: HotelsSearchCriteria, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: criteria)
+	}
+
+	func completeWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
+	}
+
+	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }
 
 final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
+	private let stream = AsyncStream<Void>.makeStream()
 
 	func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		saveCompletions.withLock { $0.append(completion) }
+		stream.continuation.yield(())
 	}
 
 	func completeSave(with result: SaveResult, at index: Int = 0) {
 		saveCompletions.withLock({ $0 })[index](result)
+	}
+
+
+	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }
 

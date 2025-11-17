@@ -99,4 +99,14 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 			}
 		}
 	}
+
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		do {
+			let data = try Data(contentsOf: self.storeURL)
+			let criteria = try JSONDecoder().decode(CodableSearchCriteria.self, from: data)
+			return criteria.model
+		} catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+			throw SearchCriteriaError.notFound
+		}
+	}
 }

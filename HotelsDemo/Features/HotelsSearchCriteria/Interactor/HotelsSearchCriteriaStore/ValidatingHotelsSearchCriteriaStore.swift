@@ -67,4 +67,26 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 			}
 		}
 	}
+
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		do {
+			let criteria = try await decoratee.retrieve()
+			let validated = validator.validate(criteria)
+
+			if validated != criteria {
+				Logger.log("Retrieved criteria validated: \(criteria) -> \(validated)", level: .debug)
+
+				decoratee.save(validated) { saveResult in
+					if case .failure(let error) = saveResult {
+						Logger.log("Failed to save validated criteria: \(error)", level: .error)
+					}
+				}
+			}
+
+			return validated
+		} catch {
+			Logger.log("Retrieve failed: \(error)", level: .error)
+			throw error
+		}
+	}
 }

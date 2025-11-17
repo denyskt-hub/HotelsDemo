@@ -172,8 +172,14 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 
 	private let messages = Mutex<[Message]>([])
 
+	private let retrieveStub = Mutex<RetrieveResult?>(nil)
+
 	func receivedMessages() -> [Message] {
 		messages.withLock { $0 }
+	}
+
+	func stubRetrieve(_ stub: RetrieveResult) {
+		retrieveStub.withLock { $0 = stub }
 	}
 
 	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
@@ -187,6 +193,19 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		messages.withLock { $0.append(.retrieve) }
 		retrieveCompletions.withLock { $0.append(completion) }
+	}
+
+	func retrieve() async throws -> HotelsSearchCriteria {
+		guard let retrieved = retrieveStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubRetrieve before calling retrieve")
+		}
+
+		switch retrieved {
+		case let .success(criteria):
+			return criteria
+		case let .failure(error):
+			throw error
+		}
 	}
 
 	func completeSave(with result: SaveResult, at index: Int = 0) {
