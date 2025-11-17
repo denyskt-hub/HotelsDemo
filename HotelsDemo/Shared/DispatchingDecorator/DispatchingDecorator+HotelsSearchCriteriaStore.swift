@@ -26,10 +26,6 @@ extension DispatchingDecorator: HotelsSearchCriteriaCache where T: HotelsSearchC
 // MARK: - HotelsSearchCriteriaProvider
 
 extension DispatchingDecorator: HotelsSearchCriteriaProvider where T: HotelsSearchCriteriaProvider {
-	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
-		decoratee.retrieve(completion: dispatching(completion))
-	}
-
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		try await decoratee.retrieve()
 	}

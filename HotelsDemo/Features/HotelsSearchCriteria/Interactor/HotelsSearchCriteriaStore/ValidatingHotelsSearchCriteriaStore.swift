@@ -42,32 +42,6 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 		decoratee.save(validated, completion: completion)
 	}
 
-	public func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
-		decoratee.retrieve { [weak self] result in
-			guard let self else { return }
-
-			switch result {
-			case let .success(criteria):
-				let validated = self.validator.validate(criteria)
-
-				if validated != criteria {
-					Logger.log("Retrieved criteria validated: \(criteria) -> \(validated)", level: .debug)
-
-					self.decoratee.save(validated) { saveResult in
-						if case .failure(let error) = saveResult {
-							Logger.log("Failed to save validated criteria: \(error)", level: .error)
-						}
-					}
-				}
-
-				completion(.success(validated))
-			case let .failure(error):
-				Logger.log("Retrieve failed: \(error)", level: .error)
-				completion(.failure(error))
-			}
-		}
-	}
-
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		do {
 			let criteria = try await decoratee.retrieve()

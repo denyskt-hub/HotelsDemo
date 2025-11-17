@@ -10,9 +10,6 @@ import Foundation
 public protocol HotelsSearchCriteriaProvider: Sendable {
 	typealias RetrieveResult = Result<HotelsSearchCriteria, Error>
 
-	@available(*, deprecated, message: "Use async function")
-	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void)
-
 	func retrieve() async throws -> HotelsSearchCriteria
 }
 

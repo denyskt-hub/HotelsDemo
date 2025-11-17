@@ -76,76 +76,40 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 		wait(for: [exp], timeout: 1.0)
 	}
 
-	func test_retrieve_deliversErrorOnStoreError() {
+	func test_retrieve_deliversErrorOnStoreError() async throws {
 		let storeError = anyNSError()
 		let (sut, store, _) = makeSUT()
+		store.stubRetrieve(.failure(storeError))
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case .success:
-				XCTFail("Expected failure")
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, storeError)
-			}
-			exp.fulfill()
+		do {
+			_ = try await sut.retrieve()
+		} catch {
+			XCTAssertEqual(error as NSError, storeError)
 		}
-
-		store.completeRetrieve(with: .failure(storeError))
-
-		wait(for: [exp], timeout: 1.0)
 	}
 
-	func test_retrieve_deliversValidatedSearchCriteriaAndSavesItWhenStoredCriteriaIsInvalid() {
+	func test_retrieve_deliversValidatedSearchCriteriaAndSavesItWhenStoredCriteriaIsInvalid() async throws {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
+		store.stubRetrieve(.success(invalid))
 		validator.stub(valid)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case let .success(retrieved):
-				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.receivedMessages(), [.retrieve, .save(valid)])
-
-			case let .failure(error):
-				XCTFail("Expected success, got \(error) instead")
-			}
-			exp.fulfill()
-		}
-
-		store.completeRetrieve(with: .success(invalid))
-
-		wait(for: [exp], timeout: 1.0)
+		let retrieved = try await sut.retrieve()
+		XCTAssertEqual(retrieved, valid)
+		XCTAssertEqual(store.receivedMessages(), [.retrieve, .save(valid)])
 	}
 
-	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() {
+	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() async throws {
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
+		store.stubRetrieve(.success(valid))
 		validator.stub(valid)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case let .success(retrieved):
-				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.receivedMessages(), [.retrieve])
-
-			case let .failure(error):
-				XCTFail("Expected success, got \(error) instead")
-			}
-			exp.fulfill()
-		}
-
-		store.completeRetrieve(with: .success(valid))
-
-		wait(for: [exp], timeout: 1.0)
+		let retrieved = try await sut.retrieve()
+		XCTAssertEqual(retrieved, valid)
+		XCTAssertEqual(store.receivedMessages(), [.retrieve])
 	}
-
 
 	// MARK: - Helpers
 
@@ -199,6 +163,8 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		guard let retrieved = retrieveStub.withLock({ $0 }) else {
 			fatalError("Set a stub value using stubRetrieve before calling retrieve")
 		}
+
+		messages.withLock { $0.append(.retrieve) }
 
 		switch retrieved {
 		case let .success(criteria):

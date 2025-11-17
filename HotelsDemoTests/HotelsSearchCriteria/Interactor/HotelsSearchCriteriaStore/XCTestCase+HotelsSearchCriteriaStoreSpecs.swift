@@ -135,8 +135,14 @@ extension HotelsSearchCriteriaStoreSpecs where Self: XCTestCase {
 		let exp = expectation(description: "Wait for retrieve")
 
 		var retrievedResult: HotelsSearchCriteriaProvider.RetrieveResult!
-		sut.retrieve { result in
-			retrievedResult = result
+
+		Task {
+			do {
+				let criteria = try await sut.retrieve()
+				retrievedResult = .success(criteria)
+			} catch {
+				retrievedResult = .failure(error as NSError)
+			}
 			exp.fulfill()
 		}
 

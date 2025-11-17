@@ -19,14 +19,6 @@ public final class DefaultHotelsSearchCriteriaProvider: HotelsSearchCriteriaProv
 		self.currentDate = currentDate
 	}
 
-	public func retrieve(completion: @Sendable @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
-		completion(
-			.success(
-				HotelsSearchCriteriaDefaults.make(calendar: calendar, currentDate: currentDate)
-			)
-		)
-	}
-
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		HotelsSearchCriteriaDefaults.make(calendar: calendar, currentDate: currentDate)
 	}
