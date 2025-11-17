@@ -10,7 +10,25 @@ import Foundation
 public protocol HotelsSearchCriteriaProvider: Sendable {
 	typealias RetrieveResult = Result<HotelsSearchCriteria, Error>
 
+	@available(*, deprecated, message: "Use async function")
 	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void)
+
+	func retrieve() async throws -> HotelsSearchCriteria
+}
+
+extension HotelsSearchCriteriaProvider {
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		try await withCheckedThrowingContinuation { continuation in
+			retrieve { result in
+				switch result {
+				case let .success(criteria):
+					continuation.resume(returning: criteria)
+				case let .failure(error):
+					continuation.resume(throwing: error)
+				}
+			}
+		}
+	}
 }
 
 extension HotelsSearchCriteriaProvider {
