@@ -21,6 +21,10 @@ extension DispatchingDecorator: HotelsSearchCriteriaCache where T: HotelsSearchC
 	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		decoratee.save(criteria, completion: dispatching(completion))
 	}
+
+	public func save(_ criteria: HotelsSearchCriteria) async throws {
+		try await decoratee.save(criteria)
+	}
 }
 
 // MARK: - HotelsSearchCriteriaProvider

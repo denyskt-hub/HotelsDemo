@@ -86,6 +86,11 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
+	public func save(_ criteria: HotelsSearchCriteria) async throws {
+		let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
+		try data.write(to: self.storeURL, options: [.atomic])
+	}
+
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		do {
 			let data = try Data(contentsOf: self.storeURL)

@@ -137,7 +137,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(anySearchCriteria())
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .failure(cacheError))
+		cache.completeSaveWithError(cacheError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
@@ -154,7 +154,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(criteria)
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .success(()))
+		cache.completeSave()
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateDestination(.init(criteria: expectedCriteria))])
@@ -180,7 +180,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(anySearchCriteria())
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .failure(cacheError))
+		cache.completeSaveWithError(cacheError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
@@ -199,7 +199,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(criteria)
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .success(()))
+		cache.completeSave()
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateDates(.init(criteria: expectedCriteria))])
@@ -225,7 +225,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(anySearchCriteria())
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .failure(cacheError))
+		cache.completeSaveWithError(cacheError)
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateError(cacheError)])
@@ -246,7 +246,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(criteria)
 		await cache.waitUntilStarted()
-		cache.completeSave(with: .success(()))
+		cache.completeSave()
 
 		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentUpdateRoomGuests(.init(criteria: expectedCriteria))])
@@ -327,11 +327,30 @@ final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 
 final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
+	private let continuations = Mutex<[CheckedContinuation<Void, Error>]>([])
+
 	private let stream = AsyncStream<Void>.makeStream()
 
 	func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
 		saveCompletions.withLock { $0.append(completion) }
 		stream.continuation.yield(())
+	}
+
+	func save(_ criteria: HotelsSearchCriteria) async throws {
+		try await withCheckedThrowingContinuation { continuation in
+			continuations.withLock { $0.append(continuation) }
+			stream.continuation.yield(())
+		}
+	}
+
+	func completeSave(at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: ())
+	}
+
+	func completeSaveWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
 	}
 
 	func completeSave(with result: SaveResult, at index: Int = 0) {

@@ -20,6 +20,10 @@ public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore 
 		completion(.success(()))
 	}
 
+	public func save(_ criteria: HotelsSearchCriteria) async throws {
+		self.criteria.withLock { $0 = criteria }
+	}
+
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		guard let criteria = self.criteria.withLock({ $0 }) else {
 			throw SearchCriteriaError.notFound

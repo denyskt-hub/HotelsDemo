@@ -15,18 +15,3 @@ public protocol HotelsSearchCriteriaCache: Sendable {
 
 	func save(_ criteria: HotelsSearchCriteria) async throws
 }
-
-extension HotelsSearchCriteriaCache {
-	public func save(_ criteria: HotelsSearchCriteria) async throws {
-		try await withCheckedThrowingContinuation { continuation in
-			save(criteria) { result in
-				switch result {
-				case .success:
-					continuation.resume(returning: ())
-				case let .failure(error):
-					continuation.resume(throwing: error)
-				}
-			}
-		}
-	}
-}

@@ -42,6 +42,16 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 		decoratee.save(validated, completion: completion)
 	}
 
+	public func save(_ criteria: HotelsSearchCriteria) async throws {
+		let validated = validator.validate(criteria)
+
+		if validated != criteria {
+			Logger.log("Criteria validated: \(criteria) -> \(validated)", level: .debug)
+		}
+
+		try await decoratee.save(validated)
+	}
+
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		do {
 			let criteria = try await decoratee.retrieve()
