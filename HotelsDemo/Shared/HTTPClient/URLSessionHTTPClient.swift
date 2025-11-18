@@ -9,14 +9,6 @@ public final class URLSessionHTTPClient: HTTPClient {
 		self.session = session
 	}
 
-	private struct URLSessionTaskWrapper: HTTPClientTask {
-		let wrapped: URLSessionTask
-
-		func cancel() {
-			wrapped.cancel()
-		}
-	}
-
 	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
 		let (data, response) = try await session.data(for: request)
 
