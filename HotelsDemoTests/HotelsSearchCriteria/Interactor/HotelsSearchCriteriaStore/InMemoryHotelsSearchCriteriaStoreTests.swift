@@ -29,10 +29,6 @@ final class InMemoryHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCrit
 		assertThatSaveOverridesPreviouslySavedSearchCriteria(on: makeSUT())
 	}
 
-	func test_storeSideEffects_runsSerially() {
-		assertThatStoreSideEffectsRunsSerially(on: makeSUT())
-	}
-
 	// MARK: - Helpers
 
 	private func makeSUT() -> InMemoryHotelsSearchCriteriaStore {

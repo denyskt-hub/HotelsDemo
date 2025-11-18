@@ -66,24 +66,10 @@ public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 		}
 	}
 
-	private let queue = DispatchQueue(label: "\(CodableHotelsSearchCriteriaStore.self)Queue")
-
 	private let storeURL: URL
 
 	public init(storeURL: URL) {
 		self.storeURL = storeURL
-	}
-
-	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
-		queue.async {
-			do {
-				let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
-				try data.write(to: self.storeURL, options: [.atomic])
-				completion(.success(()))
-			} catch {
-				completion(.failure(error))
-			}
-		}
 	}
 
 	public func save(_ criteria: HotelsSearchCriteria) async throws {

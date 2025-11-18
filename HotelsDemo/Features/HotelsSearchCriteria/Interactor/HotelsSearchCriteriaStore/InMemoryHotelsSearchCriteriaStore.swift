@@ -15,11 +15,6 @@ public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore 
 		self.criteria = Mutex(criteria)
 	}
 
-	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		self.criteria.withLock { $0 = criteria }
-		completion(.success(()))
-	}
-
 	public func save(_ criteria: HotelsSearchCriteria) async throws {
 		self.criteria.withLock { $0 = criteria }
 	}

@@ -14,6 +14,4 @@ protocol HotelsSearchCriteriaStoreSpecs {
 	func test_save_deliversNoErrorOnEmptyStore()
 	func test_save_deliversNoErrorOnNonEmptyStore()
 	func test_save_overridesPreviouslySavedCriteria()
-
-	func test_storeSideEffects_runsSerially()
 }

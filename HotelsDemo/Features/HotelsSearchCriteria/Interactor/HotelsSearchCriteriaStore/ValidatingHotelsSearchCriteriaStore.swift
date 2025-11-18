@@ -32,16 +32,6 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 		self.validator = validator
 	}
 
-	public func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
-		let validated = validator.validate(criteria)
-
-		if validated != criteria {
-			Logger.log("Criteria validated: \(criteria) -> \(validated)", level: .debug)
-		}
-
-		decoratee.save(validated, completion: completion)
-	}
-
 	public func save(_ criteria: HotelsSearchCriteria) async throws {
 		let validated = validator.validate(criteria)
 

@@ -41,10 +41,6 @@ final class CodableHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCrite
 		assertThatSaveOverridesPreviouslySavedSearchCriteria(on: makeSUT())
 	}
 
-	func test_storeSideEffects_runsSerially() {
-		assertThatStoreSideEffectsRunsSerially(on: makeSUT())
-	}
-
 	// MARK: - Helpers
 
 	private func makeSUT() -> CodableHotelsSearchCriteriaStore {

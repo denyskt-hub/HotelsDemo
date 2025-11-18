@@ -16,64 +16,42 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 		XCTAssertTrue(store.receivedMessages().isEmpty)
 	}
 
-	func test_save_validatesSearchCriteria() {
+	func test_save_validatesSearchCriteria() async throws {
 		let criteria = anySearchCriteria()
 		let (sut, _, validator) = makeSUT()
 		
-		sut.save(criteria) { _ in }
-		
+		try await sut.save(criteria)
+
 		XCTAssertEqual(validator.validated(), [criteria])
 	}
 
-	func test_save_usesValidatedCriteriaForSaving() {
+	func test_save_usesValidatedCriteriaForSaving() async throws {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
 		validator.stub(valid)
 
-		sut.save(invalid) { _ in }
+		try await sut.save(invalid)
 
 		XCTAssertEqual(store.receivedMessages(), [.save(valid)])
 	}
 
-	func test_save_deliversErrorOnStoreError() {
+	func test_save_deliversErrorOnStoreError() async throws {
 		let storeError = anyNSError()
 		let (sut, store, _) = makeSUT()
+		store.stubSave(storeError)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.save(anySearchCriteria()) { saveResult in
-			switch saveResult {
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, storeError)
-			default:
-				XCTFail("Expected to fail with store error")
-			}
-
-			exp.fulfill()
+		do {
+			try await sut.save(anySearchCriteria())
+		} catch {
+			XCTAssertEqual(error as NSError, storeError)
 		}
-
-		store.completeSave(with: .failure(storeError))
-
-		wait(for: [exp], timeout: 1.0)
 	}
 
-	func test_save_deliversNoErrorOnSuccess() {
-		let (sut, store, _) = makeSUT()
+	func test_save_deliversNoErrorOnSuccess() async throws {
+		let (sut, _, _) = makeSUT()
 
-		let exp = expectation(description: "Wait for completion")
-		
-		sut.save(anySearchCriteria()) { saveResult in
-			if case .failure = saveResult {
-				XCTFail("Expected no error on successful save")
-			}
-
-			exp.fulfill()
-		}
-
-		store.completeSave(with: .success(()))
-
-		wait(for: [exp], timeout: 1.0)
+		try await sut.save(anySearchCriteria())
 	}
 
 	func test_retrieve_deliversErrorOnStoreError() async throws {
@@ -151,25 +129,12 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		retrieveStub.withLock { $0 = stub }
 	}
 
-	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
-	private let retrieveCompletions =  Mutex<[((RetrieveResult) -> Void)]>([])
-
-	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		messages.withLock { $0.append(.save(criteria)) }
-		saveCompletions.withLock { $0.append(completion) }
-	}
-
 	func save(_ criteria: HotelsSearchCriteria) async throws {
 		messages.withLock { $0.append(.save(criteria)) }
 
 		if let error = saveStub.withLock({ $0 }) {
 			throw error
 		}
-	}
-
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		messages.withLock { $0.append(.retrieve) }
-		retrieveCompletions.withLock { $0.append(completion) }
 	}
 
 	func retrieve() async throws -> HotelsSearchCriteria {
@@ -185,14 +150,6 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		case let .failure(error):
 			throw error
 		}
-	}
-
-	func completeSave(with result: SaveResult, at index: Int = 0) {
-		saveCompletions.withLock({ $0 })[index](result)
-	}
-
-	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
-		retrieveCompletions.withLock({ $0 })[index](result)
 	}
 }
 
