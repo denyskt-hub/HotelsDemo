@@ -34,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				calendar: calendar,
 				currentDate: Date.init
 			)
-		).dispatch(to: MainQueueDispatcher())
+		)
 	}()
 
 	private lazy var defaultSearchCriteriaProvider: HotelsSearchCriteriaProvider = {

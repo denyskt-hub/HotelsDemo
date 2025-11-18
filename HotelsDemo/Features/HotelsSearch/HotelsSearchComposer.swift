@@ -54,7 +54,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 	private func makeHotelsSearchContext(with criteria: HotelsSearchCriteria) -> HotelsSearchContext {
 		let provider = InMemoryHotelsSearchCriteriaStore(
 			criteria: criteria
-		).dispatch(to: MainQueueDispatcher())
+		)
 
 		let service = HotelsSearchWorker(
 			factory: DefaultHotelsRequestFactory(
