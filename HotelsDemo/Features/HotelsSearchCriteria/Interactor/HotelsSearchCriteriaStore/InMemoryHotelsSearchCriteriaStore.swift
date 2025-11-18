@@ -6,21 +6,20 @@
 //
 
 import Foundation
-import Synchronization
 
-public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
-	private let criteria: Mutex<HotelsSearchCriteria?>
+public actor InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
+	private var criteria: HotelsSearchCriteria?
 
 	public init(criteria: HotelsSearchCriteria? = nil) {
-		self.criteria = Mutex(criteria)
+		self.criteria = criteria
 	}
 
 	public func save(_ criteria: HotelsSearchCriteria) async throws {
-		self.criteria.withLock { $0 = criteria }
+		self.criteria = criteria
 	}
 
 	public func retrieve() async throws -> HotelsSearchCriteria {
-		guard let criteria = self.criteria.withLock({ $0 }) else {
+		guard let criteria = criteria else {
 			throw SearchCriteriaError.notFound
 		}
 		return criteria

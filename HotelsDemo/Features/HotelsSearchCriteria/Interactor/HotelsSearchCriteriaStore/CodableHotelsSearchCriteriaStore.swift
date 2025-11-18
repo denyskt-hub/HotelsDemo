@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
+public actor CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 	private struct CodableSearchCriteria: Codable {
 		var destination: CodableDestination?
 		let checkInDate: Date
