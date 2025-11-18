@@ -136,10 +136,15 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 
 	private let messages = Mutex<[Message]>([])
 
+	private let saveStub = Mutex<Error?>(nil)
 	private let retrieveStub = Mutex<RetrieveResult?>(nil)
 
 	func receivedMessages() -> [Message] {
 		messages.withLock { $0 }
+	}
+
+	func stubSave(_ stub: Error) {
+		saveStub.withLock { $0 = stub }
 	}
 
 	func stubRetrieve(_ stub: RetrieveResult) {
@@ -153,7 +158,15 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		messages.withLock { $0.append(.save(criteria)) }
 		saveCompletions.withLock { $0.append(completion) }
 	}
-	
+
+	func save(_ criteria: HotelsSearchCriteria) async throws {
+		messages.withLock { $0.append(.save(criteria)) }
+
+		if let error = saveStub.withLock({ $0 }) {
+			throw error
+		}
+	}
+
 	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
 		messages.withLock { $0.append(.retrieve) }
 		retrieveCompletions.withLock { $0.append(completion) }

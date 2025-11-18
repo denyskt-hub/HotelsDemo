@@ -132,7 +132,14 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	private func save(_ criteria: HotelsSearchCriteria, _ completion: @Sendable @escaping (Result<Void, Error>) -> Void) {
-		cache.save(criteria, completion: completion)
+		Task {
+			do {
+				try await cache.save(criteria)
+				completion(.success(()))
+			} catch {
+				completion(.failure(error))
+			}
+		}
 	}
 
 	private func update(

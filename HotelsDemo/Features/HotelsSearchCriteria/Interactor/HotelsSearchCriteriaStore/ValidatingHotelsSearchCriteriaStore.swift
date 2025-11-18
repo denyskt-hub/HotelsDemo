@@ -50,10 +50,10 @@ public final class ValidatingHotelsSearchCriteriaStore: HotelsSearchCriteriaStor
 			if validated != criteria {
 				Logger.log("Retrieved criteria validated: \(criteria) -> \(validated)", level: .debug)
 
-				decoratee.save(validated) { saveResult in
-					if case .failure(let error) = saveResult {
-						Logger.log("Failed to save validated criteria: \(error)", level: .error)
-					}
+				do {
+					try await decoratee.save(validated)
+				} catch {
+					Logger.log("Failed to save validated criteria: \(error)", level: .error)
 				}
 			}
 
