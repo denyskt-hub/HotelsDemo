@@ -18,9 +18,10 @@ public enum SharedImageDataPrefetcher {
 
 	private static func defaultPrefetcher() -> ImageDataPrefetcher {
 		let cache = SharedImageDataCache.instance.logging(.cache)
+		let local = LocalImageDataLoader(cache: cache)
 		let remote = RemoteImageDataLoader.shared.logging(.remote)
 		let caching = CachingImageDataLoader(loader: remote, cache: cache)
-		let prefetching = PrefetchingImageDataLoader(loader: caching, cache: cache).logging(.prefetch)
+		let prefetching = local.fallback(to: caching).logging(.prefetch)
 		return ImageDataPrefetcher(loader: prefetching)
 	}
 
