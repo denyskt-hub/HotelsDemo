@@ -9,10 +9,6 @@ import Foundation
 import HotelsDemo
 import Synchronization
 
-struct TaskStub: HTTPClientTask {
-	public func cancel() {}
-}
-
 final class HTTPClientSpy: HTTPClient {
 	let requests = Mutex<[URLRequest]>([])
 
