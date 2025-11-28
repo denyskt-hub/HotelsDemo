@@ -21,8 +21,8 @@ public final class DefaultDebouncer: Debouncer {
 		currentSyncTask.withLock { task in
 			task?.cancel()
 			task = Task { @MainActor in
-				guard !Task.isCancelled else { return }
 				try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+				guard !Task.isCancelled else { return }
 				action()
 			}
 		}
@@ -32,8 +32,8 @@ public final class DefaultDebouncer: Debouncer {
 		currentAsyncTask.withLock { task in
 			task?.cancel()
 			task = Task {
-				guard !Task.isCancelled else { return }
 				try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+				guard !Task.isCancelled else { return }
 				await action()
 			}
 		}
