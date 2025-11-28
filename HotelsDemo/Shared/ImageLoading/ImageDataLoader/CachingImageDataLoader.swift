@@ -29,4 +29,10 @@ public final class CachingImageDataLoader: ImageDataLoader {
 			completion(result)
 		}
 	}
+
+	public func load(url: URL) async throws -> Data {
+		let data = try await loader.load(url: url)
+		cache.saveIgnoringResult(data, forKey: url.absoluteString)
+		return data
+	}
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class DeduplicatingImageDataLoader: ImageDataLoader, @unchecked Sendable {
 	private let loader: ImageDataLoader
@@ -59,6 +60,28 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader, @unchecked Sen
 		return CallbackTask { [weak self] in
 			self?.cancel(id: id, url: url)
 		}
+	}
+
+	public func load(url: URL) async throws -> Data {
+		let task = Mutex<ImageDataLoaderTask?>(nil)
+		return try await withTaskCancellationHandler(
+			operation: {
+				try await withCheckedThrowingContinuation { continuation in
+					task.withLock {
+						$0 = self.load(url: url) { result in
+							switch result {
+							case .success(let data):
+								continuation.resume(returning: data)
+							case .failure(let error):
+								continuation.resume(throwing: error)
+							}
+						}
+					}
+				}
+			},
+			onCancel: {
+				task.withLock({ $0 })?.cancel()
+			})
 	}
 
 	private func complete(url: URL, with result: ImageDataLoader.LoadResult) {

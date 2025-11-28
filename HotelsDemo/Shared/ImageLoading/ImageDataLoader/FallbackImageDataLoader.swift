@@ -64,6 +64,14 @@ public final class FallbackImageDataLoader: ImageDataLoader {
 
 		return task
 	}
+
+	public func load(url: URL) async throws -> Data {
+		do {
+			return try await primary.load(url: url)
+		} catch {
+			return try await secondary.load(url: url)
+		}
+	}
 }
 
 public extension ImageDataLoader {

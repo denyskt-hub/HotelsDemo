@@ -45,7 +45,6 @@ public class ImageView: ShimmeringView, ImageDisplayLogic {
 			loader: SharedImageDataLoader.instance,
 			presenter: presenter
 		)
-
 		self.delegate = adapter
 
 		super.init(frame: frame)

@@ -45,6 +45,12 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 		return TaskWrapper(wrapped: task)
 	}
 
+	public func load(url: URL) async throws -> Data {
+		let request = makeRequest(url: url)
+		let (data, response) = try await client.perform(request)
+		return try ImageDataMapper.map(data, response)
+	}
+
 	private func makeRequest(url: URL) -> URLRequest {
 		var request = URLRequest(url: url)
 		request.httpMethod = "GET"

@@ -11,6 +11,10 @@ extension DispatchingDecorator: ImageDataLoader where T: ImageDataLoader {
 	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
 		decoratee.load(url: url, completion: dispatching(completion))
 	}
+
+	public func load(url: URL) async throws -> Data {
+		try await decoratee.load(url: url)
+	}
 }
 
 public extension ImageDataLoader {
