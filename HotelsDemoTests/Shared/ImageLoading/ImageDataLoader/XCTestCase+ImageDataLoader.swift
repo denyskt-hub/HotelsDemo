@@ -30,6 +30,23 @@ extension ImageDataLoaderTestCase where Self: XCTestCase {
 
 	func expect(
 		_ sut: ImageDataLoader,
+		toLoadWithError expectedError: Error,
+		when action: () -> Void,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) async {
+		action()
+
+		do {
+			let data = try await sut.load(url: anyURL())
+			XCTFail("Expected to load with an error, but got \(data) instead.", file: file, line: line)
+		} catch {
+			XCTAssertEqual(expectedError as NSError, error as NSError)
+		}
+	}
+
+	func expect(
+		_ sut: ImageDataLoader,
 		toLoadTwice expectedResult: Result<Data, Error>,
 		when action: () -> Void,
 		file: StaticString = #filePath,
@@ -63,68 +80,6 @@ extension ImageDataLoaderTestCase where Self: XCTestCase {
 
 		XCTAssertDataResultEqual(firstResult, expectedResult, file: file, line: line)
 		XCTAssertDataResultEqual(secondResult, expectedResult, file: file, line: line)
-	}
-
-	func expect(
-		_ sut: ImageDataLoader,
-		toLoadWithError expectedError: Error,
-		when action: () -> Void,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) async {
-		action()
-
-		do {
-			let data = try await sut.load(url: anyURL())
-			XCTFail("Expected to load with an error, but got \(data) instead.", file: file, line: line)
-		} catch {
-			XCTAssertEqual(expectedError as NSError, error as NSError)
-		}
-	}
-
-	func expect(
-		_ sut: ImageDataLoader,
-		toLoad expectedResult: ImageDataLoader.LoadResult,
-		when action: () -> Void,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let exp = expectation(description: "Wait to complete")
-
-		sut.load(url: anyURL()) { receivedResult in
-			XCTAssertDataResultEqual(receivedResult, expectedResult, file: file, line: line)
-			exp.fulfill()
-		}
-
-		action()
-
-		wait(for: [exp], timeout: 1.0)
-	}
-
-	func expect(
-		_ sut: ImageDataLoader,
-		toLoadTwice expectedResult: ImageDataLoader.LoadResult,
-		when action: () -> Void,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let exp = expectation(description: "Wait to complete")
-		exp.expectedFulfillmentCount = 2
-
-		let url = anyURL()
-		sut.load(url: url) { receivedResult in
-			XCTAssertDataResultEqual(receivedResult, expectedResult, file: file, line: line)
-			exp.fulfill()
-		}
-
-		sut.load(url: url) { receivedResult in
-			XCTAssertDataResultEqual(receivedResult, expectedResult, file: file, line: line)
-			exp.fulfill()
-		}
-
-		action()
-
-		wait(for: [exp], timeout: 1.0)
 	}
 }
 

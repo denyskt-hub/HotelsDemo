@@ -123,11 +123,11 @@ actor DeduplicatingLoader<Output: Sendable> {
 	}
 
 	private func cancel(_ url: URL) {
-		if let entry = ongoingTasks[url] {
-			entry.decrementConsumerCount()
-			if entry.consumerCount == 0 {
-				ongoingTasks[url] = nil
-			}
+		guard let entry = ongoingTasks[url] else { return }
+
+		entry.decrementConsumerCount()
+		if entry.consumerCount == 0 {
+			ongoingTasks[url] = nil
 		}
 	}
 

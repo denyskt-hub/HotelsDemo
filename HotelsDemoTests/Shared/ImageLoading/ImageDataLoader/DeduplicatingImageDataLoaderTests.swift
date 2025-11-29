@@ -93,6 +93,7 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 	func test_cancel_cancelsTaskWhenHasNoConsumers() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
+		loader.stubWithData(anyData())
 
 		let firstTask = Task { try await sut.load(url: url) }
 		let secondTask = Task { try await sut.load(url: url) }

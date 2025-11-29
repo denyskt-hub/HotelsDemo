@@ -83,7 +83,9 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		messages.withLock { $0.append((url, task)) }
 
 		return try await withTaskCancellationHandler {
-			try await withCheckedThrowingContinuation { continuation in
+			try? await Task.sleep(nanoseconds: 100_000_000)
+
+			return try await withCheckedThrowingContinuation { continuation in
 				guard !Task.isCancelled else {
 					continuation.resume(throwing: CancellationError())
 					return
