@@ -45,6 +45,7 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 		return TaskWrapper(wrapped: task)
 	}
 
+	@discardableResult
 	public func load(url: URL) async throws -> Data {
 		let request = makeRequest(url: url)
 		let (data, response) = try await client.perform(request)

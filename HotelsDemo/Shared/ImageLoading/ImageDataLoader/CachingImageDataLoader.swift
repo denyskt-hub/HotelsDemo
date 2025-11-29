@@ -30,6 +30,7 @@ public final class CachingImageDataLoader: ImageDataLoader {
 		}
 	}
 
+	@discardableResult
 	public func load(url: URL) async throws -> Data {
 		let data = try await loader.load(url: url)
 		cache.saveIgnoringResult(data, forKey: url.absoluteString)

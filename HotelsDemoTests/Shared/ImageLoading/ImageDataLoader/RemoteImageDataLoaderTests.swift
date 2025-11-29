@@ -15,13 +15,13 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		XCTAssertEqual(client.receivedRequests(), [])
 	}
 
-	func test_load_performsRequest() async {
+	func test_load_performsRequest() async throws {
 		let url = URL(string: "http://a-url.com/some-path/to/image.jpg")!
 		let httpMethod = "GET"
 		let (sut, client) = makeSUT()
 
 		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
-		sut.load(url: url) { _ in }
+		try await sut.load(url: url)
 		await client.waitUntilStarted()
 
 		XCTAssertEqual(client.receivedRequests().first?.url, url)
@@ -30,39 +30,39 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		XCTAssertEqual(client.receivedRequests().first?.httpBody, nil)
 	}
 
-	func test_load_deliversErrorOnClientError() {
+	func test_load_deliversErrorOnClientError() async {
 		let clientError = anyNSError()
 		let (sut, client) = makeSUT()
 
-		expect(sut, toLoad: .failure(clientError), when: {
+		await expect(sut, toLoadWithError: clientError, when: {
 			client.completeWithError(clientError)
 		})
 	}
 
-	func test_load_deliversErrorOnNon200HTTPResponse() {
+	func test_load_deliversErrorOnNon200HTTPResponse() async {
 		let (sut, client) = makeSUT()
 
 		let samples = [199, 201, 300, 400, 500]
 		for statusCode in samples {
-			expect(sut, toLoad: .failure(HTTPError.unexpectedStatusCode(statusCode)), when: {
+			await expect(sut, toLoadWithError: HTTPError.unexpectedStatusCode(statusCode), when: {
 				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
 
-	func test_load_deliversErrorOn200HTTPResponseWithEmptyData() {
+	func test_load_deliversErrorOn200HTTPResponseWithEmptyData() async {
 		let (sut, client) = makeSUT()
 
-		expect(sut, toLoad: .failure(ImageDataMapper.Error.invalidData), when: {
+		await expect(sut, toLoadWithError: ImageDataMapper.Error.invalidData, when: {
 			client.completeWith((emptyData(), makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
-	func test_load_deliversDataOn200HTTPResponseWithNonEmptyData() {
+	func test_load_deliversDataOn200HTTPResponseWithNonEmptyData() async {
 		let nonEmptyData = Data("non-empty data".utf8)
 		let (sut, client) = makeSUT()
 
-		expect(sut, toLoad: .success(nonEmptyData), when: {
+		await expect(sut, toLoadData: nonEmptyData, when: {
 			client.completeWith((nonEmptyData, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
@@ -76,24 +76,5 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let client = HTTPClientSpy()
 		let sut = RemoteImageDataLoader(client: client)
 		return (sut, client)
-	}
-
-	func expect(
-		_ sut: ImageDataLoader,
-		toLoad expectedResult: ImageDataLoader.LoadResult,
-		when action: () -> Void,
-		file: StaticString = #filePath,
-		line: UInt = #line
-	) {
-		let exp = expectation(description: "Wait to complete")
-
-		action()
-
-		sut.load(url: anyURL()) { receivedResult in
-			XCTAssertDataResultEqual(receivedResult, expectedResult, file: file, line: line)
-			exp.fulfill()
-		}
-
-		wait(for: [exp], timeout: 1.0)
 	}
 }

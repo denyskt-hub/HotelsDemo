@@ -43,6 +43,7 @@ public final class LocalImageDataLoader: ImageDataLoader {
 		return EmptyImageDataLoaderTask()
 	}
 
+	@discardableResult
 	public func load(url: URL) async throws -> Data {
 		let data = try await cacheData(forKey: url.absoluteString)
 		guard let data else {

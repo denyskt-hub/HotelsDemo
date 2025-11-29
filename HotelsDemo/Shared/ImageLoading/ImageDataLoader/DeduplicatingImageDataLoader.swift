@@ -62,26 +62,11 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader, @unchecked Sen
 		}
 	}
 
+	private let deduplicatingLoader = DeduplicatingLoader<Data>()
+
+	@discardableResult
 	public func load(url: URL) async throws -> Data {
-		let task = Mutex<ImageDataLoaderTask?>(nil)
-		return try await withTaskCancellationHandler(
-			operation: {
-				try await withCheckedThrowingContinuation { continuation in
-					task.withLock {
-						$0 = self.load(url: url) { result in
-							switch result {
-							case .success(let data):
-								continuation.resume(returning: data)
-							case .failure(let error):
-								continuation.resume(throwing: error)
-							}
-						}
-					}
-				}
-			},
-			onCancel: {
-				task.withLock({ $0 })?.cancel()
-			})
+		try await deduplicatingLoader.load(from: url, loader: loader.load(url:))
 	}
 
 	private func complete(url: URL, with result: ImageDataLoader.LoadResult) {
@@ -105,6 +90,63 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader, @unchecked Sen
 				ongoingTasks[url] = nil
 			} else {
 				ongoingTasks[url] = entry
+			}
+		}
+	}
+}
+
+actor DeduplicatingLoader<Output: Sendable> {
+	private var ongoingTasks = [URL: TaskEntry<Output>]()
+
+	func load(from url: URL, loader: @Sendable @escaping (URL) async throws -> Output) async throws -> Output {
+		try await withTaskCancellationHandler {
+			if let entry = ongoingTasks[url] {
+				entry.incrementConsumerCount()
+				return try await entry.task.value
+			}
+
+			let newTask = Task { try await loader(url) }
+			let entry = TaskEntry(task: newTask)
+			ongoingTasks[url] = entry
+
+			do {
+				let result = try await newTask.value
+				ongoingTasks[url] = nil
+				return result
+			} catch {
+				ongoingTasks[url] = nil
+				throw error
+			}
+		} onCancel: {
+			Task { await cancel(url) }
+		}
+	}
+
+	private func cancel(_ url: URL) {
+		if let entry = ongoingTasks[url] {
+			entry.decrementConsumerCount()
+			if entry.consumerCount == 0 {
+				ongoingTasks[url] = nil
+			}
+		}
+	}
+
+	private final class TaskEntry<T: Sendable> {
+		let task: Task<T, Error>
+		var consumerCount = 1
+
+		init(task: Task<T, Error>) {
+			self.task = task
+		}
+
+		func incrementConsumerCount() {
+			consumerCount += 1
+		}
+
+		func decrementConsumerCount() {
+			consumerCount -= 1
+			if consumerCount == 0 {
+				task.cancel()
 			}
 		}
 	}

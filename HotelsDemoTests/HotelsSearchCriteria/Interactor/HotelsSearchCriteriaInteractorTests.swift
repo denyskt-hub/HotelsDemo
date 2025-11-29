@@ -357,7 +357,6 @@ final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 		saveCompletions.withLock({ $0 })[index](result)
 	}
 
-
 	func waitUntilStarted() async {
 		var iterator = stream.stream.makeAsyncIterator()
 		_ = await iterator.next()

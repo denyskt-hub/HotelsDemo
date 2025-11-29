@@ -20,6 +20,7 @@ public protocol ImageDataLoader: Sendable {
 	@available(*, deprecated, message: "Use async version")
 	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask
 
+	@discardableResult
 	func load(url: URL) async throws -> Data
 }
 
