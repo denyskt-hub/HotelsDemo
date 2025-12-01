@@ -20,17 +20,6 @@ public final class CachingImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
-		loader.load(url: url) { [weak self] result in
-			if case let .success(data) = result {
-				self?.cache.saveIgnoringResult(data, forKey: url.absoluteString)
-			}
-
-			completion(result)
-		}
-	}
-
-	@discardableResult
 	public func load(url: URL) async throws -> Data {
 		let data = try await loader.load(url: url)
 		cache.saveIgnoringResult(data, forKey: url.absoluteString)

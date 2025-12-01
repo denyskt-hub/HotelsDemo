@@ -20,17 +20,6 @@ public final class LoggingImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
-		#if DEBUG
-		loader.load(url: url) { result in
-			self.logger.log(loadResult: result, for: url)
-			completion(result)
-		}
-		#else
-		loader.load(url: url, completion: completion)
-		#endif
-	}
-
 	public func load(url: URL) async throws -> Data {
 		#if DEBUG
 		do {

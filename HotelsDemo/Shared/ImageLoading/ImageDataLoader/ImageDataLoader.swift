@@ -14,12 +14,6 @@ public protocol ImageDataLoaderTask: Sendable {
 public protocol ImageDataLoader: Sendable {
 	typealias LoadResult = Result<Data, Error>
 
-	/// The completion handler can be invoked in any thread.
-	/// Clients are responsible to dispatch to appropriate threads, if needed.
-	@discardableResult
-	@available(*, deprecated, message: "Use async version")
-	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask
-
 	@discardableResult
 	func load(url: URL) async throws -> Data
 }

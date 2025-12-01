@@ -61,16 +61,16 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		messages.withLock { $0 }
 	}
 
-	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
-		let task = TaskSpy()
-		task.onCancel = { [weak self] in self?.cancel() }
-
-		messages.withLock { $0.append((url, task)) }
-		completions.withLock { $0.append(completion) }
-
-		onLoad?()
-		return task
-	}
+//	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
+//		let task = TaskSpy()
+//		task.onCancel = { [weak self] in self?.cancel() }
+//
+//		messages.withLock { $0.append((url, task)) }
+//		completions.withLock { $0.append(completion) }
+//
+//		onLoad?()
+//		return task
+//	}
 
 	private let stream = AsyncStream<Void>.makeStream()
 
@@ -112,18 +112,16 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		messages.withLock({ $0 }).first(where: { $0.url == url })?.task
 	}
 
-	func completeWith(_ result: LoadResult, at index: Int = 0) {
-		completions.withLock({ $0 })[index](result)
-	}
-
 	func completeWithData(_ data: Data, at index: Int = 0) {
 		let continuation = continuations.withLock { $0[index] }
 		continuation.resume(returning: data)
+		stream.continuation.yield(())
 	}
 
 	func completeWithError(_ error: Error, at index: Int = 0) {
 		let continuation = continuations.withLock { $0[index] }
 		continuation.resume(throwing: error)
+		stream.continuation.yield(())
 	}
 
 	func stubWithData(_ data: Data) {
@@ -135,6 +133,11 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 	}
 
 	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
+	}
+
+	func waitUntilCompleted() async {
 		var iterator = stream.stream.makeAsyncIterator()
 		_ = await iterator.next()
 	}

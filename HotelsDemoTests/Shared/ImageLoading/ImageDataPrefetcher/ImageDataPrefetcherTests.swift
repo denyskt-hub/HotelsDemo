@@ -9,44 +9,44 @@ import XCTest
 import HotelsDemo
 
 final class ImageDataPrefetcherTests: XCTestCase {
-	func test_prefetch_startsLoadingForEachURL() {
+	func test_prefetch_startsLoadingForEachURL() async {
 		let url1 = URL(string: "https://a.com")!
 		let url2 = URL(string: "https://b.com")!
 		let (sut, loader) = makeSUT()
 
-		prefetch([url1, url2], sut: sut, loader: loader)
+		await prefetch([url1, url2], sut: sut, loader: loader)
 
 		XCTAssertEqual(loader.loadedURLs, [url1, url2])
 	}
 
-	func test_prefetch_doesNotStartDuplicateLoadsForSameURL() {
+	func test_prefetch_doesNotStartDuplicateLoadsForSameURL() async {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
 
-		prefetch([url, url], sut: sut, loader: loader)
+		await prefetch([url, url], sut: sut, loader: loader)
 
 		XCTAssertEqual(loader.loadedURLs, [url], "Should load only once")
 	}
 
-	func test_prefetch_loadsSameURLAfterComplete() {
+	func test_prefetch_loadsSameURLAfterComplete() async {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
 
-		prefetch([url], sut: sut, loader: loader)
+		await prefetch([url], sut: sut, loader: loader)
 		XCTAssertEqual(loader.loadedURLs, [url], "Should load the URL on prefetch")
+		loader.completeWithData(anyData())
+		await loader.waitUntilCompleted()
 
-		loader.completeWith(.success(anyData()))
-
-		prefetch([url], sut: sut, loader: loader)
+		await prefetch([url], sut: sut, loader: loader)
 		XCTAssertEqual(loader.loadedURLs, [url, url], "Should start a new load after completion")
 	}
 
-	func test_cancelPrefetching_cancelsTaskForGivenURLs() {
+	func test_cancelPrefetching_cancelsTaskForGivenURLs() async {
 		let url1 = URL(string: "https://a.com")!
 		let url2 = URL(string: "https://b.com")!
 		let (sut, loader) = makeSUT()
 
-		prefetch([url1, url2], sut: sut, loader: loader)
+		await prefetch([url1, url2], sut: sut, loader: loader)
 		cancelPrefetching([url1], sut: sut, loader: loader)
 
 		XCTAssertEqual(loader.cancelledURLs, [url1])
@@ -81,17 +81,9 @@ final class ImageDataPrefetcherTests: XCTestCase {
 		_ urls: [URL],
 		sut: ImageDataPrefetcher,
 		loader: ImageDataLoaderSpy
-	) {
-		let exp = expectation(description: "Wait for star load")
-		exp.expectedFulfillmentCount = Set(urls).count
-
-		loader.onLoad = {
-			exp.fulfill()
-		}
-
+	) async {
 		sut.prefetch(urls: urls)
-
-		wait(for: [exp], timeout: 0.1)
+		await loader.waitUntilStarted()
 	}
 
 	private func cancelPrefetching(
