@@ -279,10 +279,6 @@ final class HotelsSearchCriteriaProviderStub: HotelsSearchCriteriaProvider {
 		self.criteria = criteria
 	}
 
-	func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
-		completion(.success(criteria))
-	}
-
 	func retrieve() async throws -> HotelsSearchCriteria {
 		criteria
 	}
