@@ -8,8 +8,6 @@
 import Foundation
 
 public protocol ImageDataLoader: Sendable {
-	typealias LoadResult = Result<Data, Error>
-
 	@discardableResult
 	func load(url: URL) async throws -> Data
 }

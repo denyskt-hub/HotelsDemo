@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol ImageDataLoadingLogger: Sendable {
-	func log(loadResult result: ImageDataLoader.LoadResult, for url: URL)
+	func log(loadResult result: Result<Data, Error>, for url: URL)
 }

@@ -13,7 +13,6 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 	typealias Message = (url: URL, task: TaskSpy)
 
 	private let messages = Mutex<[Message]>([])
-	private let completions = Mutex<[(LoadResult) -> Void]>([])
 	private let continuations = Mutex<[CheckedContinuation<Data, Error>]>([])
 
 	var loadedURLs: [URL] { receivedMessages().map { $0.url } }
@@ -57,7 +56,7 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 
 	private let stream = AsyncStream<Void>.makeStream()
 
-	private let loadStub = Mutex<LoadResult?>(nil)
+	private let loadStub = Mutex<Result<Data, Error>?>(nil)
 
 	func load(url: URL) async throws -> Data {
 		let task = TaskSpy()
