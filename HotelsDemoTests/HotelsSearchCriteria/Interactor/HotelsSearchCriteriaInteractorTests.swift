@@ -285,24 +285,15 @@ final class HotelsSearchCriteriaProviderStub: HotelsSearchCriteriaProvider {
 }
 
 final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
-	private let retrieveCompletions = Mutex<[((RetrieveResult) -> Void)]>([])
 	private let continuations = Mutex<[CheckedContinuation<HotelsSearchCriteria, Error>]>([])
 
 	private let stream = AsyncStream<Void>.makeStream()
-
-	func retrieve(completion: @Sendable @escaping (RetrieveResult) -> Void) {
-		retrieveCompletions.withLock { $0.append(completion) }
-	}
 
 	func retrieve() async throws -> HotelsSearchCriteria {
 		try await withCheckedThrowingContinuation { continuation in
 			continuations.withLock { $0.append(continuation) }
 			stream.continuation.yield(())
 		}
-	}
-
-	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
-		retrieveCompletions.withLock({ $0 })[index](result)
 	}
 
 	func completeWithCriteria(_ criteria: HotelsSearchCriteria, at index: Int = 0) {
