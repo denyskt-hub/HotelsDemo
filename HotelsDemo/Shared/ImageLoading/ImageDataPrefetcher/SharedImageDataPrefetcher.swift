@@ -22,7 +22,7 @@ public enum SharedImageDataPrefetcher {
 		let remote = RemoteImageDataLoader.shared.logging(.remote)
 		let caching = CachingImageDataLoader(loader: remote, cache: cache)
 		let prefetching = local.fallback(to: caching).logging(.prefetch)
-		return ImageDataPrefetcher(loader: prefetching)
+		return DefaultImageDataPrefetcher(loader: prefetching)
 	}
 
 	public static func configureLogging(enabled: Bool = true) {

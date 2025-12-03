@@ -26,12 +26,6 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 
 	var tasks: [TaskSpy] { receivedMessages().map { $0.task } }
 
-	private let _onLoad = Mutex<(() -> Void)?>(nil)
-	var onLoad: (() -> Void)? {
-		get { _onLoad.withLock { $0 } }
-		set { _onLoad.withLock { $0 = newValue } }
-	}
-
 	private let _onCancel = Mutex<(() -> Void)?>(nil)
 	var onCancel: (() -> Void)? {
 		get { _onCancel.withLock { $0 } }
@@ -60,17 +54,6 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 	func receivedMessages() -> [Message] {
 		messages.withLock { $0 }
 	}
-
-//	func load(url: URL, completion: @Sendable @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
-//		let task = TaskSpy()
-//		task.onCancel = { [weak self] in self?.cancel() }
-//
-//		messages.withLock { $0.append((url, task)) }
-//		completions.withLock { $0.append(completion) }
-//
-//		onLoad?()
-//		return task
-//	}
 
 	private let stream = AsyncStream<Void>.makeStream()
 
