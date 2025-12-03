@@ -313,15 +313,9 @@ final class HotelsSearchCriteriaProviderSpy: HotelsSearchCriteriaProvider {
 }
 
 final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
-	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
 	private let continuations = Mutex<[CheckedContinuation<Void, Error>]>([])
 
 	private let stream = AsyncStream<Void>.makeStream()
-
-	func save(_ criteria: HotelsSearchCriteria, completion: @Sendable @escaping (SaveResult) -> Void) {
-		saveCompletions.withLock { $0.append(completion) }
-		stream.continuation.yield(())
-	}
 
 	func save(_ criteria: HotelsSearchCriteria) async throws {
 		try await withCheckedThrowingContinuation { continuation in
@@ -338,10 +332,6 @@ final class HotelsSearchCriteriaCacheSpy: HotelsSearchCriteriaCache {
 	func completeSaveWithError(_ error: Error, at index: Int = 0) {
 		let continuation = continuations.withLock { $0[index] }
 		continuation.resume(throwing: error)
-	}
-
-	func completeSave(with result: SaveResult, at index: Int = 0) {
-		saveCompletions.withLock({ $0 })[index](result)
 	}
 
 	func waitUntilStarted() async {
