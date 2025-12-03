@@ -22,7 +22,7 @@ public enum SharedImageDataLoader {
 		let remote = RemoteImageDataLoader.shared.logging(.remote)
 		let caching = CachingImageDataLoader(loader: remote, cache: cache)
 		let logging = local.fallback(to: caching).logging(.composite)
-		return logging.dispatch(to: MainQueueDispatcher())
+		return logging
 	}
 
 	public static func configureLogging(enabled: Bool = true) {
