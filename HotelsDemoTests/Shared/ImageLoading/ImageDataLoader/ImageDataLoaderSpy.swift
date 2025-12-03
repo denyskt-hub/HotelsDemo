@@ -32,7 +32,7 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		set { _onCancel.withLock { $0 = newValue } }
 	}
 
-	final class TaskSpy: ImageDataLoaderTask {
+	final class TaskSpy {
 		private let _cancelCallCount = Mutex<Int>(0)
 		var cancelCallCount: Int {
 			get { _cancelCallCount.withLock({ $0 }) }

@@ -7,10 +7,6 @@
 
 import Foundation
 
-public protocol ImageDataLoaderTask: Sendable {
-	func cancel()
-}
-
 public protocol ImageDataLoader: Sendable {
 	typealias LoadResult = Result<Data, Error>
 
