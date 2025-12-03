@@ -6,22 +6,17 @@
 //
 
 import Foundation
+import Synchronization
 
-public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
-	private let queue = DispatchQueue(
-		label: "\(InMemoryImageDataCache.self)Queue",
-		qos: .userInitiated,
-		attributes: .concurrent
-	)
-
+public final class InMemoryImageDataCache: ImageDataCache {
 	private struct CacheEntry {
 		let data: Data
 		let size: Int
 	}
 
-	private var cache = [String: CacheEntry]()
-	private var recentUsedKeys = [String]()
-	private var totalSizeInBytes: Int = 0
+	private let cache = Mutex<[String: CacheEntry]>([:])
+	private let recentUsedKeys = Mutex<[String]>([])
+	private let totalSizeInBytes = Mutex<Int>(0)
 
 	private let countLimit: Int?
 	private let sizeLimitInBytes: Int?
@@ -32,33 +27,6 @@ public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 	) {
 		self.countLimit = countLimit
 		self.sizeLimitInBytes = sizeLimitInBytes
-	}
-
-	public func save(_ data: Data, forKey key: String, completion: @Sendable @escaping (SaveResult) -> Void) {
-		queue.async(flags: .barrier) { [weak self] in
-			guard let self = self else { return }
-
-			let entry = CacheEntry(data: data, size: data.count)
-			self.updateEntry(entry, forKey: key)
-
-			self.updateRecentUsedKeys(key)
-
-			self.evictIfNeeded()
-
-			completion(.success(()))
-		}
-	}
-
-	public func data(forKey key: String, completion: @Sendable @escaping (DataResult) -> Void) {
-		queue.async(flags: .barrier) { [weak self] in
-			guard let self = self else { return }
-
-			let entry = cache[key]
-
-			updateRecentUsedKeys(key)
-
-			completion(.success(entry?.data))
-		}
 	}
 
 	public func save(_ data: Data, forKey key: String) async throws {
@@ -74,9 +42,10 @@ public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 		}
 	}
 
+	@discardableResult
 	public func data(forKey key: String) async throws -> Data? {
 		await withCheckedContinuation { continuation in
-			let entry = cache[key]
+			let entry = cache.withLock { $0[key] }
 
 			updateRecentUsedKeys(key)
 
@@ -85,17 +54,17 @@ public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 	}
 
 	private func updateEntry(_ entry: CacheEntry, forKey key: String) {
-		if let existingEntry = cache[key] {
-			totalSizeInBytes -= existingEntry.size
+		if let existingEntry = cache.withLock({ $0[key] }) {
+			totalSizeInBytes.withLock { $0 -= existingEntry.size }
 		}
 
-		cache[key] = entry
-		totalSizeInBytes += entry.size
+		cache.withLock { $0[key] = entry }
+		totalSizeInBytes.withLock { $0 += entry.size }
 	}
 
 	private func updateRecentUsedKeys(_ key: String) {
-		recentUsedKeys.removeAll { $0 == key }
-		recentUsedKeys.insert(key, at: 0)
+		recentUsedKeys.withLock { $0.removeAll { $0 == key } }
+		recentUsedKeys.withLock { $0.insert(key, at: 0) }
 	}
 
 	private func evictIfNeeded() {
@@ -105,22 +74,22 @@ public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 	}
 
 	private func exceedsLimits() -> Bool {
-		if let countLimit = countLimit, cache.count > countLimit {
+		if let countLimit = countLimit, cache.withLock({ $0.count }) > countLimit {
 			return true
 		}
-		if let sizeLimitInBytes = sizeLimitInBytes, totalSizeInBytes > sizeLimitInBytes {
+		if let sizeLimitInBytes = sizeLimitInBytes, totalSizeInBytes.withLock({ $0 }) > sizeLimitInBytes {
 			return true
 		}
 		return false
 	}
 
 	private func evictLeastRecentlyUsed() {
-		guard let lastKey = recentUsedKeys.popLast() else {
+		guard let lastKey = recentUsedKeys.withLock({ $0.popLast() }) else {
 			return
 		}
 
-		if let entry = cache.removeValue(forKey: lastKey) {
-			totalSizeInBytes -= entry.size
+		if let entry = cache.withLock({ $0.removeValue(forKey: lastKey) }) {
+			totalSizeInBytes.withLock { $0 -= entry.size }
 		}
 	}
 }

@@ -81,29 +81,6 @@ final class ImageDataCacheSpy: ImageDataCache {
 	private let saveResultStub = Mutex<SaveResult?>(nil)
 	private let dataResultStub = Mutex<DataResult?>(nil)
 
-	private let saveCompletions = Mutex<[((SaveResult) -> Void)]>([])
-	private let dataCompletions =  Mutex<[((DataResult) -> Void)]>([])
-
-	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
-		messages.withLock { $0.append(.save(data, key)) }
-
-		if let saveResultStub = saveResultStub.withLock({ $0 }) {
-			completion(saveResultStub)
-		} else {
-			saveCompletions.withLock { $0.append(completion) }
-		}
-	}
-
-	func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
-		messages.withLock { $0.append(.data(key)) }
-
-		if let dataResultStub = dataResultStub.withLock({ $0 }) {
-			completion(dataResultStub)
-		} else {
-			dataCompletions.withLock { $0.append(completion) }
-		}
-	}
-
 	func save(_ data: Data, forKey key: String) async throws {
 		guard let saveResultStub = saveResultStub.withLock({ $0 }) else {
 			fatalError("Set a stub value using stubSaveResult before calling save(_:forKey:)")
@@ -129,14 +106,6 @@ final class ImageDataCacheSpy: ImageDataCache {
 		case let .failure(error):
 			throw error
 		}
-	}
-
-	func completeSaveWith(_ error: Error, at index: Int = 0) {
-		saveCompletions.withLock({ $0 })[index](.failure(error))
-	}
-
-	func completeDataWith(_ result: DataResult, at index: Int = 0) {
-		dataCompletions.withLock({ $0 })[index](result)
 	}
 
 	func stubSaveResult(_ result: SaveResult) {
