@@ -61,6 +61,29 @@ public final class InMemoryImageDataCache: ImageDataCache, @unchecked Sendable {
 		}
 	}
 
+	public func save(_ data: Data, forKey key: String) async throws {
+		await withCheckedContinuation { continuation in
+			let entry = CacheEntry(data: data, size: data.count)
+			updateEntry(entry, forKey: key)
+
+			updateRecentUsedKeys(key)
+
+			evictIfNeeded()
+
+			continuation.resume()
+		}
+	}
+
+	public func data(forKey key: String) async throws -> Data? {
+		await withCheckedContinuation { continuation in
+			let entry = cache[key]
+
+			updateRecentUsedKeys(key)
+
+			continuation.resume(returning: entry?.data)
+		}
+	}
+
 	private func updateEntry(_ entry: CacheEntry, forKey key: String) {
 		if let existingEntry = cache[key] {
 			totalSizeInBytes -= existingEntry.size

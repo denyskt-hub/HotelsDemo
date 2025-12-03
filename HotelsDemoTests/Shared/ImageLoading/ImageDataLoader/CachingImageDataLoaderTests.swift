@@ -78,7 +78,7 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 		await expect(sut, toLoadData: data, when: {
 			loader.stubWithData(data)
-			cache.completeSaveWithError(anyNSError())
+			cache.stubSaveResult(.failure(anyNSError()))
 		})
 	}
 

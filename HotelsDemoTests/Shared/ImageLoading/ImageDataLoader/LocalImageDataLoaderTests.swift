@@ -21,8 +21,8 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let url = anyURL()
 		let key = url.absoluteString
 		let (sut, cache) = makeSUT()
+		cache.stubDataResult(.success(anyData()))
 
-		cache.completeDataWith(anyData())
 		try await sut.load(url: url)
 
 		XCTAssertEqual(cache.receivedMessages(), [.data(key)])
@@ -33,7 +33,7 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, cache) = makeSUT()
 
 		await expect(sut, toLoadWithError: cacheError, when: {
-			cache.completeDataWithError(cacheError)
+			cache.stubDataResult(.failure(cacheError))
 		})
 	}
 
@@ -41,7 +41,7 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, cache) = makeSUT()
 
 		await expect(sut, toLoadWithError: LocalImageDataLoader.Error.notFound, when: {
-			cache.completeDataWith(.none)
+			cache.stubDataResult(.success(.none))
 		})
 	}
 
@@ -50,7 +50,7 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, cache) = makeSUT()
 
 		await expect(sut, toLoadData: data, when: {
-			cache.completeDataWith(data)
+			cache.stubDataResult(.success(data))
 		})
 	}
 
@@ -104,6 +104,33 @@ final class ImageDataCacheSpy: ImageDataCache {
 		}
 	}
 
+	func save(_ data: Data, forKey key: String) async throws {
+		guard let saveResultStub = saveResultStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubSaveResult before calling save(_:forKey:)")
+		}
+
+		messages.withLock { $0.append(.save(data, key)) }
+
+		if case let .failure(error) = saveResultStub {
+			throw error
+		}
+	}
+
+	func data(forKey key: String) async throws -> Data? {
+		guard let dataResultStub = dataResultStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubDataResult before calling data(forKey:)")
+		}
+
+		messages.withLock { $0.append(.data(key)) }
+
+		switch dataResultStub {
+		case let .success(data):
+			return data
+		case let .failure(error):
+			throw error
+		}
+	}
+
 	func completeSaveWith(_ error: Error, at index: Int = 0) {
 		saveCompletions.withLock({ $0 })[index](.failure(error))
 	}
@@ -116,15 +143,7 @@ final class ImageDataCacheSpy: ImageDataCache {
 		saveResultStub.withLock { $0 = result }
 	}
 
-	func completeSaveWithError(_ error: Error) {
-		saveResultStub.withLock { $0 = .failure(error) }
-	}
-
-	func completeDataWith(_ data: Data?) {
-		dataResultStub.withLock { $0 = .success(data) }
-	}
-
-	func completeDataWithError(_ error: Error) {
-		dataResultStub.withLock { $0 = .failure(error) }
+	func stubDataResult(_ result: DataResult) {
+		dataResultStub.withLock { $0 = result }
 	}
 }

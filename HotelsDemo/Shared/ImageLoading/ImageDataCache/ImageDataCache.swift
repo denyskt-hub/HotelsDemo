@@ -26,34 +26,6 @@ public protocol ImageDataCache: Sendable {
 }
 
 extension ImageDataCache {
-	public func save(_ data: Data, forKey key: String) async throws {
-		try await withCheckedThrowingContinuation { continuation in
-			save(data, forKey: key) { result in
-				switch result {
-				case .success:
-					continuation.resume(returning: ())
-				case let .failure(error):
-					continuation.resume(throwing: error)
-				}
-			}
-		}
-	}
-
-	public func data(forKey key: String) async throws -> Data? {
-		try await withCheckedThrowingContinuation { continuation in
-			data(forKey: key) { result in
-				switch result {
-				case let .success(data):
-					continuation.resume(returning: data)
-				case let .failure(error):
-					continuation.resume(throwing: error)
-				}
-			}
-		}
-	}
-}
-
-extension ImageDataCache {
 	func logging(_ tag: ImageDataCacheLogTag) -> LoggingImageDataCache {
 		LoggingImageDataCache(
 			cache: self,
