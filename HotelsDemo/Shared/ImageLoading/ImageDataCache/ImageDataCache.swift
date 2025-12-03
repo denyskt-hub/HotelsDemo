@@ -54,12 +54,6 @@ extension ImageDataCache {
 }
 
 extension ImageDataCache {
-	public func saveIgnoringResult(_ data: Data, forKey key: String) {
-		save(data, forKey: key) { _ in }
-	}
-}
-
-extension ImageDataCache {
 	func logging(_ tag: ImageDataCacheLogTag) -> LoggingImageDataCache {
 		LoggingImageDataCache(
 			cache: self,

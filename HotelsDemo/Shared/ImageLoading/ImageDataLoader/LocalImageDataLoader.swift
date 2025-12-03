@@ -20,23 +20,10 @@ public final class LocalImageDataLoader: ImageDataLoader {
 
 	@discardableResult
 	public func load(url: URL) async throws -> Data {
-		let data = try await cacheData(forKey: url.absoluteString)
+		let data = try await cache.data(forKey: url.absoluteString)
 		guard let data else {
 			throw Error.notFound
 		}
 		return data
-	}
-
-	private func cacheData(forKey key: String) async throws -> Data? {
-		try await withCheckedThrowingContinuation { continuation in
-			cache.data(forKey: key) { result in
-				switch result {
-				case let .success(data):
-					continuation.resume(returning: data)
-				case let .failure(error):
-					continuation.resume(throwing: error)
-				}
-			}
-		}
 	}
 }

@@ -24,9 +24,10 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 	func test_load_requestsDataFromLoader() async throws {
 		let url = anyURL()
-		let (sut, loader, _) = makeSUT()
-
+		let (sut, loader, cache) = makeSUT()
 		loader.stubWithData(anyData())
+		cache.stubSaveResult(.success(()))
+
 		try await sut.load(url: url)
 
 		XCTAssertEqual(loader.loadedURLs, [url])
@@ -43,17 +44,18 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 
 	func test_load_deliversDataOnLoaderSuccess() async {
 		let nonEmptyData = Data("non-empty data".utf8)
-		let (sut, loader, _) = makeSUT()
+		let (sut, loader, cache) = makeSUT()
 
 		await expect(sut, toLoadData: nonEmptyData, when: {
 			loader.stubWithData(nonEmptyData)
+			cache.stubSaveResult(.success(()))
 		})
 	}
 
 	func test_load_doesNotCacheOnLoaderError() async {
 		let (sut, loader, cache) = makeSUT()
-
 		loader.stubWithError(anyNSError())
+
 		_ = try? await sut.load(url: anyURL())
 
 		XCTAssertTrue(cache.receivedMessages().isEmpty)
@@ -62,8 +64,9 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_load_cachesDataOnLoaderSuccess() async throws {
 		let (url, data) = (anyURL(), anyData())
 		let (sut, loader, cache) = makeSUT()
-
 		loader.stubWithData(data)
+		cache.stubSaveResult(.success(()))
+
 		try await sut.load(url: url)
 
 		XCTAssertEqual(cache.receivedMessages(), [.save(data, url.absoluteString)])

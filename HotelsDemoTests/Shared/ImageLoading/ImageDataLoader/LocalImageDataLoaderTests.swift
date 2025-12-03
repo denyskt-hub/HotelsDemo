@@ -112,6 +112,10 @@ final class ImageDataCacheSpy: ImageDataCache {
 		dataCompletions.withLock({ $0 })[index](result)
 	}
 
+	func stubSaveResult(_ result: SaveResult) {
+		saveResultStub.withLock { $0 = result }
+	}
+
 	func completeSaveWithError(_ error: Error) {
 		saveResultStub.withLock { $0 = .failure(error) }
 	}
