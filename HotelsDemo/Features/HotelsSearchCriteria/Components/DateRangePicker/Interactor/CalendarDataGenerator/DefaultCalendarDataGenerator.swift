@@ -56,11 +56,13 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 			calendar: calendar
 		)
 
-		return months.map {
+		var globalId = 0
+		return months.map { start in
 			DateRangePickerModels.CalendarMonth(
-				month: $0,
+				month: start,
 				dates: allMonthDates(
-					start: $0,
+					globalId: &globalId,
+					start: start,
 					currentDate: currentDate,
 					selectedStartDate: selectedStartDate,
 					selectedEndDate: selectedEndDate,
@@ -90,6 +92,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 	}
 
 	private func allMonthDates(
+		globalId: inout Int,
 		start: Date,
 		currentDate: Date,
 		selectedStartDate: Date?,
@@ -100,7 +103,10 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 
 		let weekday = calendar.component(.weekday, from: start)
 		let leadingEmptyDays = (weekday - calendar.firstWeekday + 7) % 7
-		result.append(contentsOf: Array(repeating: .init(date: nil), count: leadingEmptyDays))
+		for _ in 0..<leadingEmptyDays {
+			result.append(.init(id: globalId, date: nil))
+			globalId += 1
+		}
 
 		var current = start
 		let end = start
@@ -123,6 +129,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 
 			result.append(
 				.init(
+					id: globalId,
 					date: current,
 					rangePosition: rangePosition,
 					isToday: current == today,
@@ -130,6 +137,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 				)
 			)
 			current = current.adding(days: 1, calendar: calendar)
+			globalId += 1
 		}
 
 		return result

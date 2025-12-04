@@ -20,8 +20,9 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private let weekdaysDataSource = WeekdaysDataSource()
 	private let weekdaysLayoutDelegate = WeekdaysLayoutDelegate()
 
-	private let calendarDataSource = CalendarDataSource()
-	private let calendarLayoutDelegate = CalendarLayoutDelegate()
+	private typealias CalendarSection = DateRangePickerModels.CalendarMonthViewModel
+	private typealias CalendarItem = DateRangePickerModels.CalendarDateViewModel
+	private var calendarDataSource: UICollectionViewDiffableDataSource<CalendarSection, CalendarItem>!
 
 	public var weekdaysCollectionView: UICollectionView { rootView.weekdaysCollectionView }
 	public var collectionView: UICollectionView { rootView.collectionView }
@@ -45,6 +46,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 		setupWeekdaysCollectionView()
 		setupCollectionView()
+		setupCalendarDataSource()
 		setupApplyButton()
 
 		interactor.doFetchCalendar(request: .init())
@@ -57,23 +59,57 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	private func setupCollectionView() {
-		calendarDataSource.cellDelegate = self
-		collectionView.dataSource = calendarDataSource
-		collectionView.delegate = calendarLayoutDelegate
-		collectionView.register(DateCell.self)
-		collectionView.register(SectionHeaderView.self, kind: UICollectionView.elementKindSectionHeader)
+		collectionView.delegate = self
+	}
+	
+	private func setupCalendarDataSource() {
+		let cellRegistration = UICollectionView.CellRegistration<DateCell, CalendarItem> { cell, indexPath, cellViewModel in
+			cell.configure(cellViewModel)
+		}
+		
+		calendarDataSource = UICollectionViewDiffableDataSource<CalendarSection, CalendarItem>(
+			collectionView: collectionView
+		) { collectionView, indexPath, item in
+			collectionView.dequeueConfiguredReusableCell(
+				using: cellRegistration,
+				for: indexPath,
+				item: item
+			)
+		}
+		
+		let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(elementKind: UICollectionView.elementKindSectionHeader) { headerView, elementKind, indexPath in
+				let section = self.calendarDataSource.snapshot().sectionIdentifiers[indexPath.section]
+				headerView.label.text = section.title
+			}
+		
+		calendarDataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+			guard kind == UICollectionView.elementKindSectionHeader else { return nil }
+
+			return collectionView.dequeueConfiguredReusableSupplementary(
+				using: headerRegistration,
+				for: indexPath
+			)
+		}
 	}
 
 	private func setupApplyButton() {
 		applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
+	}
+	
+	private func reloadData(_ sections: [CalendarSection]) {
+		var snapshot = NSDiffableDataSourceSnapshot<CalendarSection, CalendarItem>()
+		snapshot.appendSections(sections)
+		for section in sections {
+			snapshot.appendItems(section.dates, toSection: section)
+		}
+		calendarDataSource.apply(snapshot, animatingDifferences: false)
 	}
 
 	public func display(viewModel: DateRangePickerModels.FetchCalendar.ViewModel) {
 		weekdaysDataSource.weekdays = viewModel.calendar.weekdays
 		weekdaysCollectionView.reloadData()
 
-		calendarDataSource.sections = viewModel.calendar.sections
-		collectionView.reloadData()
+		reloadData(viewModel.calendar.sections)
 
 		applyButton.isEnabled = viewModel.isApplyEnabled
 	}
@@ -82,8 +118,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 		weekdaysDataSource.weekdays = viewModel.calendar.weekdays
 		weekdaysCollectionView.reloadData()
 
-		calendarDataSource.sections = viewModel.calendar.sections
-		collectionView.reloadData()
+		reloadData(viewModel.calendar.sections)
 
 		applyButton.isEnabled = viewModel.isApplyEnabled
 	}
@@ -133,57 +168,19 @@ final class WeekdaysLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout
 	}
 }
 
-final class CalendarDataSource: NSObject, UICollectionViewDataSource {
-	var sections = [DateRangePickerModels.CalendarMonthViewModel]()
-	weak var cellDelegate: DateCellDelegate?
-
-	func numberOfSections(in collectionView: UICollectionView) -> Int {
-		sections.count
-	}
-
-	func collectionView(
+extension DateRangePickerViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+	public func collectionView(
 		_ collectionView: UICollectionView,
-		numberOfItemsInSection section: Int
-	) -> Int {
-		sections[section].dates.count
-	}
-
-	func collectionView(
-		_ collectionView: UICollectionView,
-		cellForItemAt indexPath: IndexPath
-	) -> UICollectionViewCell {
-		let cell: DateCell = collectionView.dequeueReusableCell(for: indexPath)
-		cell.delegate = cellDelegate
-		cell.indexPath = indexPath
-
-		let cellViewModel = sections[indexPath.section].dates[indexPath.row]
-		cell.configure(cellViewModel)
-		return cell
-	}
-
-	func collectionView(
-		_ collectionView: UICollectionView,
-		viewForSupplementaryElementOfKind kind: String,
-		at indexPath: IndexPath
-	) -> UICollectionReusableView {
-		guard kind == UICollectionView.elementKindSectionHeader else {
-			fatalError("Unsupported kind")
+		didSelectItemAt indexPath: IndexPath
+	) {
+		guard let date = calendarDataSource.itemIdentifier(for: indexPath)?.date else {
+			return
 		}
 
-		let sectionHeader: SectionHeaderView = collectionView.dequeueReusableSupplementaryView(
-			ofKind: kind,
-			for: indexPath
-		)
-
-		let sectionViewModel = sections[indexPath.section]
-		sectionHeader.label.text = sectionViewModel.title
-
-		return sectionHeader
+		interactor.handleDateSelection(request: .init(date: date))
 	}
-}
-
-final class CalendarLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout {
-	func collectionView(
+	
+	public func collectionView(
 		_ collectionView: UICollectionView,
 		layout collectionViewLayout: UICollectionViewLayout,
 		referenceSizeForHeaderInSection section: Int
@@ -191,7 +188,7 @@ final class CalendarLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout
 		CGSize(width: collectionView.bounds.width, height: 44)
 	}
 
-	func collectionView(
+	public func collectionView(
 		_ collectionView: UICollectionView,
 		layout collectionViewLayout: UICollectionViewLayout,
 		sizeForItemAt indexPath: IndexPath
@@ -199,15 +196,5 @@ final class CalendarLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout
 		let numberOfColumns = CGFloat(7)
 		let itemWidth = collectionView.bounds.width / numberOfColumns
 		return CGSize(width: itemWidth, height: itemWidth)
-	}
-}
-
-extension DateRangePickerViewController: DateCellDelegate {
-	public func dateCellDidTap(_ cell: DateCell, at indexPath: IndexPath) {
-		guard let date = calendarDataSource.sections[indexPath.section].dates[indexPath.row].date else {
-			return
-		}
-
-		interactor.handleDateSelection(request: .init(date: date))
 	}
 }

@@ -121,6 +121,7 @@ public enum DateRangePickerModels {
 	}
 
 	public struct CalendarDate: Equatable {
+		public let id: Int
 		public let date: Date?
 		public let rangePosition: DateRangePosition
 		public let isToday: Bool
@@ -133,11 +134,13 @@ public enum DateRangePickerModels {
 		}
 
 		public init(
+			id: Int,
 			date: Date?,
 			rangePosition: DateRangePosition = .none,
 			isToday: Bool = false,
 			isEnabled: Bool = true
 		) {
+			self.id = id
 			self.date = date
 			self.rangePosition = rangePosition
 			self.isToday = isToday
@@ -155,7 +158,7 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public struct CalendarMonthViewModel: Equatable {
+	public struct CalendarMonthViewModel: Hashable, Sendable {
 		public let title: String
 		public let dates: [CalendarDateViewModel]
 
@@ -165,9 +168,10 @@ public enum DateRangePickerModels {
 		}
 	}
 
-	public struct CalendarDateViewModel: Equatable {
-		public let date: Date?
-		public let title: String?
+	public struct CalendarDateViewModel: Hashable, Sendable {
+		public let id: Int
+		public let date: Date?							// optional for placeholder cells
+		public let title: String?						// optional for placeholder cells
 		public let rangePosition: DateRangePosition
 		public let isToday: Bool
 		public let isEnabled: Bool
@@ -175,6 +179,7 @@ public enum DateRangePickerModels {
 		public let isInRange: Bool
 
 		public init(
+			id: Int,
 			date: Date?,
 			title: String?,
 			rangePosition: DateRangePosition = .none,
@@ -183,6 +188,7 @@ public enum DateRangePickerModels {
 			isSelected: Bool = false,
 			isInRange: Bool = false
 		) {
+			self.id = id
 			self.date = date
 			self.title = title
 			self.rangePosition = rangePosition
