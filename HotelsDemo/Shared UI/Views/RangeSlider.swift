@@ -9,55 +9,47 @@ import UIKit
 
 public class RangeSlider: UIControl, RangeSliderPositionProvider {
 	public override var frame: CGRect {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var minimumValue: CGFloat = 0 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var maximumValue: CGFloat = 1 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var lowerValue: CGFloat = 0.2 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var upperValue: CGFloat = 0.8 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var trackTintColor = UIColor.secondarySystemBackground {
 		didSet {
+			trackLayer.trackTintColor = trackTintColor
 			trackLayer.setNeedsDisplay()
 		}
 	}
 
 	public var trackHighlightTintColor = UIColor.systemBlue {
 		didSet {
+			trackLayer.trackHighlightTintColor = trackHighlightTintColor
 			trackLayer.setNeedsDisplay()
 		}
 	}
 
-	public var thumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
+	public var thumbImage = UIImage.defaultThumb {
 		didSet {
 			upperThumbImageView.image = thumbImage
 			lowerThumbImageView.image = thumbImage
 		}
 	}
 
-	public var highlightedThumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
+	public var highlightedThumbImage = UIImage.defaultThumb {
 		didSet {
 			upperThumbImageView.highlightedImage = highlightedThumbImage
 			lowerThumbImageView.highlightedImage = highlightedThumbImage
@@ -81,21 +73,20 @@ public class RangeSlider: UIControl, RangeSliderPositionProvider {
 		layer.addSublayer(trackLayer)
 
 		lowerThumbImageView.image = thumbImage
+		lowerThumbImageView.highlightedImage = highlightedThumbImage
 		addSubview(lowerThumbImageView)
 
 		upperThumbImageView.image = thumbImage
+		upperThumbImageView.highlightedImage = highlightedThumbImage
 		addSubview(upperThumbImageView)
 	}
 
 	public override func layoutSubviews() {
 		super.layoutSubviews()
-		self.updateLayerFrames()
+		updateLayerFrames()
 	}
 
 	private func updateLayerFrames() {
-		CATransaction.begin()
-		CATransaction.setDisableActions(true)
-
 		trackLayer.frame = bounds.insetBy(dx: thumbImage.size.width / 2, dy: bounds.height / 3)
 		trackLayer.setNeedsDisplay()
 
@@ -107,8 +98,6 @@ public class RangeSlider: UIControl, RangeSliderPositionProvider {
 			origin: thumbOriginForValue(upperValue),
 			size: thumbImage.size
 		)
-
-		CATransaction.commit()
 	}
 
 	internal func positionForValue(_ value: CGFloat) -> CGFloat {
@@ -193,8 +182,8 @@ protocol RangeSliderPositionProvider: AnyObject {
 private class RangeSliderTrackLayer: CALayer {
 	internal weak var positionProvider: RangeSliderPositionProvider?
 
-	internal var trackTintColor: UIColor = .gray
-	internal var trackHighlightTintColor: UIColor = .blue
+	internal var trackTintColor: UIColor = .secondarySystemBackground
+	internal var trackHighlightTintColor: UIColor = .systemBlue
 
 	public override func draw(in ctx: CGContext) {
 		guard let positionProvider = positionProvider else {
@@ -218,4 +207,10 @@ private class RangeSliderTrackLayer: CALayer {
 		)
 		ctx.fill(rect)
 	}
+}
+
+extension UIImage {
+	static let defaultThumb: UIImage = {
+		UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))!
+	}()
 }
