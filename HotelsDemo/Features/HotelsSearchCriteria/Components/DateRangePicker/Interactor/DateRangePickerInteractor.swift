@@ -62,8 +62,10 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 
 	private func makeCalendarData() -> DateRangePickerModels.CalendarData {
 		generator.generate(
-			selectedStartDate: dateRangeSelection.startDate,
-			selectedEndDate: dateRangeSelection.endDate
+			selectedRange: .init(
+				startDate: dateRangeSelection.startDate,
+				endDate: dateRangeSelection.endDate
+			)
 		)
 	}
 }

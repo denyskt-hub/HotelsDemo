@@ -14,7 +14,7 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		let today = "02.06.2025".date()
 		let sut = makeSUT(monthsCount: 1, calendar: calendar, currentDate: { today })
 
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+		let data = sut.generate(selectedRange: .init(startDate: nil, endDate: nil))
 		XCTAssertEqual(data.sections.count, 1)
 
 		let firstMonth = data.sections.first?.month
@@ -25,7 +25,7 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		let today = "05.06.2025".date()
 		let sut = makeSUT(currentDate: { today })
 
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+		let data = sut.generate(selectedRange: .init(startDate: nil, endDate: nil))
 		let disabledDates = data.sections.flatMap(\.dates).filter { !$0.isEnabled }
 
 		XCTAssertTrue(disabledDates.allSatisfy { dateVM in
@@ -38,7 +38,7 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		let today = "02.06.2025".date()
 		let sut = makeSUT(currentDate: { today })
 
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+		let data = sut.generate(selectedRange: .init(startDate: nil, endDate: nil))
 
 		let todayDate = try XCTUnwrap(
 			data.sections
@@ -56,7 +56,7 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		let endDate = "05.06.2025".date()
 		let sut = makeSUT(calendar: calendar, currentDate: { today })
 
-		let data = sut.generate(selectedStartDate: startDate, selectedEndDate: endDate)
+		let data = sut.generate(selectedRange: .init(startDate: startDate, endDate: endDate))
 
 		let selected = data.sections.flatMap(\.dates).filter { $0.isSelected }
 		let inRange = data.sections.flatMap(\.dates).filter { $0.isInRange }
@@ -125,7 +125,7 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		calendar.firstWeekday = firstWeekday
 
 		let sut = makeSUT(calendar: calendar, currentDate: { startDate })
-		let data = sut.generate(selectedStartDate: nil, selectedEndDate: nil)
+		let data = sut.generate(selectedRange: .init(startDate: nil, endDate: nil))
 
 		let firstMonthDates = data.sections.first!.dates
 		let leadingEmptyDays = firstMonthDates.prefix { $0.date == nil }

@@ -61,12 +61,12 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private func setupCollectionView() {
 		collectionView.delegate = self
 	}
-	
+
 	private func setupCalendarDataSource() {
-		let cellRegistration = UICollectionView.CellRegistration<DateCell, CalendarItem> { cell, indexPath, cellViewModel in
+		let cellRegistration = UICollectionView.CellRegistration<DateCell, CalendarItem> { cell, _, cellViewModel in
 			cell.configure(cellViewModel)
 		}
-		
+
 		calendarDataSource = UICollectionViewDiffableDataSource<CalendarSection, CalendarItem>(
 			collectionView: collectionView
 		) { collectionView, indexPath, item in
@@ -76,12 +76,14 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 				item: item
 			)
 		}
-		
-		let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(elementKind: UICollectionView.elementKindSectionHeader) { headerView, elementKind, indexPath in
+
+		let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(
+			elementKind: UICollectionView.elementKindSectionHeader
+		) { headerView, _, indexPath in
 				let section = self.calendarDataSource.snapshot().sectionIdentifiers[indexPath.section]
 				headerView.label.text = section.title
-			}
-		
+		}
+
 		calendarDataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
 			guard kind == UICollectionView.elementKindSectionHeader else { return nil }
 
@@ -95,7 +97,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	private func setupApplyButton() {
 		applyButton.addTarget(self, action: #selector(didApply), for: .touchUpInside)
 	}
-	
+
 	private func reloadData(_ sections: [CalendarSection]) {
 		var snapshot = NSDiffableDataSourceSnapshot<CalendarSection, CalendarItem>()
 		snapshot.appendSections(sections)
@@ -179,7 +181,7 @@ extension DateRangePickerViewController: UICollectionViewDelegate, UICollectionV
 
 		interactor.handleDateSelection(request: .init(date: date))
 	}
-	
+
 	public func collectionView(
 		_ collectionView: UICollectionView,
 		layout collectionViewLayout: UICollectionViewLayout,

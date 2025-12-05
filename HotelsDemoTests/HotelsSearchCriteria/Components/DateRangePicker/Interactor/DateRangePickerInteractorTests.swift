@@ -83,11 +83,8 @@ final class CalendarDataGeneratorStub: CalendarDataGenerator {
 	init(stub: DateRangePickerModels.CalendarData) {
 		self.stub = stub
 	}
-
-	func generate(
-		selectedStartDate: Date? = nil,
-		selectedEndDate: Date? = nil
-	) -> DateRangePickerModels.CalendarData {
+	
+	func generate(selectedRange: SelectedDateRange) -> DateRangePickerModels.CalendarData {
 		stub
 	}
 }

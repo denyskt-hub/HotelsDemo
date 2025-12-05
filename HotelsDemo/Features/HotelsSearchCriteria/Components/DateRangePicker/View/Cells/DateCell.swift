@@ -8,7 +8,7 @@
 import UIKit
 
 public final class DateCell: UICollectionViewCell {
-	private let titleLabel: UILabel = {
+	public let titleLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .label
 		label.textAlignment = .center
@@ -37,12 +37,12 @@ public final class DateCell: UICollectionViewCell {
 	private func activateConstraints() {
 		activateConstraintsTitleLabel()
 	}
-	
+
 	public func configure(_ viewModel: DateRangePickerModels.CalendarDateViewModel) {
 		isToday = viewModel.isToday
 		isSelectedDate = viewModel.isSelected
 		isInRange = viewModel.isInRange
-		
+
 		titleLabel.text = viewModel.title ?? ""
 		titleLabel.isEnabled = viewModel.isEnabled
 

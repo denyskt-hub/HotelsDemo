@@ -22,7 +22,7 @@ func anyCalendarData() -> DateRangePickerModels.CalendarData {
 func anyCalendarMonth() -> DateRangePickerModels.CalendarMonth {
 	.init(
 		month: "01.06.2025".date(),
-		dates: [.init(date: "01.06.2025".date())]
+		dates: [.init(id: 0, date: "01.06.2025".date())]
 	)
 }
 
@@ -39,6 +39,6 @@ func makeCalendarData(
 func makeCalendarMonth(date: Date) -> DateRangePickerModels.CalendarMonth {
 	.init(
 		month: date,
-		dates: [.init(date: date)]
+		dates: [.init(id: 0, date: date)]
 	)
 }

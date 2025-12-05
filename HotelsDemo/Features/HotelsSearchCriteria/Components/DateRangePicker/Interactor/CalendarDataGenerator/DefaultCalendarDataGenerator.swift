@@ -22,17 +22,13 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		self.currentDate = currentDate
 	}
 
-	public func generate(
-		selectedStartDate: Date?,
-		selectedEndDate: Date?
-	) -> DateRangePickerModels.CalendarData {
+	public func generate(selectedRange: SelectedDateRange) -> DateRangePickerModels.CalendarData {
 		.init(
 			weekdays: calendar.weekdaySymbols,
 			sections: generateSections(
 				monthsCount: monthsCount,
 				currentDate: currentDate(),
-				selectedStartDate: selectedStartDate,
-				selectedEndDate: selectedEndDate,
+				selectedRange: selectedRange,
 				calendar: calendar
 			)
 		)
@@ -41,8 +37,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 	private func generateSections(
 		monthsCount: Int,
 		currentDate: Date,
-		selectedStartDate: Date?,
-		selectedEndDate: Date?,
+		selectedRange: SelectedDateRange,
 		calendar: Calendar
 	) -> [DateRangePickerModels.CalendarMonth] {
 		let start = currentDate.firstDateOfMonth(calendar: calendar)
@@ -64,8 +59,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 					globalId: &globalId,
 					start: start,
 					currentDate: currentDate,
-					selectedStartDate: selectedStartDate,
-					selectedEndDate: selectedEndDate,
+					selectedRange: selectedRange,
 					calendar: calendar
 				)
 			)
@@ -95,8 +89,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		globalId: inout Int,
 		start: Date,
 		currentDate: Date,
-		selectedStartDate: Date?,
-		selectedEndDate: Date?,
+		selectedRange: SelectedDateRange,
 		calendar: Calendar
 	) -> [DateRangePickerModels.CalendarDate] {
 		var result = [DateRangePickerModels.CalendarDate]()
@@ -117,13 +110,13 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 
 		while current <= end {
 			var rangePosition = DateRangePosition.none
-			if current == selectedStartDate && selectedEndDate == nil {
+			if current == selectedRange.startDate && selectedRange.endDate == nil {
 				rangePosition = .single
-			} else if current == selectedStartDate && selectedEndDate != nil {
+			} else if current == selectedRange.startDate && selectedRange.endDate != nil {
 				rangePosition = .start
-			} else if current == selectedEndDate {
+			} else if current == selectedRange.endDate {
 				rangePosition = .end
-			} else if isDateInSelectedRange(current, selectedStartDate, selectedEndDate) {
+			} else if isDateInSelectedRange(current, selectedRange.startDate, selectedRange.endDate) {
 				rangePosition = .middle
 			}
 
