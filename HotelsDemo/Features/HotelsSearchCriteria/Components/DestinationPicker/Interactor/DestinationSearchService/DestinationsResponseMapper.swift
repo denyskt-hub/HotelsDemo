@@ -9,6 +9,10 @@ import Foundation
 
 public enum DestinationsResponseMapper {
 	struct RemoteDestination: Decodable {
+		enum MappingError: Error {
+			case invalidId(String)
+		}
+		
 		enum CodingKeys: String, CodingKey {
 			case id = "dest_id"
 			case type = "dest_type"
@@ -27,7 +31,9 @@ public enum DestinationsResponseMapper {
 
 		init(from decoder: Decoder) throws {
 			let container = try decoder.container(keyedBy: CodingKeys.self)
-			self.id = Int(try container.decode(String.self, forKey: .id))!
+			let idString = try container.decode(String.self, forKey: .id)
+			guard let id = Int(idString) else { throw MappingError.invalidId(idString) }
+			self.id = id
 			self.type = try container.decode(String.self, forKey: .type)
 			self.name = try container.decode(String.self, forKey: .name)
 			self.label = try container.decode(String.self, forKey: .label)
