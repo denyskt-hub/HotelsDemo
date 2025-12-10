@@ -28,8 +28,7 @@ final class HTTPClientSpy: HTTPClient {
 		return try await withCheckedThrowingContinuation { continuation in
 			if let stubbedValues = stubbedValues.withLock({ $0 }) {
 				continuation.resume(returning: stubbedValues)
-			}
-			if let stubbedError = stubbedError.withLock({ $0 }) {
+			} else if let stubbedError = stubbedError.withLock({ $0 }) {
 				continuation.resume(throwing: stubbedError)
 			}
 		}
