@@ -74,12 +74,18 @@ public actor CodableHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 
 	public func save(_ criteria: HotelsSearchCriteria) async throws {
 		let data = try JSONEncoder().encode(CodableSearchCriteria(model: criteria))
-		try data.write(to: self.storeURL, options: [.atomic])
+
+		try await Task.detached(priority: .background) {
+			try data.write(to: self.storeURL, options: [.atomic])
+		}.value
 	}
 
 	public func retrieve() async throws -> HotelsSearchCriteria {
 		do {
-			let data = try Data(contentsOf: self.storeURL)
+			let data = try await Task.detached(priority: .background) {
+				try Data(contentsOf: self.storeURL)
+			}.value
+
 			let criteria = try JSONDecoder().decode(CodableSearchCriteria.self, from: data)
 			return criteria.model
 		} catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
