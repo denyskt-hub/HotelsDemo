@@ -9,11 +9,11 @@ import XCTest
 import HotelsDemo
 
 final class DefaultDestinationRequestFactoryTests: XCTestCase {
-	func test_makeSearchRequest_buildsCorrectRequest() {
+	func test_makeSearchRequest_buildsCorrectRequest() throws {
 		let url = URL(string: "https://api.example.com/search")!
 		let sut = makeSUT(url: url)
 
-		let request = sut.makeSearchRequest(query: "paris")
+		let request = try sut.makeSearchRequest(query: "paris")
 
 		XCTAssertEqual(request.httpMethod, "GET")
 		XCTAssertEqual(request.url?.scheme, "https")
@@ -21,13 +21,13 @@ final class DefaultDestinationRequestFactoryTests: XCTestCase {
 		XCTAssertTrue(request.url?.query()?.contains("query=paris") ?? false)
 	}
 
-	func test_makeSearchRequest_encodesSpecialCharactersInQuery() {
+	func test_makeSearchRequest_encodesSpecialCharactersInQuery() throws {
 		let url = URL(string: "https://api.example.com/search")!
 		let sut = makeSUT(url: url)
 		let query = "Café & Bar + Lounge?"
 		let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed)!
 
-		let request = sut.makeSearchRequest(query: query)
+		let request = try sut.makeSearchRequest(query: query)
 
 		XCTAssertEqual(request.url?.query(percentEncoded: true), "query=\(encodedQuery)")
 	}

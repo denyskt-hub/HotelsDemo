@@ -20,7 +20,7 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	}
 
 	public func search(query: String) async throws -> [Destination] {
-		let request = factory.makeSearchRequest(query: query)
+		let request = try factory.makeSearchRequest(query: query)
 
 		let (data, response) = try await client.perform(request)
 

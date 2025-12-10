@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol DestinationsRequestFactory: Sendable {
-	func makeSearchRequest(query: String) -> URLRequest
+	func makeSearchRequest(query: String) throws -> URLRequest
 }
 
 public final class DefaultDestinationRequestFactory: DestinationsRequestFactory {
@@ -18,10 +18,13 @@ public final class DefaultDestinationRequestFactory: DestinationsRequestFactory 
 		self.url = url
 	}
 
-	public func makeSearchRequest(query: String) -> URLRequest {
+	public func makeSearchRequest(query: String) throws -> URLRequest {
 		let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
 		let urlString = url.absoluteString.appending("?query=\(encodedQuery)")
-		let finalURL = URL(string: urlString)!
+
+		guard let finalURL = URL(string: urlString) else {
+			throw RequestFactoryError.invalidURL
+		}
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
