@@ -30,27 +30,21 @@ public final class InMemoryImageDataCache: ImageDataCache {
 	}
 
 	public func save(_ data: Data, forKey key: String) async throws {
-		await withCheckedContinuation { continuation in
-			let entry = CacheEntry(data: data, size: data.count)
-			updateEntry(entry, forKey: key)
+		let entry = CacheEntry(data: data, size: data.count)
+		updateEntry(entry, forKey: key)
 
-			updateRecentUsedKeys(key)
+		updateRecentUsedKeys(key)
 
-			evictIfNeeded()
-
-			continuation.resume()
-		}
+		evictIfNeeded()
 	}
 
 	@discardableResult
 	public func data(forKey key: String) async throws -> Data? {
-		await withCheckedContinuation { continuation in
-			let entry = cache.withLock { $0[key] }
+		let entry = cache.withLock { $0[key] }
 
-			updateRecentUsedKeys(key)
+		updateRecentUsedKeys(key)
 
-			continuation.resume(returning: entry?.data)
-		}
+		return entry?.data
 	}
 
 	private func updateEntry(_ entry: CacheEntry, forKey key: String) {
