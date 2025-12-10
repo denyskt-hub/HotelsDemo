@@ -7,9 +7,12 @@
 
 import Foundation
 
+public enum RequestFactoryError: Error {
+	case invalidURL
+}
+
 public enum HotelsRequestFactoryError: Error {
 	case missingDestination
-	case invalidURL
 }
 
 public protocol HotelsRequestFactory: Sendable {
@@ -30,38 +33,27 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 	}
 
 	public func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest {
-		let queryParams = try makeQueryParams(from: criteria, dateFormatter: dateFormatter)
-		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
-		let urlString = url.absoluteString.appending("?\(queryString)")
-		
-		guard let finalURL = URL(string: urlString) else {
-			throw HotelsRequestFactoryError.invalidURL
+		guard let destination = criteria.destination else {
+			throw HotelsRequestFactoryError.missingDestination
+		}
+
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+		components?.queryItems = [
+			.init(name: "dest_id", value: "\(destination.id)"),
+			.init(name: "search_type", value: destination.type),
+			.init(name: "arrival_date", value: dateFormatter.string(from: criteria.checkInDate)),
+			.init(name: "departure_date", value: dateFormatter.string(from: criteria.checkOutDate)),
+			.init(name: "adults", value: "\(criteria.adults)"),
+			.init(name: "children_age", value: criteria.childrenAge.map({ String($0) }).joined(separator: ",")),
+			.init(name: "room_qty", value: "\(criteria.roomsQuantity)")
+		]
+
+		guard let finalURL = components?.url else {
+			throw RequestFactoryError.invalidURL
 		}
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
 		return request
-	}
-
-	private func makeQueryParams(
-		from criteria: HotelsSearchCriteria,
-		dateFormatter: DateFormatter
-	) throws -> [String: String] {
-		guard let destination = criteria.destination else {
-			throw HotelsRequestFactoryError.missingDestination
-		}
-
-		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")
-		let encodedChildrenAge = childrenAge.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
-
-		return [
-			"dest_id": "\(destination.id)",
-			"search_type": destination.type,
-			"arrival_date": dateFormatter.string(from: criteria.checkInDate),
-			"departure_date": dateFormatter.string(from: criteria.checkOutDate),
-			"adults": "\(criteria.adults)",
-			"children_age": encodedChildrenAge,
-			"room_qty": "\(criteria.roomsQuantity)"
-		]
 	}
 }

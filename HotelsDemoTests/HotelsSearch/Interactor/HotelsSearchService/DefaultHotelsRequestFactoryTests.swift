@@ -37,7 +37,7 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 		XCTAssertEqual(requestQuery?.contains("arrival_date=2025-07-18"), true)
 		XCTAssertEqual(requestQuery?.contains("departure_date=2025-07-19"), true)
 		XCTAssertEqual(requestQuery?.contains("adults=2"), true)
-		XCTAssertEqual(requestQuery?.contains("children_age=5%2C7"), true) // children_age is a comma-separated list that gets percent-encoded ("," → "%2C")
+		XCTAssertEqual(requestQuery?.contains("children_age=5,7"), true)
 		XCTAssertEqual(requestQuery?.contains("room_qty=1"), true)
 	}
 
