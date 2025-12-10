@@ -12,7 +12,7 @@ public enum DestinationsResponseMapper {
 		enum MappingError: Error {
 			case invalidId(String)
 		}
-		
+
 		enum CodingKeys: String, CodingKey {
 			case id = "dest_id"
 			case type = "dest_type"

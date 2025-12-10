@@ -7,8 +7,13 @@
 
 import Foundation
 
+public enum HotelsRequestFactoryError: Error {
+	case missingDestination
+	case invalidURL
+}
+
 public protocol HotelsRequestFactory: Sendable {
-	func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest
+	func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest
 }
 
 public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
@@ -24,8 +29,8 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 		self.url = url
 	}
 
-	public func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest {
-		let queryParams = makeQueryParams(from: criteria, dateFormatter: dateFormatter)
+	public func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest {
+		let queryParams = try makeQueryParams(from: criteria, dateFormatter: dateFormatter)
 		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
 		let urlString = url.absoluteString.appending("?\(queryString)")
 		let finalURL = URL(string: urlString)!
@@ -38,9 +43,9 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 	private func makeQueryParams(
 		from criteria: HotelsSearchCriteria,
 		dateFormatter: DateFormatter
-	) -> [String: String] {
+	) throws -> [String: String] {
 		guard let destination = criteria.destination else {
-			preconditionFailure("Destination is required")
+			throw HotelsRequestFactoryError.missingDestination
 		}
 
 		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")

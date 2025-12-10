@@ -20,7 +20,7 @@ public final class HotelsSearchWorker: HotelsSearchService {
 	}
 
 	public func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
-		let request = factory.makeSearchRequest(criteria: criteria)
+		let request = try factory.makeSearchRequest(criteria: criteria)
 
 		let (data, response) = try await client.perform(request)
 

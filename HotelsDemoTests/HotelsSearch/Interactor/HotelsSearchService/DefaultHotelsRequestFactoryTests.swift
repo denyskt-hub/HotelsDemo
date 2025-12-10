@@ -9,7 +9,7 @@ import XCTest
 import HotelsDemo
 
 final class DefaultHotelsRequestFactoryTests: XCTestCase {
-	func test_makeSearchRequest_buildsCorrectRequest() {
+	func test_makeSearchRequest_buildsCorrectRequest() throws {
 		let url = URL(string: "https://api.example.com/search")!
 		let criteria = makeSearchCriteria(
 			destination: makeDestination(
@@ -24,7 +24,7 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 		)
 		let sut = makeSUT(url: url)
 
-		let request = sut.makeSearchRequest(criteria: criteria)
+		let request = try sut.makeSearchRequest(criteria: criteria)
 		let requestURL = request.url
 		let requestQuery = request.url?.query()
 
