@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum DestinationsRequestFactoryError: Error {
+	case encodingFailed
+}
+
 public protocol DestinationsRequestFactory: Sendable {
 	func makeSearchRequest(query: String) throws -> URLRequest
 }
@@ -19,7 +23,9 @@ public final class DefaultDestinationRequestFactory: DestinationsRequestFactory 
 	}
 
 	public func makeSearchRequest(query: String) throws -> URLRequest {
-		let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
+		guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) else {
+			throw DestinationsRequestFactoryError.encodingFailed
+		}
 
 		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
 		components?.percentEncodedQueryItems = [
