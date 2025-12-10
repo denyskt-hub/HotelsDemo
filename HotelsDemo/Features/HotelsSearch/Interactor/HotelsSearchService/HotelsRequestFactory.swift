@@ -33,7 +33,10 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 		let queryParams = try makeQueryParams(from: criteria, dateFormatter: dateFormatter)
 		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
 		let urlString = url.absoluteString.appending("?\(queryString)")
-		let finalURL = URL(string: urlString)!
+		
+		guard let finalURL = URL(string: urlString) else {
+			throw HotelsRequestFactoryError.invalidURL
+		}
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
