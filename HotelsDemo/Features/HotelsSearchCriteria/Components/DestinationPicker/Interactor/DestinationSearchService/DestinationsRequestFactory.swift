@@ -20,9 +20,13 @@ public final class DefaultDestinationRequestFactory: DestinationsRequestFactory 
 
 	public func makeSearchRequest(query: String) throws -> URLRequest {
 		let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
-		let urlString = url.absoluteString.appending("?query=\(encodedQuery)")
 
-		guard let finalURL = URL(string: urlString) else {
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+		components?.percentEncodedQueryItems = [
+			URLQueryItem(name: "query", value: encodedQuery)
+		]
+
+		guard let finalURL = components?.url else {
 			throw RequestFactoryError.invalidURL
 		}
 
