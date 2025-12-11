@@ -14,7 +14,7 @@ public struct DefaultImageDataLoadingLogger: ImageDataLoadingLogger {
 		self.tag = tag
 	}
 
-	public func log(loadResult result: ImageDataLoader.LoadResult, for url: URL) {
+	public func log(loadResult result: Result<Data, Error>, for url: URL) {
 		switch result {
 		case .success:
 			Logger.log("✅ success: \(url.lastPathComponent)", level: .info, tag: tag)

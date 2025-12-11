@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum StarRating: Int, CaseIterable {
+public enum StarRating: Int, CaseIterable, Sendable {
 	case one = 1
 	case two = 2
 	case three = 3

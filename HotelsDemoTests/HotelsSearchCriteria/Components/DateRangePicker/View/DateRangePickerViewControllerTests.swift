@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class DateRangePickerViewControllerTests: XCTestCase {
 	func test_viewDidLoad_loadInitialData() {
 		let (sut, interactor, _) = makeSUT()
@@ -98,6 +99,7 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 
 	private func makeCalendarViewModel(_ date: Date = .now) -> DateRangePickerModels.CalendarViewModel {
 		let dateViewModel = DateRangePickerModels.CalendarDateViewModel(
+			id: 0,
 			date: date,
 			title: "date title"
 		)
@@ -187,9 +189,9 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 			return XCTFail("Expected \(DateCell.self) instance, got \(String(describing: view)) instead", file: file, line: line)
 		}
 
-		XCTAssertEqual(cell.button.title(for: .normal), dateViewModel.title, "Expected title to be \(String(describing: dateViewModel.title)) for date view at item (\(item)) section (\(section))", file: file, line: line)
+		XCTAssertEqual(cell.title, dateViewModel.title, "Expected title to be \(String(describing: dateViewModel.title)) for date view at item (\(item)) section (\(section))", file: file, line: line)
 
-		XCTAssertEqual(cell.button.isEnabled, dateViewModel.isEnabled, "Expected `isEnabled` to be \(dateViewModel.isEnabled) for date view at item (\(item)) section (\(section))", file: file, line: line)
+		XCTAssertEqual(cell.isEnabled, dateViewModel.isEnabled, "Expected `isEnabled` to be \(dateViewModel.isEnabled) for date view at item (\(item)) section (\(section))", file: file, line: line)
 
 		XCTAssertEqual(cell.isToday, dateViewModel.isToday, "Expected `isToday` to be \(dateViewModel.isToday) for date view at item (\(item)) section (\(section))", file: file, line: line)
 
@@ -199,12 +201,20 @@ final class DateRangePickerViewControllerTests: XCTestCase {
 	}
 }
 
+extension DateCell {
+	var title: String? {
+		titleLabel.text
+	}
+	
+	var isEnabled: Bool {
+		titleLabel.isEnabled
+	}
+}
+
 extension DateRangePickerViewController {
 	func simulateTapOnDate(item: Int, section: Int) {
 		let indexPath = IndexPath(item: item, section: section)
-		guard let cell = dateCell(at: indexPath) as? DateCell else { return }
-
-		cell.delegate?.dateCellDidTap(cell, at: indexPath)
+		collectionView.delegate?.collectionView?(collectionView, didSelectItemAt: indexPath)
 	}
 
 	func simulateApplyButtonTap() {

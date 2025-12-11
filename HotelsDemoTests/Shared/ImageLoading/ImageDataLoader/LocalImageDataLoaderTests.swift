@@ -7,47 +7,50 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotRequestDataFromCache() {
 		let (_, cache) = makeSUT()
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
-	func test_load_requestsDataFromCacheUsingURLKey() {
+	func test_load_requestsDataFromCacheUsingURLKey() async throws {
 		let url = anyURL()
 		let key = url.absoluteString
 		let (sut, cache) = makeSUT()
+		cache.stubDataResult(.success(anyData()))
 
-		sut.load(url: url) { _ in }
+		try await sut.load(url: url)
 
-		XCTAssertEqual(cache.messages, [.data(key)])
+		XCTAssertEqual(cache.receivedMessages(), [.data(key)])
 	}
 
-	func test_load_deliversErrorOnCacheError() {
+	func test_load_deliversErrorOnCacheError() async {
 		let cacheError = anyNSError()
 		let (sut, cache) = makeSUT()
 
-		expect(sut, toLoad: .failure(cacheError), when: {
-			cache.completeDataWith(.failure(cacheError))
+		await expect(sut, toLoadWithError: cacheError, when: {
+			cache.stubDataResult(.failure(cacheError))
 		})
 	}
 
-	func test_load_deliversNotFoundErrorOnMissingDataFromCache() async throws {
+	func test_load_deliversNotFoundErrorOnMissingDataFromCache() async {
 		let (sut, cache) = makeSUT()
 
-		expect(sut, toLoad: .failure(LocalImageDataLoader.Error.notFound), when: {
-			cache.completeDataWith(.success(.none))
+		await expect(sut, toLoadWithError: LocalImageDataLoader.Error.notFound, when: {
+			cache.stubDataResult(.success(.none))
 		})
 	}
 
-	func test_load_deliversDataFromStoreWhenAvailable() async throws {
+	func test_load_deliversDataFromStoreWhenAvailable() async {
 		let data = anyData()
 		let (sut, cache) = makeSUT()
 
-		expect(sut, toLoad: .success(data), when: {
-			cache.completeDataWith(.success(data))
+		await expect(sut, toLoadData: data, when: {
+			cache.stubDataResult(.success(data))
 		})
 	}
 
@@ -69,26 +72,47 @@ final class ImageDataCacheSpy: ImageDataCache {
 		case data(String)
 	}
 
-	private(set) var messages = [Message]()
+	private let messages = Mutex<[Message]>([])
 
-	private var saveCompletions = [(SaveResult) -> Void]()
-	private var dataCompletions = [(DataResult) -> Void]()
-
-	func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
-		messages.append(.save(data, key))
-		saveCompletions.append(completion)
-	}
-	
-	func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
-		messages.append(.data(key))
-		dataCompletions.append(completion)
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
 	}
 
-	func completeSaveWith(_ error: Error, at index: Int = 0) {
-		saveCompletions[index](.failure(error))
+	private let saveResultStub = Mutex<SaveResult?>(nil)
+	private let dataResultStub = Mutex<DataResult?>(nil)
+
+	func save(_ data: Data, forKey key: String) async throws {
+		guard let saveResultStub = saveResultStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubSaveResult before calling save(_:forKey:)")
+		}
+
+		messages.withLock { $0.append(.save(data, key)) }
+
+		if case let .failure(error) = saveResultStub {
+			throw error
+		}
 	}
 
-	func completeDataWith(_ result: DataResult, at index: Int = 0) {
-		dataCompletions[index](result)
+	func data(forKey key: String) async throws -> Data? {
+		guard let dataResultStub = dataResultStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubDataResult before calling data(forKey:)")
+		}
+
+		messages.withLock { $0.append(.data(key)) }
+
+		switch dataResultStub {
+		case let .success(data):
+			return data
+		case let .failure(error):
+			throw error
+		}
+	}
+
+	func stubSaveResult(_ result: SaveResult) {
+		saveResultStub.withLock { $0 = result }
+	}
+
+	func stubDataResult(_ result: DataResult) {
+		dataResultStub.withLock { $0 = result }
 	}
 }

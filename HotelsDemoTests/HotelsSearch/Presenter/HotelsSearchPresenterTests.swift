@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class HotelsSearchPresenterTests: XCTestCase {
 	func test_presentSearch_displaysSearch() {
 		let photoURL = URL(string: "https://example.com/photo")!

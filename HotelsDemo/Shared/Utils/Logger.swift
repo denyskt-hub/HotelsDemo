@@ -6,14 +6,16 @@
 //
 
 import Foundation
+import Synchronization
 
+// MARK: - Logger facade backed by LoggerActor
 public struct Logger {
-	private static let queue = DispatchQueue(label: "\(Logger.self)Queue")
+	private static let actor = LoggerActor()
 
-	private static var _configuration = LoggerConfiguration.default
+	private static let _configuration = Mutex<LoggerConfiguration>(.default)
 	public static var configuration: LoggerConfiguration {
-		get { queue.sync { _configuration } }
-		set { queue.sync { _configuration = newValue } }
+		get { _configuration.withLock({ $0 }) }
+		set { _configuration.withLock({ $0 = newValue }) }
 	}
 
 	public static func log(
@@ -24,29 +26,12 @@ public struct Logger {
 		function: String = #function,
 		line: UInt = #line
 	) {
-		guard shouldLog(level, tag) else { return }
-		let evaluatedMessage = message()
-
-		queue.async {
-			let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
-			print("[\(level.rawValue)] [\(tag.rawValue)] \(fileName):\(line) \(function) ➝ \(evaluatedMessage)")
-		}
+		guard shouldLog(configuration, level, tag) else { return }
+		let msg = message()
+		Task { await actor.log(msg, level: level, tag: tag, file: file, function: function, line: line) }
 	}
 
-	public static func log(
-		_ message: @autoclosure () -> String,
-		level: LogLevel = .debug,
-		tag: LogTag = .general
-	) {
-		guard shouldLog(level, tag) else { return }
-		let evaluatedMessage = message()
-
-		queue.async {
-			print("[\(level.rawValue)] [\(tag.rawValue)] ➝ \(evaluatedMessage)")
-		}
-	}
-
-	private static func shouldLog(_ level: LogLevel, _ tag: LogTag) -> Bool {
+	private static func shouldLog(_ configuration: LoggerConfiguration, _ level: LogLevel, _ tag: LogTag) -> Bool {
 		#if DEBUG
 		level.priority >= configuration.level.priority && configuration.enabledTags.contains(tag)
 		#else
@@ -55,6 +40,26 @@ public struct Logger {
 	}
 }
 
+// MARK: - Actor implementation
+actor LoggerActor {
+	func log(
+		_ message: String,
+		level: LogLevel,
+		tag: LogTag,
+		file: StaticString = #filePath,
+		function: String = #function,
+		line: UInt = #line
+	) {
+		if String(describing: file).isEmpty {
+			print("[\(level.rawValue)] [\(tag.rawValue)] ➝ \(message)")
+		} else {
+			let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
+			print("[\(level.rawValue)] [\(tag.rawValue)] \(fileName):\(line) \(function) ➝ \(message)")
+		}
+	}
+}
+
+// MARK: - Convenience configuration helpers on facade
 public extension Logger {
 	static func setMinimumLogLevel(_ level: LogLevel) {
 		var config = configuration
@@ -83,7 +88,8 @@ public extension Logger {
 	}
 }
 
-public enum LogLevel: String {
+// MARK: - Types
+public enum LogLevel: String, Sendable {
 	case debug = "🔍 DEBUG"
 	case info = "ℹ️ INFO"
 	case warning = "⚠️ WARNING"
@@ -106,7 +112,7 @@ public enum LogLevel: String {
 	}
 }
 
-public enum LogTag: Hashable {
+public enum LogTag: Hashable, Sendable {
 	case general
 	case networking
 	case custom(String)
@@ -120,7 +126,7 @@ public enum LogTag: Hashable {
 	}
 }
 
-public struct LoggerConfiguration {
+public struct LoggerConfiguration: Sendable {
 	var level: LogLevel
 	var enabledTags: Set<LogTag>
 

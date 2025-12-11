@@ -7,8 +7,16 @@
 
 import Foundation
 
-public protocol HotelsRequestFactory {
-	func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest
+public enum RequestFactoryError: Error {
+	case invalidURL
+}
+
+public enum HotelsRequestFactoryError: Error {
+	case missingDestination
+}
+
+public protocol HotelsRequestFactory: Sendable {
+	func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest
 }
 
 public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
@@ -24,36 +32,28 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 		self.url = url
 	}
 
-	public func makeSearchRequest(criteria: HotelsSearchCriteria) -> URLRequest {
-		let queryParams = makeQueryParams(from: criteria, dateFormatter: dateFormatter)
-		let queryString = queryParams.map({ "\($0)=\($1)" }).joined(separator: "&")
-		let urlString = url.absoluteString.appending("?\(queryString)")
-		let finalURL = URL(string: urlString)!
+	public func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest {
+		guard let destination = criteria.destination else {
+			throw HotelsRequestFactoryError.missingDestination
+		}
+
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+		components?.queryItems = [
+			.init(name: "dest_id", value: "\(destination.id)"),
+			.init(name: "search_type", value: destination.type),
+			.init(name: "arrival_date", value: dateFormatter.string(from: criteria.checkInDate)),
+			.init(name: "departure_date", value: dateFormatter.string(from: criteria.checkOutDate)),
+			.init(name: "adults", value: "\(criteria.adults)"),
+			.init(name: "children_age", value: criteria.childrenAge.map({ String($0) }).joined(separator: ",")),
+			.init(name: "room_qty", value: "\(criteria.roomsQuantity)")
+		]
+
+		guard let finalURL = components?.url else {
+			throw RequestFactoryError.invalidURL
+		}
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
 		return request
-	}
-
-	private func makeQueryParams(
-		from criteria: HotelsSearchCriteria,
-		dateFormatter: DateFormatter
-	) -> [String: String] {
-		guard let destination = criteria.destination else {
-			preconditionFailure("Destination is required")
-		}
-
-		let childrenAge = criteria.childrenAge.map({ String($0) }).joined(separator: ",")
-		let encodedChildrenAge = childrenAge.addingPercentEncoding(withAllowedCharacters: .strictQueryValueAllowed) ?? ""
-
-		return [
-			"dest_id": "\(destination.id)",
-			"search_type": destination.type,
-			"arrival_date": dateFormatter.string(from: criteria.checkInDate),
-			"departure_date": dateFormatter.string(from: criteria.checkOutDate),
-			"adults": "\(criteria.adults)",
-			"children_age": encodedChildrenAge,
-			"room_qty": "\(criteria.roomsQuantity)"
-		]
 	}
 }

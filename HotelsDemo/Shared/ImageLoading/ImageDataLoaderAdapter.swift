@@ -6,39 +6,45 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class ImageDataLoaderAdapter: ImageViewDelegate {
 	private let loader: ImageDataLoader
-	private var task: ImageDataLoaderTask?
+	private let presenter: ImageDataPresentationLogic
+	private let task = Mutex<Task<Void, Never>?>(nil)
 
-	public var presenter: ImageDataPresentationLogic?
-
-	public init(loader: ImageDataLoader) {
+	public init(
+		loader: ImageDataLoader,
+		presenter: ImageDataPresentationLogic
+	) {
 		self.loader = loader
+		self.presenter = presenter
 	}
 
 	public func didSetImageWith(_ url: URL) {
-		presenter?.presentLoading(true)
+		task.withLock { task in
+			task?.cancel()
+			task = Task {
+				await presenter.presentLoading(true)
 
-		task?.cancel()
+				do {
+					let data = try await loader.load(url: url)
+					await presenter.presentImageData(data)
+				} catch is CancellationError {
+					// silence cancellation
+				} catch {
+					await presenter.presentImageDataError(error)
+				}
 
-		task = loader.load(url: url) { [weak self] result in
-			self?.presenter?.presentLoading(false)
-			self?.handleLoadResult(result)
-		}
-	}
-
-	private func handleLoadResult(_ result: ImageDataLoader.LoadResult) {
-		switch result {
-		case let .success(data):
-			presenter?.presentImageData(data)
-		case let .failure(error):
-			presenter?.presentImageDataError(error)
+				await presenter.presentLoading(false)
+			}
 		}
 	}
 
 	public func didCancel() {
-		task?.cancel()
-		task = nil
+		task.withLock { task in
+			task?.cancel()
+			task = nil
+		}
 	}
 }

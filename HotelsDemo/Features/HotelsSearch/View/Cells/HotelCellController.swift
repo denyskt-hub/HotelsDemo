@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public final class HotelCellController: NSObject {
 	private let viewModel: HotelsSearchModels.HotelViewModel
 	private let prefetcher: ImageDataPrefetcher

@@ -19,25 +19,32 @@ public final class LoggingImageDataCache: ImageDataCache {
 		self.logger = logger
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
+	public func save(_ data: Data, forKey key: String) async throws {
 		#if DEBUG
-		cache.save(data, forKey: key) { result in
-			self.logger.log(saveResult: result, forKey: key)
-			completion(result)
+		do {
+			try await cache.save(data, forKey: key)
+			logger.log(saveResult: .success(()), forKey: key)
+		} catch {
+			logger.log(saveResult: .failure(error), forKey: key)
+			throw error
 		}
 		#else
-		cache.save(data, forKey: key, completion: completion)
+		try await cache.save(data, forKey: key)
 		#endif
 	}
 
-	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
+	public func data(forKey key: String) async throws -> Data? {
 		#if DEBUG
-		cache.data(forKey: key) { result in
-			self.logger.log(dataResult: result, forKey: key)
-			completion(result)
+		do {
+			let data = try await cache.data(forKey: key)
+			logger.log(dataResult: .success(data), forKey: key)
+			return data
+		} catch {
+			logger.log(dataResult: .failure(error), forKey: key)
+			throw error
 		}
 		#else
-		cache.data(forKey: key, completion: completion)
+		try await cache.data(forKey: key)
 		#endif
 	}
 }

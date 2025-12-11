@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	private let viewController: HotelsDisplayLogic
 

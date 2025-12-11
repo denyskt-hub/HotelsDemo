@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol HotelsSearchCriteriaBusinessLogic {
+public protocol HotelsSearchCriteriaBusinessLogic: Sendable {
 	func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request)
 	func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request)
 	func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request)

@@ -11,6 +11,7 @@ public protocol HotelsSearchFactory {
 	func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController
 }
 
+@MainActor
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
 
@@ -53,14 +54,14 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 	private func makeHotelsSearchContext(with criteria: HotelsSearchCriteria) -> HotelsSearchContext {
 		let provider = InMemoryHotelsSearchCriteriaStore(
 			criteria: criteria
-		).dispatch(to: MainQueueDispatcher())
+		)
 
 		let service = HotelsSearchWorker(
 			factory: DefaultHotelsRequestFactory(
 				url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
 			),
 			client: client
-		).dispatch(to: MainQueueDispatcher())
+		)
 
 		return HotelsSearchContext(
 			provider: provider,

@@ -16,6 +16,7 @@ public protocol RoomGuestsPickerFactory {
 	) -> UIViewController
 }
 
+@MainActor
 public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
 	public func makeRoomGuestsPicker(
 		delegate: RoomGuestsPickerDelegate?,

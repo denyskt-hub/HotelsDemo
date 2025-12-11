@@ -207,7 +207,7 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 
 	private func makeSUT(
 		calendar: Calendar,
-		currentDate: @escaping () -> Date
+		currentDate: @Sendable @escaping () -> Date
 	) -> DefaultHotelsSearchCriteriaValidator {
 		DefaultHotelsSearchCriteriaValidator(
 			calendar: calendar,

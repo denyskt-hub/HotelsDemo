@@ -7,148 +7,95 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
 final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 	func test_init_doesNotMessageStore() {
 		let (_, store, _) = makeSUT()
 
-		XCTAssertTrue(store.messages.isEmpty)
+		XCTAssertTrue(store.receivedMessages().isEmpty)
 	}
 
-	func test_save_validatesSearchCriteria() {
+	func test_save_validatesSearchCriteria() async throws {
 		let criteria = anySearchCriteria()
 		let (sut, _, validator) = makeSUT()
 		
-		sut.save(criteria) { _ in }
-		
-		XCTAssertEqual(validator.validated, [criteria])
+		try await sut.save(criteria)
+
+		XCTAssertEqual(validator.validated(), [criteria])
 	}
 
-	func test_save_usesValidatedCriteriaForSaving() {
+	func test_save_usesValidatedCriteriaForSaving() async throws {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		validator.stub(valid)
 
-		sut.save(invalid) { _ in }
+		try await sut.save(invalid)
 
-		XCTAssertEqual(store.messages, [.save(valid)])
+		XCTAssertEqual(store.receivedMessages(), [.save(valid)])
 	}
 
-	func test_save_deliversErrorOnStoreError() {
+	func test_save_deliversErrorOnStoreError() async throws {
 		let storeError = anyNSError()
 		let (sut, store, _) = makeSUT()
+		store.stubSave(storeError)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.save(anySearchCriteria()) { saveResult in
-			switch saveResult {
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, storeError)
-			default:
-				XCTFail("Expected to fail with store error")
-			}
-
-			exp.fulfill()
+		do {
+			try await sut.save(anySearchCriteria())
+		} catch {
+			XCTAssertEqual(error as NSError, storeError)
 		}
-
-		store.completeSave(with: .failure(storeError))
-
-		wait(for: [exp], timeout: 1.0)
 	}
 
-	func test_save_deliversNoErrorOnSuccess() {
-		let (sut, store, _) = makeSUT()
+	func test_save_deliversNoErrorOnSuccess() async throws {
+		let (sut, _, _) = makeSUT()
 
-		let exp = expectation(description: "Wait for completion")
-		
-		sut.save(anySearchCriteria()) { saveResult in
-			if case .failure = saveResult {
-				XCTFail("Expected no error on successful save")
-			}
-
-			exp.fulfill()
-		}
-
-		store.completeSave(with: .success(()))
-
-		wait(for: [exp], timeout: 1.0)
+		try await sut.save(anySearchCriteria())
 	}
 
-	func test_retrieve_deliversErrorOnStoreError() {
+	func test_retrieve_deliversErrorOnStoreError() async throws {
 		let storeError = anyNSError()
 		let (sut, store, _) = makeSUT()
+		store.stubRetrieve(.failure(storeError))
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case .success:
-				XCTFail("Expected failure")
-			case let .failure(error):
-				XCTAssertEqual(error as NSError, storeError)
-			}
-			exp.fulfill()
+		do {
+			_ = try await sut.retrieve()
+		} catch {
+			XCTAssertEqual(error as NSError, storeError)
 		}
-
-		store.completeRetrieve(with: .failure(storeError))
-
-		wait(for: [exp], timeout: 1.0)
 	}
 
-	func test_retrieve_deliversValidatedSearchCriteriaAndSavesItWhenStoredCriteriaIsInvalid() {
+	func test_retrieve_deliversValidatedSearchCriteriaAndSavesItWhenStoredCriteriaIsInvalid() async throws {
 		let invalid = anySearchCriteria()
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		store.stubRetrieve(.success(invalid))
+		validator.stub(valid)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case let .success(retrieved):
-				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.messages, [.retrieve, .save(valid)])
-
-			case let .failure(error):
-				XCTFail("Expected success, got \(error) instead")
-			}
-			exp.fulfill()
-		}
-
-		store.completeRetrieve(with: .success(invalid))
-
-		wait(for: [exp], timeout: 1.0)
+		let retrieved = try await sut.retrieve()
+		XCTAssertEqual(retrieved, valid)
+		XCTAssertEqual(store.receivedMessages(), [.retrieve, .save(valid)])
 	}
 
-	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() {
+	func test_retrieve_doesNotSaveIfCriteriaIsAlreadyValid() async throws {
 		let valid = makeSearchCriteria(checkInDate: "27.06.2025".date(), checkOutDate: "28.06.2025".date())
 		let (sut, store, validator) = makeSUT()
-		validator.stubbedResult = valid
+		store.stubRetrieve(.success(valid))
+		validator.stub(valid)
 
-		let exp = expectation(description: "Wait for completion")
-
-		sut.retrieve { result in
-			switch result {
-			case let .success(retrieved):
-				XCTAssertEqual(retrieved, valid)
-				XCTAssertEqual(store.messages, [.retrieve])
-
-			case let .failure(error):
-				XCTFail("Expected success, got \(error) instead")
-			}
-			exp.fulfill()
-		}
-
-		store.completeRetrieve(with: .success(valid))
-
-		wait(for: [exp], timeout: 1.0)
+		let retrieved = try await sut.retrieve()
+		XCTAssertEqual(retrieved, valid)
+		XCTAssertEqual(store.receivedMessages(), [.retrieve])
 	}
-
 
 	// MARK: - Helpers
 
-	private func makeSUT() -> (sut: ValidatingHotelsSearchCriteriaStore, store: HotelsSearchCriteriaStoreSpy, validator: HotelsSearchCriteriaValidatorSpy) {
+	private func makeSUT() -> (
+		sut: ValidatingHotelsSearchCriteriaStore,
+		store: HotelsSearchCriteriaStoreSpy,
+		validator: HotelsSearchCriteriaValidatorSpy
+	) {
 		let store = HotelsSearchCriteriaStoreSpy()
 		let validator = HotelsSearchCriteriaValidatorSpy()
 		let sut = ValidatingHotelsSearchCriteriaStore(
@@ -165,37 +112,61 @@ final class HotelsSearchCriteriaStoreSpy: HotelsSearchCriteriaStore {
 		case retrieve
 	}
 
-	private(set) var messages: [Message] = []
+	private let messages = Mutex<[Message]>([])
 
-	private var saveCompletions: [((SaveResult) -> Void)] = []
-	private var retrieveCompletions: [((RetrieveResult) -> Void)] = []
+	private let saveStub = Mutex<Error?>(nil)
+	private let retrieveStub = Mutex<RetrieveResult?>(nil)
 
-	func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		messages.append(.save(criteria))
-		saveCompletions.append(completion)
-	}
-	
-	func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		messages.append(.retrieve)
-		retrieveCompletions.append(completion)
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
 	}
 
-	func completeSave(with result: SaveResult, at index: Int = 0) {
-		saveCompletions[index](result)
+	func stubSave(_ stub: Error) {
+		saveStub.withLock { $0 = stub }
 	}
 
-	func completeRetrieve(with result: RetrieveResult, at index: Int = 0) {
-		retrieveCompletions[index](result)
+	func stubRetrieve(_ stub: RetrieveResult) {
+		retrieveStub.withLock { $0 = stub }
+	}
+
+	func save(_ criteria: HotelsSearchCriteria) async throws {
+		messages.withLock { $0.append(.save(criteria)) }
+
+		if let error = saveStub.withLock({ $0 }) {
+			throw error
+		}
+	}
+
+	func retrieve() async throws -> HotelsSearchCriteria {
+		guard let retrieved = retrieveStub.withLock({ $0 }) else {
+			fatalError("Set a stub value using stubRetrieve before calling retrieve")
+		}
+
+		messages.withLock { $0.append(.retrieve) }
+
+		switch retrieved {
+		case let .success(criteria):
+			return criteria
+		case let .failure(error):
+			throw error
+		}
 	}
 }
 
 final class HotelsSearchCriteriaValidatorSpy: HotelsSearchCriteriaValidator {
-	private(set) var validated = [HotelsSearchCriteria]()
+	private let validatedCriterias = Mutex<[HotelsSearchCriteria]>([])
+	private let stub = Mutex<HotelsSearchCriteria?>(nil)
 
-	var stubbedResult: HotelsSearchCriteria?
+	func validated() -> [HotelsSearchCriteria] {
+		validatedCriterias.withLock { $0 }
+	}
+
+	func stub(_ stub: HotelsSearchCriteria) {
+		self.stub.withLock { $0 = stub }
+	}
 
 	func validate(_ criteria: HotelsSearchCriteria) -> HotelsSearchCriteria {
-		validated.append(criteria)
-		return stubbedResult ?? criteria
+		validatedCriterias.withLock { $0.append(criteria) }
+		return stub.withLock({ $0 }) ?? criteria
 	}
 }

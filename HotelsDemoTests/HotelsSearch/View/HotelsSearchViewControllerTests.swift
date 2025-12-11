@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	func test_viewDidLoad_searchHotels() {
 		let (sut, interactor, _) = makeSUT()

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public protocol HotelsSearchCriteriaRoutingLogic {
 	func routeToDestinationPicker()
 	func routeToDateRangePicker(viewModel: DateRangePickerModels.ViewModel)

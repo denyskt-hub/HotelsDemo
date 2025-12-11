@@ -40,13 +40,11 @@ public class ShimmeringView: UIView {
 	}
 
 	private class ShimmeringLayer: CAGradientLayer {
-		private var observer: Any?
-
 		deinit {
-			if let observer = observer {
-				NotificationCenter.default.removeObserver(observer)
-			}
+			NotificationCenter.default.removeObserver(self)
 		}
+
+		private let shimmerAnimationKey = "shimmer"
 
 		convenience init(size: CGSize) {
 			self.init()
@@ -60,20 +58,30 @@ public class ShimmeringView: UIView {
 			locations = [0.4, 0.5, 0.6]
 			frame = CGRect(x: -size.width, y: 0, width: size.width * 3, height: size.height)
 
+			addShimmerAnimation()
+
+			NotificationCenter.default.addObserver(self,
+				selector: #selector(willEnterForeground(_:)),
+				name: UIApplication.willEnterForegroundNotification,
+				object: nil)
+		}
+
+		private func makeShimmerAnimation() -> CABasicAnimation {
 			let animation = CABasicAnimation(keyPath: #keyPath(CAGradientLayer.locations))
 			animation.fromValue = [0.0, 0.1, 0.2]
 			animation.toValue = [0.8, 0.9, 1.0]
 			animation.duration = 1.25
 			animation.repeatCount = .infinity
-			add(animation, forKey: "shimmer")
+			return animation
+		}
 
-			observer = NotificationCenter.default.addObserver(
-				forName: UIApplication.willEnterForegroundNotification,
-				object: nil,
-				queue: nil
-			) { [weak self] _ in
-				self?.add(animation, forKey: "shimmer")
-			}
+		private func addShimmerAnimation() {
+			add(makeShimmerAnimation(), forKey: shimmerAnimationKey)
+		}
+
+		@objc private func willEnterForeground(_ notification: Notification) {
+			// Re-add the animation when app returns to foreground
+			addShimmerAnimation()
 		}
 	}
 }

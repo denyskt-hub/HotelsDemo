@@ -9,7 +9,7 @@ import Foundation
 
 public enum DestinationPickerModels {
 	public enum Search {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let query: String
 
 			public init(query: String) {
@@ -53,7 +53,7 @@ public enum DestinationPickerModels {
 	}
 
 	public enum DestinationSelection {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let index: Int
 
 			public init(index: Int) {

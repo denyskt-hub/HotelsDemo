@@ -7,64 +7,89 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class DestinationPickerInteractorTests: XCTestCase {
 	func test_init_doesNotMessageService() {
 		let (_, service, _) = makeSUT()
 
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 	}
 
-	func test_doSearchDestinations_presentSearchErrorOnServiceError() {
+	func test_doSearchDestinations_presentSearchErrorOnServiceError() async {
 		let serviceError = anyNSError()
 		let (sut, service, presenter) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: "any"))
-		service.completeWithResult(.failure(serviceError))
 
+		await service.waitUntilStarted()
+		service.completeWithError(serviceError)
+
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentSearchError(serviceError)])
 	}
 
-	func test_doSearchDestinations_presentDestinationsOnServiceSuccess() {
+	func test_doSearchDestinations_presentDestinationsOnServiceSuccess() async {
 		let destinations = [anyDestination()]
 		let (sut, service, presenter) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: "any"))
-		service.completeWithResult(.success(destinations))
 
+		await service.waitUntilStarted()
+		service.completeWithDestinations(destinations)
+
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: destinations))])
+	}
+
+	func test_doSearchDestinations_trimsQueryBeforeSendingToService() async {
+		let (sut, service, _) = makeSUT()
+
+		sut.doSearchDestinations(request: .init(query: "  Rome  "))
+		await service.waitUntilStarted()
+
+		XCTAssertEqual(service.receivedQueries(), ["Rome"])
 	}
 
 	func test_doSearchDestinations_doesNotMessageServiceOnEmptyQuery() {
 		let (sut, service, _) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: ""))
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 
 		sut.doSearchDestinations(request: .init(query: "  "))
-		XCTAssertTrue(service.queries.isEmpty)
+		XCTAssertTrue(service.receivedQueries().isEmpty)
 	}
 
-	func test_doSearchDestinations_presentEmptyDestinationsOnEmptyQuery() {
+	func test_doSearchDestinations_presentEmptyDestinationsOnEmptyQuery() async {
 		let (sut, _, presenter) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: ""))
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: []))])
 
 		sut.doSearchDestinations(request: .init(query: "  "))
+		await presenter.waitUntilPresented()
 		XCTAssertEqual(presenter.messages, [
 			.presentDestinations(.init(destinations: [])),
 			.presentDestinations(.init(destinations: []))
 		])
 	}
 
-	func test_handleDestinationSelection_presentSelectedDestination() {
+	func test_handleDestinationSelection_presentSelectedDestination() async {
 		let destination = anyDestination()
 		let (sut, service, presenter) = makeSUT()
 		sut.doSearchDestinations(request: .init(query: "any"))
-		service.completeWithResult(.success([destination]))
+
+		await service.waitUntilStarted()
+		service.completeWithDestinations([destination])
+
+		await presenter.waitUntilPresented()
+		XCTAssertEqual(presenter.messages, [.presentDestinations(.init(destinations: [destination]))])
 
 		sut.handleDestinationSelection(request: .init(index: 0))
+		await presenter.waitUntilPresented()
 
 		XCTAssertEqual(presenter.messages.last, .presentSelectedDestination(.init(selected: destination)))
 	}
@@ -87,17 +112,37 @@ final class DestinationPickerInteractorTests: XCTestCase {
 }
 
 final class DestinationSearchServiceSpy: DestinationSearchService {
-	private(set) var queries = [String]()
+	private let queries = Mutex<[String]>([])
+	private let continuations = Mutex<[CheckedContinuation<[Destination], Error>]>([])
 
-	private var completions = [(DestinationSearchService.Result) -> Void]()
+	private let stream = AsyncStream<Void>.makeStream()
 
-	func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		queries.append(query)
-		completions.append(completion)
+	func receivedQueries() -> [String] {
+		queries.withLock { $0 }
 	}
 
-	func completeWithResult(_ result: DestinationSearchService.Result, at index: Int = 0) {
-		completions[index](result)
+	func search(query: String) async throws -> [Destination] {
+		queries.withLock { $0.append(query) }
+
+		return try await withCheckedThrowingContinuation { continuation in
+			continuations.withLock { $0.append(continuation) }
+			stream.continuation.yield(())
+		}
+	}
+
+	func completeWithDestinations(_ destinations: [Destination], at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: destinations)
+	}
+
+	func completeWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
+	}
+
+	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }
 
@@ -110,15 +155,25 @@ final class DestinationPickerPresenterSpy: DestinationPickerPresentationLogic {
 
 	private(set) var messages = [Message]()
 
+	private let stream = AsyncStream<Void>.makeStream()
+
 	func presentDestinations(response: DestinationPickerModels.Search.Response) {
 		messages.append(.presentDestinations(response))
+		stream.continuation.yield(())
 	}
 
 	func presentSelectedDestination(response: DestinationPickerModels.DestinationSelection.Response) {
 		messages.append(.presentSelectedDestination(response))
+		stream.continuation.yield(())
 	}
 
 	func presentSearchError(_ error: Error) {
 		messages.append(.presentSearchError(error as NSError))
+		stream.continuation.yield(())
+	}
+
+	func waitUntilPresented() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }

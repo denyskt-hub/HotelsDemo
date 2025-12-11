@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol HotelsSearchCriteriaValidator {
+public protocol HotelsSearchCriteriaValidator: Sendable {
 	func validate(_ criteria: HotelsSearchCriteria) -> HotelsSearchCriteria
 }

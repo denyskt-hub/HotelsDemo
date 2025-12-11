@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum DateRangePosition {
+public enum DateRangePosition: Hashable, Sendable {
 	case none
 	case start
 	case middle

@@ -8,72 +8,77 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotMessageLoader() {
 		let (_, loader, _) = makeSUT()
 
-		XCTAssertTrue(loader.messages.isEmpty)
+		XCTAssertTrue(loader.receivedMessages().isEmpty)
 	}
 
 	func test_init_doesNotMessageCache() {
 		let (_, _, cache) = makeSUT()
 
-		XCTAssertTrue(cache.messages.isEmpty)
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
 	}
 
-	func test_load_requestsDataFromLoader() {
+	func test_load_requestsDataFromLoader() async throws {
 		let url = anyURL()
-		let (sut, loader, _) = makeSUT()
+		let (sut, loader, cache) = makeSUT()
+		loader.stubWithData(anyData())
+		cache.stubSaveResult(.success(()))
 
-		sut.load(url: url) { _ in }
+		try await sut.load(url: url)
 
 		XCTAssertEqual(loader.loadedURLs, [url])
 	}
 
-	func test_load_deliversErrorOnLoaderError() {
+	func test_load_deliversErrorOnLoaderError() async {
 		let loaderError = anyNSError()
 		let (sut, loader, _) = makeSUT()
 
-		expect(sut, toLoad: .failure(loaderError), when: {
-			loader.completeWith(.failure(loaderError))
+		await expect(sut, toLoadWithError: loaderError, when: {
+			loader.stubWithError(loaderError)
 		})
 	}
 
-	func test_load_deliversDataOnLoaderSuccess() {
+	func test_load_deliversDataOnLoaderSuccess() async {
 		let nonEmptyData = Data("non-empty data".utf8)
-		let (sut, loader, _) = makeSUT()
-
-		expect(sut, toLoad: .success(nonEmptyData), when: {
-			loader.completeWith(.success(nonEmptyData))
-		})
-	}
-
-	func test_load_doesNotCacheOnLoaderError() {
 		let (sut, loader, cache) = makeSUT()
 
-		sut.load(url: anyURL()) { _ in }
-		loader.completeWith(.failure(anyNSError()))
-
-		XCTAssertTrue(cache.messages.isEmpty)
+		await expect(sut, toLoadData: nonEmptyData, when: {
+			loader.stubWithData(nonEmptyData)
+			cache.stubSaveResult(.success(()))
+		})
 	}
 
-	func test_load_cachesDataOnLoaderSuccess() {
+	func test_load_doesNotCacheOnLoaderError() async {
+		let (sut, loader, cache) = makeSUT()
+		loader.stubWithError(anyNSError())
+
+		_ = try? await sut.load(url: anyURL())
+
+		XCTAssertTrue(cache.receivedMessages().isEmpty)
+	}
+
+	func test_load_cachesDataOnLoaderSuccess() async throws {
 		let (url, data) = (anyURL(), anyData())
 		let (sut, loader, cache) = makeSUT()
+		loader.stubWithData(data)
+		cache.stubSaveResult(.success(()))
 
-		sut.load(url: url) { _ in }
-		loader.completeWith(.success(data))
+		try await sut.load(url: url)
 
-		XCTAssertEqual(cache.messages, [.save(data, url.absoluteString)])
+		XCTAssertEqual(cache.receivedMessages(), [.save(data, url.absoluteString)])
 	}
 
-	func test_load_ignoresCacheError() async throws {
+	func test_load_ignoresCacheError() async {
 		let data = anyData()
 		let (sut, loader, cache) = makeSUT()
 
-		expect(sut, toLoad: .success(data), when: {
-			loader.completeWith(.success(data))
-			cache.completeSaveWith(anyNSError())
+		await expect(sut, toLoadData: data, when: {
+			loader.stubWithData(data)
+			cache.stubSaveResult(.failure(anyNSError()))
 		})
 	}
 

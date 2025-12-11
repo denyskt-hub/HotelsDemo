@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct HotelsSearchCriteria: Equatable {
+public struct HotelsSearchCriteria: Equatable, Sendable {
 	public var destination: Destination?
 	public var checkInDate: Date
 	public var checkOutDate: Date

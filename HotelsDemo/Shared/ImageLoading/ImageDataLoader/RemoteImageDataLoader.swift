@@ -20,32 +20,11 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 		self.client = client
 	}
 
-	private struct HTTPClientTaskWrapper: ImageDataLoaderTask {
-		let wrapped: HTTPClientTask
-
-		func cancel() {
-			wrapped.cancel()
-		}
-	}
-
 	@discardableResult
-	public func load(url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataLoaderTask {
+	public func load(url: URL) async throws -> Data {
 		let request = makeRequest(url: url)
-
-		let task = client.perform(request) { result in
-			let loadResult = LoadResult {
-				switch result {
-				case let .success((data, response)):
-					return try ImageDataMapper.map(data, response)
-				case let .failure(error):
-					throw error
-				}
-			}
-
-			completion(loadResult)
-		}
-
-		return HTTPClientTaskWrapper(wrapped: task)
+		let (data, response) = try await client.perform(request)
+		return try ImageDataMapper.map(data, response)
 	}
 
 	private func makeRequest(url: URL) -> URLRequest {

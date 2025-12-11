@@ -7,57 +7,49 @@
 
 import UIKit
 
-public class RangeSlider: UIControl {
+public class RangeSlider: UIControl, RangeSliderPositionProvider {
 	public override var frame: CGRect {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var minimumValue: CGFloat = 0 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var maximumValue: CGFloat = 1 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var lowerValue: CGFloat = 0.2 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var upperValue: CGFloat = 0.8 {
-		didSet {
-			updateLayerFrames()
-		}
+		didSet { updateLayerFrames() }
 	}
 
 	public var trackTintColor = UIColor.secondarySystemBackground {
 		didSet {
+			trackLayer.trackTintColor = trackTintColor
 			trackLayer.setNeedsDisplay()
 		}
 	}
 
 	public var trackHighlightTintColor = UIColor.systemBlue {
 		didSet {
+			trackLayer.trackHighlightTintColor = trackHighlightTintColor
 			trackLayer.setNeedsDisplay()
 		}
 	}
 
-	public var thumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
+	public var thumbImage = UIImage.defaultThumb {
 		didSet {
 			upperThumbImageView.image = thumbImage
 			lowerThumbImageView.image = thumbImage
 		}
 	}
 
-	public var highlightedThumbImage = UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))! {
+	public var highlightedThumbImage = UIImage.defaultThumb {
 		didSet {
 			upperThumbImageView.highlightedImage = highlightedThumbImage
 			lowerThumbImageView.highlightedImage = highlightedThumbImage
@@ -76,26 +68,25 @@ public class RangeSlider: UIControl {
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
 
-		trackLayer.rangeSlider = self
+		trackLayer.positionProvider = self
 		trackLayer.contentsScale = UIScreen.main.scale
 		layer.addSublayer(trackLayer)
 
 		lowerThumbImageView.image = thumbImage
+		lowerThumbImageView.highlightedImage = highlightedThumbImage
 		addSubview(lowerThumbImageView)
 
 		upperThumbImageView.image = thumbImage
+		upperThumbImageView.highlightedImage = highlightedThumbImage
 		addSubview(upperThumbImageView)
 	}
 
 	public override func layoutSubviews() {
 		super.layoutSubviews()
-		self.updateLayerFrames()
+		updateLayerFrames()
 	}
 
 	private func updateLayerFrames() {
-		CATransaction.begin()
-		CATransaction.setDisableActions(true)
-
 		trackLayer.frame = bounds.insetBy(dx: thumbImage.size.width / 2, dy: bounds.height / 3)
 		trackLayer.setNeedsDisplay()
 
@@ -107,8 +98,6 @@ public class RangeSlider: UIControl {
 			origin: thumbOriginForValue(upperValue),
 			size: thumbImage.size
 		)
-
-		CATransaction.commit()
 	}
 
 	internal func positionForValue(_ value: CGFloat) -> CGFloat {
@@ -175,25 +164,41 @@ extension RangeSlider {
 	private func boundValue(_ value: CGFloat, toLowerValue lowerValue: CGFloat, upperValue: CGFloat) -> CGFloat {
 		min(max(value, lowerValue), upperValue)
 	}
+
+	public func positionForLowerValue() -> CGFloat {
+		positionForValue(lowerValue)
+	}
+
+	public func positionForUpperValue() -> CGFloat {
+		positionForValue(upperValue)
+	}
+}
+
+protocol RangeSliderPositionProvider: AnyObject {
+	func positionForLowerValue() -> CGFloat
+	func positionForUpperValue() -> CGFloat
 }
 
 private class RangeSliderTrackLayer: CALayer {
-	internal weak var rangeSlider: RangeSlider?
+	internal weak var positionProvider: RangeSliderPositionProvider?
+
+	internal var trackTintColor: UIColor = .secondarySystemBackground
+	internal var trackHighlightTintColor: UIColor = .systemBlue
 
 	public override func draw(in ctx: CGContext) {
-		guard let slider = rangeSlider else {
+		guard let positionProvider = positionProvider else {
 			return
 		}
 
 		let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
 		ctx.addPath(path.cgPath)
 
-		ctx.setFillColor(slider.trackTintColor.cgColor)
+		ctx.setFillColor(trackTintColor.cgColor)
 		ctx.fillPath()
 
-		ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
-		let lowerValuePosition = slider.positionForValue(slider.lowerValue)
-		let upperValuePosition = slider.positionForValue(slider.upperValue)
+		ctx.setFillColor(trackHighlightTintColor.cgColor)
+		let lowerValuePosition = positionProvider.positionForLowerValue()
+		let upperValuePosition = positionProvider.positionForUpperValue()
 		let rect = CGRect(
 			x: lowerValuePosition,
 			y: 0,
@@ -202,4 +207,10 @@ private class RangeSliderTrackLayer: CALayer {
 		)
 		ctx.fill(rect)
 	}
+}
+
+extension UIImage {
+	static let defaultThumb: UIImage = {
+		UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))!
+	}()
 }

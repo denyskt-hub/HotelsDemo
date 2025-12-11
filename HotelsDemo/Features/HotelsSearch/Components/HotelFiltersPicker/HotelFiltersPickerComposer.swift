@@ -11,6 +11,7 @@ public protocol HotelFiltersPickerFactory {
 	func makeHotelFiltersPicker(filters: HotelFilters, delegate: HotelFiltersPickerDelegate?) -> UIViewController
 }
 
+@MainActor
 public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 	public func makeHotelFiltersPicker(
 		filters: HotelFilters,

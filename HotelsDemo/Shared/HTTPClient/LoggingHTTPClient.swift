@@ -14,42 +14,59 @@ public final class LoggingHTTPClient: HTTPClient {
 		self.client = client
 	}
 
-	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
+	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
 		#if DEBUG
 		let startTime = Date()
 		let requestID = String(UUID().uuidString.prefix(6))
 		Logger.log("🔍 [\(requestID)] Starting request...", level: .debug, tag: .networking)
 
-		return client.perform(request) { [weak self] result in
-			guard let self else { return }
-
-			let duration = Date().timeIntervalSince(startTime)
-			self.log(requestID, request, result, duration)
-			completion(result)
+		do {
+			let (data, response) = try await client.perform(request)
+			log(startTime, requestID, request, response)
+			return (data, response)
+		} catch {
+			log(startTime, requestID, request, error)
+			throw error
 		}
+
 		#else
-		return client.perform(request, completion: completion)
+		return try await client.perform(request)
 		#endif
 	}
 
 	private func log(
+		_ startTime: Date,
 		_ requestID: String,
 		_ request: URLRequest,
-		_ result: HTTPClient.Result,
-		_ duration: TimeInterval
+		_ response: HTTPURLResponse
 	) {
 		var logOutput = "=== [\(requestID)] HTTP Request Start ===\n"
 		logOutput += curlRepresentation(of: request)
 
-		switch result {
-		case let .success((_, response)):
-			let statusCodeLocalizedString = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
-			logOutput += "\n\n✅ [\(requestID)] Response: \(response.statusCode) \(statusCodeLocalizedString)"
-		case let .failure(error):
-			logOutput += "\n\n❌ [\(requestID)] Error: \(error)"
-		}
+		let statusCodeLocalizedString = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
+		logOutput += "\n\n✅ [\(requestID)] Response: \(response.statusCode) \(statusCodeLocalizedString)"
 
+		let duration = Date().timeIntervalSince(startTime)
 		logOutput += String(format: "\n🕑 [\(requestID)] Duration: %.2f seconds", duration)
+
+		logOutput += "\n=== [\(requestID)] HTTP Request End ===\n"
+		Logger.log(logOutput, level: .debug, tag: .networking)
+	}
+
+	private func log(
+		_ startTime: Date,
+		_ requestID: String,
+		_ request: URLRequest,
+		_ error: Error
+	) {
+		var logOutput = "=== [\(requestID)] HTTP Request Start ===\n"
+		logOutput += curlRepresentation(of: request)
+
+		logOutput += "\n\n❌ [\(requestID)] Error: \(error)"
+
+		let duration = Date().timeIntervalSince(startTime)
+		logOutput += String(format: "\n🕑 [\(requestID)] Duration: %.2f seconds", duration)
+
 		logOutput += "\n=== [\(requestID)] HTTP Request End ===\n"
 		Logger.log(logOutput, level: .debug, tag: .networking)
 	}

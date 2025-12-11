@@ -14,12 +14,12 @@ public enum Environment {
 		static let baseURL = "BASE_URL"
 	}
 
-	private static let infoDictionary: [String: Any] = {
+	private static var infoDictionary: [String: Any] {
 		guard let dict = Bundle.main.infoDictionary else {
 			fatalError("Could not load info dictionary")
 		}
 		return dict
-	}()
+	}
 
 	public static let apiKey: String = {
 		guard let apiKey = infoDictionary[Keys.apiKey] as? String else {

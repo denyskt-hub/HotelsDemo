@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 	func test_presentLoadCriteria_displaysCorrectViewModelForGivenCriteria() {
 		let criteria = HotelsSearchCriteria(

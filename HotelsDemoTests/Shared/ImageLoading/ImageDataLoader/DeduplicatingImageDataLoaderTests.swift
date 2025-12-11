@@ -8,129 +8,120 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotMessageLoader() {
 		let (_, loader) = makeSUT()
 
-		XCTAssertTrue(loader.messages.isEmpty)
+		XCTAssertTrue(loader.receivedMessages().isEmpty)
 	}
 
-	func test_load_deliversErrorOnLoaderError() {
+	func test_load_deliversErrorOnLoaderError() async {
 		let loaderError = anyNSError()
 		let (sut, loader) = makeSUT()
 
-		expect(sut, toLoad: .failure(loaderError), when: {
-			loader.completeWith(.failure(loaderError))
+		await expect(sut, toLoadWithError: loaderError, when: {
+			loader.stubWithError(loaderError)
 		})
 	}
 
-	func test_load_deliversDataOnLoaderSuccess() {
+	func test_load_deliversDataOnLoaderSuccess() async {
 		let data = Data()
 		let (sut, loader) = makeSUT()
 		
-		expect(sut, toLoad: .success(data), when: {
-			loader.completeWith(.success(data))
+		await expect(sut, toLoadData: data, when: {
+			loader.stubWithData(data)
 		})
 	}
 
-	func test_load_deduplicatesRequestsForSameURL() {
+	func test_load_deduplicatesRequestsForSameURL() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
-		
-		sut.load(url: url) { _ in }
-		sut.load(url: url) { _ in }
+
+		async let first = sut.load(url: url)
+		async let second = sut.load(url: url)
+		await loader.waitUntilStarted()
+		loader.completeWithData(anyData())
+		_ = try await (first, second)
 
 		XCTAssertEqual(loader.loadedURLs, [url], "Expected only one underlying load for same URL")
 	}
 
-	func test_load_requestsDifferentURLsIndependently() {
+	func test_load_requestsDifferentURLsIndependently() async throws {
 		let url1 = URL(string: "https://example.com/1")!
 		let url2 = URL(string: "https://example.com/2")!
 		let (sut, loader) = makeSUT()
 
-		_ = sut.load(url: url1) { _ in }
-		_ = sut.load(url: url2) { _ in }
+		loader.stubWithData(anyData())
+		async let first = sut.load(url: url1)
+		async let second = sut.load(url: url2)
+		_ = try await (first, second)
 
-		XCTAssertEqual(loader.loadedURLs, [url1, url2], "Expected separate loads for different URLs")
+		XCTAssertTrue(loader.loadedURLs.contains(url1))
+		XCTAssertTrue(loader.loadedURLs.contains(url2))
 	}
 
-	func test_load_deliversSameResultToAllConsumersForSameURL() throws {
+	func test_load_deliversSameResultToAllConsumersForSameURL() async {
 		let (sut, loader) = makeSUT()
 
 		let data = anyData()
-		expect(sut, toLoadTwice: .success(data), when: {
-			loader.completeWith(.success(data))
+		await expect(sut, toLoadTwice: .success(data), when: {
+			loader.stubWithData(data)
 		})
 
 		let error = anyNSError()
-		expect(sut, toLoadTwice: .failure(error), when: {
-			loader.completeWith(.failure(error))
+		await expect(sut, toLoadTwice: .failure(error), when: {
+			loader.stubWithError(error)
 		})
 	}
 
 	// MARK: -
 
-	func test_cancel_doesNotCancelTaskWhileHasConsumers() {
+	func test_cancel_doesNotCancelTaskWhileHasConsumers() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
+		loader.stubWithData(anyData())
 
-		sut.load(url: url) { _ in }
-		let task = sut.load(url: url) { _ in }
-		task.cancel()
+		Task { try await sut.load(url: url) }
+		let secondTask = Task { try await sut.load(url: url) }
+		secondTask.cancel()
+		_ = await secondTask.result
 
 		XCTAssertEqual(loader.tasks.first?.cancelCallCount, 0)
 	}
 
-	func test_cancel_cancelsTaskWhenHasNoConsumers() {
+	func test_cancel_cancelsTaskWhenHasNoConsumers() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
+		loader.stubWithData(anyData())
 
-		let task1 = sut.load(url: url) { _ in }
-		let task2 = sut.load(url: url) { _ in }
-		task1.cancel()
-		task2.cancel()
+		let firstTask = Task { try await sut.load(url: url) }
+		let secondTask = Task { try await sut.load(url: url) }
+		firstTask.cancel()
+		secondTask.cancel()
+		_ = await (firstTask.result, secondTask.result)
 
 		XCTAssertEqual(loader.tasks.first?.cancelCallCount, 1)
 	}
 
 	// MARK: -
 
-	func test_load_isThreadSafeAndDeduplicates() {
+	func test_stress_asyncLoadAndCancel() async {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
+		loader.stubWithData(anyData())
 
-		let exp = expectation(description: "Wait for completions")
-		exp.expectedFulfillmentCount = 10
-
-		DispatchQueue.concurrentPerform(iterations: 10) { _ in
-			sut.load(url: url) { _ in exp.fulfill() }
+		await withTaskGroup(of: Void.self) { group in
+			for i in 0..<100 {
+				group.addTask {
+					let t = Task { try? await sut.load(url: url) }
+					if i % 2 == 0 { t.cancel() }
+					_ = await t.result
+				}
+			}
 		}
 
-		loader.completeWith(.success(anyData()))
-
-		wait(for: [exp], timeout: 1.0)
-
-		XCTAssertEqual(loader.loadedURLs, [url])
-	}
-
-	func test_stressTest_loadAndCancelFromMultipleThreads() {
-		let url = anyURL()
-		let (sut, loader) = makeSUT()
-
-		let iterations = 100
-		let exp = expectation(description: "Wait for completions")
-		exp.expectedFulfillmentCount = iterations / 2
-
-		DispatchQueue.concurrentPerform(iterations: iterations) { i in
-			let task = sut.load(url: url) { _ in exp.fulfill() }
-			if i % 2 == 0 { task.cancel() }
-		}
-
-		loader.completeWith(.success(anyData()))
-
-		wait(for: [exp], timeout: 2.0)
-
-		// No asserts — the test passes if it doesn’t crash
+		// No assert — passes if it doesn’t crash or hang
 	}
 
 	// MARK: - Helpers

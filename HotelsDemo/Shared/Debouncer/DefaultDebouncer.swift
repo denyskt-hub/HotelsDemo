@@ -6,24 +6,36 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class DefaultDebouncer: Debouncer {
-	private var workItem: DispatchWorkItem?
-	private let queue: DispatchQueue
 	private let delay: TimeInterval
+	private let currentSyncTask = Mutex<Task<Void, Never>?>(nil)
+	private let currentAsyncTask = Mutex<Task<Void, Never>?>(nil)
 
-	public init(
-		delay: TimeInterval,
-		queue: DispatchQueue = .main
-	) {
+	public init(delay: TimeInterval) {
 		self.delay = delay
-		self.queue = queue
 	}
 
-	public func execute(_ action: @escaping () -> Void) {
-		workItem?.cancel()
-		let item = DispatchWorkItem(block: action)
-		workItem = item
-		queue.asyncAfter(deadline: .now() + delay, execute: item)
+	public func execute(_ action: @Sendable @escaping () -> Void) {
+		currentSyncTask.withLock { task in
+			task?.cancel()
+			task = Task { @MainActor in
+				try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+				guard !Task.isCancelled else { return }
+				action()
+			}
+		}
+	}
+
+	public func asyncExecute(_ action: @Sendable @escaping () async -> Void) {
+		currentAsyncTask.withLock { task in
+			task?.cancel()
+			task = Task {
+				try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+				guard !Task.isCancelled else { return }
+				await action()
+			}
+		}
 	}
 }

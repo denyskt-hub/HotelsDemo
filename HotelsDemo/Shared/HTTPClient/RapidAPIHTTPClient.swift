@@ -27,12 +27,11 @@ public final class RapidAPIHTTPClient: HTTPClient {
 		self.apiKey = apiKey
 	}
 
-	@discardableResult
-	public func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
+	public func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
 		var request = request
 		request.setValue(apiHost, forHTTPHeaderField: Headers.rapidAPIHost)
 		request.setValue(apiKey, forHTTPHeaderField: Headers.rapidAPIKey)
 
-		return client.perform(request, completion: completion)
+		return try await client.perform(request)
 	}
 }

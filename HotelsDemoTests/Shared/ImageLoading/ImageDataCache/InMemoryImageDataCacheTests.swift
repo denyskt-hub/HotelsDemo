@@ -7,187 +7,180 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class InMemoryImageDataCacheTests: XCTestCase {
-	func test_dataForKey_deliversNilOnEmptyCache() {
+	func test_dataForKey_deliversNilOnEmptyCache() async throws {
 		let sut = makeSUT()
 
-		let data = getData(from: sut, forKey: anyKey())
+		let data = try await getData(from: sut, forKey: anyKey())
 
 		XCTAssertNil(data)
 	}
 
-	func test_dataForKey_hasNoSideEffectsOnEmptyCache() {
+	func test_dataForKey_hasNoSideEffectsOnEmptyCache() async throws {
 		let sut = makeSUT()
 
-		var data = getData(from: sut, forKey: anyKey())
+		var data = try await getData(from: sut, forKey: anyKey())
 		XCTAssertNil(data)
 
-		data = getData(from: sut, forKey: anyKey())
+		data = try await getData(from: sut, forKey: anyKey())
 		XCTAssertNil(data)
 	}
 
-	func test_dataForKey_deliversDataOnNonEmptyStore() {
+	func test_dataForKey_deliversDataOnNonEmptyStore() async throws {
 		let (key, data) = (anyKey(), anyData())
 		let sut = makeSUT()
-		save(to: sut, data: data, forKey: key)
+		try await save(to: sut, data: data, forKey: key)
 
-		let receivedData = getData(from: sut, forKey: key)
+		let receivedData = try await getData(from: sut, forKey: key)
 
 		XCTAssertEqual(receivedData, data)
 	}
 
-	func test_dataForKey_hasNoSideEffectsOnNonEmptyStore() {
+	func test_dataForKey_hasNoSideEffectsOnNonEmptyStore() async throws {
 		let (key, data) = (anyKey(), anyData())
 		let sut = makeSUT()
-		save(to: sut, data: data, forKey: key)
+		try await save(to: sut, data: data, forKey: key)
 
-		var receivedData = getData(from: sut, forKey: key)
+		var receivedData = try await getData(from: sut, forKey: key)
 		XCTAssertEqual(receivedData, data)
 
-		receivedData = getData(from: sut, forKey: key)
+		receivedData = try await getData(from: sut, forKey: key)
 		XCTAssertEqual(receivedData, data)
 	}
 
 	// MARK: -
 
-	func test_save_deliversNoErrorOnEmptyStore() {
+	func test_save_deliversNoErrorOnEmptyStore() async throws {
 		let sut = makeSUT()
 
-		let error = save(to: sut, data: anyData(), forKey: anyKey())
+		try await save(to: sut, data: anyData(), forKey: anyKey())
 
-		XCTAssertNil(error)
+		// No assert — passes if it doesn’t crash or hang
 	}
 
-	func test_save_deliversNoErrorOnNonEmptyStore() {
+	func test_save_deliversNoErrorOnNonEmptyStore() async throws {
 		let (key, data) = (anyKey(), anyData())
 		let sut = makeSUT()
-		save(to: sut, data: data, forKey: key)
+		try await save(to: sut, data: data, forKey: key)
 
-		let error = save(to: sut, data: data, forKey: key)
+		try await save(to: sut, data: data, forKey: key)
 
-		XCTAssertNil(error)
+		// No assert — passes if it doesn’t crash or hang
 	}
 
-	func test_save_overridesPreviouslyStoredData() {
+	func test_save_overridesPreviouslyStoredData() async throws {
 		let (key, data) = (anyKey(), anyData())
 		let sut = makeSUT()
-		save(to: sut, data: data, forKey: key)
+		try await save(to: sut, data: data, forKey: key)
 
 		let latestData = Data("some data".utf8)
-		save(to: sut, data: latestData, forKey: key)
+		try await save(to: sut, data: latestData, forKey: key)
 
-		let receivedData = getData(from: sut, forKey: key)
+		let receivedData = try await getData(from: sut, forKey: key)
 		XCTAssertEqual(receivedData, latestData)
 	}
 
 	// MARK: -
 
-	func test_save_doesNotCauseDataRaces() {
+	func test_save_doesNotCauseDataRaces() async throws {
 		let data = anyData()
 		let sut = makeSUT(countLimit: 100)
 
 		let taskCount = 100
-		let group = DispatchGroup()
-
-		for i in 0..<taskCount {
-			group.enter()
-			DispatchQueue.global().async {
-				sut.save(data, forKey: "key-\(i)") { _ in
-					group.leave()
+		await withTaskGroup(of: Void.self) { group in
+			for i in 0..<taskCount {
+				group.addTask {
+					try? await sut.save(data, forKey: "key-\(i)")
 				}
 			}
 		}
 
-		let groupResult = group.wait(timeout: .now() + 1.0)
-		XCTAssertEqual(groupResult, .success, "Expect all tasks to complete")
-
 		for i in 0..<taskCount {
-			let result = getData(from: sut, forKey: "key-\(i)")
+			let result = try await getData(from: sut, forKey: "key-\(i)")
 			XCTAssertEqual(result, data, "Data mismatch at key-\(i)")
 		}
 	}
 
-	func test_data_isThreadSafe() {
+	func test_data_isThreadSafe() async throws {
 		let key = anyKey()
 		let sut = makeSUT()
 
-		save(to: sut, data: anyData(), forKey: key)
+		try await save(to: sut, data: anyData(), forKey: key)
 
-		let group = DispatchGroup()
-		for _ in 0..<1000 {
-			group.enter()
-			DispatchQueue.global().async {
-				sut.data(forKey: key) { _ in
-					group.leave()
+		await withTaskGroup(of: Void.self) { group in
+			for _ in 0..<1000 {
+				group.addTask {
+					_ = try? await sut.data(forKey: key)
 				}
 			}
 		}
 
-		let groupResult = group.wait(timeout: .now() + 1.0)
-		XCTAssertEqual(groupResult, .success, "Expect all tasks to complete")
+		// No assert — passes if it doesn’t crash or hang
 	}
 
 	// MARK: -
 
-	func test_save_evictsLeastRecentlyUsedItemsOnCountLimitExceeded() {
+	func test_save_evictsLeastRecentlyUsedItemsOnCountLimitExceeded() async throws {
 		let sut = makeSUT(countLimit: 2)
 
-		save(to: sut, data: anyData(), forKey: "a")
-		save(to: sut, data: anyData(), forKey: "b")
+		try await save(to: sut, data: anyData(), forKey: "a")
+		try await save(to: sut, data: anyData(), forKey: "b")
 
-		getData(from: sut, forKey: "a")
+		try await getData(from: sut, forKey: "a")
 
-		save(to: sut, data: anyData(), forKey: "c")
+		try await save(to: sut, data: anyData(), forKey: "c")
 
-		let a = getData(from: sut, forKey: "a")
+		let a = try await getData(from: sut, forKey: "a")
 		XCTAssertNotNil(a)
 
-		let b = getData(from: sut, forKey: "b")
+		let b = try await getData(from: sut, forKey: "b")
 		XCTAssertNil(b)
 
-		let c = getData(from: sut, forKey: "c")
+		let c = try await getData(from: sut, forKey: "c")
 		XCTAssertNotNil(c)
 	}
 
-	func test_save_evictsLeastRecentlyUsedItemsOnSizeLimitExceeded() {
+	func test_save_evictsLeastRecentlyUsedItemsOnSizeLimitExceeded() async throws {
 		let sut = makeSUT(sizeLimitInBytes: 20)
 
-		save(to: sut, data: Data(repeating: 1, count: 10), forKey: "a")
-		save(to: sut, data: Data(repeating: 1, count: 10), forKey: "b")
+		try await save(to: sut, data: Data(repeating: 1, count: 10), forKey: "a")
+		try await save(to: sut, data: Data(repeating: 1, count: 10), forKey: "b")
 
-		getData(from: sut, forKey: "a")
+		try await getData(from: sut, forKey: "a")
 
-		save(to: sut, data: anyData(), forKey: "c")
+		try await save(to: sut, data: anyData(), forKey: "c")
 
-		let a = getData(from: sut, forKey: "a")
+		let a = try await getData(from: sut, forKey: "a")
 		XCTAssertNotNil(a)
 
-		let b = getData(from: sut, forKey: "b")
+		let b = try await getData(from: sut, forKey: "b")
 		XCTAssertNil(b)
 
-		let c = getData(from: sut, forKey: "c")
+		let c = try await getData(from: sut, forKey: "c")
 		XCTAssertNotNil(c)
 	}
 
 	func test_save_respectsCountAndSizeLimit() async throws {
 		let sut = makeSUT(countLimit: 2, sizeLimitInBytes: 10)
 
-		save(to: sut, data: Data(repeating: 0, count: 6), forKey: "a")
-		save(to: sut, data: Data(repeating: 1, count: 6), forKey: "b")
-		save(to: sut, data: Data(repeating: 2, count: 1), forKey: "c")
-		save(to: sut, data: Data(repeating: 2, count: 1), forKey: "d")
+		try await save(to: sut, data: Data(repeating: 0, count: 6), forKey: "a")
+		try await save(to: sut, data: Data(repeating: 1, count: 6), forKey: "b")
+		try await save(to: sut, data: Data(repeating: 2, count: 1), forKey: "c")
+		try await save(to: sut, data: Data(repeating: 2, count: 1), forKey: "d")
 
-		let a = getData(from: sut, forKey: "a")
+		let a = try await getData(from: sut, forKey: "a")
 		XCTAssertNil(a, "Expect a to be evicted by size limit")
 
-		let b = getData(from: sut, forKey: "b")
+		let b = try await getData(from: sut, forKey: "b")
 		XCTAssertNil(b, "Expect b to be evicted by count limit")
 
-		let c = getData(from: sut, forKey: "c")
+		let c = try await getData(from: sut, forKey: "c")
 		XCTAssertNotNil(c)
 
-		let d = getData(from: sut, forKey: "d")
+		let d = try await getData(from: sut, forKey: "d")
 		XCTAssertNotNil(d)
 	}
 
@@ -203,36 +196,13 @@ final class InMemoryImageDataCacheTests: XCTestCase {
 		)
 	}
 
-	@discardableResult
-	private func save(to sut: ImageDataCache, data: Data, forKey key: String) -> Error? {
-		let exp = expectation(description: "Wait for completion")
-
-		var receivedError: Error?
-		sut.save(data, forKey: key) { result in
-			if case let .failure(error) = result {
-				receivedError = error
-			}
-			exp.fulfill()
-		}
-
-		wait(for: [exp], timeout: 0.1)
-		return receivedError
+	private func save(to sut: ImageDataCache, data: Data, forKey key: String) async throws {
+		try await sut.save(data, forKey: key)
 	}
 
 	@discardableResult
-	private func getData(from sut: ImageDataCache, forKey key: String) -> Data? {
-		let exp = expectation(description: "Wait for completion")
-
-		var receivedData: Data?
-		sut.data(forKey: key) { result in
-			if case let .success(data) = result {
-				receivedData = data
-			}
-			exp.fulfill()
-		}
-
-		wait(for: [exp], timeout: 0.1)
-		return receivedData
+	private func getData(from sut: ImageDataCache, forKey key: String) async throws -> Data? {
+		try await sut.data(forKey: key)
 	}
 }
 

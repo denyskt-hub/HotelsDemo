@@ -7,23 +7,43 @@
 
 import Foundation
 import HotelsDemo
-
-struct TaskStub: HTTPClientTask {
-	public func cancel() {}
-}
+import Synchronization
 
 final class HTTPClientSpy: HTTPClient {
-	private(set) var requests = [URLRequest]()
+	let requests = Mutex<[URLRequest]>([])
 
-	private var completions = [(HTTPClient.Result) -> Void]()
+	private let stubbedValues = Mutex<(Data, HTTPURLResponse)?>(nil)
+	private let stubbedError = Mutex<Error?>(nil)
 
-	func perform(_ request: URLRequest, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
-		requests.append(request)
-		completions.append(completion)
-		return TaskStub()
+	private let stream = AsyncStream<Void>.makeStream()
+
+	func receivedRequests() -> [URLRequest] {
+		requests.withLock { $0 }
 	}
 
-	func completeWithResult(_ result: HTTPClient.Result, at index: Int = 0) {
-		completions[index](result)
+	func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+		requests.withLock { $0.append(request) }
+		stream.continuation.yield(())
+
+		return try await withCheckedThrowingContinuation { continuation in
+			if let stubbedValues = stubbedValues.withLock({ $0 }) {
+				continuation.resume(returning: stubbedValues)
+			} else if let stubbedError = stubbedError.withLock({ $0 }) {
+				continuation.resume(throwing: stubbedError)
+			}
+		}
+	}
+
+	func completeWith(_ values: (Data, HTTPURLResponse)) {
+		stubbedValues.withLock { $0 = values }
+	}
+
+	func completeWithError(_ error: Error) {
+		stubbedError.withLock { $0 = error }
+	}
+
+	func waitUntilStarted() async {
+		var iterator = stream.stream.makeAsyncIterator()
+		_ = await iterator.next()
 	}
 }

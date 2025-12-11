@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol HotelsSearchCriteriaPresentationLogic {
+@MainActor
+public protocol HotelsSearchCriteriaPresentationLogic: Sendable {
 	func presentLoadCriteria(response: HotelsSearchCriteriaModels.FetchCriteria.Response)
 	func presentLoadError(_ error: Error)
 

@@ -11,10 +11,6 @@ public final class DestinationSearchWorker: DestinationSearchService {
 	private let factory: DestinationsRequestFactory
 	private let client: HTTPClient
 
-	private enum Error: Swift.Error {
-		case invalidQuery
-	}
-
 	public init(
 		factory: DestinationsRequestFactory,
 		client: HTTPClient
@@ -23,29 +19,11 @@ public final class DestinationSearchWorker: DestinationSearchService {
 		self.client = client
 	}
 
-	public func search(query: String, completion: @escaping (DestinationSearchService.Result) -> Void) {
-		#if DEBUG
-		assert(!query.trimmingCharacters(in: .whitespaces).isEmpty, "Query must not be empty")
-		#endif
+	public func search(query: String) async throws -> [Destination] {
+		let request = try factory.makeSearchRequest(query: query)
 
-		guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-			completion(.failure(Error.invalidQuery))
-			return
-		}
+		let (data, response) = try await client.perform(request)
 
-		let request = factory.makeSearchRequest(query: query)
-
-		client.perform(request) { result in
-			let searchResult = DestinationSearchService.Result {
-				switch result {
-				case let .success((data, response)):
-					return try DestinationsResponseMapper.map(data, response)
-				case let .failure(error):
-					throw error
-				}
-			}
-
-			completion(searchResult)
-		}
+		return try DestinationsResponseMapper.map(data, response)
 	}
 }

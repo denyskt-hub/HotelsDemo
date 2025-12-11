@@ -7,10 +7,6 @@
 
 import Foundation
 
-public protocol DestinationSearchService {
-	typealias Result = Swift.Result<[Destination], Error>
-
-	/// The completion handler can be invoked in any thread.
-	/// Clients are responsible to dispatch to appropriate threads, if needed.
-	func search(query: String, completion: @escaping (Result) -> Void)
+public protocol DestinationSearchService: Sendable {
+	func search(query: String) async throws -> [Destination]
 }

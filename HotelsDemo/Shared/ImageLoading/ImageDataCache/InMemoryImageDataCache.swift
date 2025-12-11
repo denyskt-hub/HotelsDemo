@@ -7,13 +7,7 @@
 
 import Foundation
 
-public final class InMemoryImageDataCache: ImageDataCache {
-	private let queue = DispatchQueue(
-		label: "\(InMemoryImageDataCache.self)Queue",
-		qos: .userInitiated,
-		attributes: .concurrent
-	)
-
+public actor InMemoryImageDataCache: ImageDataCache {
 	private struct CacheEntry {
 		let data: Data
 		let size: Int
@@ -21,7 +15,7 @@ public final class InMemoryImageDataCache: ImageDataCache {
 
 	private var cache = [String: CacheEntry]()
 	private var recentUsedKeys = [String]()
-	private var totalSizeInBytes: Int = 0
+	private var totalSizeInBytes = 0
 
 	private let countLimit: Int?
 	private let sizeLimitInBytes: Int?
@@ -34,31 +28,22 @@ public final class InMemoryImageDataCache: ImageDataCache {
 		self.sizeLimitInBytes = sizeLimitInBytes
 	}
 
-	public func save(_ data: Data, forKey key: String, completion: @escaping (SaveResult) -> Void) {
-		queue.async(flags: .barrier) { [weak self] in
-			guard let self = self else { return }
+	public func save(_ data: Data, forKey key: String) async throws {
+		let entry = CacheEntry(data: data, size: data.count)
+		updateEntry(entry, forKey: key)
 
-			let entry = CacheEntry(data: data, size: data.count)
-			self.updateEntry(entry, forKey: key)
+		updateRecentUsedKeys(key)
 
-			self.updateRecentUsedKeys(key)
-
-			self.evictIfNeeded()
-
-			completion(.success(()))
-		}
+		evictIfNeeded()
 	}
 
-	public func data(forKey key: String, completion: @escaping (DataResult) -> Void) {
-		queue.async(flags: .barrier) { [weak self] in
-			guard let self = self else { return }
+	@discardableResult
+	public func data(forKey key: String) async throws -> Data? {
+		let entry = cache[key]
 
-			let entry = cache[key]
+		updateRecentUsedKeys(key)
 
-			updateRecentUsedKeys(key)
-
-			completion(.success(entry?.data))
-		}
+		return entry?.data
 	}
 
 	private func updateEntry(_ entry: CacheEntry, forKey key: String) {

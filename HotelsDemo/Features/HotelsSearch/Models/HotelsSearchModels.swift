@@ -21,7 +21,7 @@ public enum HotelsSearchModels {
 	}
 
 	public enum Search {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let criteria: HotelsSearchCriteria
 
 			public init(criteria: HotelsSearchCriteria) {
@@ -69,7 +69,7 @@ public enum HotelsSearchModels {
 	}
 
 	public enum FilterSelection {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let filters: HotelFilters
 
 			public init(filters: HotelFilters) {

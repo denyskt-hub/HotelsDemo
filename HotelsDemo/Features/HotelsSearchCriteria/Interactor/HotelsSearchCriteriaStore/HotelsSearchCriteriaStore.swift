@@ -12,6 +12,6 @@ public protocol HotelsSearchCriteriaStore: HotelsSearchCriteriaProvider, HotelsS
 
 extension HotelsSearchCriteriaStore {
 	public func saveIgnoringResult(_ criteria: HotelsSearchCriteria) {
-		save(criteria) { _ in }
+		Task { _ = try? await save(criteria) }
 	}
 }

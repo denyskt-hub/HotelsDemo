@@ -20,14 +20,18 @@ public final class LoggingImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
+	public func load(url: URL) async throws -> Data {
 		#if DEBUG
-		loader.load(url: url) { result in
-			self.logger.log(loadResult: result, for: url)
-			completion(result)
+		do {
+			let data = try await loader.load(url: url)
+			logger.log(loadResult: .success(data), for: url)
+			return data
+		} catch {
+			logger.log(loadResult: .failure(error), for: url)
+			throw error
 		}
 		#else
-		loader.load(url: url, completion: completion)
+		try await loader.load(url: url)
 		#endif
 	}
 }

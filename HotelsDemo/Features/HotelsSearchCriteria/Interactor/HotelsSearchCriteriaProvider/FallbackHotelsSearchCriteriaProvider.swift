@@ -19,16 +19,11 @@ public final class FallbackHotelsSearchCriteriaProvider: HotelsSearchCriteriaPro
 		self.secondary = secondary
 	}
 
-	public func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
-		primary.retrieve { [weak self] result in
-			guard let self else { return }
-
-			switch result {
-			case .success(let criteria):
-				completion(.success(criteria))
-			case .failure:
-				self.secondary.retrieve(completion: completion)
-			}
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		do {
+			return try await primary.retrieve()
+		} catch {
+			return try await secondary.retrieve()
 		}
 	}
 }

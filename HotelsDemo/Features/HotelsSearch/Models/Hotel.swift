@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Hotel: Equatable {
+public struct Hotel: Equatable, Sendable {
 	public let id: Int
 	public let position: Int
 	public let name: String
@@ -38,7 +38,7 @@ public struct Hotel: Equatable {
 	}
 }
 
-public struct Price: Equatable {
+public struct Price: Equatable, Sendable {
 	public let grossPrice: Decimal
 	public let currency: String
 

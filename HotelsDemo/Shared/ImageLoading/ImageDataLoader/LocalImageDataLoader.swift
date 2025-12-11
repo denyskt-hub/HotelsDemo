@@ -7,10 +7,6 @@
 
 import Foundation
 
-public struct EmptyImageDataLoaderTask: ImageDataLoaderTask {
-	public func cancel() {}
-}
-
 public final class LocalImageDataLoader: ImageDataLoader {
 	private let cache: ImageDataCache
 
@@ -23,23 +19,11 @@ public final class LocalImageDataLoader: ImageDataLoader {
 	}
 
 	@discardableResult
-	public func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
-		cache.data(forKey: url.absoluteString) { result in
-			let loadResult = LoadResult {
-				switch result {
-				case let .success(data):
-					guard let data = data else {
-						throw Error.notFound
-					}
-					return data
-				case let .failure(error):
-					throw error
-				}
-			}
-
-			completion(loadResult)
+	public func load(url: URL) async throws -> Data {
+		let data = try await cache.data(forKey: url.absoluteString)
+		guard let data else {
+			throw Error.notFound
 		}
-
-		return EmptyImageDataLoaderTask()
+		return data
 	}
 }

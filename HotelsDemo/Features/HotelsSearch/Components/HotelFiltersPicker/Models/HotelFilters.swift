@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct HotelFilters: Equatable {
+public struct HotelFilters: Equatable, Sendable {
 	public var priceRange: ClosedRange<Decimal>?
 	public var starRatings: Set<StarRating>
 	public var reviewScore: ReviewScore?

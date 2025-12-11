@@ -22,17 +22,13 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 		self.currentDate = currentDate
 	}
 
-	public func generate(
-		selectedStartDate: Date?,
-		selectedEndDate: Date?
-	) -> DateRangePickerModels.CalendarData {
+	public func generate(selectedRange: SelectedDateRange) -> DateRangePickerModels.CalendarData {
 		.init(
 			weekdays: calendar.weekdaySymbols,
 			sections: generateSections(
 				monthsCount: monthsCount,
 				currentDate: currentDate(),
-				selectedStartDate: selectedStartDate,
-				selectedEndDate: selectedEndDate,
+				selectedRange: selectedRange,
 				calendar: calendar
 			)
 		)
@@ -41,8 +37,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 	private func generateSections(
 		monthsCount: Int,
 		currentDate: Date,
-		selectedStartDate: Date?,
-		selectedEndDate: Date?,
+		selectedRange: SelectedDateRange,
 		calendar: Calendar
 	) -> [DateRangePickerModels.CalendarMonth] {
 		let start = currentDate.firstDateOfMonth(calendar: calendar)
@@ -56,14 +51,15 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 			calendar: calendar
 		)
 
-		return months.map {
+		var globalId = 0
+		return months.map { start in
 			DateRangePickerModels.CalendarMonth(
-				month: $0,
+				month: start,
 				dates: allMonthDates(
-					start: $0,
+					globalId: &globalId,
+					start: start,
 					currentDate: currentDate,
-					selectedStartDate: selectedStartDate,
-					selectedEndDate: selectedEndDate,
+					selectedRange: selectedRange,
 					calendar: calendar
 				)
 			)
@@ -90,17 +86,20 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 	}
 
 	private func allMonthDates(
+		globalId: inout Int,
 		start: Date,
 		currentDate: Date,
-		selectedStartDate: Date?,
-		selectedEndDate: Date?,
+		selectedRange: SelectedDateRange,
 		calendar: Calendar
 	) -> [DateRangePickerModels.CalendarDate] {
 		var result = [DateRangePickerModels.CalendarDate]()
 
 		let weekday = calendar.component(.weekday, from: start)
 		let leadingEmptyDays = (weekday - calendar.firstWeekday + 7) % 7
-		result.append(contentsOf: Array(repeating: .init(date: nil), count: leadingEmptyDays))
+		for _ in 0..<leadingEmptyDays {
+			result.append(.init(id: globalId, date: nil))
+			globalId += 1
+		}
 
 		var current = start
 		let end = start
@@ -111,18 +110,19 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 
 		while current <= end {
 			var rangePosition = DateRangePosition.none
-			if current == selectedStartDate && selectedEndDate == nil {
+			if current == selectedRange.startDate && selectedRange.endDate == nil {
 				rangePosition = .single
-			} else if current == selectedStartDate && selectedEndDate != nil {
+			} else if current == selectedRange.startDate && selectedRange.endDate != nil {
 				rangePosition = .start
-			} else if current == selectedEndDate {
+			} else if current == selectedRange.endDate {
 				rangePosition = .end
-			} else if isDateInSelectedRange(current, selectedStartDate, selectedEndDate) {
+			} else if isDateInSelectedRange(current, selectedRange.startDate, selectedRange.endDate) {
 				rangePosition = .middle
 			}
 
 			result.append(
 				.init(
+					id: globalId,
 					date: current,
 					rangePosition: rangePosition,
 					isToday: current == today,
@@ -130,6 +130,7 @@ public final class DefaultCalendarDataGenerator: CalendarDataGenerator {
 				)
 			)
 			current = current.adding(days: 1, calendar: calendar)
+			globalId += 1
 		}
 
 		return result

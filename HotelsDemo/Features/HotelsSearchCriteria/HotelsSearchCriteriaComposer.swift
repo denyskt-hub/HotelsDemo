@@ -16,6 +16,7 @@ public protocol HotelsSearchCriteriaFactory {
 	) -> UIViewController
 }
 
+@MainActor
 public final class HotelsSearchCriteriaComposer: HotelsSearchCriteriaFactory {
 	private let client: HTTPClient
 

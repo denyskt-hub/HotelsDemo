@@ -23,186 +23,176 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 	}
 
 	public func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
-		load { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentLoadedCriteria(criteria)
-			case let .failure(error):
-				self.presentLoadError(error)
+			do {
+				let criteria = try await self.load()
+				await self.presentLoadedCriteria(criteria)
+			} catch {
+				await self.presentLoadError(error)
 			}
 		}
 	}
 
 	public func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request) {
-		load { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
-			case let .failure(error):
-				self.presentLoadError(error)
+			do {
+				let criteria = try await self.load()
+				await self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
+			} catch {
+				await self.presentLoadError(error)
 			}
 		}
 	}
 
 	public func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request) {
-		load { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
+			do {
+				let criteria = try await self.load()
 				let roomGuests = RoomGuests(
 					rooms: criteria.roomsQuantity,
 					adults: criteria.adults,
 					childrenAge: criteria.childrenAge
 				)
-				self.presentLoadedRoomGuests(roomGuests)
-			case let .failure(error):
-				self.presentLoadError(error)
+				await self.presentLoadedRoomGuests(roomGuests)
+			} catch {
+				await self.presentLoadError(error)
 			}
 		}
 	}
 
 	public func doSearch(request: HotelsSearchCriteriaModels.Search.Request) {
-		load { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentSearch(criteria)
-			case let .failure(error):
-				self.presentLoadError(error)
+			do {
+				let criteria = try await self.load()
+				await self.presentSearch(criteria)
+			} catch {
+				await self.presentLoadError(error)
 			}
 		}
 	}
 
 	public func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
-		update(request.destination) { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentUpdatedDestinationCriteria(criteria)
-			case let .failure(error):
-				self.presentUpdateError(error)
+			do {
+				let criteria = try await self.update(request.destination)
+				await self.presentUpdatedDestinationCriteria(criteria)
+			} catch {
+				await self.presentUpdateError(error)
 			}
 		}
 	}
 
 	public func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request) {
-		update(request.checkInDate, request.checkOutDate) { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentUpdatedDatesCriteria(criteria)
-			case let .failure(error):
-				self.presentUpdateError(error)
+			do {
+				let criteria = try await self.update(request.checkInDate, request.checkOutDate)
+				await self.presentUpdatedDatesCriteria(criteria)
+			} catch {
+				await self.presentUpdateError(error)
 			}
 		}
 	}
 
 	public func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request) {
-		update(request.rooms, request.adults, request.childrenAge) { [weak self] result in
+		Task { [weak self] in
 			guard let self else { return }
 
-			switch result {
-			case let .success(criteria):
-				self.presentUpdatedRoomGuestsCriteria(criteria)
-			case let .failure(error):
-				self.presentUpdateError(error)
+			do {
+				let criteria = try await self.update(request.rooms, request.adults, request.childrenAge)
+				await self.presentUpdatedRoomGuestsCriteria(criteria)
+			} catch {
+				await self.presentUpdateError(error)
 			}
 		}
 	}
 
 	// MARK: -
 
-	private func load(_ completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void) {
-		provider.retrieve(completion: completion)
+	private func load() async throws -> HotelsSearchCriteria {
+		try await provider.retrieve()
 	}
 
-	private func save(_ criteria: HotelsSearchCriteria, _ completion: @escaping (Result<Void, Error>) -> Void) {
-		cache.save(criteria, completion: completion)
+	private func save(_ criteria: HotelsSearchCriteria) async throws {
+		try await cache.save(criteria)
 	}
 
 	private func update(
-		_ transform: @escaping (inout HotelsSearchCriteria) -> Void,
-		completion: @escaping ((Result<HotelsSearchCriteria, Error>) -> Void)
-	) {
-		load { [weak self] result in
-			guard let self else { return }
+		_ transform: @Sendable @escaping (HotelsSearchCriteria) -> HotelsSearchCriteria
+	) async throws -> HotelsSearchCriteria {
+		let criteria = try await load()
+		let newCriteria = transform(criteria)
+		try await save(newCriteria)
+		return newCriteria
+	}
 
-			switch result {
-			case .success(var criteria):
-				transform(&criteria)
-
-				self.save(criteria) { saveResult in
-					if case let .failure(error) = saveResult {
-						completion(.failure(error))
-					} else {
-						completion(.success(criteria))
-					}
-				}
-			case let .failure(error):
-				completion(.failure(error))
-			}
+	private func update(
+		_ destination: Destination
+	) async throws -> HotelsSearchCriteria {
+		try await update { criteria in
+			var newCriteria = criteria
+			newCriteria.destination = destination
+			return newCriteria
 		}
 	}
 
 	private func update(
-		_ destination: Destination,
-		completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void
-	) {
-		update({ $0.destination = destination }, completion: completion)
-	}
-
-	private func update(
 		_ checkInDate: Date,
-		_ checkOutDate: Date,
-		completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void
-	) {
-		update({
-			$0.checkInDate = checkInDate
-			$0.checkOutDate = checkOutDate
-		}, completion: completion)
+		_ checkOutDate: Date
+	) async throws -> HotelsSearchCriteria {
+		try await update { criteria in
+			var newCriteria = criteria
+			newCriteria.checkInDate = checkInDate
+			newCriteria.checkOutDate = checkOutDate
+			return newCriteria
+		}
 	}
 
 	private func update(
 		_ rooms: Int,
 		_ adults: Int,
-		_ childrenAge: [Int],
-		completion: @escaping (Result<HotelsSearchCriteria, Error>) -> Void
-	) {
-		update({
-			$0.adults = adults
-			$0.childrenAge = childrenAge
-			$0.roomsQuantity = rooms
-		}, completion: completion)
+		_ childrenAge: [Int]
+	) async throws -> HotelsSearchCriteria {
+		try await update { criteria in
+			var newCriteria = criteria
+			newCriteria.adults = adults
+			newCriteria.childrenAge = childrenAge
+			newCriteria.roomsQuantity = rooms
+			return newCriteria
+		}
 	}
 
 	// MARK: - 
 
-	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter.presentLoadCriteria(
+	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) async {
+		await presenter.presentLoadCriteria(
 			response: HotelsSearchCriteriaModels.FetchCriteria.Response(criteria: criteria)
 		)
 	}
 
-	private func presentLoadError(_ error: Error) {
-		presenter.presentLoadError(error)
+	private func presentLoadError(_ error: Error) async {
+		await presenter.presentLoadError(error)
 	}
 
-	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
-		presenter.presentRoomGuests(
+	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) async {
+		await presenter.presentRoomGuests(
 			response: HotelsSearchCriteriaModels.FetchRoomGuests.Response(roomGuests: roomGuests)
 		)
 	}
 
-	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
-		presenter.presentDates(
+	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) async {
+		await presenter.presentDates(
 			response: HotelsSearchCriteriaModels.FetchDates.Response(
 				checkInDate: checkInDate,
 				checkOutDate: checkOutDate
@@ -210,29 +200,31 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		)
 	}
 
-	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter.presentUpdateDestination(
+	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) async {
+		await presenter.presentUpdateDestination(
 			response: HotelsSearchCriteriaModels.DestinationSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter.presentUpdateDates(
+	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) async {
+		await presenter.presentUpdateDates(
 			response: HotelsSearchCriteriaModels.DateRangeSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) {
-		presenter.presentUpdateRoomGuests(
+	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) async {
+		await presenter.presentUpdateRoomGuests(
 			response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdateError(_ error: Error) {
-		presenter.presentUpdateError(error)
+	private func presentUpdateError(_ error: Error) async {
+		await presenter.presentUpdateError(error)
 	}
 
-	private func presentSearch(_ criteria: HotelsSearchCriteria) {
-		presenter.presentSearch(response: HotelsSearchCriteriaModels.Search.Response(criteria: criteria))
+	private func presentSearch(_ criteria: HotelsSearchCriteria) async {
+		await presenter.presentSearch(
+			response: HotelsSearchCriteriaModels.Search.Response(criteria: criteria)
+		)
 	}
 }

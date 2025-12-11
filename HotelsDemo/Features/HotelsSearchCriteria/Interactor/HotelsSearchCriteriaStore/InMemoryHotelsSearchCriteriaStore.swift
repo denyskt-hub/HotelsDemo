@@ -7,28 +7,21 @@
 
 import Foundation
 
-public final class InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
-	private let queue = DispatchQueue(label: "\(InMemoryHotelsSearchCriteriaStore.self)Queue")
-
+public actor InMemoryHotelsSearchCriteriaStore: HotelsSearchCriteriaStore {
 	private var criteria: HotelsSearchCriteria?
 
 	public init(criteria: HotelsSearchCriteria? = nil) {
 		self.criteria = criteria
 	}
 
-	public func save(_ criteria: HotelsSearchCriteria, completion: @escaping (SaveResult) -> Void) {
-		queue.async {
-			self.criteria = criteria
-			completion(.success(()))
-		}
+	public func save(_ criteria: HotelsSearchCriteria) async throws {
+		self.criteria = criteria
 	}
 
-	public func retrieve(completion: @escaping (RetrieveResult) -> Void) {
-		queue.async {
-			guard let criteria = self.criteria else {
-				return completion(.failure(SearchCriteriaError.notFound))
-			}
-			completion(.success(criteria))
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		guard let criteria = criteria else {
+			throw SearchCriteriaError.notFound
 		}
+		return criteria
 	}
 }

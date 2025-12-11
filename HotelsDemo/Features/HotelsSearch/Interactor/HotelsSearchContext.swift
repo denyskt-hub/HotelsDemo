@@ -11,7 +11,7 @@ import Foundation
 /// A context object that encapsulates dependencies for the HotelsSearchInteractor.
 /// - Contains the criteria provider and search service.
 /// 
-public struct HotelsSearchContext {
+public struct HotelsSearchContext: Sendable {
 	public let provider: HotelsSearchCriteriaProvider
 	public let service: HotelsSearchService
 

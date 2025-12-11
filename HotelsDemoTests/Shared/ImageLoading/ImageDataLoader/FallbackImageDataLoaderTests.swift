@@ -7,34 +7,36 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
-	func test_load_deliversPrimaryResultOnSuccess() {
+	func test_load_deliversPrimaryResultOnSuccess() async {
 		let primaryData = anyData()
 		let (sut, primary, _) = makeSUT()
 
-		expect(sut, toLoad: .success(primaryData), when: {
-			primary.completeWith(.success(primaryData))
+		await expect(sut, toLoadData: primaryData, when: {
+			primary.stubWithData(primaryData)
 		})
 	}
 
-	func test_load_deliversSecondaryResultOnPrimaryFailure() {
+	func test_load_deliversSecondaryResultOnPrimaryFailure() async {
 		let (primaryError, secondaryData) = (anyNSError(), anyData())
 		let (sut, primary, secondary) = makeSUT()
 
-		expect(sut, toLoad: .success(secondaryData), when: {
-			primary.completeWith(.failure(primaryError))
-			secondary.completeWith(.success(secondaryData))
+		await expect(sut, toLoadData: secondaryData, when: {
+			primary.stubWithError(primaryError)
+			secondary.stubWithData(secondaryData)
 		})
 	}
 
-	func test_load_deliversErrorWhenBothPrimaryAndSecondaryFail() {
+	func test_load_deliversErrorWhenBothPrimaryAndSecondaryFail() async {
 		let (primaryError, secondaryError) = (anyNSError(), anyNSError())
 		let (sut, primary, secondary) = makeSUT()
 
-		expect(sut, toLoad: .failure(secondaryError), when: {
-			primary.completeWith(.failure(primaryError))
-			secondary.completeWith(.failure(secondaryError))
+		await expect(sut, toLoadWithError: secondaryError, when: {
+			primary.stubWithError(primaryError)
+			secondary.stubWithError(secondaryError)
 		})
 	}
 
@@ -49,55 +51,5 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let secondary = ImageDataLoaderSpy()
 		let sut = FallbackImageDataLoader(primary: primary, secondary: secondary)
 		return (sut, primary, secondary)
-	}
-}
-
-final class ImageDataLoaderSpy: ImageDataLoader {
-	private(set) var messages = [(url: URL, task: TaskSpy, completion: LoadCompletion)]()
-
-	var loadedURLs: [URL] { messages.map { $0.url } }
-
-	var cancelledURLs: [URL] {
-		messages
-			.filter { $0.task.cancelCallCount > 0 }
-			.map { $0.url }
-	}
-
-	var tasks: [TaskSpy] { messages.map { $0.task } }
-
-	var onLoad: (() -> Void)?
-	var onCancel: (() -> Void)?
-
-	final class TaskSpy: ImageDataLoaderTask {
-		private(set) var cancelCallCount = 0
-
-		var onCancel: (() -> Void)?
-
-		func cancel() {
-			cancelCallCount += 1
-			onCancel?()
-		}
-	}
-
-	func load(url: URL, completion: @escaping LoadCompletion) -> ImageDataLoaderTask {
-		let task = TaskSpy()
-		task.onCancel = { [weak self] in self?.cancel() }
-
-		messages.append((url, task, completion))
-		
-		onLoad?()
-		return task
-	}
-
-	func task(for url: URL) -> TaskSpy? {
-		messages.first(where: { $0.url == url })?.task
-	}
-
-	func completeWith(_ result: LoadResult, at index: Int = 0) {
-		messages[index].completion(result)
-	}
-
-	private func cancel() {
-		onCancel?()
 	}
 }

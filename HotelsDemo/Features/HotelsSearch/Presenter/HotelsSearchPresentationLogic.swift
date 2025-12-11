@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol HotelsSearchPresentationLogic {
+@MainActor
+public protocol HotelsSearchPresentationLogic: Sendable {
 	func presentSearch(response: HotelsSearchModels.Search.Response)
 	func presentSearchLoading(_ isLoading: Bool)
 	func presentSearchError(_ error: Error)

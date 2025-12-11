@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class DestinationPickerPresenterTests: XCTestCase {
 	func test_presentDestinations_displayDestinations() {
 		let destination = makeDestination(

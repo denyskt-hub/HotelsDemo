@@ -9,11 +9,11 @@ import Foundation
 
 public final class DefaultHotelsSearchCriteriaValidator: HotelsSearchCriteriaValidator {
 	private let calendar: Calendar
-	private let currentDate: () -> Date
+	private let currentDate: @Sendable () -> Date
 
 	public init(
 		calendar: Calendar,
-		currentDate: @escaping () -> Date
+		currentDate: @Sendable @escaping () -> Date
 	) {
 		self.calendar = calendar
 		self.currentDate = currentDate
@@ -76,20 +76,16 @@ public final class DefaultHotelsSearchCriteriaValidator: HotelsSearchCriteriaVal
 	}
 
 	private func validate(adults: Int, minValue: Int, maxValue: Int) -> Int {
-		clamp(adults, minValue: minValue, maxValue: maxValue)
+		adults.clamp(minValue: minValue, maxValue: maxValue)
 	}
 
 	private func validate(childrenAge: [Int], minValue: Int, maxValue: Int) -> [Int] {
 		childrenAge.map {
-			clamp($0, minValue: minValue, maxValue: maxValue)
+			$0.clamp(minValue: minValue, maxValue: maxValue)
 		}
 	}
 
 	private func validate(roomsQuantity: Int, minValue: Int, maxValue: Int) -> Int {
-		clamp(roomsQuantity, minValue: minValue, maxValue: maxValue)
-	}
-
-	private func clamp(_ value: Int, minValue: Int, maxValue: Int) -> Int {
-		min(max(value, minValue), maxValue)
+		roomsQuantity.clamp(minValue: minValue, maxValue: maxValue)
 	}
 }

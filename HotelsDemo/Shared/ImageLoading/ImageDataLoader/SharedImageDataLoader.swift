@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Synchronization
 
 public enum SharedImageDataLoader {
-	private static var _instance: ImageDataLoader = defaultLoader()
+	private static let _instance = Mutex(defaultLoader())
 
 	public static var instance: ImageDataLoader {
-		get { _instance }
-		set { _instance = newValue }
+		get { _instance.withLock({ $0 }) }
+		set { _instance.withLock({ $0 = newValue }) }
 	}
 
 	private static func defaultLoader() -> ImageDataLoader {
@@ -21,7 +22,7 @@ public enum SharedImageDataLoader {
 		let remote = RemoteImageDataLoader.shared.logging(.remote)
 		let caching = CachingImageDataLoader(loader: remote, cache: cache)
 		let logging = local.fallback(to: caching).logging(.composite)
-		return logging.dispatch(to: MainQueueDispatcher())
+		return logging
 	}
 
 	public static func configureLogging(enabled: Bool = true) {

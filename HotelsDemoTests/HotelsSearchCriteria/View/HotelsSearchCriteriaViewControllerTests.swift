@@ -7,14 +7,16 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 	func test_viewDidLoad_loadInitialData() {
 		let (sut, interactor, _, _) = makeSUT()
 
 		sut.simulateAppearance()
 
-		XCTAssertEqual(interactor.messages, [.doFetchCriteria(.init())])
+		XCTAssertEqual(interactor.receivedMessages(), [.doFetchCriteria(.init())])
 	}
 
 	func test_destinationButtonTap_routesToDestinationPicker() {
@@ -32,7 +34,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.simulateDatesButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .doFetchDates(.init()))
+		XCTAssertEqual(interactor.receivedMessages().last, .doFetchDates(.init()))
 	}
 
 	func test_roomGuestsButtonTap_loadsRoomGuests() {
@@ -41,7 +43,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		
 		sut.simulateRoomGuestsButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .doFetchRoomGuests(.init()))
+		XCTAssertEqual(interactor.receivedMessages().last, .doFetchRoomGuests(.init()))
 	}
 
 	func test_searchButtonTap_requestsSearch() {
@@ -50,7 +52,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.simulateSearchButtonTap()
 
-		XCTAssertEqual(interactor.messages.last, .doSearch(.init()))
+		XCTAssertEqual(interactor.receivedMessages().last, .doSearch(.init()))
 	}
 
 	func test_displayCriteria_rendersCriteria() {
@@ -125,7 +127,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.didSelectDestination(destination)
 
-		XCTAssertEqual(interactor.messages, [.handleDestinationSelection(.init(destination: destination))])
+		XCTAssertEqual(interactor.receivedMessages(), [.handleDestinationSelection(.init(destination: destination))])
 	}
 
 	func test_didSelectDateRange_updatesDates() {
@@ -135,7 +137,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.didSelectDateRange(startDate: startDate, endDate: endDate)
 
-		XCTAssertEqual(interactor.messages, [.handleDateRangeSelection(.init(checkInDate: startDate, checkOutDate: endDate))])
+		XCTAssertEqual(interactor.receivedMessages(), [.handleDateRangeSelection(.init(checkInDate: startDate, checkOutDate: endDate))])
 	}
 
 	func test_didSelectRoomGuests_updateRoomGuests() {
@@ -144,7 +146,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 
 		sut.didSelectRoomGuests(rooms: rooms, adults: adults, childrenAges: childrenAges)
 
-		XCTAssertEqual(interactor.messages, [
+		XCTAssertEqual(interactor.receivedMessages(), [
 			.handleRoomGuestsSelection(.init(rooms: rooms, adults: adults, childrenAge: childrenAges))
 		])
 	}
@@ -246,34 +248,38 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 		case handleRoomGuestsSelection(HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
 	}
 
-	private(set) var messages = [Message]()
+	private let messages = Mutex<[Message]>([])
+
+	func receivedMessages() -> [Message] {
+		messages.withLock { $0 }
+	}
 
 	func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
-		messages.append(.doFetchCriteria(request))
+		messages.withLock { $0.append(.doFetchCriteria(request)) }
 	}
 
 	func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request) {
-		messages.append(.doFetchDates(request))
+		messages.withLock { $0.append(.doFetchDates(request)) }
 	}
 
 	func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request) {
-		messages.append(.doFetchRoomGuests(request))
+		messages.withLock { $0.append(.doFetchRoomGuests(request)) }
 	}
 
 	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
-		messages.append(.handleDestinationSelection(request))
+		messages.withLock { $0.append(.handleDestinationSelection(request)) }
 	}
 
 	func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request) {
-		messages.append(.handleDateRangeSelection(request))
+		messages.withLock { $0.append(.handleDateRangeSelection(request)) }
 	}
 
 	func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request) {
-		messages.append(.handleRoomGuestsSelection(request))
+		messages.withLock { $0.append(.handleRoomGuestsSelection(request)) }
 	}
 
 	func doSearch(request: HotelsSearchCriteriaModels.Search.Request) {
-		messages.append(.doSearch(request))
+		messages.withLock { $0.append(.doSearch(request)) }
 	}
 }
 

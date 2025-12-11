@@ -7,21 +7,23 @@
 
 import XCTest
 import HotelsDemo
+import Synchronization
 
+@MainActor
 final class DefaultDebouncerTests: XCTestCase {
 	func test_execute_callsActionAfterDelay() {
 		let sut = makeSUT(delay: 0.01)
 
 		let exp = expectation(description: "Wait for debounce")
 
-		var called = false
+		let called = Mutex<Bool>(false)
 		sut.execute {
-			called = true
+			called.withLock { $0 = true}
 			exp.fulfill()
 		}
 
 		wait(for: [exp], timeout: 0.1)
-		XCTAssertTrue(called)
+		XCTAssertTrue(called.withLock({ $0 }))
 	}
 
 	func test_execute_cancelsPreviousCall() {
@@ -29,29 +31,23 @@ final class DefaultDebouncerTests: XCTestCase {
 
 		let exp = expectation(description: "Wait for debounce")
 
-		var callsCount = 0
+		let callsCount = Mutex<Int>(0)
 		sut.execute {
-			callsCount += 1
+			callsCount.withLock { $0 += 1 }
 		}
 
 		sut.execute {
-			callsCount += 1
+			callsCount.withLock { $0 += 1 }
 			exp.fulfill()
 		}
 
 		wait(for: [exp], timeout: 0.1)
-		XCTAssertEqual(callsCount, 1)
+		XCTAssertEqual(callsCount.withLock({ $0 }), 1)
 	}
 
 	// MARK: - Helpers
 
-	private func makeSUT(
-		delay: TimeInterval,
-		queue: DispatchQueue = .main
-	) -> DefaultDebouncer {
-		DefaultDebouncer(
-			delay: delay,
-			queue: queue
-		)
+	private func makeSUT(delay: TimeInterval) -> DefaultDebouncer {
+		DefaultDebouncer(delay: delay)
 	}
 }

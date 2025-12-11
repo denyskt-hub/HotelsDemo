@@ -43,7 +43,7 @@ public enum HotelsSearchCriteriaModels {
 			public init() {}
 		}
 
-		public struct Response: Equatable {
+		public struct Response: Equatable, Sendable {
 			public let roomGuests: RoomGuests
 
 			public init(roomGuests: RoomGuests) {
@@ -69,7 +69,7 @@ public enum HotelsSearchCriteriaModels {
 	}
 
 	public enum DestinationSelection {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let destination: Destination
 
 			public init(destination: Destination) {
@@ -87,7 +87,7 @@ public enum HotelsSearchCriteriaModels {
 	}
 
 	public enum DateRangeSelection {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let checkInDate: Date
 			public let checkOutDate: Date
 
@@ -107,7 +107,7 @@ public enum HotelsSearchCriteriaModels {
 	}
 
 	public enum RoomGuestsSelection {
-		public struct Request: Equatable {
+		public struct Request: Equatable, Sendable {
 			public let rooms: Int
 			public let adults: Int
 			public let childrenAge: [Int]

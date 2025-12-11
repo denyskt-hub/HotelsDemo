@@ -9,21 +9,17 @@ import Foundation
 
 public final class DefaultHotelsSearchCriteriaProvider: HotelsSearchCriteriaProvider {
 	private let calendar: Calendar
-	private let currentDate: () -> Date
+	private let currentDate: @Sendable () -> Date
 
 	public init(
 		calendar: Calendar,
-		currentDate: @escaping () -> Date
+		currentDate: @Sendable @escaping () -> Date
 	) {
 		self.calendar = calendar
 		self.currentDate = currentDate
 	}
 
-	public func retrieve(completion: @escaping (HotelsSearchCriteriaProvider.RetrieveResult) -> Void) {
-		completion(
-			.success(
-				HotelsSearchCriteriaDefaults.make(calendar: calendar, currentDate: currentDate)
-			)
-		)
+	public func retrieve() async throws -> HotelsSearchCriteria {
+		HotelsSearchCriteriaDefaults.make(calendar: calendar, currentDate: currentDate)
 	}
 }

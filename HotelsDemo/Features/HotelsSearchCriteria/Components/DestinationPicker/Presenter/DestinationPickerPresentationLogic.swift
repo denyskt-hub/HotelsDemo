@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol DestinationPickerPresentationLogic {
+@MainActor
+public protocol DestinationPickerPresentationLogic: Sendable {
 	func presentDestinations(response: DestinationPickerModels.Search.Response)
 	func presentSelectedDestination(response: DestinationPickerModels.DestinationSelection.Response)
 	func presentSearchError(_ error: Error)

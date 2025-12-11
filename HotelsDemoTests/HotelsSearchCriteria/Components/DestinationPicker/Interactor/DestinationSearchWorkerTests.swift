@@ -8,54 +8,56 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class DestinationSearchWorkerTests: XCTestCase {
 	func test_init_doesNotPerformRequest() {
 		let (_, client) = makeSUT()
 		
-		XCTAssertTrue(client.requests.isEmpty)
+		XCTAssertTrue(client.receivedRequests().isEmpty)
 	}
 
-	func test_search_performsRequestWithCorrectURL() {
+	func test_search_performsRequestWithCorrectURL() async throws {
 		let expectedURL = URL(string: "https://api.com/search?q=london")!
 		let (sut, client) = makeSUT(url: expectedURL)
 
-		sut.search(query: "ignored") { _ in }
+		client.completeWith(anyValidValues())
+		_ = try await sut.search(query: "ignored")
 
-		XCTAssertEqual(client.requests.map(\.url), [expectedURL])
+		XCTAssertEqual(client.receivedRequests().map(\.url), [expectedURL])
 	}
 
-	func test_search_deliversErrorOnClientError() {
+	func test_search_deliversErrorOnClientError() async throws {
 		let clientError = anyNSError()
 		let (sut, client) = makeSUT()
 
-		expect(sut, toCompleteWith: .failure(clientError), when: {
-			client.completeWithResult(.failure(clientError))
+		try await expect(sut, toCompleteWithError: clientError, when: {
+			client.completeWithError(clientError)
 		})
 	}
 
-	func test_search_deliversErrorOnNon200HTTPResponse() {
+	func test_search_deliversErrorOnNon200HTTPResponse() async throws {
 		let samples = [199, 300, 350, 404, 500]
 		let (sut, client) = makeSUT()
 
-		for (index, statusCode) in samples.enumerated() {
-			expect(sut, toCompleteWith: .failure(HTTPError.unexpectedStatusCode(statusCode)), when: {
-				client.completeWithResult(.success((anyData(), makeHTTPURLResponse(statusCode: statusCode))), at: index)
+		for statusCode in samples {
+			try await expect(sut, toCompleteWithError: HTTPError.unexpectedStatusCode(statusCode), when: {
+				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
 
-	func test_search_deliversErrorOn200HTTPResponseWithEmptyDataOrInvalidJSON() {
+	func test_search_deliversErrorOn200HTTPResponseWithEmptyDataOrInvalidJSON() async throws {
 		let samples = [emptyData(), invalidJSONData()]
 		let (sut, client) = makeSUT()
 
-		for (index, data) in samples.enumerated() {
-			expect(sut, toCompleteWith: .failure(APIError.decoding(anyNSError())), when: {
-				client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))), at: index)
+		for data in samples {
+			try await expect(sut, toCompleteWithError: APIError.decoding(anyNSError()), when: {
+				client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
 			})
 		}
 	}
 
-	func test_search_deliversResultOn200HTTPResponseWithValidJSON() throws {
+	func test_search_deliversResultOn200HTTPResponseWithValidJSON() async throws {
 		let item = makeDestinationJSON(
 			id: 929,
 			type: "district",
@@ -68,8 +70,8 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let data = makeJSONData(destinationsJSON)
 		let (sut, client) = makeSUT()
 
-		expect(sut, toCompleteWith: .success([item.model]), when: {
-			client.completeWithResult(.success((data, makeHTTPURLResponse(statusCode: 200))))
+		try await expect(sut, toCompleteWithDestinations: [item.model], when: {
+			client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
@@ -89,28 +91,53 @@ final class DestinationSearchWorkerTests: XCTestCase {
 
 	private func expect(
 		_ sut: DestinationSearchWorker,
-		toCompleteWith expectedResult: DestinationSearchService.Result,
+		toCompleteWithDestinations expectedDestinations: [Destination],
 		when action: () -> Void,
 		file: StaticString = #filePath,
 		line: UInt = #line
-	) {
-		let exp = expectation(description: "Wait for completion")
-
-		sut.search(query: "any") { receivedResult in
-			switch (receivedResult, expectedResult) {
-			case let (.success(received), .success(expected)):
-				XCTAssertEqual(received, expected, file: file, line: line)
-			case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
-				XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-			default:
-				XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
-			}
-			exp.fulfill()
-		}
-
+	) async throws {
 		action()
 
-		wait(for: [exp], timeout: 0.1)
+		let destinations = try await sut.search(query: "any")
+
+		XCTAssertEqual(expectedDestinations, destinations)
+	}
+
+	private func expect(
+		_ sut: DestinationSearchWorker,
+		toCompleteWithError expectedError: Error,
+		when action: () -> Void,
+		file: StaticString = #filePath,
+		line: UInt = #line
+	) async throws {
+		action()
+
+		var receivedError: NSError?
+		do {
+			_ = try await sut.search(query: "any")
+		} catch {
+			receivedError = error as NSError
+		}
+
+		XCTAssertEqual(receivedError, expectedError as NSError, file: file, line: line)
+	}
+
+	private func anyValidValues() -> (Data, HTTPURLResponse) {
+		let item = anyDestinationJSON()
+		let destinationsJSON = makeAPIResponseJSON(data: [item.json])
+		let data = makeJSONData(destinationsJSON)
+		return (data, makeHTTPURLResponse(statusCode: 200))
+	}
+
+	private func anyDestinationJSON() -> (model: Destination, json: [String: Any]) {
+		makeDestinationJSON(
+			id: 1,
+			type: "any type",
+			name: "any name",
+			label: "any label",
+			country: "any country",
+			cityName: "any city name"
+		)
 	}
 
 	private func makeDestinationJSON(

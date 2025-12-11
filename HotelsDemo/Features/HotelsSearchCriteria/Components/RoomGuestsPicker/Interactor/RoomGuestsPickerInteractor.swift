@@ -12,7 +12,7 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 
 	private let limits = RoomGuestsLimits(
 		maxRooms: HotelsSearchLimits.maxRooms,
-		maxAdults: HotelsSearchLimits.maxRooms,
+		maxAdults: HotelsSearchLimits.maxAdults,
 		maxChildren: HotelsSearchLimits.maxChildren
 	)
 	private let availableChildAges = HotelsSearchLimits.availableChildAges
@@ -64,7 +64,10 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	}
 
 	public func handleDecrementChildrenAge() {
-		guard !childrenAge.isEmpty else { return }
+		guard !childrenAge.isEmpty else {
+			Logger.log("Cannot decrement children age: childrenAge is empty", level: .error)
+			return
+		}
 
 		childrenAge.removeLast()
 		presenter.presentUpdateChildrenAge(
@@ -88,7 +91,8 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	public func handleAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request) {
 		let index = request.index
 		guard childrenAge.indices.contains(index) else {
-			preconditionFailure("Invalid index from UI: \(index), childrenAge count: \(childrenAge.count)")
+			Logger.log("Invalid child index from UI: \(index), childrenAge count: \(childrenAge.count)", level: .error)
+			return
 		}
 
 		let selectedAge = childrenAge[index]
@@ -105,10 +109,12 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	public func handleAgeSelection(request: RoomGuestsPickerModels.AgeSelected.Request) {
 		let index = request.index
 		guard childrenAge.indices.contains(index) else {
-			preconditionFailure("Invalid index from UI: \(index), childrenAge count: \(childrenAge.count)")
+			Logger.log("Invalid child index from UI: \(index), childrenAge count: \(childrenAge.count)", level: .error)
+			return
 		}
 		guard availableChildAges.contains(request.age) else {
-			preconditionFailure("Invalid age selected: \(request.age). Available: \(availableChildAges)")
+			Logger.log("Invalid age selected: \(request.age). Available: \(availableChildAges)", level: .error)
+			return
 		}
 
 		childrenAge[index] = request.age
@@ -130,12 +136,20 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	}
 
 	private func updateRooms(_ rooms: Int) {
-		self.rooms = min(max(rooms, 1), limits.maxRooms)
+		let clamped = rooms.clamp(minValue: 1, maxValue: limits.maxRooms)
+		if clamped != rooms {
+			Logger.log("Rooms clamped from \(rooms) to \(clamped) (min 1, max \(limits.maxRooms))", level: .info)
+		}
+		self.rooms = clamped
 		presenter.presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response(rooms: self.rooms))
 	}
 
 	private func updateAdults(_ adults: Int) {
-		self.adults = min(max(adults, 1), limits.maxAdults)
+		let clamped = adults.clamp(minValue: 1, maxValue: limits.maxAdults)
+		if clamped != adults {
+			Logger.log("Adults clamped from \(adults) to \(clamped) (min 1, max \(limits.maxAdults))", level: .info)
+		}
+		self.adults = clamped
 		presenter.presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response(adults: self.adults))
 	}
 }

@@ -11,6 +11,7 @@ public protocol DestinationPickerFactory {
 	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController
 }
 
+@MainActor
 public final class DestinationPickerComposer: DestinationPickerFactory {
 	private let client: HTTPClient
 
@@ -41,16 +42,11 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 	}
 
 	private func makeDestinationSearchService() -> DestinationSearchService {
-		let worker = DestinationSearchWorker(
+		return DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(
 				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
 			),
 			client: client
-		).dispatch(to: MainQueueDispatcher())
-
-		return DebouncedDestinationSearchService(
-			decoratee: worker,
-			debouncer: DefaultDebouncer(delay: 0.5)
 		)
 	}
 }
