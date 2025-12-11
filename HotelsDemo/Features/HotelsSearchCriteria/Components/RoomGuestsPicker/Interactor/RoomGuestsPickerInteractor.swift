@@ -136,12 +136,20 @@ public final class RoomGuestsPickerInteractor: RoomGuestsPickerBusinessLogic {
 	}
 
 	private func updateRooms(_ rooms: Int) {
-		self.rooms = rooms.clamp(minValue: 1, maxValue: limits.maxRooms)
+		let clamped = rooms.clamp(minValue: 1, maxValue: limits.maxRooms)
+		if clamped != rooms {
+			Logger.log("Rooms clamped from \(rooms) to \(clamped) (min 1, max \(limits.maxRooms))", level: .info)
+		}
+		self.rooms = clamped
 		presenter.presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response(rooms: self.rooms))
 	}
 
 	private func updateAdults(_ adults: Int) {
-		self.adults = adults.clamp(minValue: 1, maxValue: limits.maxAdults)
+		let clamped = adults.clamp(minValue: 1, maxValue: limits.maxAdults)
+		if clamped != adults {
+			Logger.log("Adults clamped from \(adults) to \(clamped) (min 1, max \(limits.maxAdults))", level: .info)
+		}
+		self.adults = clamped
 		presenter.presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response(adults: self.adults))
 	}
 }
