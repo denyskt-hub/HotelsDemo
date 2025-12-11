@@ -49,7 +49,8 @@ public final class DateRangePickerInteractor: DateRangePickerBusinessLogic {
 	public func handleDateRangeSelection(request: DateRangePickerModels.DateRangeSelection.Request) {
 		guard let startDate = dateRangeSelection.startDate,
 			  let endDate = dateRangeSelection.endDate else {
-			preconditionFailure("Can't select date range without start and end date")
+			Logger.log("Can't select date range without start and end date", level: .error)
+			return
 		}
 
 		presenter.presentSelectedDateRange(
