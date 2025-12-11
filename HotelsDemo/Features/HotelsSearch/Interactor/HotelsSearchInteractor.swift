@@ -33,9 +33,9 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		Task {
 			do {
 				let criteria = try await provider.retrieve()
-				self.performSearch(request: .init(criteria: criteria))
+				performSearch(request: .init(criteria: criteria))
 			} catch {
-				await self.presentSearchError(error)
+				await presentSearchError(error)
 			}
 		}
 	}
