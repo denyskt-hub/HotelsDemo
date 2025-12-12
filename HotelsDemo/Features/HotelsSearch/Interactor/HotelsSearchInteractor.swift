@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Synchronization
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	private let context: HotelsSearchContext
@@ -44,31 +43,33 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		doCancelSearch()
 	}
 
-	private let currentSearchTask = Mutex<Task<Void, Never>?>(nil)
+	private let searchTaskStore = TaskStore<Void, Never>()
 	private func performSearch(request: HotelsSearchModels.Search.Request) {
-		currentSearchTask.withLock { task in
-			task?.cancel()
-			task = Task {
-				await presenter.presentSearchLoading(true)
+		let task = Task {
+			await presenter.presentSearchLoading(true)
 
-				do {
-					let hotels = try await worker.search(criteria: request.criteria)
-					await setHotels(hotels)
+			do {
+				let hotels = try await worker.search(criteria: request.criteria)
+				await setHotels(hotels)
 
-					let currentFilters = await currentFilters()
-					let filteredHotels = await applyFilters(currentFilters)
-					await presenter.presentSearch(response: .init(hotels: filteredHotels))
-				} catch {
-					await presentSearchError(error)
-				}
-
-				await presenter.presentSearchLoading(false)
+				let currentFilters = await currentFilters()
+				let filteredHotels = await applyFilters(currentFilters)
+				await presenter.presentSearch(response: .init(hotels: filteredHotels))
+			} catch {
+				await presentSearchError(error)
 			}
+
+			await presenter.presentSearchLoading(false)
+		}
+		Task {
+			await searchTaskStore.setTask(task)
 		}
 	}
 
 	private func doCancelSearch() {
-		currentSearchTask.withLock { $0?.cancel() }
+		Task {
+			await searchTaskStore.cancel()
+		}
 	}
 
 	public func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
@@ -89,11 +90,11 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 			)
 		}
 	}
-	
+
 	private func setFilters(_ filters: HotelFilters) async {
 		await filtersStore.setFilters(filters)
 	}
-	
+
 	private func currentFilters() async -> HotelFilters {
 		await filtersStore.getFilters()
 	}
