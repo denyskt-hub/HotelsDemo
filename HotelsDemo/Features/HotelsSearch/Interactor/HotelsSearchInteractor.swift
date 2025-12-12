@@ -13,7 +13,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	private var provider: HotelsSearchCriteriaProvider { context.provider }
 	private var worker: HotelsSearchService { context.service }
 
-	private let filters: Mutex<HotelFilters>
+	private let filtersStore: FiltersStore
 	private let repository: HotelsRepository
 	private let presenter: HotelsSearchPresentationLogic
 
@@ -24,7 +24,7 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		presenter: HotelsSearchPresentationLogic
 	) {
 		self.context = context
-		self.filters = Mutex(filters)
+		self.filtersStore = FiltersStore(filters)
 		self.repository = repository
 		self.presenter = presenter
 	}
@@ -54,8 +54,9 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 				do {
 					let hotels = try await worker.search(criteria: request.criteria)
 					await setHotels(hotels)
-					
-					let filteredHotels = await applyFilters(filters.withLock({ $0 }))
+
+					let currentFilters = await currentFilters()
+					let filteredHotels = await applyFilters(currentFilters)
 					await presenter.presentSearch(response: .init(hotels: filteredHotels))
 				} catch {
 					await presentSearchError(error)
@@ -72,13 +73,14 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 
 	public func doFetchFilters(request: HotelsSearchModels.FetchFilters.Request) {
 		Task {
-			await presenter.presentFilters(response: .init(filters: filters.withLock({ $0 })))
+			let currentFilters = await currentFilters()
+			await presenter.presentFilters(response: .init(filters: currentFilters))
 		}
 	}
 
 	public func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
 		Task {
-			filters.withLock { $0 = request.filters }
+			await setFilters(request.filters)
 			await presenter.presentUpdateFilters(
 				response: .init(
 					hotels: await applyFilters(request.filters),
@@ -86,6 +88,14 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 				)
 			)
 		}
+	}
+	
+	private func setFilters(_ filters: HotelFilters) async {
+		await filtersStore.setFilters(filters)
+	}
+	
+	private func currentFilters() async -> HotelFilters {
+		await filtersStore.getFilters()
 	}
 
 	private func setHotels(_ hotels: [Hotel]) async {
@@ -98,5 +108,21 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 
 	private func presentSearchError(_ error: Error) async {
 		await presenter.presentSearchError(error)
+	}
+}
+
+private actor FiltersStore {
+	private var filters: HotelFilters
+
+	init(_ filters: HotelFilters) {
+		self.filters = filters
+	}
+
+	func getFilters() -> HotelFilters {
+		filters
+	}
+
+	func setFilters(_ filters: HotelFilters) {
+		self.filters = filters
 	}
 }
