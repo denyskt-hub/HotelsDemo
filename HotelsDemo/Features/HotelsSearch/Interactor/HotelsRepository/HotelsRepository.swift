@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol HotelsRepository: Sendable {
-	func allHotels() -> [Hotel]
-	func setHotels(_ hotels: [Hotel])
-	func filter(with specification: any HotelSpecification) -> [Hotel]
+	func allHotels() async -> [Hotel]
+	func setHotels(_ hotels: [Hotel]) async
+	func filter(with specification: any HotelSpecification) async -> [Hotel]
 }

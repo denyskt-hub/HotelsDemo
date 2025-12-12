@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Specification {
+public protocol Specification: Sendable {
 	associatedtype Item
 
 	func isSatisfied(by item: Item) -> Bool

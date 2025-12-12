@@ -8,7 +8,7 @@
 import Foundation
 
 public struct AnySpecification<Item>: Specification {
-	private let isSatisfied: (Item) -> Bool
+	private let isSatisfied: @Sendable (Item) -> Bool
 
 	public init<S: Specification>(_ spec: S) where S.Item == Item {
 		self.isSatisfied = spec.isSatisfied(by:)

@@ -6,24 +6,23 @@
 //
 
 import Foundation
-import Synchronization
 
-public final class DefaultHotelsRepository: HotelsRepository {
-	private let hotels: Mutex<[Hotel]>
+public actor DefaultHotelsRepository: HotelsRepository {
+	private var hotels: [Hotel]
 
 	public init(hotels: [Hotel] = []) {
-		self.hotels = Mutex(hotels)
+		self.hotels = hotels
 	}
 
-	public func allHotels() -> [Hotel] {
-		hotels.withLock { $0 }
+	public func allHotels() async -> [Hotel] {
+		hotels
 	}
 
-	public func setHotels(_ hotels: [Hotel]) {
-		self.hotels.withLock { $0 = hotels }
+	public func setHotels(_ hotels: [Hotel]) async {
+		self.hotels = hotels
 	}
 
-	public func filter(with specification: any HotelSpecification) -> [Hotel] {
-		hotels.withLock({ $0 }).filter { specification.isSatisfied(by: $0) }
+	public func filter(with specification: any HotelSpecification) async -> [Hotel] {
+		hotels.filter { specification.isSatisfied(by: $0) }
 	}
 }

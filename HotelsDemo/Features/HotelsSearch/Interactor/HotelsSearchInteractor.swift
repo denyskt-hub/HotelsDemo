@@ -53,8 +53,10 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 
 				do {
 					let hotels = try await worker.search(criteria: request.criteria)
-					setHotels(hotels)
-					await presenter.presentSearch(response: .init(hotels: applyFilters(filters.withLock({ $0 }))))
+					await setHotels(hotels)
+					
+					let filteredHotels = await applyFilters(filters.withLock({ $0 }))
+					await presenter.presentSearch(response: .init(hotels: filteredHotels))
 				} catch {
 					await presentSearchError(error)
 				}
@@ -79,19 +81,19 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 			filters.withLock { $0 = request.filters }
 			await presenter.presentUpdateFilters(
 				response: .init(
-					hotels: applyFilters(request.filters),
+					hotels: await applyFilters(request.filters),
 					hasSelectedFilters: request.filters.hasSelectedFilters
 				)
 			)
 		}
 	}
 
-	private func setHotels(_ hotels: [Hotel]) {
-		repository.setHotels(hotels)
+	private func setHotels(_ hotels: [Hotel]) async {
+		await repository.setHotels(hotels)
 	}
 
-	private func applyFilters(_ filters: HotelFilters) -> [Hotel] {
-		repository.filter(with: HotelFiltersSpecificationFactory.make(from: filters))
+	private func applyFilters(_ filters: HotelFilters) async -> [Hotel] {
+		await repository.filter(with: HotelFiltersSpecificationFactory.make(from: filters))
 	}
 
 	private func presentSearchError(_ error: Error) async {
