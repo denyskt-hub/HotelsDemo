@@ -6,15 +6,9 @@
 //
 
 import Foundation
-import Synchronization
 
 public enum SharedImageDataLoader {
-	private static let _instance = Mutex(defaultLoader())
-
-	public static var instance: ImageDataLoader {
-		get { _instance.withLock({ $0 }) }
-		set { _instance.withLock({ $0 = newValue }) }
-	}
+	public static let instance = defaultLoader()
 
 	private static func defaultLoader() -> ImageDataLoader {
 		let cache = SharedImageDataCache.instance.logging(.cache)
