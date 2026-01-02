@@ -6,15 +6,9 @@
 //
 
 import Foundation
-import Synchronization
 
 public enum SharedImageDataCache {
-	private static let _instance = Mutex(defaultCache())
-
-	public static var instance: ImageDataCache {
-		get { _instance.withLock({ $0 }) }
-		set { _instance.withLock({ $0 = newValue }) }
-	}
+	public static let instance = defaultCache()
 
 	private static func defaultCache() -> ImageDataCache {
 		InMemoryImageDataCache(countLimit: 100)
