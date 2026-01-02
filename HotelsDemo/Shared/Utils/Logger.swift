@@ -6,16 +6,13 @@
 //
 
 import Foundation
-import Synchronization
 
 // MARK: - Logger facade backed by LoggerActor
 public struct Logger {
 	private static let actor = LoggerActor()
 
-	private static let _configuration = Mutex<LoggerConfiguration>(.default)
-	public static var configuration: LoggerConfiguration {
-		get { _configuration.withLock({ $0 }) }
-		set { _configuration.withLock({ $0 = newValue }) }
+	public static func configure(_ configuration: LoggerConfiguration) {
+		Task { await actor.setConfiguration(configuration) }
 	}
 
 	public static func log(
@@ -26,22 +23,48 @@ public struct Logger {
 		function: String = #function,
 		line: UInt = #line
 	) {
-		guard shouldLog(configuration, level, tag) else { return }
 		let msg = message()
-		Task { await actor.log(msg, level: level, tag: tag, file: file, function: function, line: line) }
-	}
-
-	private static func shouldLog(_ configuration: LoggerConfiguration, _ level: LogLevel, _ tag: LogTag) -> Bool {
-		#if DEBUG
-		level.priority >= configuration.level.priority && configuration.enabledTags.contains(tag)
-		#else
-		false
-		#endif
+		Task {
+			await actor.log(
+				msg,
+				level: level,
+				tag: tag,
+				file: file,
+				function: function,
+				line: line
+			)
+		}
 	}
 }
 
 // MARK: - Actor implementation
-actor LoggerActor {
+private actor LoggerActor {
+	private var configuration: LoggerConfiguration = .default
+
+	func setConfiguration(_ configuration: LoggerConfiguration) {
+		self.configuration = configuration
+	}
+
+	func getConfiguration() -> LoggerConfiguration {
+		configuration
+	}
+
+	func setMinimumLogLevel(_ level: LogLevel) {
+		configuration.level = level
+	}
+
+	func enableTag(_ tag: LogTag) {
+		configuration.enabledTags.insert(tag)
+	}
+
+	func disableTag(_ tag: LogTag) {
+		configuration.enabledTags.remove(tag)
+	}
+
+	func disableAllLogs() {
+		configuration.level = .none
+	}
+
 	func log(
 		_ message: String,
 		level: LogLevel,
@@ -50,6 +73,8 @@ actor LoggerActor {
 		function: String = #function,
 		line: UInt = #line
 	) {
+		guard shouldLog(configuration, level, tag) else { return }
+
 		if String(describing: file).isEmpty {
 			print("[\(level.rawValue)] [\(tag.rawValue)] ➝ \(message)")
 		} else {
@@ -57,34 +82,32 @@ actor LoggerActor {
 			print("[\(level.rawValue)] [\(tag.rawValue)] \(fileName):\(line) \(function) ➝ \(message)")
 		}
 	}
+
+	private func shouldLog(_ configuration: LoggerConfiguration, _ level: LogLevel, _ tag: LogTag) -> Bool {
+		#if DEBUG
+		level.priority >= configuration.level.priority && configuration.enabledTags.contains(tag)
+		#else
+		false
+		#endif
+	}
 }
 
 // MARK: - Convenience configuration helpers on facade
 public extension Logger {
 	static func setMinimumLogLevel(_ level: LogLevel) {
-		var config = configuration
-		config.level = level
-		configuration = config
+		Task { await actor.setMinimumLogLevel(level) }
 	}
-}
 
-public extension Logger {
 	static func enableTag(_ tag: LogTag) {
-		var config = configuration
-		config.enabledTags.insert(tag)
-		configuration = config
+		Task { await actor.enableTag(tag) }
 	}
 
 	static func disableTag(_ tag: LogTag) {
-		var config = configuration
-		config.enabledTags.remove(tag)
-		configuration = config
+		Task { await actor.disableTag(tag) }
 	}
 
 	static func disableAllLogs() {
-		var config = configuration
-		config.level = .none
-		configuration = config
+		Task { await actor.disableAllLogs() }
 	}
 }
 

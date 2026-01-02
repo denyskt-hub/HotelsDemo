@@ -18,12 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	private func configureLogging() {
-		Logger.configuration = .init(
-			level: .debug,
-			enabledTags: [.general, .networking]
+		Logger.configure(
+			.init(
+				level: .debug,
+				enabledTags: [.general, .networking]
+			)
 		)
 
-		SharedImageDataCache.configureLogging(enabled: false)
+		SharedImageDataCache.configureLogging(enabled: true)
 		SharedImageDataLoader.configureLogging(enabled: false)
 		SharedImageDataPrefetcher.configureLogging(enabled: false)
 	}
