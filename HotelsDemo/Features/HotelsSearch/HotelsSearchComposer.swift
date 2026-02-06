@@ -14,9 +14,14 @@ public protocol HotelsSearchFactory {
 @MainActor
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
+	private let baseURL: URL
 
-	public init(client: HTTPClient) {
+	public init(
+		client: HTTPClient,
+		baseURL: URL
+	) {
 		self.client = client
+		self.baseURL = baseURL
 	}
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
@@ -58,7 +63,7 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 
 		let service = HotelsSearchWorker(
 			factory: DefaultHotelsRequestFactory(
-				url: HotelsEndpoint.searchHotels.url(Environment.baseURL)
+				url: HotelsEndpoint.searchHotels.url(baseURL)
 			),
 			client: client
 		)

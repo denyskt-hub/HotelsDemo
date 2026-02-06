@@ -14,34 +14,50 @@ public enum Environment {
 		static let baseURL = "BASE_URL"
 	}
 
-	private static var infoDictionary: [String: Any] {
-		guard let dict = Bundle.main.infoDictionary else {
-			fatalError("Could not load info dictionary")
-		}
-		return dict
+	public struct Config {
+		public let apiKey: String
+		public let apiHost: String
+		public let baseURL: URL
 	}
 
-	public static let apiKey: String = {
-		guard let apiKey = infoDictionary[Keys.apiKey] as? String else {
-			fatalError("API key not found in info.plist")
-		}
-		return apiKey
-	}()
+	public enum Error: Swift.Error, CustomStringConvertible {
+		case missingKey(String)
+		case invalidURL(String)
 
-	public static let apiHost: String = {
-		guard let apiHost = infoDictionary[Keys.apiHost] as? String else {
-			fatalError("API host not found in info.plist")
+		public var description: String {
+			switch self {
+			case .missingKey(let key):
+				return "Missing required Info.plist key: \(key)"
+			case .invalidURL(let value):
+				return "Invalid URL: \(value)"
+			}
 		}
-		return apiHost
-	}()
+	}
 
-	public static let baseURL: URL = {
-		guard let urlString = infoDictionary[Keys.baseURL] as? String else {
-			fatalError("Base URL not found in info.plist")
+	public static func load() throws -> Config {
+		guard let dict = Bundle.main.infoDictionary else {
+			throw Error.missingKey("Info.plist")
 		}
-		guard let url = URL(string: urlString) else {
-			fatalError("Invalid URL string: \(urlString)")
+
+		guard let apiKey = dict[Keys.apiKey] as? String else {
+			throw Error.missingKey(Keys.apiKey)
 		}
-		return url
-	}()
+
+		guard let apiHost = dict[Keys.apiHost] as? String else {
+			throw Error.missingKey(Keys.apiHost)
+		}
+
+		guard let baseURLString = dict[Keys.baseURL] as? String else {
+			throw Error.missingKey(Keys.baseURL)
+		}
+		guard let baseURL = URL(string: baseURLString) else {
+			throw Error.invalidURL(dict[Keys.baseURL] as? String ?? "nil")
+		}
+
+		return Config(
+			apiKey: apiKey,
+			apiHost: apiHost,
+			baseURL: baseURL
+		)
+	}
 }

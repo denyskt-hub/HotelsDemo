@@ -111,7 +111,7 @@ BASE_URL – the API base URL (often `https://<API_HOST>`)
 
 Register for a free API key here: [link](https://rapidapi.com/DataCrawler/api/booking-com15).
 
-**Note**: Without a valid API_KEY and API_HOST, API requests will fail.
+**Note**: Without a valid API_KEY and API_HOST, API requests will fail. App intentionally crashes without config.
 
 ⚠️ Never commit the real `Secrets.Debug.xcconfig` or `Secrets.Release.xcconfig`.
 They are in `.gitignore` by default.
@@ -134,6 +134,7 @@ They are in `.gitignore` by default.
 - [ ] Add localization
 - [ ] Display filters metadata on filters screen
 - [ ] Hotels search criteria editing on search screen
+- [ ] Mock API responses for local development and easier code review (to allow running the app without external API keys)
 
 ## License
 

@@ -8,11 +8,20 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-	private let client: HTTPClient = {
+	private var environment: Environment.Config {
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+			fatalError("Unexpected application delegate type: \(String(describing: type(of: UIApplication.shared.delegate)))")
+		}
+		return appDelegate.environment
+	}
+
+	private lazy var client: HTTPClient = {
 		RapidAPIHTTPClient(
 			client: LoggingHTTPClient(
 				client: URLSessionHTTPClient()
-			)
+			),
+			apiHost: environment.apiHost,
+			apiKey: environment.apiKey
 		)
 	}()
 
@@ -47,12 +56,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	private lazy var mainFactory: MainFactory = {
 		MainComposer(
 			client: client,
+			baseURL: environment.baseURL,
 			searchCriteriaFactory: makeSearchCriteriaViewController(delegate:)
 		)
 	}()
 
 	private lazy var searchCriteriaFactory: HotelsSearchCriteriaFactory = {
-		HotelsSearchCriteriaComposer(client: client)
+		HotelsSearchCriteriaComposer(
+			client: client,
+			baseURL: environment.baseURL
+		)
 	}()
 
 	var window: UIWindow?

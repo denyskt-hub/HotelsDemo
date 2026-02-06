@@ -19,8 +19,8 @@ public final class RapidAPIHTTPClient: HTTPClient {
 
 	public init(
 		client: HTTPClient,
-		apiHost: String = Environment.apiHost,
-		apiKey: String = Environment.apiKey
+		apiHost: String,
+		apiKey: String
 	) {
 		self.client = client
 		self.apiHost = apiHost

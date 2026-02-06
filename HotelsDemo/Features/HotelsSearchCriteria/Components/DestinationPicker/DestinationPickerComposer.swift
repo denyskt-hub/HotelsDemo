@@ -14,9 +14,14 @@ public protocol DestinationPickerFactory {
 @MainActor
 public final class DestinationPickerComposer: DestinationPickerFactory {
 	private let client: HTTPClient
+	private let baseURL: URL
 
-	public init(client: HTTPClient) {
+	public init(
+		client: HTTPClient,
+		baseURL: URL
+	) {
 		self.client = client
+		self.baseURL = baseURL
 	}
 
 	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
@@ -42,9 +47,9 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 	}
 
 	private func makeDestinationSearchService() -> DestinationSearchService {
-		return DestinationSearchWorker(
+		DestinationSearchWorker(
 			factory: DefaultDestinationRequestFactory(
-				url: DestinationsEndpoint.searchDestination.url(Environment.baseURL)
+				url: DestinationsEndpoint.searchDestination.url(baseURL)
 			),
 			client: client
 		)
