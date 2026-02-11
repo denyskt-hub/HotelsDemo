@@ -40,7 +40,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		for statusCode in samples {
-			await expect(sut, toCompleteWithError: HTTPError.unexpectedStatusCode(statusCode), when: {
+			await expect(sut, toCompleteWithError: AppError.http(.unexpectedStatusCode(statusCode)), when: {
 				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
@@ -51,7 +51,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		for data in samples {
-			await expect(sut, toCompleteWithError: APIError.decoding(anyNSError()), when: {
+			await expect(sut, toCompleteWithError: AppError.api(.decoding(anyNSError())), when: {
 				client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
 			})
 		}
@@ -84,12 +84,12 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		sut: HotelsSearchWorker,
 		client: HTTPClientSpy
 	) {
-		let client = HTTPClientSpy()
+		let (client, spy) = makeAppHTTPClientSpy()
 		let sut = HotelsSearchWorker(
 			factory: HotelsRequestFactoryStub(url: url),
 			client: client
 		)
-		return (sut, client)
+		return (sut, spy)
 	}
 
 	private func expect(

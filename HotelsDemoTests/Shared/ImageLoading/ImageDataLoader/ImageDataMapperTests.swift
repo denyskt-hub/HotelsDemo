@@ -9,26 +9,16 @@ import XCTest
 import HotelsDemo
 
 final class ImageDataMapperTests: XCTestCase {
-	func test_map_throwsErrorOnNon200HTTPResponse() throws {
-		let samples = [199, 201, 300, 400, 500]
-
-		try samples.forEach { code in
-			XCTAssertThrowsError(
-				try ImageDataMapper.map(anyData(), makeHTTPURLResponse(statusCode: code))
-			)
-		}
-	}
-
-	func test_map_throwsInvalidDataErrorOn200HTTPResponseWithEmptyData() throws {
+	func test_map_throwsInvalidDataErrorOnEmptyData() throws {
 		XCTAssertThrowsError(
-			try ImageDataMapper.map(emptyData(), makeHTTPURLResponse(statusCode: 200))
+			try ImageDataMapper.map(emptyData())
 		)
 	}
 
-	func test_map_deliversReceivedNonEmptyDataOn200HTTPResponse() throws {
+	func test_map_deliversReceivedNonEmptyData() throws {
 		let nonEmptyData = Data("non-empty data".utf8)
 
-		let result = try ImageDataMapper.map(nonEmptyData, makeHTTPURLResponse(statusCode: 200))
+		let result = try ImageDataMapper.map(nonEmptyData)
 
 		XCTAssertEqual(result, nonEmptyData)
 	}

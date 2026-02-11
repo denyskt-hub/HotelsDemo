@@ -42,9 +42,9 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_load_deliversErrorOnNon200HTTPResponse() async {
 		let (sut, client) = makeSUT()
 
-		let samples = [199, 201, 300, 400, 500]
+		let samples = [199, 300, 350, 400, 500]
 		for statusCode in samples {
-			await expect(sut, toLoadWithError: HTTPError.unexpectedStatusCode(statusCode), when: {
+			await expect(sut, toLoadWithError: AppError.http(.unexpectedStatusCode(statusCode)), when: {
 				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
@@ -73,8 +73,8 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		sut: RemoteImageDataLoader,
 		client: HTTPClientSpy
 	) {
-		let client = HTTPClientSpy()
+		let (client, spy) = makeAppHTTPClientSpy()
 		let sut = RemoteImageDataLoader(client: client)
-		return (sut, client)
+		return (sut, spy)
 	}
 }

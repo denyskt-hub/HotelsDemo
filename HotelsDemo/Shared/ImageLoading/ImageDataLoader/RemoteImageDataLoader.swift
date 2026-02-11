@@ -23,8 +23,8 @@ public final class RemoteImageDataLoader: ImageDataLoader {
 	@discardableResult
 	public func load(url: URL) async throws -> Data {
 		let request = makeRequest(url: url)
-		let (data, response) = try await client.perform(request)
-		return try ImageDataMapper.map(data, response)
+		let (data, _) = try await client.perform(request)
+		return try ImageDataMapper.map(data)
 	}
 
 	private func makeRequest(url: URL) -> URLRequest {

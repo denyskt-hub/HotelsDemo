@@ -47,3 +47,9 @@ final class HTTPClientSpy: HTTPClient {
 		_ = await iterator.next()
 	}
 }
+
+func makeAppHTTPClientSpy() -> (client: AppHTTPClient, spy: HTTPClientSpy) {
+	let spy = HTTPClientSpy()
+	let sut = AppHTTPClient(decoratee: spy)
+	return (sut, spy)
+}

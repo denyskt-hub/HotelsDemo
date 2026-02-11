@@ -10,5 +10,5 @@ import Foundation
 public enum AppError: Error {
 	case network(NetworkError)
 	case http(HTTPError)
-	case apiError(APIError)
+	case api(APIError)
 }

@@ -12,10 +12,7 @@ public final class ImageDataMapper {
 		case invalidData
 	}
 
-	public static func map(_ data: Data, _ response: HTTPURLResponse) throws -> Data {
-		guard response.isOK else {
-			throw HTTPError.unexpectedStatusCode(response.statusCode)
-		}
+	public static func map(_ data: Data) throws -> Data {
 		guard !data.isEmpty else {
 			throw Error.invalidData
 		}

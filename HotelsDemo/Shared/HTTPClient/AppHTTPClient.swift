@@ -19,7 +19,7 @@ public final class AppHTTPClient: HTTPClient {
 			let (data, httpResponse) = try await decoratee.perform(request)
 
 			guard httpResponse.isSuccess else {
-				throw HTTPError.unexpectedStatusCode(httpResponse.statusCode)
+				throw AppError.http(.unexpectedStatusCode(httpResponse.statusCode))
 			}
 
 			return (data, httpResponse)
