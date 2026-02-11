@@ -237,6 +237,7 @@ extension HotelsSearchCriteriaViewController {
 	}
 }
 
+@MainActor
 final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic {
 	enum Message: Equatable {
 		case doFetchCriteria(HotelsSearchCriteriaModels.FetchCriteria.Request)
@@ -248,38 +249,38 @@ final class HotelsSearchCriteriaInteractorSpy: HotelsSearchCriteriaBusinessLogic
 		case handleRoomGuestsSelection(HotelsSearchCriteriaModels.RoomGuestsSelection.Request)
 	}
 
-	private let messages = Mutex<[Message]>([])
+	private var messages = [Message]()
 
 	func receivedMessages() -> [Message] {
-		messages.withLock { $0 }
+		messages
 	}
 
 	func doFetchCriteria(request: HotelsSearchCriteriaModels.FetchCriteria.Request) {
-		messages.withLock { $0.append(.doFetchCriteria(request)) }
+		messages.append(.doFetchCriteria(request))
 	}
 
 	func doFetchDateRange(request: HotelsSearchCriteriaModels.FetchDates.Request) {
-		messages.withLock { $0.append(.doFetchDates(request)) }
+		messages.append(.doFetchDates(request))
 	}
 
 	func doFetchRoomGuests(request: HotelsSearchCriteriaModels.FetchRoomGuests.Request) {
-		messages.withLock { $0.append(.doFetchRoomGuests(request)) }
+		messages.append(.doFetchRoomGuests(request))
 	}
 
 	func handleDestinationSelection(request: HotelsSearchCriteriaModels.DestinationSelection.Request) {
-		messages.withLock { $0.append(.handleDestinationSelection(request)) }
+		messages.append(.handleDestinationSelection(request))
 	}
 
 	func handleDateRangeSelection(request: HotelsSearchCriteriaModels.DateRangeSelection.Request) {
-		messages.withLock { $0.append(.handleDateRangeSelection(request)) }
+		messages.append(.handleDateRangeSelection(request))
 	}
 
 	func handleRoomGuestsSelection(request: HotelsSearchCriteriaModels.RoomGuestsSelection.Request) {
-		messages.withLock { $0.append(.handleRoomGuestsSelection(request)) }
+		messages.append(.handleRoomGuestsSelection(request))
 	}
 
 	func doSearch(request: HotelsSearchCriteriaModels.Search.Request) {
-		messages.withLock { $0.append(.doSearch(request)) }
+		messages.append(.doSearch(request))
 	}
 }
 

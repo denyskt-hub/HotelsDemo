@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public protocol RoomGuestsPickerDelegate: AnyObject {
 	func didSelectRoomGuests(rooms: Int, adults: Int, childrenAges: [Int])
 }

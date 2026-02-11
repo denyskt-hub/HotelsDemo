@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol TableViewRenderer: ListItemsRenderer {
 	var tableView: UITableView { get }
 

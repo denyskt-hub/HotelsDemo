@@ -136,14 +136,14 @@ final class DefaultImageDataPrefetcherTests: XCTestCase {
 }
 
 final class ImageDataPrefetcherDelegateSpy: ImageDataPrefetcherDelegate {
-	private let _onWillPrefetch = Mutex<((URL) -> Void)?>(nil)
-	var onWillPrefetch: ((URL) -> Void)? {
+	private let _onWillPrefetch = Mutex<(@Sendable (URL) -> Void)?>(nil)
+	var onWillPrefetch: (@Sendable (URL) -> Void)? {
 		get { _onWillPrefetch.withLock { $0 } }
 		set { _onWillPrefetch.withLock { $0 = newValue } }
 	}
 
-	private let _onDidPrefetch = Mutex<((URL) -> Void)?>(nil)
-	var onDidPrefetch: ((URL) -> Void)? {
+	private let _onDidPrefetch = Mutex<(@Sendable (URL) -> Void)?>(nil)
+	var onDidPrefetch: (@Sendable (URL) -> Void)? {
 		get { _onDidPrefetch.withLock { $0 } }
 		set { _onDidPrefetch.withLock { $0 = newValue } }
 	}

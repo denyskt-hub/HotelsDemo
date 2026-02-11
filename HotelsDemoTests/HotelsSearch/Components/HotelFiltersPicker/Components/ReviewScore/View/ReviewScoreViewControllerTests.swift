@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCase {
 	private let options = [fairOptionViewModel(), wonderfulOptionViewModel()]
 	private let optionsWithSelectedOption = [fairOptionViewModel(), wonderfulOptionViewModel(isSelected: true)]

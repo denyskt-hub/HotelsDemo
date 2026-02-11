@@ -7,6 +7,7 @@
 
 import XCTest
 
+@MainActor
 protocol ListItemsRendererTestCase {}
 
 extension ListItemsRendererTestCase where Self: XCTestCase {

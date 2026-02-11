@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol HotelsSearchCriteriaStoreSpecs {
 	func test_retrieve_deliversNotFoundErrorOnEmptyStore()
 	func test_retrieve_deliversSavedCriteriaOnNonEmptyStore()

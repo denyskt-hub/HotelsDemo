@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public protocol MainRoutingLogic {
 	func routeToSearch(viewModel: MainModels.Search.ViewModel)
 }

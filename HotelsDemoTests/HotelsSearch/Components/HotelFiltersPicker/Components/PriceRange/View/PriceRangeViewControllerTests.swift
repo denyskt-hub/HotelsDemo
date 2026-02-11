@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class PriceRangeViewControllerTests: XCTestCase {
 	func test_viewDidLoad_loadsInitialData() {
 		let (sut, interactor, _) = makeSUT()

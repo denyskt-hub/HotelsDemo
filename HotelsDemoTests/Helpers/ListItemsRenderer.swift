@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ListItemsRenderer {
 	func numberOfRenderedItems() -> Int
 	func view(at index: Int) -> UIView?

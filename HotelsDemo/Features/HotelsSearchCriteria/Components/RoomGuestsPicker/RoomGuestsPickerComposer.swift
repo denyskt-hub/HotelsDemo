@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol RoomGuestsPickerFactory {
 	func makeRoomGuestsPicker(
 		delegate: RoomGuestsPickerDelegate?,

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol DestinationPickerFactory {
 	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol HotelFiltersPickerDelegate: AnyObject {
 	func didSelectFilters(_ filters: HotelFilters)
 }

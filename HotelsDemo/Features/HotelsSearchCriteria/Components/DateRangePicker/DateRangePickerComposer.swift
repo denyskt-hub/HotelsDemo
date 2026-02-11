@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol DateRangePickerFactory {
 	func makeDateRangePicker(
 		delegate: DateRangePickerDelegate?,

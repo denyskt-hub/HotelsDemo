@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol Routable: AnyObject {
 	func present(_ viewController: UIViewController)
 	func show(_ viewController: UIViewController)

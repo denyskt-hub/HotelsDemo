@@ -25,21 +25,21 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 
 	var tasks: [TaskSpy] { receivedMessages().map { $0.task } }
 
-	private let _onCancel = Mutex<(() -> Void)?>(nil)
-	var onCancel: (() -> Void)? {
+	private let _onCancel = Mutex<(@Sendable () -> Void)?>(nil)
+	var onCancel: (@Sendable () -> Void)? {
 		get { _onCancel.withLock { $0 } }
 		set { _onCancel.withLock { $0 = newValue } }
 	}
 
-	final class TaskSpy {
+	final class TaskSpy: Sendable {
 		private let _cancelCallCount = Mutex<Int>(0)
 		var cancelCallCount: Int {
 			get { _cancelCallCount.withLock({ $0 }) }
 			set { _cancelCallCount.withLock({ $0 = newValue }) }
 		}
 
-		private let _onCancel = Mutex<(() -> Void)?>(nil)
-		var onCancel: (() -> Void)? {
+		private let _onCancel = Mutex<(@Sendable () -> Void)?>(nil)
+		var onCancel: (@Sendable () -> Void)? {
 			get { _onCancel.withLock({ $0 }) }
 			set { _onCancel.withLock({ $0 = newValue }) }
 		}

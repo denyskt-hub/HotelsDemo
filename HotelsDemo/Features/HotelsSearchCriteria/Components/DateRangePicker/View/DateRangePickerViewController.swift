@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 public protocol DateRangePickerDelegate: AnyObject {
 	func didSelectDateRange(startDate: Date, endDate: Date)
 }

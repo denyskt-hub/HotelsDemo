@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 final class RoomGuestsPickerViewControllerTests: XCTestCase {
 	func test_viewDidLoad_requestLimitsAndRoomGuests() {
 		let (sut, interactor, _) = makeSUT()
@@ -284,7 +285,7 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 	private func assertPresented<T: UIViewController>(
 		_ presentingVC: UIViewController,
 		as type: T.Type,
-		file: StaticString = #file,
+		file: StaticString = #filePath,
 		line: UInt = #line,
 		assert: (T) -> Void = { _ in }
 	) {

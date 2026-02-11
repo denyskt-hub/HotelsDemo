@@ -8,6 +8,7 @@
 import XCTest
 import HotelsDemo
 
+@MainActor
 protocol ImageDataLoaderTestCase {}
 
 extension ImageDataLoaderTestCase where Self: XCTestCase {
@@ -86,7 +87,7 @@ extension ImageDataLoaderTestCase where Self: XCTestCase {
 func XCTAssertDataResultEqual(
 	_ lhsResult: Result<Data, Error>,
 	_ rhsResult: Result<Data, Error>,
-	file: StaticString = #file,
+	file: StaticString = #filePath,
 	line: UInt = #line
 ) {
 	switch (lhsResult, rhsResult) {
