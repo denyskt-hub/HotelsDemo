@@ -16,13 +16,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	private lazy var client: HTTPClient = {
-		RapidAPIHTTPClient(
-			client: LoggingHTTPClient(
-				client: URLSessionHTTPClient()
-			),
+		let base = URLSessionHTTPClient.shared
+		let logging = LoggingHTTPClient(client: base)
+		let rapid = RapidAPIHTTPClient(
+			client: logging,
 			apiHost: environment.apiHost,
 			apiKey: environment.apiKey
 		)
+		return AppHTTPClient(decoratee: rapid)
 	}()
 
 	private lazy var calendar: Calendar = {
