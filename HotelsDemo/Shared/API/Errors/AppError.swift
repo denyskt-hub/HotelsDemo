@@ -12,3 +12,18 @@ public enum AppError: Error {
 	case http(HTTPError)
 	case api(APIError)
 }
+
+extension AppError: LocalizedError {
+	public var errorDescription: String? {
+		switch self {
+		case .network(let error):
+			return error.localizedDescription
+
+		case .http(let error):
+			return error.localizedDescription
+
+		case .api(let error):
+			return error.localizedDescription
+		}
+	}
+}
