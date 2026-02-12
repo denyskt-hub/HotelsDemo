@@ -26,13 +26,16 @@ jobs:
       - name: Run SwiftLint
         run: swiftlint
 
+      - name: List runtimes
+        run: xcrun simctl list runtimes
+
       - name: Build and test
         run: |
           xcodebuild test \
             -project HotelsDemo.xcodeproj \
             -scheme "HotelsDemo" \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,OS=latest' \
+            -destination 'platform=iOS Simulator,OS=26.2,name=iPhone 17 Pro' \
             -parallel-testing-enabled NO \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGN_IDENTITY="" \
