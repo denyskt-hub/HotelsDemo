@@ -28,9 +28,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.load()
-				await self.presentLoadedCriteria(criteria)
+				self.presentLoadedCriteria(criteria)
 			} catch {
-				await self.presentLoadError(error)
+				self.presentLoadError(error)
 			}
 		}
 	}
@@ -41,9 +41,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.load()
-				await self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
+				self.presentLoadedDates(criteria.checkInDate, criteria.checkOutDate)
 			} catch {
-				await self.presentLoadError(error)
+				self.presentLoadError(error)
 			}
 		}
 	}
@@ -59,9 +59,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 					adults: criteria.adults,
 					childrenAge: criteria.childrenAge
 				)
-				await self.presentLoadedRoomGuests(roomGuests)
+				self.presentLoadedRoomGuests(roomGuests)
 			} catch {
-				await self.presentLoadError(error)
+				self.presentLoadError(error)
 			}
 		}
 	}
@@ -72,9 +72,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.load()
-				await self.presentSearch(criteria)
+				self.presentSearch(criteria)
 			} catch {
-				await self.presentLoadError(error)
+				self.presentLoadError(error)
 			}
 		}
 	}
@@ -85,9 +85,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.update(request.destination)
-				await self.presentUpdatedDestinationCriteria(criteria)
+				self.presentUpdatedDestinationCriteria(criteria)
 			} catch {
-				await self.presentUpdateError(error)
+				self.presentUpdateError(error)
 			}
 		}
 	}
@@ -98,9 +98,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.update(request.checkInDate, request.checkOutDate)
-				await self.presentUpdatedDatesCriteria(criteria)
+				self.presentUpdatedDatesCriteria(criteria)
 			} catch {
-				await self.presentUpdateError(error)
+				self.presentUpdateError(error)
 			}
 		}
 	}
@@ -111,9 +111,9 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 			do {
 				let criteria = try await self.update(request.rooms, request.adults, request.childrenAge)
-				await self.presentUpdatedRoomGuestsCriteria(criteria)
+				self.presentUpdatedRoomGuestsCriteria(criteria)
 			} catch {
-				await self.presentUpdateError(error)
+				self.presentUpdateError(error)
 			}
 		}
 	}
@@ -175,24 +175,24 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 
 	// MARK: - 
 
-	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) async {
-		await presenter.presentLoadCriteria(
+	private func presentLoadedCriteria(_ criteria: HotelsSearchCriteria) {
+		presenter.presentLoadCriteria(
 			response: HotelsSearchCriteriaModels.FetchCriteria.Response(criteria: criteria)
 		)
 	}
 
-	private func presentLoadError(_ error: Error) async {
-		await presenter.presentLoadError(error)
+	private func presentLoadError(_ error: Error) {
+		presenter.presentLoadError(error)
 	}
 
-	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) async {
-		await presenter.presentRoomGuests(
+	private func presentLoadedRoomGuests(_ roomGuests: RoomGuests) {
+		presenter.presentRoomGuests(
 			response: HotelsSearchCriteriaModels.FetchRoomGuests.Response(roomGuests: roomGuests)
 		)
 	}
 
-	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) async {
-		await presenter.presentDates(
+	private func presentLoadedDates(_ checkInDate: Date, _ checkOutDate: Date) {
+		presenter.presentDates(
 			response: HotelsSearchCriteriaModels.FetchDates.Response(
 				checkInDate: checkInDate,
 				checkOutDate: checkOutDate
@@ -200,30 +200,30 @@ public final class HotelsSearchCriteriaInteractor: HotelsSearchCriteriaBusinessL
 		)
 	}
 
-	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) async {
-		await presenter.presentUpdateDestination(
+	private func presentUpdatedDestinationCriteria(_ criteria: HotelsSearchCriteria) {
+		presenter.presentUpdateDestination(
 			response: HotelsSearchCriteriaModels.DestinationSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) async {
-		await presenter.presentUpdateDates(
+	private func presentUpdatedDatesCriteria(_ criteria: HotelsSearchCriteria) {
+		presenter.presentUpdateDates(
 			response: HotelsSearchCriteriaModels.DateRangeSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) async {
-		await presenter.presentUpdateRoomGuests(
+	private func presentUpdatedRoomGuestsCriteria(_ criteria: HotelsSearchCriteria) {
+		presenter.presentUpdateRoomGuests(
 			response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response(criteria: criteria)
 		)
 	}
 
-	private func presentUpdateError(_ error: Error) async {
-		await presenter.presentUpdateError(error)
+	private func presentUpdateError(_ error: Error) {
+		presenter.presentUpdateError(error)
 	}
 
-	private func presentSearch(_ criteria: HotelsSearchCriteria) async {
-		await presenter.presentSearch(
+	private func presentSearch(_ criteria: HotelsSearchCriteria) {
+		presenter.presentSearch(
 			response: HotelsSearchCriteriaModels.Search.Response(criteria: criteria)
 		)
 	}

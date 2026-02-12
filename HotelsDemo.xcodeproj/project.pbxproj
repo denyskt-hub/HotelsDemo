@@ -23,19 +23,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		92806DAD2E03E0A2005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */ = {
+		9A53A7782F3DBB0B0036ED8A /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-			);
-			target = 92806D442E03DBD6005263A8 /* HotelsDemo */;
-		};
-		9ABCB9892F3CB11100753F94 /* Exceptions for "Configs" folder in "HotelsDemo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Secrets.Debug.xcconfig,
-				Secrets.Release.xcconfig,
-				Secrets.Template.xcconfig,
 			);
 			target = 92806D442E03DBD6005263A8 /* HotelsDemo */;
 		};
@@ -55,16 +46,13 @@
 		92806DA62E03E0A2005263A8 /* HotelsDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				92806DAD2E03E0A2005263A8 /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */,
+				9A53A7782F3DBB0B0036ED8A /* Exceptions for "HotelsDemo" folder in "HotelsDemo" target */,
 			);
 			path = HotelsDemo;
 			sourceTree = "<group>";
 		};
 		92BBCF342E16748B000A1560 /* Configs */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				9ABCB9892F3CB11100753F94 /* Exceptions for "Configs" folder in "HotelsDemo" target */,
-			);
 			path = Configs;
 			sourceTree = "<group>";
 		};
