@@ -7,30 +7,27 @@
 
 import UIKit
 
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-	var environment: Environment.Config!
-
+final class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(
 		_ application: UIApplication,
 		didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 	) -> Bool {
-		configureEnvironment()
 		configureLogging()
 		return true
 	}
 
-	private func configureEnvironment() {
-		do {
-			environment = try Environment.load()
-		} catch {
-			fatalError(
-				"""
-				Environment misconfigured: \(error)
-				See README for required environment keys and configuration steps.
-				"""
-			)
-		}
+	func application(
+		_ application: UIApplication,
+		configurationForConnecting connectingSceneSession: UISceneSession,
+		options: UIScene.ConnectionOptions
+	) -> UISceneConfiguration {
+		let config = UISceneConfiguration(
+			name: "Default Configuration",
+			sessionRole: connectingSceneSession.role
+		)
+
+		config.delegateClass = SceneDelegate.self
+		return config
 	}
 
 	private func configureLogging() {
