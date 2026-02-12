@@ -26,6 +26,9 @@ jobs:
       - name: Run SwiftLint
         run: swiftlint
 
+      - name: List runtimes
+        run: xcrun simctl list runtimes
+
       - name: Build and test
         run: |
           xcodebuild test \
