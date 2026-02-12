@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 final class AppCompositionRoot {
-	private lazy var environment: Environment.Config = {
+	private let environment: Environment.Config = {
 		do {
 			return try Environment.load()
 		} catch {

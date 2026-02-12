@@ -8,13 +8,17 @@
 import UIKit
 
 final class TestAppDelegate: UIResponder, UIApplicationDelegate {
-	var window: UIWindow?
-
 	func application(
 		_ application: UIApplication,
 		configurationForConnecting connectingSceneSession: UISceneSession,
 		options: UIScene.ConnectionOptions
 	) -> UISceneConfiguration {
-		UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+		let config = UISceneConfiguration(
+			name: "Default Configuration",
+			sessionRole: connectingSceneSession.role
+		)
+
+		config.delegateClass = TestSceneDelegate.self
+		return config
 	}
 }
