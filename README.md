@@ -80,7 +80,7 @@ The folders in the project are organized as follows:
 ## Requirements
 
 - iOS **18.0+**
-- Xcode **16.0+**
+- Xcode **26.0+**
 - Swift **6.0+**
 
 ## Getting Started
@@ -97,9 +97,9 @@ git clone https://github.com/denyskt-hub/HotelsDemo.git
 open HotelsDemo.xcodeproj
 ```
 
-3. Copy `Config/Secrets.Template.xcconfig` to:
-   - `Config/Secrets.Debug.xcconfig`
-   - `Config/Secrets.Release.xcconfig`
+3. Copy `Configs/Secrets.Template.xcconfig` to:
+   - `Configs/Secrets.Debug.xcconfig`
+   - `Configs/Secrets.Release.xcconfig`
 
 4. Replace the placeholder values with your actual keys.
 
@@ -128,7 +128,7 @@ They are in `.gitignore` by default.
 
 ## Roadmap
 
-- [ ] Refactor codebase to adopt Swift structured concurrency
+- [x] Refactor codebase to adopt Swift structured concurrency
 - [ ] Sort hotels on search screen
 - [ ] Add cache eviction policy
 - [ ] Add localization
