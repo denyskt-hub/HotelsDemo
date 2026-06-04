@@ -6,11 +6,22 @@
 //
 
 import XCTest
-import HotelsDemo
+@testable import HotelsDemo
 import Synchronization
 
 @MainActor
 final class InMemoryImageDataCacheTests: XCTestCase {
+	func test_dataForKey_doesNotTrackMissedKeysInRecencyList() async throws {
+		let sut = makeSUT()
+
+		for index in 0..<10 {
+			_ = try await sut.data(forKey: "missing-\(index)")
+		}
+
+		let tracked = await sut.trackedKeysCount
+		XCTAssertEqual(tracked, 0, "Cache misses must not pollute the LRU bookkeeping with phantom keys")
+	}
+
 	func test_dataForKey_deliversNilOnEmptyCache() async throws {
 		let sut = makeSUT()
 

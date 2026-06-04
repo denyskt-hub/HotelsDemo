@@ -39,11 +39,21 @@ public actor InMemoryImageDataCache: ImageDataCache {
 
 	@discardableResult
 	public func data(forKey key: String) async throws -> Data? {
-		let entry = cache[key]
+		// Recency must only be updated on a hit: tracking misses would grow
+		// `recentUsedKeys` unboundedly with phantom keys that no eviction
+		// can remove (they hold no cache entry, so they never trip a limit).
+		guard let entry = cache[key] else {
+			return nil
+		}
 
 		updateRecentUsedKeys(key)
 
-		return entry?.data
+		return entry.data
+	}
+
+	/// LRU bookkeeping size — test-facing observability.
+	var trackedKeysCount: Int {
+		recentUsedKeys.count
 	}
 
 	private func updateEntry(_ entry: CacheEntry, forKey key: String) {
