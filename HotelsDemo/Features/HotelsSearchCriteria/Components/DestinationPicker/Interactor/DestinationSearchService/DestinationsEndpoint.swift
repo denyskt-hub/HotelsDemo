@@ -18,7 +18,10 @@ public enum DestinationsEndpoint {
 			components.host = baseURL.host
 			components.port = baseURL.port
 			components.path = baseURL.path + "/api/v1/hotels/searchDestination"
-			return components.url!
+			guard let url = components.url else {
+				preconditionFailure("Invalid endpoint URL composed from baseURL: \(baseURL)")
+			}
+			return url
 		}
 	}
 }

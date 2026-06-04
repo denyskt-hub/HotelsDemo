@@ -25,7 +25,7 @@ func emptyData() -> Data {
 }
 
 func invalidJSONData() -> Data {
-	Data("inalid json".utf8)
+	Data("invalid json".utf8)
 }
 
 func anyHTTPURLResponse() -> HTTPURLResponse {

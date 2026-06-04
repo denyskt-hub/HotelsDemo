@@ -109,9 +109,14 @@ API_HOST – the API host from RapidAPI
 BASE_URL – the API base URL (often `https://<API_HOST>`)  
 ```
 
+> [!IMPORTANT]
+> In `.xcconfig` files `//` starts a comment, so `BASE_URL` must be written
+> with the `$()` (empty substitution) trick, exactly as in the template:
+> `BASE_URL = https:/$()/<API_HOST>`
+
 Register for a free API key here: [link](https://rapidapi.com/DataCrawler/api/booking-com15).
 
-**Note**: Without a valid API_KEY and API_HOST, API requests will fail. App intentionally crashes without config.
+**Note**: Without a valid API_KEY and API_HOST, API requests will fail. If the configuration is missing, the app boots into an explanatory configuration-error screen instead of the search UI.
 
 ⚠️ Never commit the real `Secrets.Debug.xcconfig` or `Secrets.Release.xcconfig`.
 They are in `.gitignore` by default.

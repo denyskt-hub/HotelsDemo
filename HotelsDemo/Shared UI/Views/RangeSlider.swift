@@ -211,6 +211,6 @@ private class RangeSliderTrackLayer: CALayer {
 
 extension UIImage {
 	static let defaultThumb: UIImage = {
-		UIImage(systemName: "circle.fill")!.applyingSymbolConfiguration(.init(pointSize: 24))!
+		UIImage(systemName: "circle.fill")?.applyingSymbolConfiguration(.init(pointSize: 24)) ?? UIImage()
 	}()
 }

@@ -21,7 +21,7 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 	}
 
 	/// See `DeduplicatingLoader.activeConsumers(for:)` — test-facing observability.
-	public func activeConsumers(for url: URL) async -> Int {
+	func activeConsumers(for url: URL) async -> Int {
 		await deduplicatingLoader.activeConsumers(for: url)
 	}
 }

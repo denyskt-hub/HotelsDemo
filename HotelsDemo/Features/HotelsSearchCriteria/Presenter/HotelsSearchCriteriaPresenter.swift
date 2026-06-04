@@ -64,7 +64,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 	private func presentCriteria(_ criteria: HotelsSearchCriteria) {
 		let checkIn = dateFormatter.string(from: criteria.checkInDate)
 		let checkOut = dateFormatter.string(from: criteria.checkOutDate)
-		let dareRange = "\(checkIn) – \(checkOut)"
+		let dateRange = "\(checkIn) – \(checkOut)"
 
 		let roomGuests = formatRoomGuests(
 			rooms: criteria.roomsQuantity,
@@ -74,7 +74,7 @@ public final class HotelsSearchCriteriaPresenter: HotelsSearchCriteriaPresentati
 
 		let viewModel = HotelsSearchCriteriaModels.FetchCriteria.ViewModel(
 			destination: criteria.destination?.label,
-			dateRange: dareRange,
+			dateRange: dateRange,
 			roomGuests: roomGuests
 		)
 

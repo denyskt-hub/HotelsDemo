@@ -117,10 +117,10 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 		selectedReviewScore: ReviewScore?,
 		delegate: ReviewScoreDelegate
 	) -> ResetableFilterViewController {
-		let viewContollerProxy = WeakRefVirtualProxy<ReviewScoreViewController>()
+		let viewControllerProxy = WeakRefVirtualProxy<ReviewScoreViewController>()
 
 		let presenter = ReviewScorePresenter(
-			viewController: viewContollerProxy
+			viewController: viewControllerProxy
 		)
 
 		let interactor = ReviewScoreInteractor(
@@ -133,7 +133,7 @@ public final class HotelFiltersPickerComposer: HotelFiltersPickerFactory {
 			delegate: delegate
 		)
 
-		viewContollerProxy.object = viewController
+		viewControllerProxy.object = viewController
 		return viewController
 	}
 }

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import HotelsDemo
+@testable import HotelsDemo
 
 @MainActor
 final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
@@ -174,12 +174,20 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 
 	/// Suspends until the deduplicated load for `url` has exactly `count`
 	/// active consumers — deterministic synchronization with no wall-clock.
+	/// Bounded so a regression fails fast instead of hanging the test.
 	private func waitUntilActiveConsumers(
 		of sut: DeduplicatingImageDataLoader,
 		for url: URL,
-		equal count: Int
+		equal count: Int,
+		file: StaticString = #filePath,
+		line: UInt = #line
 	) async {
+		var attempts = 0
 		while await sut.activeConsumers(for: url) != count {
+			attempts += 1
+			guard attempts < 10_000 else {
+				return XCTFail("Expected \(count) active consumers for \(url)", file: file, line: line)
+			}
 			await Task.yield()
 		}
 	}

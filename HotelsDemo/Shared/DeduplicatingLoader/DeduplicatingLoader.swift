@@ -42,7 +42,7 @@ public actor DeduplicatingLoader<Output: Sendable> {
 	/// The number of consumers currently awaiting the load for `url`
 	/// that have not been cancelled. Intended for tests to synchronize
 	/// on deduplication deterministically.
-	public func activeConsumers(for url: URL) -> Int {
+	func activeConsumers(for url: URL) -> Int {
 		ongoingTasks[url]?.activeConsumers ?? 0
 	}
 
