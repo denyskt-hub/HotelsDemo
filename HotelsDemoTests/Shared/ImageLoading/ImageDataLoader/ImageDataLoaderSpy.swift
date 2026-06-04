@@ -106,15 +106,9 @@ final class ImageDataLoaderSpy: ImageDataLoader {
 		messages.withLock { $0.append((url, task)) }
 
 		return try await withTaskCancellationHandler {
-			// Keeps loads in flight long enough for concurrent consumers to
-			// join the same underlying load — the deduplication tests rely on
-			// this overlap window. Removing it requires making
-			// `DeduplicatingImageDataLoader` observable instead.
-			try? await Task.sleep(nanoseconds: 100_000_000)
-
-			return try await withCheckedThrowingContinuation { continuation in
+			try await withCheckedThrowingContinuation { continuation in
 				guard !pending.isFinished else {
-					// Cancelled while sleeping.
+					// Cancelled before suspension.
 					continuation.resume(throwing: CancellationError())
 					return
 				}

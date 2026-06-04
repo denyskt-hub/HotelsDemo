@@ -40,7 +40,11 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 
 		async let first = sut.load(url: url)
 		async let second = sut.load(url: url)
+		// Two independent guarantees: the underlying load is suspended,
+		// AND both consumers joined the shared entry.
 		await loader.waitUntilStarted()
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 2)
+
 		loader.completeWithData(anyData())
 		_ = try await (first, second)
 
@@ -80,28 +84,59 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 	func test_cancel_doesNotCancelTaskWhileHasConsumers() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
-		loader.stubWithData(anyData())
 
-		Task { try await sut.load(url: url) }
+		let firstTask = Task { try await sut.load(url: url) }
 		let secondTask = Task { try await sut.load(url: url) }
+		await loader.waitUntilStarted()
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 2)
+
 		secondTask.cancel()
-		_ = await secondTask.result
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 1)
 
 		XCTAssertEqual(loader.tasks.first?.cancelCallCount, 0)
+
+		loader.completeWithData(anyData())
+		_ = await (firstTask.result, secondTask.result)
+	}
+
+	func test_cancel_deliversCancellationErrorToCancelledConsumer() async throws {
+		let url = anyURL()
+		let (sut, loader) = makeSUT()
+
+		let firstTask = Task { try await sut.load(url: url) }
+		let secondTask = Task { try await sut.load(url: url) }
+		await loader.waitUntilStarted()
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 2)
+
+		secondTask.cancel()
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 1)
+		loader.completeWithData(anyData())
+
+		let firstResult = await firstTask.result
+		let secondResult = await secondTask.result
+
+		XCTAssertNotNil(try? firstResult.get(), "Active consumer should receive the data")
+		XCTAssertThrowsError(try secondResult.get()) { error in
+			XCTAssertTrue(error is CancellationError, "Cancelled consumer should report cancellation, got \(error)")
+		}
 	}
 
 	func test_cancel_cancelsTaskWhenHasNoConsumers() async throws {
 		let url = anyURL()
 		let (sut, loader) = makeSUT()
-		loader.stubWithData(anyData())
 
 		let firstTask = Task { try await sut.load(url: url) }
 		let secondTask = Task { try await sut.load(url: url) }
+		await loader.waitUntilStarted()
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 2)
+
 		firstTask.cancel()
 		secondTask.cancel()
-		_ = await (firstTask.result, secondTask.result)
+		await waitUntilActiveConsumers(of: sut, for: url, equal: 0)
 
 		XCTAssertEqual(loader.tasks.first?.cancelCallCount, 1)
+
+		_ = await (firstTask.result, secondTask.result)
 	}
 
 	// MARK: -
@@ -135,5 +170,17 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 		trackForMemoryLeaks(loader)
 		trackForMemoryLeaks(sut)
 		return (sut, loader)
+	}
+
+	/// Suspends until the deduplicated load for `url` has exactly `count`
+	/// active consumers — deterministic synchronization with no wall-clock.
+	private func waitUntilActiveConsumers(
+		of sut: DeduplicatingImageDataLoader,
+		for url: URL,
+		equal count: Int
+	) async {
+		while await sut.activeConsumers(for: url) != count {
+			await Task.yield()
+		}
 	}
 }

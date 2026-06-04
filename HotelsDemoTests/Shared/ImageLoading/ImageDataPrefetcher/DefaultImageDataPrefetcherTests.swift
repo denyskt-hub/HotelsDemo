@@ -23,14 +23,36 @@ final class DefaultImageDataPrefetcherTests: XCTestCase {
 		XCTAssertTrue(loader.loadedURLs.contains(url2))
 	}
 
-	func test_prefetch_doesNotStartDuplicateLoadsForSameURL() {
+	func test_prefetch_doesNotStartDuplicateLoadsForSameURL() async {
 		let url = anyURL()
+		let otherURL = URL(string: "https://other.com")!
 		let (sut, loader, delegate) = makeSUT()
-		loader.stubWithData(anyData())
 
-		prefetch([url, url], sut: sut, delegate: delegate)
+		let started = expectation(description: "Wait for unique loads to start")
+		started.expectedFulfillmentCount = 2
+		delegate.onWillPrefetch = { _ in started.fulfill() }
 
-		XCTAssertEqual(loader.loadedURLs, [url], "Should load only once")
+		let drained = expectation(description: "Wait for all tasks to finish")
+		drained.expectedFulfillmentCount = 2
+		delegate.onDidPrefetch = { _ in drained.fulfill() }
+
+		// No stub: loads stay suspended, so the first load for `url` is
+		// guaranteed to still be in flight when its duplicate is processed.
+		// `otherURL` comes last to prove the duplicate was already skipped
+		// by the time we assert.
+		sut.prefetch(urls: [url, url, otherURL])
+		await fulfillment(of: [started], timeout: 1.0)
+
+		// The two inner load tasks race each other, so assert order-agnostically.
+		XCTAssertEqual(Set(loader.loadedURLs), [url, otherURL], "Should load each unique URL once")
+		XCTAssertEqual(loader.loadedURLs.count, 2, "Should load each unique URL once")
+
+		// Both loads must reach suspension before being completed.
+		await loader.waitUntilStarted()
+		await loader.waitUntilStarted()
+		loader.completeWithData(anyData(), at: 0)
+		loader.completeWithData(anyData(), at: 1)
+		await fulfillment(of: [drained], timeout: 1.0)
 	}
 
 	func test_prefetch_loadsSameURLAfterComplete() {
