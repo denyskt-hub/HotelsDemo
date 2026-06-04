@@ -8,61 +8,84 @@
 import Foundation
 
 public actor DeduplicatingLoader<Output: Sendable> {
-	private var ongoingTasks = [URL: TaskEntry<Output>]()
+	private var ongoingTasks = [URL: TaskEntry]()
+	private var generation = 0
+
+	public init() {}
 
 	public func load(
 		from url: URL,
 		loader: @Sendable @escaping (URL) async throws -> Output
 	) async throws -> Output {
-		try await withTaskCancellationHandler {
-			if let entry = ongoingTasks[url] {
-				entry.incrementConsumerCount()
-				return try await entry.task.value
-			}
+		let (task, generation) = join(url: url, loader: loader)
 
-			let newTask = Task { try await loader(url) }
-			let entry = TaskEntry(task: newTask)
-			ongoingTasks[url] = entry
-
-			do {
-				let result = try await newTask.value
-				ongoingTasks[url] = nil
-				return result
-			} catch {
-				ongoingTasks[url] = nil
-				throw error
+		let result: Result<Output, Error>
+		do {
+			let value = try await withTaskCancellationHandler {
+				try await task.value
+			} onCancel: {
+				Task { await self.cancelConsumer(of: url, generation: generation) }
 			}
-		} onCancel: {
-			Task { await cancel(url) }
+			result = .success(value)
+		} catch {
+			result = .failure(error)
 		}
+
+		finish(url: url, generation: generation)
+
+		// A cancelled consumer must report cancellation,
+		// not the shared task's result.
+		try Task.checkCancellation()
+		return try result.get()
 	}
 
-	private func cancel(_ url: URL) {
-		guard let entry = ongoingTasks[url] else { return }
+	/// The number of consumers currently awaiting the load for `url`
+	/// that have not been cancelled. Intended for tests to synchronize
+	/// on deduplication deterministically.
+	public func activeConsumers(for url: URL) -> Int {
+		ongoingTasks[url]?.activeConsumers ?? 0
+	}
 
-		entry.decrementConsumerCount()
-		if entry.consumerCount == 0 {
+	/// Joins an ongoing load for `url`, or starts a new one.
+	private func join(
+		url: URL,
+		loader: @Sendable @escaping (URL) async throws -> Output
+	) -> (Task<Output, Error>, Int) {
+		if let entry = ongoingTasks[url] {
+			ongoingTasks[url]?.activeConsumers += 1
+			return (entry.task, entry.generation)
+		}
+
+		generation += 1
+		let task = Task { try await loader(url) }
+		ongoingTasks[url] = TaskEntry(
+			task: task,
+			generation: generation,
+			activeConsumers: 1
+		)
+		return (task, generation)
+	}
+
+	/// Cancellation is addressed to the entry the consumer joined —
+	/// a stale cancel must never affect a newer load for the same URL.
+	private func cancelConsumer(of url: URL, generation: Int) {
+		guard let entry = ongoingTasks[url], entry.generation == generation else { return }
+
+		ongoingTasks[url]?.activeConsumers -= 1
+		if ongoingTasks[url]?.activeConsumers == 0 {
+			entry.task.cancel()
 			ongoingTasks[url] = nil
 		}
 	}
 
-	private final class TaskEntry<T: Sendable> {
-		let task: Task<T, Error>
-		var consumerCount = 1
+	private func finish(url: URL, generation: Int) {
+		guard ongoingTasks[url]?.generation == generation else { return }
+		ongoingTasks[url] = nil
+	}
 
-		init(task: Task<T, Error>) {
-			self.task = task
-		}
-
-		func incrementConsumerCount() {
-			consumerCount += 1
-		}
-
-		func decrementConsumerCount() {
-			consumerCount -= 1
-			if consumerCount == 0 {
-				task.cancel()
-			}
-		}
+	private struct TaskEntry {
+		let task: Task<Output, Error>
+		let generation: Int
+		var activeConsumers: Int
 	}
 }

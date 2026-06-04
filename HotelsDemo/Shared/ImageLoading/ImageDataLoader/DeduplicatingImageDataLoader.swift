@@ -19,4 +19,9 @@ public final class DeduplicatingImageDataLoader: ImageDataLoader {
 	public func load(url: URL) async throws -> Data {
 		try await deduplicatingLoader.load(from: url, loader: loader.load(url:))
 	}
+
+	/// See `DeduplicatingLoader.activeConsumers(for:)` — test-facing observability.
+	public func activeConsumers(for url: URL) async -> Int {
+		await deduplicatingLoader.activeConsumers(for: url)
+	}
 }
