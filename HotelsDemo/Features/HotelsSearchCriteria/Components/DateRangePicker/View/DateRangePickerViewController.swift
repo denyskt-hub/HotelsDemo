@@ -80,7 +80,8 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 		let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(
 			elementKind: UICollectionView.elementKindSectionHeader
-		) { headerView, _, indexPath in
+		) { [weak self] headerView, _, indexPath in
+				guard let self else { return }
 				let section = self.calendarDataSource.snapshot().sectionIdentifiers[indexPath.section]
 				headerView.label.text = section.title
 		}
