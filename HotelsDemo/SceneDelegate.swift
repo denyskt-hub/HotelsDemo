@@ -8,7 +8,9 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-	private let compositionRoot = AppCompositionRoot()
+	/// The composition root must live as long as the app: the dependency
+	/// graph it composes references it back through factory closures.
+	private var compositionRoot: AppCompositionRoot?
 
 	var window: UIWindow?
 
@@ -24,7 +26,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 	func configureWindow() {
-		window?.rootViewController = compositionRoot.compose()
+		window?.rootViewController = makeRootViewController()
 		window?.makeKeyAndVisible()
+	}
+
+	/// Boots the app when the environment is configured,
+	/// or shows an explanatory error screen when it is not.
+	private func makeRootViewController() -> UIViewController {
+		do {
+			let compositionRoot = try AppCompositionRoot()
+			self.compositionRoot = compositionRoot
+			return compositionRoot.compose()
+		} catch {
+			return ConfigurationErrorViewController(message: "\(error)")
+		}
 	}
 }

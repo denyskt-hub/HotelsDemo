@@ -9,18 +9,15 @@ import UIKit
 
 @MainActor
 final class AppCompositionRoot {
-	private let environment: Environment.Config = {
-		do {
-			return try Environment.load()
-		} catch {
-			fatalError(
-				"""
-				Environment misconfigured: \(error)
-				See README for required environment keys and configuration steps.
-				"""
-			)
-		}
-	}()
+	private let environment: Environment.Config
+
+	convenience init() throws {
+		self.init(environment: try Environment.load())
+	}
+
+	init(environment: Environment.Config) {
+		self.environment = environment
+	}
 
 	private lazy var client: HTTPClient = {
 		let base = URLSessionHTTPClient.shared
