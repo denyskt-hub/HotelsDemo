@@ -171,6 +171,8 @@ final class RoomGuestsPickerInteractorTests: XCTestCase {
 			childrenAge: childrenAge,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(presenter)
 		return (sut, presenter)
 	}
 }

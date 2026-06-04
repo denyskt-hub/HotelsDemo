@@ -75,6 +75,8 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		sut.displayLoadError(viewModel: viewModel)
 
 		XCTAssertEqual(sut.errorMessage, "Failed to load data")
+
+		sut.simulateDismissal()
 	}
 
 	func test_displayUpdateError_presentsAlertWithCorrectMessage() {
@@ -85,6 +87,8 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		sut.displayUpdateError(viewModel: viewModel)
 
 		XCTAssertEqual(sut.errorMessage, "Failed to load data")
+
+		sut.simulateDismissal()
 	}
 
 	func test_displayDates_routesToDateRangePicker() {
@@ -167,6 +171,10 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 			router: router,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(router)
+		trackForMemoryLeaks(delegate)
+		trackForMemoryLeaks(sut)
 		return (sut, interactor, router, delegate)
 	}
 

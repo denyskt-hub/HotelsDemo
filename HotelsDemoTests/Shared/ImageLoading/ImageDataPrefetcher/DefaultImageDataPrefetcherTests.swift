@@ -51,23 +51,39 @@ final class DefaultImageDataPrefetcherTests: XCTestCase {
 		let (sut, loader, delegate) = makeSUT()
 
 		willPrefetch([url1, url2], sut: sut, delegate: delegate)
+
+		let drained = expectation(description: "Wait for all tasks to finish")
+		drained.expectedFulfillmentCount = 2
+		delegate.onDidPrefetch = { _ in drained.fulfill() }
+
 		cancelPrefetching([url1], sut: sut, loader: loader)
 
 		XCTAssertEqual(loader.cancelledURLs, [url1])
+
+		// Drain: cancel the remaining task so nothing outlives the test.
+		cancelPrefetching([url2], sut: sut, loader: loader)
+		wait(for: [drained], timeout: 1.0)
 	}
 
 	// MARK: -
 
 	func test_stressTest_prefetchAndCancelFromMultipleThreads() {
 		let urls = (0..<100).map { URL(string: "https://test\($0).com")! }
-		let (sut, _, _) = makeSUT()
+		let (sut, loader, delegate) = makeSUT()
+		loader.stubWithData(anyData())
+
+		let drained = expectation(description: "Wait for all prefetches to finish")
+		drained.expectedFulfillmentCount = urls.count
+		delegate.onDidPrefetch = { _ in drained.fulfill() }
 
 		DispatchQueue.concurrentPerform(iterations: urls.count) { i in
 			sut.prefetch(urls: [urls[i]])
 			if i % 2 == 0 { sut.cancelPrefetching(urls: [urls[i]]) }
 		}
 
-		// No asserts — the test passes if it doesn’t crash
+		// Every started task must complete (with data or cancellation) —
+		// nothing may outlive the test.
+		wait(for: [drained], timeout: 5.0)
 	}
 
 	// MARK: - Helpers
@@ -83,6 +99,9 @@ final class DefaultImageDataPrefetcherTests: XCTestCase {
 			loader: loader,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(loader)
+		trackForMemoryLeaks(delegate)
+		trackForMemoryLeaks(sut)
 		return (sut, loader, delegate)
 	}
 

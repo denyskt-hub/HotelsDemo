@@ -72,6 +72,8 @@ final class PriceRangePresenterTests: XCTestCase {
 			viewController: viewController,
 			locale: locale
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 }

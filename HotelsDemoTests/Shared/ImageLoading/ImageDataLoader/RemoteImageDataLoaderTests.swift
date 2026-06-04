@@ -75,6 +75,8 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	) {
 		let (client, spy) = makeAppHTTPClientSpy()
 		let sut = RemoteImageDataLoader(client: client)
+		trackForMemoryLeaks(spy)
+		trackForMemoryLeaks(sut)
 		return (sut, spy)
 	}
 }

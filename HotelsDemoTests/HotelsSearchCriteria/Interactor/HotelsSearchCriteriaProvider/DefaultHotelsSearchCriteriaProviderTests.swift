@@ -28,9 +28,11 @@ final class DefaultHotelsSearchCriteriaProviderTests: XCTestCase {
 		calendar: Calendar,
 		currentDate: Date
 	) -> DefaultHotelsSearchCriteriaProvider {
-		DefaultHotelsSearchCriteriaProvider(
+		let sut = DefaultHotelsSearchCriteriaProvider(
 			calendar: calendar,
 			currentDate: { currentDate }
 		)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 }

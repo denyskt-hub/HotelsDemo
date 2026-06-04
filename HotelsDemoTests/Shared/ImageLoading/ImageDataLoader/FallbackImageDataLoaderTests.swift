@@ -50,6 +50,9 @@ final class FallbackImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let primary = ImageDataLoaderSpy()
 		let secondary = ImageDataLoaderSpy()
 		let sut = FallbackImageDataLoader(primary: primary, secondary: secondary)
+		trackForMemoryLeaks(primary)
+		trackForMemoryLeaks(secondary)
+		trackForMemoryLeaks(sut)
 		return (sut, primary, secondary)
 	}
 }

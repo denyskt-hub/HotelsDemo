@@ -167,6 +167,8 @@ final class HotelsSearchCriteriaPresenterTests: XCTestCase {
 			calendar: .gregorian(),
 			viewController: viewController
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(viewController)
 		return (sut, viewController)
 	}
 }

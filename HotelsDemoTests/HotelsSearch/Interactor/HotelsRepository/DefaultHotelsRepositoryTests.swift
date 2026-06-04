@@ -61,6 +61,8 @@ final class DefaultHotelsRepositoryTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(hotels: [Hotel] = []) -> DefaultHotelsRepository {
-		DefaultHotelsRepository(hotels: hotels)
+		let sut = DefaultHotelsRepository(hotels: hotels)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 }

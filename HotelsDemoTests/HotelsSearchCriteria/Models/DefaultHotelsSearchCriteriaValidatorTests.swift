@@ -209,10 +209,12 @@ final class DefaultHotelsSearchCriteriaValidatorTests: XCTestCase {
 		calendar: Calendar,
 		currentDate: @Sendable @escaping () -> Date
 	) -> DefaultHotelsSearchCriteriaValidator {
-		DefaultHotelsSearchCriteriaValidator(
+		let sut = DefaultHotelsSearchCriteriaValidator(
 			calendar: calendar,
 			currentDate: currentDate
 		)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 
 	private func make(in checkInDate: Date, out checkOutDate: Date) -> HotelsSearchCriteria {

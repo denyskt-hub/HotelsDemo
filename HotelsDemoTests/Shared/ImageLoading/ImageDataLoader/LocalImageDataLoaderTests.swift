@@ -62,6 +62,8 @@ final class LocalImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	) {
 		let cache = ImageDataCacheSpy()
 		let sut = LocalImageDataLoader(cache: cache)
+		trackForMemoryLeaks(cache)
+		trackForMemoryLeaks(sut)
 		return (sut, cache)
 	}
 }

@@ -134,6 +134,8 @@ final class RoomGuestsPickerPresenterTests: XCTestCase {
 		let sut = RoomGuestsPickerPresenter(
 			viewController: viewController
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(viewController)
 		return (sut, viewController)
 	}
 

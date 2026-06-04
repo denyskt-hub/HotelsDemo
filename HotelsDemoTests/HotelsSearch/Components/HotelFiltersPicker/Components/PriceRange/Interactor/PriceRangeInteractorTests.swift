@@ -65,6 +65,8 @@ final class PriceRangeInteractorTests: XCTestCase {
 			currencyCode: currencyCode,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, presenter)
 	}
 }

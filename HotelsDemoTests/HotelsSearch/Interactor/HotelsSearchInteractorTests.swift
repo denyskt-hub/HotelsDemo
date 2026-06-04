@@ -19,12 +19,16 @@ final class HotelsSearchInteractorTests: XCTestCase {
 
 	func test_search_requestsSearchWithCorrectCriteria() async {
 		let criteria = anySearchCriteria()
-		let (sut, service, _) = makeSUT(criteria: criteria)
+		let (sut, service, presenter) = makeSUT(criteria: criteria)
 
 		sut.handleViewDidAppear(request: .init())
 		await service.waitUntilStarted()
 
 		XCTAssertEqual(service.receivedMessages(), [.search(criteria)])
+
+		// Drain the in-flight request so no suspended task outlives the test.
+		service.completeWithHotels([])
+		await presenter.waitUntilPresented(expected: 3)
 	}
 
 	func test_search_presentsErrorOnServiceError() async {
@@ -104,6 +108,9 @@ final class HotelsSearchInteractorTests: XCTestCase {
 			repository: DefaultHotelsRepository(),
 			presenter: presenter
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(service)
+		trackForMemoryLeaks(presenter)
 		return (sut, service, presenter)
 	}
 }

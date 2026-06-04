@@ -88,6 +88,9 @@ final class StarRatingViewControllerTests: XCTestCase, ListItemsRendererTestCase
 			interactor: interactor,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(delegate)
+		trackForMemoryLeaks(sut)
 		return (sut, interactor, delegate)
 	}
 

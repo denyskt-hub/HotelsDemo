@@ -44,6 +44,8 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL) -> DefaultHotelsRequestFactory {
-		DefaultHotelsRequestFactory(url: url)
+		let sut = DefaultHotelsRequestFactory(url: url)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 }

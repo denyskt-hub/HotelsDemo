@@ -61,6 +61,8 @@ final class DestinationPickerPresenterTests: XCTestCase {
 		let sut = DestinationPickerPresenter(
 			viewController: viewController
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(viewController)
 		return (sut, viewController)
 	}
 }

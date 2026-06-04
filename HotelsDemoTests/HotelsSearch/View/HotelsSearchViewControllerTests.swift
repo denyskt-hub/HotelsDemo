@@ -59,6 +59,8 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		sut.displayErrorMessage("Some error message")
 
 		XCTAssertEqual(sut.errorMessage, "Some error message")
+
+		sut.simulateDismissal()
 	}
 
 	func test_displayFilter_routesToHotelFiltersPicker() {
@@ -101,6 +103,9 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 			interactor: interactor,
 			router: router
 		)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(router)
+		trackForMemoryLeaks(sut)
 		return (sut, interactor, router)
 	}
 

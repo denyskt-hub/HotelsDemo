@@ -107,11 +107,13 @@ final class DefaultCalendarDataGeneratorTests: XCTestCase {
 		calendar: Calendar = .gregorian(),
 		currentDate: @escaping () -> Date
 	) -> DefaultCalendarDataGenerator {
-		DefaultCalendarDataGenerator(
+		let sut = DefaultCalendarDataGenerator(
 			monthsCount: monthsCount,
 			calendar: calendar,
 			currentDate: currentDate
 		)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 
 	private func assertLeadingEmptyDaysCount(

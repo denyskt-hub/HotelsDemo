@@ -76,6 +76,8 @@ final class ReviewScoreInteractorTests: XCTestCase {
 			selectedReviewScore: selectedReviewScore,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, presenter)
 	}
 

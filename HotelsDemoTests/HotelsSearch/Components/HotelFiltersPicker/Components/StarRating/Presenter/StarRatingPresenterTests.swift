@@ -49,6 +49,8 @@ final class StarRatingPresenterTests: XCTestCase {
 		let sut = StarRatingPresenter(
 			viewController: viewController
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 }

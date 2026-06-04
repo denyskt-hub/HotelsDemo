@@ -107,6 +107,8 @@ final class HotelFiltersPickerInteractorTests: XCTestCase {
 			currentFilters: currentFilters,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, presenter)
 	}
 }

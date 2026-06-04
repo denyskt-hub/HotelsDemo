@@ -102,6 +102,9 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 			decoratee: store,
 			validator: validator
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(store)
+		trackForMemoryLeaks(validator)
 		return (sut, store, validator)
 	}
 }

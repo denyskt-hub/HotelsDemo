@@ -104,6 +104,12 @@ final class HotelsSearchCriteriaRouterTests: XCTestCase {
 			scene: viewController
 		)
 
+		trackForMemoryLeaks(destinationPickerFactory)
+		trackForMemoryLeaks(dateRangePickerFactory)
+		trackForMemoryLeaks(roomGuestsPickerFactory)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
+
 		return SUTContainer(
 			sut: sut,
 			calendar: calendar,

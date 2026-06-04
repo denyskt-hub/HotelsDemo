@@ -50,6 +50,8 @@ final class HotelFiltersPickerPresenterTests: XCTestCase {
 		let sut = HotelFiltersPickerPresenter(
 			viewController: viewController
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 }

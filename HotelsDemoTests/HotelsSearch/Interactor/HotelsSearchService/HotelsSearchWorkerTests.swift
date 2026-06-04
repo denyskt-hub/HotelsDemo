@@ -89,6 +89,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 			factory: HotelsRequestFactoryStub(url: url),
 			client: client
 		)
+		trackForMemoryLeaks(sut)
 		return (sut, spy)
 	}
 

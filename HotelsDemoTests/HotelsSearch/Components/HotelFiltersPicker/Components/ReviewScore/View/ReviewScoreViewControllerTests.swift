@@ -89,6 +89,9 @@ final class ReviewScoreViewControllerTests: XCTestCase, ListItemsRendererTestCas
 			interactor: interactor,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(delegate)
+		trackForMemoryLeaks(sut)
 		return (sut, interactor, delegate)
 	}
 

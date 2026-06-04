@@ -35,6 +35,8 @@ final class DefaultDestinationRequestFactoryTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL) -> DefaultDestinationRequestFactory {
-		DefaultDestinationRequestFactory(url: url)
+		let sut = DefaultDestinationRequestFactory(url: url)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 }

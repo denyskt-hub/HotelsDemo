@@ -128,6 +128,9 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 			interactor: interactor,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(delegate)
+		trackForMemoryLeaks(sut)
 		return (sut, interactor, delegate)
 	}
 }

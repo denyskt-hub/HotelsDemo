@@ -48,6 +48,8 @@ final class DefaultDebouncerTests: XCTestCase {
 	// MARK: - Helpers
 
 	private func makeSUT(delay: TimeInterval) -> DefaultDebouncer {
-		DefaultDebouncer(delay: delay)
+		let sut = DefaultDebouncer(delay: delay)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 }

@@ -190,10 +190,12 @@ final class InMemoryImageDataCacheTests: XCTestCase {
 		countLimit: Int? = nil,
 		sizeLimitInBytes: Int? = nil
 	) -> InMemoryImageDataCache {
-		InMemoryImageDataCache(
+		let sut = InMemoryImageDataCache(
 			countLimit: countLimit,
 			sizeLimitInBytes: sizeLimitInBytes
 		)
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 
 	private func save(to sut: ImageDataCache, data: Data, forKey key: String) async throws {

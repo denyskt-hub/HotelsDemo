@@ -66,6 +66,8 @@ final class StarRatingInteractorTests: XCTestCase {
 			selectedStarRatings: selectedStarRatings,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, presenter)
 	}
 }

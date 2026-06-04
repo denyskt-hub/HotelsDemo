@@ -37,6 +37,8 @@ final class RapidAPIHTTPClientTests: XCTestCase {
 			apiHost: apiHost,
 			apiKey: apiKey
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(client)
 		return (sut, client)
 	}
 }

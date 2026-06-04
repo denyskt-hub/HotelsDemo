@@ -34,4 +34,14 @@ extension UIViewController {
 	func waitForPresentation(timeout: TimeInterval = 0.1) {
 		RunLoop.current.run(until: Date().addingTimeInterval(timeout))
 	}
+
+	/// Dismisses any presented view controller and lets the run loop tear the
+	/// presentation down. UIKit's presentation graph strongly retains both the
+	/// presenting and presented view controllers until dismissal completes,
+	/// so presenting tests must call this to avoid leaking the SUT.
+	func simulateDismissal(timeout: TimeInterval = 0.1) {
+		guard presentedViewController != nil else { return }
+		dismiss(animated: false)
+		waitForPresentation(timeout: timeout)
+	}
 }

@@ -66,6 +66,8 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 			XCTAssertEqual(vc.options, ["0", "1"])
 			XCTAssertEqual(vc.selectedIndex, 1)
 		}
+
+		sut.simulateDismissal()
 	}
 
 	func test_agePickerSelection_didSelectAge() {
@@ -83,6 +85,8 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 		sut.simulateAgeSelection(at: 2)
 
 		XCTAssertEqual(interactor.messages.last, .handleAgeSelection(.init(index: viewModel.index, age: 2)))
+
+		sut.simulateDismissal()
 	}
 
 	func test_displayRooms_rendersProvidedNumberOfRooms() {
@@ -248,6 +252,9 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 			interactor: interactor,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(delegate)
 		return (sut, interactor, delegate)
 	}
 

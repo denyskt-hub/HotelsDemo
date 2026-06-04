@@ -45,7 +45,9 @@ final class CodableHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCrite
 	// MARK: - Helpers
 
 	private func makeSUT() -> CodableHotelsSearchCriteriaStore {
-		CodableHotelsSearchCriteriaStore(storeURL: testSpecificStoreURL())
+		let sut = CodableHotelsSearchCriteriaStore(storeURL: testSpecificStoreURL())
+		trackForMemoryLeaks(sut)
+		return sut
 	}
 
 	private func setupEmptyStoreState() {

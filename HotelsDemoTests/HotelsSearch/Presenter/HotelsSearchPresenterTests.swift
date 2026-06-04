@@ -94,6 +94,8 @@ final class HotelsSearchPresenterTests: XCTestCase {
 			viewController: viewController,
 			priceFormatter: PriceFormatter(locale: locale)
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 }

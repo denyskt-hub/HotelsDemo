@@ -73,6 +73,8 @@ final class DataRangePickerPresenterTests: XCTestCase {
 			dateFormatter: DefaultCalendarDateFormatter(),
 			viewController: viewController
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 

@@ -73,6 +73,9 @@ final class DateRangePickerInteractorTests: XCTestCase {
 			generator: generator,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(generator)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, generator, presenter)
 	}
 }

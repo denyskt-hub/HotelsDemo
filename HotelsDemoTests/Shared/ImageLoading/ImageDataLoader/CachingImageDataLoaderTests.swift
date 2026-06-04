@@ -95,6 +95,9 @@ final class CachingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 			loader: loader,
 			cache: cache
 		)
+		trackForMemoryLeaks(loader)
+		trackForMemoryLeaks(cache)
+		trackForMemoryLeaks(sut)
 		return (sut, loader, cache)
 	}
 }

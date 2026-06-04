@@ -44,12 +44,16 @@ final class DestinationPickerInteractorTests: XCTestCase {
 	}
 
 	func test_doSearchDestinations_trimsQueryBeforeSendingToService() async {
-		let (sut, service, _) = makeSUT()
+		let (sut, service, presenter) = makeSUT()
 
 		sut.doSearchDestinations(request: .init(query: "  Rome  "))
 		await service.waitUntilStarted()
 
 		XCTAssertEqual(service.receivedQueries(), ["Rome"])
+
+		// Drain the in-flight request so no suspended task outlives the test.
+		service.completeWithDestinations([])
+		await presenter.waitUntilPresented()
 	}
 
 	func test_doSearchDestinations_doesNotMessageServiceOnEmptyQuery() {
@@ -107,6 +111,9 @@ final class DestinationPickerInteractorTests: XCTestCase {
 			worker: service,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(service)
+		trackForMemoryLeaks(presenter)
+		trackForMemoryLeaks(sut)
 		return (sut, service, presenter)
 	}
 }

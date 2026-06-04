@@ -82,10 +82,13 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		client: HTTPClientSpy
 	) {
 		let (client, spy) = makeAppHTTPClientSpy()
+		let factory = DestinationRequestFactoryStub(url: url)
 		let sut = DestinationSearchWorker(
-			factory: DestinationRequestFactoryStub(url: url),
+			factory: factory,
 			client: client
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(factory)
 		return (sut, spy)
 	}
 

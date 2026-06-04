@@ -49,6 +49,8 @@ final class ReviewScorePresenterTests: XCTestCase {
 		let sut = ReviewScorePresenter(
 			viewController: viewController
 		)
+		trackForMemoryLeaks(viewController)
+		trackForMemoryLeaks(sut)
 		return (sut, viewController)
 	}
 }

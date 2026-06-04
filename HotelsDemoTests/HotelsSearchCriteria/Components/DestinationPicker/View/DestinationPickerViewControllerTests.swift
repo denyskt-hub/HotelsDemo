@@ -96,6 +96,9 @@ final class DestinationPickerViewControllerTests: XCTestCase, ListItemsRendererT
 			interactor: interactor,
 			delegate: delegate
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(interactor)
+		trackForMemoryLeaks(delegate)
 		return (sut, interactor, delegate)
 	}
 

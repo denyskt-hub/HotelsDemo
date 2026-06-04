@@ -268,6 +268,10 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 			provider: provider,
 			presenter: presenter
 		)
+		trackForMemoryLeaks(sut)
+		trackForMemoryLeaks(provider)
+		trackForMemoryLeaks(cache)
+		trackForMemoryLeaks(presenter)
 		return (sut, provider, cache, presenter)
 	}
 }

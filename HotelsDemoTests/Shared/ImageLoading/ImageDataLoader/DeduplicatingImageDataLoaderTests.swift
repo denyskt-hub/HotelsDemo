@@ -132,6 +132,8 @@ final class DeduplicatingImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCa
 	) {
 		let loader = ImageDataLoaderSpy()
 		let sut = DeduplicatingImageDataLoader(loader: loader)
+		trackForMemoryLeaks(loader)
+		trackForMemoryLeaks(sut)
 		return (sut, loader)
 	}
 }
