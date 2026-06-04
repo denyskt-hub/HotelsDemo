@@ -9,7 +9,7 @@ import UIKit
 
 public final class DestinationPickerViewController: NiblessViewController, DestinationPickerDisplayLogic {
 	private let interactor: DestinationPickerBusinessLogic
-	private weak var delegate: DestinationPickerDelegate?
+	private let delegate: DestinationPickerDelegate
 
 	private let rootView = DestinationPickerRootView()
 	private var viewModel = DestinationPickerModels.Search.ViewModel(destinations: [])
@@ -21,7 +21,7 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 
 	public init(
 		interactor: DestinationPickerBusinessLogic,
-		delegate: DestinationPickerDelegate?
+		delegate: DestinationPickerDelegate
 	) {
 		self.interactor = interactor
 		self.delegate = delegate
@@ -63,7 +63,7 @@ public final class DestinationPickerViewController: NiblessViewController, Desti
 	}
 
 	public func displaySelectedDestination(viewModel: DestinationPickerModels.DestinationSelection.ViewModel) {
-		delegate?.didSelectDestination(viewModel.selected)
+		delegate.didSelectDestination(viewModel.selected)
 		dismiss(animated: true)
 	}
 

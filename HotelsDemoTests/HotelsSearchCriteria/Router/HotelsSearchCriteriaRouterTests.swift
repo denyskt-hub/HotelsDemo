@@ -160,7 +160,7 @@ final class DestinationPickerFactoryStub: DestinationPickerFactory {
 
 	private(set) var messages = [Message]()
 
-	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
+	func makeDestinationPicker(delegate: DestinationPickerDelegate) -> UIViewController {
 		messages.append(.makeDestinationPicker(objectID(delegate)))
 		return stub
 	}
@@ -176,7 +176,7 @@ final class DateRangePickerFactoryStub: DateRangePickerFactory {
 	private(set) var messages = [Message]()
 
 	func makeDateRangePicker(
-		delegate: DateRangePickerDelegate?,
+		delegate: DateRangePickerDelegate,
 		selectedStartDate: Date,
 		selectedEndDate: Date,
 		calendar: Calendar
@@ -203,7 +203,7 @@ final class RoomGuestsPickerFactoryStub: RoomGuestsPickerFactory {
 	private(set) var messages = [Message]()
 
 	func makeRoomGuestsPicker(
-		delegate: RoomGuestsPickerDelegate?,
+		delegate: RoomGuestsPickerDelegate,
 		rooms: Int,
 		adults: Int,
 		childrenAge: [Int]

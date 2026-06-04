@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 public protocol DestinationPickerFactory {
-	func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController
+	func makeDestinationPicker(delegate: DestinationPickerDelegate) -> UIViewController
 }
 
 @MainActor
@@ -25,7 +25,7 @@ public final class DestinationPickerComposer: DestinationPickerFactory {
 		self.baseURL = baseURL
 	}
 
-	public func makeDestinationPicker(delegate: DestinationPickerDelegate?) -> UIViewController {
+	public func makeDestinationPicker(delegate: DestinationPickerDelegate) -> UIViewController {
 		let viewControllerProxy = WeakRefVirtualProxy<DestinationPickerViewController>()
 		let worker = makeDestinationSearchService()
 

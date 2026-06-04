@@ -9,7 +9,7 @@ import UIKit
 
 public final class RoomGuestsPickerViewController: NiblessViewController, RoomGuestsPickerDisplayLogic {
 	private let interactor: RoomGuestsPickerBusinessLogic
-	private weak var delegate: RoomGuestsPickerDelegate?
+	private let delegate: RoomGuestsPickerDelegate
 
 	private let rootView = RoomGuestsPickerRootView()
 
@@ -21,7 +21,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 
 	public init(
 		interactor: RoomGuestsPickerBusinessLogic,
-		delegate: RoomGuestsPickerDelegate?
+		delegate: RoomGuestsPickerDelegate
 	) {
 		self.interactor = interactor
 		self.delegate = delegate
@@ -125,7 +125,7 @@ public final class RoomGuestsPickerViewController: NiblessViewController, RoomGu
 	}
 
 	public func displaySelectedRoomGuests(viewModel: RoomGuestsPickerModels.Select.ViewModel) {
-		delegate?.didSelectRoomGuests(
+		delegate.didSelectRoomGuests(
 			rooms: viewModel.rooms,
 			adults: viewModel.adults,
 			childrenAges: viewModel.childrenAge

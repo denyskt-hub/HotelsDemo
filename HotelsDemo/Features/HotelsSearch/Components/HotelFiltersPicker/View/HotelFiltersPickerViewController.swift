@@ -15,7 +15,7 @@ public protocol HotelFiltersPickerDelegate: AnyObject {
 public final class HotelFiltersPickerViewController: NiblessViewController, HotelFiltersPickerDisplayLogic {
 	private let filterViewControllers: [ResetableFilterViewController]
 	private var interactor: HotelFiltersPickerBusinessLogic
-	private weak var delegate: HotelFiltersPickerDelegate?
+	private let delegate: HotelFiltersPickerDelegate
 
 	private let rootView = HotelFiltersPickerRootView()
 
@@ -30,7 +30,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	public init(
 		filterViewControllers: [ResetableFilterViewController],
 		interactor: HotelFiltersPickerBusinessLogic,
-		delegate: HotelFiltersPickerDelegate?
+		delegate: HotelFiltersPickerDelegate
 	) {
 		self.filterViewControllers = filterViewControllers
 		self.interactor = interactor
@@ -85,7 +85,7 @@ public final class HotelFiltersPickerViewController: NiblessViewController, Hote
 	}
 
 	public func displaySelectedFilters(viewModel: HotelFiltersPickerModels.FilterSelection.ViewModel) {
-		delegate?.didSelectFilters(viewModel.filters)
+		delegate.didSelectFilters(viewModel.filters)
 		dismiss(animated: true)
 	}
 

@@ -14,7 +14,7 @@ public protocol DateRangePickerDelegate: AnyObject {
 
 public final class DateRangePickerViewController: NiblessViewController, DateRangePickerDisplayLogic {
 	private let interactor: DateRangePickerBusinessLogic
-	private weak var delegate: DateRangePickerDelegate?
+	private let delegate: DateRangePickerDelegate
 
 	private let rootView = DateRangePickerRootView()
 
@@ -31,7 +31,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 
 	public init(
 		interactor: DateRangePickerBusinessLogic,
-		delegate: DateRangePickerDelegate?
+		delegate: DateRangePickerDelegate
 	) {
 		self.interactor = interactor
 		self.delegate = delegate
@@ -128,7 +128,7 @@ public final class DateRangePickerViewController: NiblessViewController, DateRan
 	}
 
 	public func displaySelectedDateRange(viewModel: DateRangePickerModels.DateRangeSelection.ViewModel) {
-		delegate?.didSelectDateRange(
+		delegate.didSelectDateRange(
 			startDate: viewModel.startDate,
 			endDate: viewModel.endDate
 		)

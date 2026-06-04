@@ -10,7 +10,7 @@ import UIKit
 @MainActor
 public protocol RoomGuestsPickerFactory {
 	func makeRoomGuestsPicker(
-		delegate: RoomGuestsPickerDelegate?,
+		delegate: RoomGuestsPickerDelegate,
 		rooms: Int,
 		adults: Int,
 		childrenAge: [Int]
@@ -20,7 +20,7 @@ public protocol RoomGuestsPickerFactory {
 @MainActor
 public final class RoomGuestsPickerComposer: RoomGuestsPickerFactory {
 	public func makeRoomGuestsPicker(
-		delegate: RoomGuestsPickerDelegate?,
+		delegate: RoomGuestsPickerDelegate,
 		rooms: Int,
 		adults: Int,
 		childrenAge: [Int]
