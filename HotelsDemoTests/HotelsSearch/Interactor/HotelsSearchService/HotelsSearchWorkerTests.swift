@@ -20,7 +20,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let expectedURL = URL(string: "https://api.com/hotels/search")!
 		let (sut, client) = makeSUT(url: expectedURL)
 
-		client.completeWith(anyValidValues())
+		client.stubWith(anyValidValues())
 		_ = try await sut.search(criteria: anySearchCriteria())
 
 		XCTAssertEqual(client.receivedRequests().map(\.url), [expectedURL])
@@ -31,7 +31,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		await expect(sut, toCompleteWithError: clientError, when: {
-			client.completeWithError(clientError)
+			client.stubWithError(clientError)
 		})
 	}
 
@@ -41,7 +41,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 
 		for statusCode in samples {
 			await expect(sut, toCompleteWithError: AppError.http(.unexpectedStatusCode(statusCode)), when: {
-				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
+				client.stubWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
@@ -52,7 +52,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 
 		for data in samples {
 			await expect(sut, toCompleteWithError: AppError.api(.decoding(anyNSError())), when: {
-				client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
+				client.stubWith((data, makeHTTPURLResponse(statusCode: 200)))
 			})
 		}
 	}
@@ -74,7 +74,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		try await expect(sut, toCompleteWithHotels: [item.model], when: {
-			client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
+			client.stubWith((data, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 

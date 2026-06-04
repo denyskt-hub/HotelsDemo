@@ -12,8 +12,8 @@ import Synchronization
 final class HTTPClientSpy: HTTPClient {
 	let requests = Mutex<[URLRequest]>([])
 
-	private let stubbedValues = Mutex<(Data, HTTPURLResponse)?>(nil)
-	private let stubbedError = Mutex<Error?>(nil)
+	private let stubbedResult = Mutex<Result<(Data, HTTPURLResponse), Error>?>(nil)
+	private let continuations = Mutex<[CheckedContinuation<(Data, HTTPURLResponse), Error>]>([])
 
 	private let stream = AsyncStream<Void>.makeStream()
 
@@ -26,20 +26,34 @@ final class HTTPClientSpy: HTTPClient {
 		stream.continuation.yield(())
 
 		return try await withCheckedThrowingContinuation { continuation in
-			if let stubbedValues = stubbedValues.withLock({ $0 }) {
-				continuation.resume(returning: stubbedValues)
-			} else if let stubbedError = stubbedError.withLock({ $0 }) {
-				continuation.resume(throwing: stubbedError)
+			if let result = stubbedResult.withLock({ $0 }) {
+				continuation.resume(with: result)
+			} else {
+				continuations.withLock { $0.append(continuation) }
 			}
 		}
 	}
 
-	func completeWith(_ values: (Data, HTTPURLResponse)) {
-		stubbedValues.withLock { $0 = values }
+	/// Pre-sets a persistent result delivered to every subsequent `perform`.
+	func stubWith(_ values: (Data, HTTPURLResponse)) {
+		stubbedResult.withLock { $0 = .success(values) }
 	}
 
-	func completeWithError(_ error: Error) {
-		stubbedError.withLock { $0 = error }
+	/// Pre-sets a persistent error delivered to every subsequent `perform`.
+	func stubWithError(_ error: Error) {
+		stubbedResult.withLock { $0 = .failure(error) }
+	}
+
+	/// Completes an in-flight `perform` that suspended without a stub.
+	func completeWith(_ values: (Data, HTTPURLResponse), at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(returning: values)
+	}
+
+	/// Fails an in-flight `perform` that suspended without a stub.
+	func completeWithError(_ error: Error, at index: Int = 0) {
+		let continuation = continuations.withLock { $0[index] }
+		continuation.resume(throwing: error)
 	}
 
 	func waitUntilStarted() async {

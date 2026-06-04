@@ -20,9 +20,10 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let httpMethod = "GET"
 		let (sut, client) = makeSUT()
 
-		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
-		try await sut.load(url: url)
+		async let result: Data = sut.load(url: url)
 		await client.waitUntilStarted()
+		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
+		_ = try await result
 
 		XCTAssertEqual(client.receivedRequests().first?.url, url)
 		XCTAssertEqual(client.receivedRequests().first?.httpMethod, httpMethod)
@@ -35,7 +36,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		await expect(sut, toLoadWithError: clientError, when: {
-			client.completeWithError(clientError)
+			client.stubWithError(clientError)
 		})
 	}
 
@@ -45,7 +46,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let samples = [199, 300, 350, 400, 500]
 		for statusCode in samples {
 			await expect(sut, toLoadWithError: AppError.http(.unexpectedStatusCode(statusCode)), when: {
-				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
+				client.stubWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
@@ -54,7 +55,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		await expect(sut, toLoadWithError: ImageDataMapper.Error.invalidData, when: {
-			client.completeWith((emptyData(), makeHTTPURLResponse(statusCode: 200)))
+			client.stubWith((emptyData(), makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
@@ -63,7 +64,7 @@ final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 		let (sut, client) = makeSUT()
 
 		await expect(sut, toLoadData: nonEmptyData, when: {
-			client.completeWith((nonEmptyData, makeHTTPURLResponse(statusCode: 200)))
+			client.stubWith((nonEmptyData, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 

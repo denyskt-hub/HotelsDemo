@@ -13,7 +13,7 @@ final class RapidAPIHTTPClientTests: XCTestCase {
 	func test_perform_addsRapidAPIHeaders() async throws {
 		let (sut, client) = makeSUT(apiHost: "test-host", apiKey: "test-key")
 
-		client.completeWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
+		client.stubWith((anyData(), makeHTTPURLResponse(statusCode: 200)))
 		let dummyRequest = URLRequest(url: URL(string: "https://example.com")!)
 		_ = try await sut.perform(dummyRequest)
 

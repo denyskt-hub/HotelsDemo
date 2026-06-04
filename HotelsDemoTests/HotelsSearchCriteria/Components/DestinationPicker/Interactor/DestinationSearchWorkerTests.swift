@@ -20,7 +20,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let expectedURL = URL(string: "https://api.com/search?q=london")!
 		let (sut, client) = makeSUT(url: expectedURL)
 
-		client.completeWith(anyValidValues())
+		client.stubWith(anyValidValues())
 		_ = try await sut.search(query: "ignored")
 
 		XCTAssertEqual(client.receivedRequests().map(\.url), [expectedURL])
@@ -31,7 +31,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		try await expect(sut, toCompleteWithError: clientError, when: {
-			client.completeWithError(clientError)
+			client.stubWithError(clientError)
 		})
 	}
 
@@ -41,7 +41,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 
 		for statusCode in samples {
 			try await expect(sut, toCompleteWithError: AppError.http(.unexpectedStatusCode(statusCode)), when: {
-				client.completeWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
+				client.stubWith((anyData(), makeHTTPURLResponse(statusCode: statusCode)))
 			})
 		}
 	}
@@ -52,7 +52,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 
 		for data in samples {
 			try await expect(sut, toCompleteWithError: AppError.api(.decoding(anyNSError())), when: {
-				client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
+				client.stubWith((data, makeHTTPURLResponse(statusCode: 200)))
 			})
 		}
 	}
@@ -71,7 +71,7 @@ final class DestinationSearchWorkerTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		try await expect(sut, toCompleteWithDestinations: [item.model], when: {
-			client.completeWith((data, makeHTTPURLResponse(statusCode: 200)))
+			client.stubWith((data, makeHTTPURLResponse(statusCode: 200)))
 		})
 	}
 
