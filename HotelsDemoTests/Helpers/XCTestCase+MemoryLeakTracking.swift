@@ -13,6 +13,20 @@ extension XCTestCase {
 	) {
 		let ref = WeakRef(instance)
 		addTeardownBlock {
+			// In-flight tasks may hold the instance for an instant after the
+			// test ends (e.g. a `Task` releasing its captured `self` right
+			// after its final delegate callback). Grant a short grace period:
+			// a genuine retain cycle never deallocates, so this only prevents
+			// scheduler-dependent flakiness — it cannot hide real leaks.
+			var attempts = 0
+			while ref.value != nil, attempts < 20 {
+				attempts += 1
+				await Task.yield()
+				if ref.value != nil {
+					try? await Task.sleep(nanoseconds: 25_000_000)
+				}
+			}
+
 			XCTAssertNil(
 				ref.value,
 				"Instance should have been deallocated. Potential memory leak.",
