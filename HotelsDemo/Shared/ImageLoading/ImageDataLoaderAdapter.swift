@@ -7,10 +7,16 @@
 
 import Foundation
 
+@MainActor
 public final class ImageDataLoaderAdapter: ImageViewDelegate {
 	private let loader: ImageDataLoader
 	private let presenter: ImageDataPresentationLogic
-	private let taskStore = TaskStore<Void, Never>()
+
+	/// Stored synchronously on the main actor: the task created by
+	/// `didSetImageWith` is registered atomically with its creation, so a
+	/// subsequent `didCancel`/`didSetImageWith` can never observe (and
+	/// cancel) a stale task or miss an in-flight one.
+	private var task: Task<Void, Never>?
 
 	public init(
 		loader: ImageDataLoader,
@@ -21,28 +27,25 @@ public final class ImageDataLoaderAdapter: ImageViewDelegate {
 	}
 
 	public func didSetImageWith(_ url: URL) {
-		let task = Task {
-			await presenter.presentLoading(true)
+		task?.cancel()
+		task = Task {
+			presenter.presentLoading(true)
 
 			do {
 				let data = try await loader.load(url: url)
-				await presenter.presentImageData(data)
+				presenter.presentImageData(data)
 			} catch is CancellationError {
 				// silence cancellation
 			} catch {
-				await presenter.presentImageDataError(error)
+				presenter.presentImageDataError(error)
 			}
 
-			await presenter.presentLoading(false)
-		}
-		Task {
-			await taskStore.setTask(task)
+			presenter.presentLoading(false)
 		}
 	}
 
 	public func didCancel() {
-		Task {
-			await taskStore.cancel()
-		}
+		task?.cancel()
+		task = nil
 	}
 }

@@ -7,7 +7,8 @@
 
 import UIKit
 
-public protocol ImageViewDelegate: AnyObject, Sendable {
+@MainActor
+public protocol ImageViewDelegate: AnyObject {
 	func didSetImageWith(_ url: URL)
 	func didCancel()
 }
