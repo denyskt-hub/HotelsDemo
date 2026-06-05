@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		92E1A0032E5C100100AB0003 /* ImageLoadingKit in Frameworks */ = {isa = PBXBuildFile; productRef = 92E1A0022E5C100100AB0002 /* ImageLoadingKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		92A3EB3E2E0C5250009FC429 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -68,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92E1A0032E5C100100AB0003 /* ImageLoadingKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +132,7 @@
 			);
 			name = HotelsDemo;
 			packageProductDependencies = (
+				92E1A0022E5C100100AB0002 /* ImageLoadingKit */,
 			);
 			productName = HotelsDemo;
 			productReference = 92806D452E03DBD6005263A8 /* HotelsDemo.app */;
@@ -183,6 +189,9 @@
 			);
 			mainGroup = 92806D3C2E03DBD6005263A8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				92E1A0012E5C100100AB0001 /* XCRemoteSwiftPackageReference "ImageLoadingKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 92806D462E03DBD6005263A8 /* Products */;
 			projectDirPath = "";
@@ -516,6 +525,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		92E1A0012E5C100100AB0001 /* XCRemoteSwiftPackageReference "ImageLoadingKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/denyskt-hub/ImageLoadingKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		92E1A0022E5C100100AB0002 /* ImageLoadingKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 92E1A0012E5C100100AB0001 /* XCRemoteSwiftPackageReference "ImageLoadingKit" */;
+			productName = ImageLoadingKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 92806D3D2E03DBD6005263A8 /* Project object */;
 }
