@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public final class LoggingImageDataLoader: ImageDataLoader {
 	private let loader: ImageDataLoader

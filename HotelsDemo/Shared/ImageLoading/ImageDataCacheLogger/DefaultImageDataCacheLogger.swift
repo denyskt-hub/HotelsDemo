@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public struct DefaultImageDataCacheLogger: ImageDataCacheLogger {
 	private let tag: LogTag

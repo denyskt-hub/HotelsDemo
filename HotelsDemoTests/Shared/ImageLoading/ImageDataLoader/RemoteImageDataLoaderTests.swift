@@ -7,6 +7,7 @@
 
 import XCTest
 import HotelsDemo
+import ImageLoadingKit
 
 final class RemoteImageDataLoaderTests: XCTestCase, ImageDataLoaderTestCase {
 	func test_init_doesNotSendRequest() {

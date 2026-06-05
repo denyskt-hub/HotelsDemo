@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 @MainActor
 public final class ImageDataLoaderAdapter: ImageViewDelegate {

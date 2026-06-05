@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public final class LoggingImageDataCache: ImageDataCache {
 	private let cache: ImageDataCache

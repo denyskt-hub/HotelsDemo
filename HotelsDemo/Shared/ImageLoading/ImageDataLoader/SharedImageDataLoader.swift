@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public enum SharedImageDataLoader {
 	public static let instance = defaultLoader()

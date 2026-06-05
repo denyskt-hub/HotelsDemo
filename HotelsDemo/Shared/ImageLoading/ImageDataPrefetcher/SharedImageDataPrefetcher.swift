@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public enum SharedImageDataPrefetcher {
 	public static let instance = defaultPrefetcher()

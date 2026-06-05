@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ImageLoadingKit
 
 @MainActor
 public final class HotelCellController: NSObject {

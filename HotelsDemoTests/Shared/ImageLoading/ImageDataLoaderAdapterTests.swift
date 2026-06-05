@@ -5,6 +5,7 @@
 
 import XCTest
 import HotelsDemo
+import ImageLoadingKit
 
 @MainActor
 final class ImageDataLoaderAdapterTests: XCTestCase {
