@@ -7,6 +7,7 @@
 
 import XCTest
 import HotelsDemo
+import ImageLoadingKit
 
 @MainActor
 protocol ImageDataLoaderTestCase {}

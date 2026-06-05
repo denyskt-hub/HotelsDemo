@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 import HotelsDemo
 import Synchronization
 

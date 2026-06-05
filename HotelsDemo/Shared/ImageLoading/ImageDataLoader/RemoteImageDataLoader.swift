@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public final class RemoteImageDataLoader: ImageDataLoader {
 	private let client: HTTPClient

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public protocol ImageDataCacheLogger: Sendable {
 	func log(saveResult: ImageDataCache.SaveResult, forKey key: String)

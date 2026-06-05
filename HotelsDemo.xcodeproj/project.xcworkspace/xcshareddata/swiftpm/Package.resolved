@@ -1,0 +1,15 @@
+{
+  "originHash" : "1a8b4816a5619cd688702397f4798a2b2cd91a485a829a936f1022c67901e40e",
+  "pins" : [
+    {
+      "identity" : "imageloadingkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/denyskt-hub/ImageLoadingKit.git",
+      "state" : {
+        "revision" : "c90fa485d1969496efdbe1ce474ab7af7a41129a",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImageLoadingKit
 
 public enum SharedImageDataCache {
 	public static let instance = defaultCache()

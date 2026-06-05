@@ -1,16 +1,12 @@
 //
-//  ImageDataLoader.swift
+//  ImageDataLoader+Logging.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 14/7/25.
+//  Created by Denys Kotenko on 5/6/26.
 //
 
 import Foundation
-
-public protocol ImageDataLoader: Sendable {
-	@discardableResult
-	func load(url: URL) async throws -> Data
-}
+import ImageLoadingKit
 
 extension ImageDataLoader {
 	func logging(_ tag: ImageDataLoaderLogTag) -> LoggingImageDataLoader {

@@ -1,18 +1,16 @@
 //
-//  ImageDataCache.swift
+//  ImageDataCache+Logging.swift
 //  HotelsDemo
 //
-//  Created by Denys Kotenko on 15/7/25.
+//  Created by Denys Kotenko on 5/6/26.
 //
 
 import Foundation
+import ImageLoadingKit
 
-public protocol ImageDataCache: Sendable {
+public extension ImageDataCache {
 	typealias SaveResult = Result<Void, Error>
 	typealias DataResult = Result<Data?, Error>
-
-	func save(_ data: Data, forKey key: String) async throws
-	func data(forKey key: String) async throws -> Data?
 }
 
 extension ImageDataCache {
