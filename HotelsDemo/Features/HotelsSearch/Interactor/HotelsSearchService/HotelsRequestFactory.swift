@@ -22,14 +22,20 @@ public protocol HotelsRequestFactory: Sendable {
 public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 	private let url: URL
 
-	private let dateFormatter: DateFormatter = {
+	// Criteria dates are produced by the app-wide calendar (UTC midnights),
+	// so the wire format must be interpreted by that same calendar — never
+	// by device settings. en_US_POSIX pins the machine-readable output.
+	private let dateFormatter: DateFormatter
+
+	public init(url: URL, calendar: Calendar) {
+		self.url = url
+
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd"
-		return formatter
-	}()
-
-	public init(url: URL) {
-		self.url = url
+		formatter.calendar = calendar
+		formatter.timeZone = calendar.timeZone
+		formatter.locale = Locale(identifier: "en_US_POSIX")
+		self.dateFormatter = formatter
 	}
 
 	public func makeSearchRequest(criteria: HotelsSearchCriteria) throws -> URLRequest {
