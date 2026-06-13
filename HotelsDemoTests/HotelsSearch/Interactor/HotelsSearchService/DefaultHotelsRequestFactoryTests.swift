@@ -41,10 +41,28 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 		XCTAssertEqual(requestQuery?.contains("room_qty=1"), true)
 	}
 
+	func test_makeSearchRequest_formatsDatesInInjectedCalendarTimeZone_notDeviceTimeZone() throws {
+		// UTC+14 (Kiritimati): midnight there is still the previous day in any
+		// other time zone, so formatting with the device time zone (the bug)
+		// fails this test on every machine — CI and local alike.
+		let farEastTimeZone = TimeZone(secondsFromGMT: 14 * 3600)!
+		let criteria = makeSearchCriteria(
+			destination: makeDestination(),
+			checkInDate: "18.07.2025".date(timeZone: farEastTimeZone),
+			checkOutDate: "19.07.2025".date(timeZone: farEastTimeZone)
+		)
+		let sut = makeSUT(url: anyURL(), calendar: .gregorian(timeZone: farEastTimeZone))
+
+		let requestQuery = try sut.makeSearchRequest(criteria: criteria).url?.query()
+
+		XCTAssertEqual(requestQuery?.contains("arrival_date=2025-07-18"), true)
+		XCTAssertEqual(requestQuery?.contains("departure_date=2025-07-19"), true)
+	}
+
 	// MARK: - Helpers
 
-	private func makeSUT(url: URL) -> DefaultHotelsRequestFactory {
-		let sut = DefaultHotelsRequestFactory(url: url)
+	private func makeSUT(url: URL, calendar: Calendar = .gregorian()) -> DefaultHotelsRequestFactory {
+		let sut = DefaultHotelsRequestFactory(url: url, calendar: calendar)
 		trackForMemoryLeaks(sut)
 		return sut
 	}

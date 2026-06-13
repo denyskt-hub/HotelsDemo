@@ -16,13 +16,16 @@ public protocol HotelsSearchFactory {
 public final class HotelsSearchComposer: HotelsSearchFactory {
 	private let client: HTTPClient
 	private let baseURL: URL
+	private let calendar: Calendar
 
 	public init(
 		client: HTTPClient,
-		baseURL: URL
+		baseURL: URL,
+		calendar: Calendar
 	) {
 		self.client = client
 		self.baseURL = baseURL
+		self.calendar = calendar
 	}
 
 	public func makeSearch(with criteria: HotelsSearchCriteria) -> UIViewController {
@@ -64,7 +67,8 @@ public final class HotelsSearchComposer: HotelsSearchFactory {
 
 		let service = HotelsSearchWorker(
 			factory: DefaultHotelsRequestFactory(
-				url: HotelsEndpoint.searchHotels.url(baseURL)
+				url: HotelsEndpoint.searchHotels.url(baseURL),
+				calendar: calendar
 			),
 			client: client
 		)

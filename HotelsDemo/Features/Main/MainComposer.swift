@@ -15,15 +15,18 @@ public protocol MainFactory {
 public final class MainComposer: MainFactory {
 	private let client: HTTPClient
 	private let baseURL: URL
+	private let calendar: Calendar
 	private let makeSearchCriteria: @MainActor (HotelsSearchCriteriaDelegate) -> UIViewController
 
 	public init(
 		client: HTTPClient,
 		baseURL: URL,
+		calendar: Calendar,
 		searchCriteriaFactory: @escaping @MainActor (HotelsSearchCriteriaDelegate) -> UIViewController
 	) {
 		self.client = client
 		self.baseURL = baseURL
+		self.calendar = calendar
 		self.makeSearchCriteria = searchCriteriaFactory
 	}
 
@@ -38,7 +41,7 @@ public final class MainComposer: MainFactory {
 		let interactor = MainInteractor(presenter: presenter)
 
 		let router = MainRouter(
-			searchFactory: HotelsSearchComposer(client: client, baseURL: baseURL),
+			searchFactory: HotelsSearchComposer(client: client, baseURL: baseURL, calendar: calendar),
 			scene: viewControllerProxy
 		)
 

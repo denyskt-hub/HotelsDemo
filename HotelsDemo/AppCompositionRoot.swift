@@ -62,6 +62,7 @@ final class AppCompositionRoot {
 		MainComposer(
 			client: client,
 			baseURL: environment.baseURL,
+			calendar: calendar,
 			searchCriteriaFactory: makeSearchCriteriaViewController(delegate:)
 		)
 	}()
