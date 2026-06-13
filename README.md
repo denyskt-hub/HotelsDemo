@@ -32,6 +32,20 @@ It includes a fully functional hotels search, and filtering flow — all backed 
 
 The project follows the **Clean Swift (VIP)** pattern, ensuring separation of concerns and testability.
 
+### Design Decisions
+
+- **VIP over MVVM** — each scene is split into an Interactor (business rules), Presenter (formatting), and Router (navigation) with a unidirectional flow: View → Interactor → Presenter → View. Every unit has a single responsibility and is testable in isolation, without bindings or observation. The cost is more boilerplate per scene; the payoff is uniformity — every feature follows the exact same layout (`Interactor/`, `Presenter/`, `Router/`, `View/`, `Models/`), so navigating one feature means you can navigate them all.
+
+- **Composition Root** — all object graphs are wired in `AppCompositionRoot` and per-feature `Composer`s; components never construct their own dependencies. Behavior is added by composing decorators around small protocols rather than by subclassing or feature flags. For example, the HTTP stack is built as `URLSessionHTTPClient` → `LoggingHTTPClient` → `RapidAPIHTTPClient` (request signing) → `AppHTTPClient` (status-code validation and error mapping) — each layer independently testable and replaceable.
+
+- **Structured concurrency only, zero Combine** — async/await end to end. Shared mutable state lives in actors (repositories, stores, `TaskStore`); UI-facing types are `@MainActor`. The project compiles under **Swift 6 strict concurrency**, so data-race safety is enforced by the compiler rather than by convention.
+
+- **Deliberately minimal dependencies** — a package is extracted only when it protects non-trivial logic that is risky to duplicate. The HTTP layer stays inline: it is a single-method protocol plus a few small decorators, where a dependency would add versioning friction without buying safety. Image loading is the opposite case — deduplication of in-flight requests with cancellation semantics, LRU eviction, and prefetching — so it lives in [ImageLoadingKit](https://github.com/denyskt-hub/ImageLoadingKit), the project's only dependency.
+
+- **Filtering via the Specification pattern** — hotel filters are composable `Specification` predicates (`and`/`or` combinators) applied locally to search results, so new filter types compose with existing ones instead of growing a monolithic filter function.
+
+- **Deterministic async tests** — test doubles are synchronized with `Mutex` and continuation-based streams instead of timing assumptions, and memory-leak tracking gives in-flight tasks a grace period to finish — keeping the suite fast and free of flakiness.
+
 ### Physical Structure
 
 The folders in the project are organized as follows:
@@ -73,6 +87,7 @@ The folders in the project are organized as follows:
 
 - **Swift**
 - **UIKit**
+- **[ImageLoadingKit](https://github.com/denyskt-hub/ImageLoadingKit)** for image loading, caching, and prefetching
 - **XCTest** for unit testing
 - **SwiftLint** for code style enforcement
 - **GitHub Actions** for CI/CD
@@ -134,8 +149,8 @@ They are in `.gitignore` by default.
 ## Roadmap
 
 - [x] Refactor codebase to adopt Swift structured concurrency
+- [x] Add cache eviction policy (LRU via [ImageLoadingKit](https://github.com/denyskt-hub/ImageLoadingKit))
 - [ ] Sort hotels on search screen
-- [ ] Add cache eviction policy
 - [ ] Add localization
 - [ ] Display filters metadata on filters screen
 - [ ] Hotels search criteria editing on search screen
