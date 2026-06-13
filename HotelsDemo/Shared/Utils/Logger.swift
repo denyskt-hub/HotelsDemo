@@ -6,14 +6,118 @@
 //
 
 import Foundation
+import Synchronization
 
-// MARK: - Logger facade backed by LoggerActor
-public struct Logger {
-	private static let actor = LoggerActor()
+// MARK: - Output sink
 
-	public static func configure(_ configuration: LoggerConfiguration) {
-		Task { await actor.setConfiguration(configuration) }
+/// Destination for formatted log lines. Injectable so tests can collect
+/// output instead of printing it.
+protocol LogSink: Sendable {
+	func write(_ line: String)
+}
+
+struct PrintLogSink: LogSink {
+	func write(_ line: String) {
+		print(line)
 	}
+}
+
+// MARK: - Engine
+
+/// The logging core. Holds configuration behind a `Mutex` (read synchronously,
+/// so `shouldLog` and `@autoclosure` laziness stay synchronous) and serializes
+/// output through a single ordered consumer. Instantiable so tests run against
+/// an isolated engine instead of shared global state.
+final class LoggerEngine: Sendable {
+	private let configuration: Mutex<LoggerConfiguration>
+	private let continuation: AsyncStream<String>.Continuation
+	private let consumer: Task<Void, Never>
+
+	init(configuration: LoggerConfiguration = .default, sink: LogSink = PrintLogSink()) {
+		self.configuration = Mutex(configuration)
+		let (stream, continuation) = AsyncStream<String>.makeStream()
+		self.continuation = continuation
+		// `yield` preserves submission order and a single consumer drains the
+		// stream, so lines print in the order emitted without each call
+		// spawning its own task.
+		self.consumer = Task {
+			for await line in stream {
+				sink.write(line)
+			}
+		}
+	}
+
+	deinit {
+		continuation.finish()
+	}
+
+	func log(
+		_ message: () -> String,
+		level: LogLevel,
+		tag: LogTag,
+		file: StaticString = #filePath,
+		function: String = #function,
+		line: UInt = #line
+	) {
+		let configuration = configuration.withLock { $0 }
+		// Gating is synchronous so `@autoclosure` stays lazy: the (possibly
+		// expensive) message is built only when the line will actually print.
+		guard Self.shouldLog(configuration, level, tag) else { return }
+
+		let location = Self.location(file: file, function: function, line: line)
+		continuation.yield(Self.format(message(), level: level, tag: tag, location: location))
+	}
+
+	func configure(_ configuration: LoggerConfiguration) {
+		self.configuration.withLock { $0 = configuration }
+	}
+
+	func setMinimumLogLevel(_ level: LogLevel) {
+		configuration.withLock { $0.level = level }
+	}
+
+	func enableTag(_ tag: LogTag) {
+		configuration.withLock { $0.enabledTags.insert(tag) }
+	}
+
+	func disableTag(_ tag: LogTag) {
+		configuration.withLock { $0.enabledTags.remove(tag) }
+	}
+
+	func disableAllLogs() {
+		configuration.withLock { $0.level = .none }
+	}
+
+	private static func shouldLog(_ configuration: LoggerConfiguration, _ level: LogLevel, _ tag: LogTag) -> Bool {
+		#if DEBUG
+		guard level.priority >= configuration.level.priority else { return false }
+		// Errors and warnings bypass the tag filter: a disabled subsystem tag
+		// must never silence them — you always want to see failures.
+		if level.priority >= LogLevel.warning.priority { return true }
+		return configuration.enabledTags.contains(tag)
+		#else
+		return false
+		#endif
+	}
+
+	private static func format(_ message: String, level: LogLevel, tag: LogTag, location: String) -> String {
+		"[\(level.rawValue)] [\(tag.rawValue)] \(location)➝ \(message)"
+	}
+
+	private static func location(file: StaticString, function: String, line: UInt) -> String {
+		let fileString = String(describing: file)
+		guard !fileString.isEmpty else {
+			return ""
+		}
+		let fileName = fileString.components(separatedBy: "/").last ?? "Unknown"
+		return "\(fileName):\(line) \(function) "
+	}
+}
+
+// MARK: - Static facade
+
+public enum Logger {
+	private static let shared = LoggerEngine()
 
 	public static func log(
 		_ message: @autoclosure () -> String,
@@ -23,95 +127,34 @@ public struct Logger {
 		function: String = #function,
 		line: UInt = #line
 	) {
-		let msg = message()
-		Task {
-			await actor.log(
-				msg,
-				level: level,
-				tag: tag,
-				file: file,
-				function: function,
-				line: line
-			)
-		}
-	}
-}
-
-// MARK: - Actor implementation
-private actor LoggerActor {
-	private var configuration: LoggerConfiguration = .default
-
-	func setConfiguration(_ configuration: LoggerConfiguration) {
-		self.configuration = configuration
+		// `message` is forwarded as a non-escaping closure, so it stays unevaluated
+		// until the engine decides the line will print.
+		shared.log(message, level: level, tag: tag, file: file, function: function, line: line)
 	}
 
-	func getConfiguration() -> LoggerConfiguration {
-		configuration
+	public static func configure(_ configuration: LoggerConfiguration) {
+		shared.configure(configuration)
 	}
 
-	func setMinimumLogLevel(_ level: LogLevel) {
-		configuration.level = level
+	public static func setMinimumLogLevel(_ level: LogLevel) {
+		shared.setMinimumLogLevel(level)
 	}
 
-	func enableTag(_ tag: LogTag) {
-		configuration.enabledTags.insert(tag)
+	public static func enableTag(_ tag: LogTag) {
+		shared.enableTag(tag)
 	}
 
-	func disableTag(_ tag: LogTag) {
-		configuration.enabledTags.remove(tag)
+	public static func disableTag(_ tag: LogTag) {
+		shared.disableTag(tag)
 	}
 
-	func disableAllLogs() {
-		configuration.level = .none
-	}
-
-	func log(
-		_ message: String,
-		level: LogLevel,
-		tag: LogTag,
-		file: StaticString = #filePath,
-		function: String = #function,
-		line: UInt = #line
-	) {
-		guard shouldLog(configuration, level, tag) else { return }
-
-		if String(describing: file).isEmpty {
-			print("[\(level.rawValue)] [\(tag.rawValue)] ➝ \(message)")
-		} else {
-			let fileName = String(describing: file).components(separatedBy: "/").last ?? "Unknown"
-			print("[\(level.rawValue)] [\(tag.rawValue)] \(fileName):\(line) \(function) ➝ \(message)")
-		}
-	}
-
-	private func shouldLog(_ configuration: LoggerConfiguration, _ level: LogLevel, _ tag: LogTag) -> Bool {
-		#if DEBUG
-		level.priority >= configuration.level.priority && configuration.enabledTags.contains(tag)
-		#else
-		false
-		#endif
-	}
-}
-
-// MARK: - Convenience configuration helpers on facade
-public extension Logger {
-	static func setMinimumLogLevel(_ level: LogLevel) {
-		Task { await actor.setMinimumLogLevel(level) }
-	}
-
-	static func enableTag(_ tag: LogTag) {
-		Task { await actor.enableTag(tag) }
-	}
-
-	static func disableTag(_ tag: LogTag) {
-		Task { await actor.disableTag(tag) }
-	}
-
-	static func disableAllLogs() {
-		Task { await actor.disableAllLogs() }
+	public static func disableAllLogs() {
+		shared.disableAllLogs()
 	}
 }
 
 // MARK: - Types
+
 public enum LogLevel: String, Sendable {
 	case debug = "🔍 DEBUG"
 	case info = "ℹ️ INFO"

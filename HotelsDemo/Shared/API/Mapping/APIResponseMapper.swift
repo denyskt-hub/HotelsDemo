@@ -22,7 +22,7 @@ public enum APIResponseMapper {
 			return apiResponse.data
 		} catch {
 			Logger.log("Decoding error: \(error)", level: .error, tag: .networking)
-			Logger.log("Raw response: \(String(data: data, encoding: .utf8) ?? "Invalid UTF-8")", level: .debug, tag: .networking)
+			Logger.log("Raw response: \(SensitiveDataRedactor.redactedBody(data))", level: .debug, tag: .networking)
 			throw AppError.api(.decoding(error))
 		}
 	}

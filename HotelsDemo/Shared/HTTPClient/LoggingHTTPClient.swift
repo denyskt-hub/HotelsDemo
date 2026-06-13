@@ -71,7 +71,7 @@ public final class LoggingHTTPClient: HTTPClient {
 		Logger.log(logOutput, level: .debug, tag: .networking)
 	}
 
-	private func curlRepresentation(of request: URLRequest) -> String {
+	func curlRepresentation(of request: URLRequest) -> String {
 		var components: [String] = ["curl -i"]
 
 		if let method = request.httpMethod {
@@ -80,20 +80,18 @@ public final class LoggingHTTPClient: HTTPClient {
 
 		if let headers = request.allHTTPHeaderFields {
 			for (key, value) in headers {
-				let lowercasedKey = key.lowercased()
-				let redactedValue = lowercasedKey.contains("authorization") || lowercasedKey.contains("api-key") ? "***" : value
+				let redactedValue = SensitiveDataRedactor.redactedHeaderValue(key: key, value: value)
 				components.append("-H \"\(key): \(redactedValue)\"")
 			}
 		}
 
-		if let body = request.httpBody,
-		   let bodyString = String(data: body, encoding: .utf8) {
-			let escaped = bodyString.replacingOccurrences(of: "\"", with: "\\\"")
+		if let body = request.httpBody {
+			let escaped = SensitiveDataRedactor.redactedBody(body).replacingOccurrences(of: "\"", with: "\\\"")
 			components.append("--data \"\(escaped)\"")
 		}
 
 		if let url = request.url {
-			components.append("\"\(url.absoluteString)\"")
+			components.append("\"\(SensitiveDataRedactor.redactedURLString(url))\"")
 		}
 
 		return components.joined(separator: " \\\n  ")

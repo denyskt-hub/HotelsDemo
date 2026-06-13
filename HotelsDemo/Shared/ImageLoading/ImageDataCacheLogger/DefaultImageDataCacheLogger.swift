@@ -28,12 +28,12 @@ public struct DefaultImageDataCacheLogger: ImageDataCacheLogger {
 		switch result {
 		case let .success(data):
 			if let data = data {
-				Logger.log("✅ Load success for key: \(key) (\(data.count) bytes)", level: .info, tag: .custom("cache"))
+				Logger.log("✅ Load success for key: \(key) (\(data.count) bytes)", level: .info, tag: tag)
 			} else {
-				Logger.log("Loaded nil data for key: \"\(key)\"", level: .warning, tag: .custom("cache"))
+				Logger.log("Loaded nil data for key: \"\(key)\"", level: .warning, tag: tag)
 			}
 		case let .failure(error):
-			Logger.log("Load failure with \(error) for key: \(key)", level: .error, tag: .custom("cache"))
+			Logger.log("Load failure with \(error) for key: \(key)", level: .error, tag: tag)
 		}
 	}
 }
