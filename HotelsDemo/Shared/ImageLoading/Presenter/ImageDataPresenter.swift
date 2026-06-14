@@ -15,16 +15,25 @@ public final class ImageDataPresenter: ImageDataPresentationLogic {
 	}
 
 	public func presentImageData(_ data: Data) {
-		guard let image = UIImage(data: data) else { return }
+		guard let image = UIImage(data: data) else {
+			Logger.log("Failed to decode image from \(data.count) bytes of data.", level: .error, tag: .custom("image"))
+			presentPlaceholder()
+			return
+		}
 		view.displayImage(image)
 	}
 
 	public func presentImageDataError(_ error: Error) {
-		guard let placeholderImage = UIImage(systemName: "photo") else { return }
-		view.displayPlaceholderImage(placeholderImage)
+		Logger.log("Image load failed: \(error)", level: .error, tag: .custom("image"))
+		presentPlaceholder()
 	}
 
 	public func presentLoading(_ isLoading: Bool) {
 		view.displayLoading(isLoading)
+	}
+
+	private func presentPlaceholder() {
+		guard let placeholderImage = UIImage(systemName: "photo") else { return }
+		view.displayPlaceholderImage(placeholderImage)
 	}
 }
