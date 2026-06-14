@@ -6,36 +6,37 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class DefaultDebouncer: Debouncer {
 	private let delay: TimeInterval
-
-	private let syncTaskStore = TaskStore<Void, Never>()
-	private let asyncTaskStore = TaskStore<Void, Never>()
+	private let currentTask = Mutex<Task<Void, Never>?>(nil)
 
 	public init(delay: TimeInterval) {
 		self.delay = delay
 	}
 
 	public func execute(_ action: @Sendable @escaping () -> Void) {
-		let task = Task { @MainActor in
-			try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-			guard !Task.isCancelled else { return }
-			action()
-		}
-		Task {
-			await syncTaskStore.setTask(task)
-		}
+		schedule { action() }
 	}
 
 	public func asyncExecute(_ action: @Sendable @escaping () async -> Void) {
-		let task = Task {
-			try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-			guard !Task.isCancelled else { return }
-			await action()
-		}
-		Task {
-			await asyncTaskStore.setTask(task)
+		schedule { await action() }
+	}
+
+	/// Cancels the pending task (if any) and schedules a new one, atomically.
+	///
+	/// Cancel-previous and store-new run inside a single `Mutex` critical
+	/// section, so concurrent callers are ordered by lock acquisition and the
+	/// debouncer's "only the last call fires" invariant always holds.
+	private func schedule(_ action: @Sendable @escaping () async -> Void) {
+		currentTask.withLock { task in
+			task?.cancel()
+			task = Task { [delay] in
+				try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+				guard !Task.isCancelled else { return }
+				await action()
+			}
 		}
 	}
 }
