@@ -60,6 +60,10 @@ public final class DefaultHotelsRequestFactory: HotelsRequestFactory {
 
 		var request = URLRequest(url: finalURL)
 		request.httpMethod = "GET"
+		// Prices and availability are volatile, so search results must never
+		// be served from the URL cache — bypass it for this request only,
+		// leaving image and other GET caching untouched.
+		request.cachePolicy = .reloadIgnoringLocalCacheData
 		return request
 	}
 }

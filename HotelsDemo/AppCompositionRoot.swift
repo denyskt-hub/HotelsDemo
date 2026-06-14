@@ -22,8 +22,9 @@ final class AppCompositionRoot {
 	private lazy var client: HTTPClient = {
 		let base = URLSessionHTTPClient.shared
 		let logging = LoggingHTTPClient(client: base)
+		let retrying = RetryHTTPClient(client: logging)
 		let rapid = RapidAPIHTTPClient(
-			client: logging,
+			client: retrying,
 			apiHost: environment.apiHost,
 			apiKey: environment.apiKey
 		)
