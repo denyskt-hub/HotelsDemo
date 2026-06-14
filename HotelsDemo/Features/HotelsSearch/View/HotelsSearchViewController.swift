@@ -18,6 +18,17 @@ public final class HotelsSearchViewController: NiblessViewController {
 	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
 
+	public let emptyStateLabel: UILabel = {
+		let label = UILabel()
+		label.text = "No hotels match your search."
+		label.textColor = .secondaryLabel
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.font = .preferredFont(forTextStyle: .body)
+		label.adjustsFontForContentSizeCategory = true
+		return label
+	}()
+
 	private var actionBar: HotelsActionBar { rootView.actionBar }
 	public var filterButton: UIButton { actionBar.filterButton }
 
@@ -95,6 +106,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 extension HotelsSearchViewController: HotelsDisplayLogic {
 	public func displayCellControllers(_ cellControllers: [HotelCellController]) {
 		self.cellControllers = cellControllers
+		tableView.backgroundView = cellControllers.isEmpty ? emptyStateLabel : nil
 		tableView.reloadData()
 	}
 
@@ -134,7 +146,8 @@ extension HotelsSearchViewController: UITableViewDataSource {
 
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cellController = cellController(at: indexPath) else {
-			preconditionFailure("cellController not found")
+			assertionFailure("cellController not found at \(indexPath)")
+			return UITableViewCell()
 		}
 		return cellController.tableView(tableView, cellForRowAt: indexPath)
 	}
