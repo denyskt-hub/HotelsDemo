@@ -52,6 +52,28 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		assertThat(sut, isRendering: viewModels)
 	}
 
+	func test_displayCellControllers_empty_showsEmptyState() {
+		let viewModel = HotelsSearchModels.HotelViewModel(
+			position: 0,
+			starRating: 2,
+			name: "Hotel",
+			score: "6.9",
+			reviews: "10 reviews",
+			price: "US$123.99",
+			priceDetails: "Tax included",
+			photoURL: nil
+		)
+		let (sut, _, _) = makeSUT()
+		sut.simulateAppearanceInWindow()
+
+		sut.displayCellControllers([])
+		XCTAssertTrue(sut.isShowingEmptyState)
+		XCTAssertEqual(sut.emptyStateMessage?.isEmpty, false)
+
+		sut.displayCellControllers([HotelCellController(viewModel: viewModel)])
+		XCTAssertFalse(sut.isShowingEmptyState)
+	}
+
 	func test_displaySearchError_rendersErrorMessage() {
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
@@ -179,6 +201,14 @@ extension HotelsSearchViewController: TableViewRenderer {
 
 	var isShowingLoadingIndicator: Bool {
 		!loadingView.isHidden && loadingView.isAnimating
+	}
+
+	var isShowingEmptyState: Bool {
+		tableView.backgroundView != nil
+	}
+
+	var emptyStateMessage: String? {
+		(tableView.backgroundView as? UILabel)?.text
 	}
 
 	func simulateFilterButtonTap() {
