@@ -99,16 +99,16 @@ final class RoomGuestsPickerViewControllerTests: XCTestCase {
 
 	func test_displayAdults_rendersProvidedNumberOfAdults() {
 		let (sut, _, _) = makeSUT()
-		
+
 		sut.displayAdults(viewModel: .init(adults: 2))
-		
+
 		XCTAssertEqual(sut.adultsStepper.value, 2)
 	}
 
 	func test_displayUpdateChildrenAge_rendersProvidedNumberOfChildren() {
 		let childrenAge = anyChildrenAgeInputViewModels()
 		let (sut, _, _) = makeSUT()
-		
+
 		sut.displayUpdateChildrenAge(viewModel: .init(childrenAge: childrenAge))
 
 		childrenAge.enumerated().forEach { index, viewModel in
@@ -416,43 +416,43 @@ final class RoomGuestsPickerBusinessLogicSpy: RoomGuestsPickerBusinessLogic {
 	func doFetchLimits(request: RoomGuestsPickerModels.FetchLimits.Request) {
 		messages.append(.doFetchLimits(request))
 	}
-	
+
 	func doFetchRoomGuests(request: RoomGuestsPickerModels.FetchRoomGuests.Request) {
 		messages.append(.doFetchRoomGuests(request))
 	}
-	
+
 	func handleDecrementRooms() {
 		messages.append(.handleDecrementRooms)
 	}
-	
+
 	func handleIncrementRooms() {
 		messages.append(.handleIncrementRooms)
 	}
-	
+
 	func handleDecrementAdults() {
 		messages.append(.handleDecrementAdults)
 	}
-	
+
 	func handleIncrementAdults() {
 		messages.append(.handleIncrementAdults)
 	}
-	
+
 	func handleDecrementChildrenAge() {
 		messages.append(.handleDecrementChildrenAge)
 	}
-	
+
 	func handleIncrementChildrenAge() {
 		messages.append(.handleIncrementChildrenAge)
 	}
-	
+
 	func handleAgePicker(request: RoomGuestsPickerModels.AgeSelection.Request) {
 		messages.append(.handleAgePicker(request))
 	}
-	
+
 	func handleAgeSelection(request: RoomGuestsPickerModels.AgeSelected.Request) {
 		messages.append(.handleAgeSelection(request))
 	}
-	
+
 	func handleRoomGuestsSelection(request: RoomGuestsPickerModels.Select.Request) {
 		messages.append(.handleRoomGuestsSelection(request))
 	}

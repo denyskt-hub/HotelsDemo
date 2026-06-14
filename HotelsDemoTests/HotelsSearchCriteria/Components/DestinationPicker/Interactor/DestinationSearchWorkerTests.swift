@@ -12,7 +12,7 @@ import HotelsDemo
 final class DestinationSearchWorkerTests: XCTestCase {
 	func test_init_doesNotPerformRequest() {
 		let (_, client) = makeSUT()
-		
+
 		XCTAssertTrue(client.receivedRequests().isEmpty)
 	}
 

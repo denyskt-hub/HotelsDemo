@@ -64,7 +64,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		let viewModel = makeResetViewModelWith(availablePriceRange: 0...500)
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearance()
-		
+
 		sut.display(viewModel: makeLoadViewModelWith(priceRange: 100...200, in: 0...500))
 		sut.displayReset(viewModel: viewModel)
 
@@ -79,7 +79,7 @@ final class PriceRangeViewControllerTests: XCTestCase {
 		XCTAssertEqual(sut.lowerValueLabel.text, "US$150")
 		XCTAssertEqual(sut.upperValueLabel.text, "US$200")
 	}
-	
+
 	func test_displaySelect_notifiesDelegateWithSelectedPriceRange() {
 		let (sut, _, delegate) = makeSUT()
 
@@ -168,15 +168,15 @@ final class PriceRangeBusinessLogicSpy: PriceRangeBusinessLogic {
 	func doFetchPriceRange(request: PriceRangeModels.FetchPriceRange.Request) {
 		messages.append(.doFetchPriceRange(request))
 	}
-	
+
 	func handlePriceRangeReset(request: PriceRangeModels.PriceRangeReset.Request) {
 		messages.append(.handlePriceRangeReset(request))
 	}
-	
+
 	func handlePriceRangeSelection(request: PriceRangeModels.PriceRangeSelection.Request) {
 		messages.append(.handlePriceRangeSelection(request))
 	}
-	
+
 	func handleSelectingPriceRange(request: PriceRangeModels.SelectingPriceRange.Request) {
 		messages.append(.handleSelectingPriceRange(request))
 	}

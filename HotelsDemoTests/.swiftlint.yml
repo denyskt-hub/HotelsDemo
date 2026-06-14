@@ -1,0 +1,11 @@
+# Test-target overrides. Merged with the root .swiftlint.yml.
+# These rules are relaxed only for tests, where the patterns below are idiomatic
+# and intentional — production code is still held to the stricter root config.
+disabled_rules:
+  - large_tuple                # parametrized test cases / makeSUT return (sut, spy, ...) tuples
+  - type_name                  # test class name = production type name + "Tests" suffix, can exceed 40 chars
+  - function_parameter_count   # makeSUT factory helpers inject many collaborators
+  - file_length                # comprehensive test classes are naturally long
+  - type_body_length           # same — splitting a cohesive test class by line count hurts readability
+  - force_try                  # try! on known-good literal fixtures is clearer than error plumbing in setup
+  - line_length                # XCTAssert messages carry descriptive text + file:/line: forwarding

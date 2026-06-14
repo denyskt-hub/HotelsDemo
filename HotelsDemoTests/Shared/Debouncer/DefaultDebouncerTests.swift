@@ -18,7 +18,7 @@ final class DefaultDebouncerTests: XCTestCase {
 
 		let called = Mutex<Bool>(false)
 		sut.execute {
-			called.withLock { $0 = true}
+			called.withLock { $0 = true }
 			exp.fulfill()
 		}
 

@@ -182,7 +182,7 @@ final class HotelsSearchWorkerTests: XCTestCase {
 				"reviewScore": reviewScore,
 				"photoUrls": photoURLs.map(\.absoluteString),
 				"priceBreakdown": [
-					"grossPrice":  [
+					"grossPrice": [
 						"value": grossPrice,
 						"currency": currency
 					]

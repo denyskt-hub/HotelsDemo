@@ -153,7 +153,7 @@ final class DestinationPickerBusinessLogicSpy: DestinationPickerBusinessLogic {
 	func doSearchDestinations(request: DestinationPickerModels.Search.Request) {
 		messages.append(.doSearchDestinations(request))
 	}
-	
+
 	func handleDestinationSelection(request: DestinationPickerModels.DestinationSelection.Request) {
 		messages.append(.handleDestinationSelection(request))
 	}

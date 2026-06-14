@@ -45,7 +45,7 @@ final class DestinationPickerPresenterTests: XCTestCase {
 	func test_presentSearchError_displaySearchError() {
 		let error = TestError("error message")
 		let (sut, viewController) = makeSUT()
-		
+
 		sut.presentSearchError(error)
 
 		XCTAssertEqual(viewController.messages, [.displaySearchError(.init(message: "error message"))])
@@ -80,15 +80,15 @@ final class DestinationPickerDisplayLogicSpy: DestinationPickerDisplayLogic {
 	func displayDestinations(viewModel: DestinationPickerModels.Search.ViewModel) {
 		messages.append(.displayDestinations(viewModel))
 	}
-	
+
 	func displaySelectedDestination(viewModel: DestinationPickerModels.DestinationSelection.ViewModel) {
 		messages.append(.displaySelectedDestination(viewModel))
 	}
-	
+
 	func displaySearchError(viewModel: DestinationPickerModels.Search.ErrorViewModel) {
 		messages.append(.displaySearchError(viewModel))
 	}
-	
+
 	func hideSearchError() {
 		messages.append(.hideSearchError)
 	}

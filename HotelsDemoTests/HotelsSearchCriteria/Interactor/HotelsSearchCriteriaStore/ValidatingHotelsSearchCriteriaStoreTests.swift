@@ -19,7 +19,7 @@ final class ValidatingHotelsSearchCriteriaStoreTests: XCTestCase {
 	func test_save_validatesSearchCriteria() async throws {
 		let criteria = anySearchCriteria()
 		let (sut, _, validator) = makeSUT()
-		
+
 		try await sut.save(criteria)
 
 		XCTAssertEqual(validator.validated(), [criteria])

@@ -14,7 +14,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 		let (sut, interactor, _) = makeSUT()
 
 		sut.simulateAppearance()
-		
+
 		XCTAssertEqual(interactor.messages, [.doFetchFilters(.init())])
 	}
 
@@ -66,7 +66,7 @@ final class HotelFiltersPickerViewControllerTests: XCTestCase {
 	func test_resetButtonTap_resetsFilters() {
 		let (sut, interactor, _) = makeSUT()
 		sut.simulateAppearance()
-		
+
 		sut.simulateResetButtonTap()
 
 		XCTAssertEqual(interactor.messages, [
@@ -149,7 +149,7 @@ final class ResetableFilterViewControllerSpy: UIViewController, ResetableFilterV
 	enum Message: Equatable {
 		case reset
 	}
-	
+
 	private(set) var messages = [Message]()
 
 	func reset() {

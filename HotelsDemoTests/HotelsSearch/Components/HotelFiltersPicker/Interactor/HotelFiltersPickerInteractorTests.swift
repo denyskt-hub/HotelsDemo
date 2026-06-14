@@ -129,7 +129,7 @@ final class HotelFiltersPickerPresentationLogicSpy: HotelFiltersPickerPresentati
 	func presentSelectedFilters(response: HotelFiltersPickerModels.FilterSelection.Response) {
 		messages.append(.presentSelectedFilters(response))
 	}
-	
+
 	func presentResetFilters(response: HotelFiltersPickerModels.FilterReset.Response) {
 		messages.append(.presentResetFilters(response))
 	}

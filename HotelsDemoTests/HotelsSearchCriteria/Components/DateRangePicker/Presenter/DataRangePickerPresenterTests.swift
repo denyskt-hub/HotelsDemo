@@ -101,18 +101,6 @@ final class DataRangePickerPresenterTests: XCTestCase {
 		let dateTitle: String
 		let monthTitle: String
 		let weekdays: [String]
-
-		init(
-			date: Date,
-			dateTitle: String,
-			monthTitle: String,
-			weekdays: [String]
-		) {
-			self.date = date
-			self.dateTitle = dateTitle
-			self.monthTitle = monthTitle
-			self.weekdays = weekdays
-		}
 	}
 }
 
@@ -128,11 +116,11 @@ final class DateRangePickerDisplayLogicSpy: DateRangePickerDisplayLogic {
 	func display(viewModel: DateRangePickerModels.FetchCalendar.ViewModel) {
 		messages.append(.display(viewModel))
 	}
-	
+
 	func displaySelectDate(viewModel: DateRangePickerModels.DateSelection.ViewModel) {
 		messages.append(.displaySelectDate(viewModel))
 	}
-	
+
 	func displaySelectedDateRange(viewModel: DateRangePickerModels.DateRangeSelection.ViewModel) {
 		messages.append(.displaySelectedDateRange(viewModel))
 	}

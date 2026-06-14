@@ -67,11 +67,11 @@ final class StarRatingDisplayLogicSpy: StarRatingDisplayLogic {
 	func display(viewModel: StarRatingModels.FetchStarRating.ViewModel) {
 		messages.append(.display(viewModel))
 	}
-	
+
 	func displayReset(viewModel: StarRatingModels.StarRatingReset.ViewModel) {
 		messages.append(.displayReset(viewModel))
 	}
-	
+
 	func displaySelect(viewModel: StarRatingModels.StarRatingSelection.ViewModel) {
 		messages.append(.displaySelect(viewModel))
 	}

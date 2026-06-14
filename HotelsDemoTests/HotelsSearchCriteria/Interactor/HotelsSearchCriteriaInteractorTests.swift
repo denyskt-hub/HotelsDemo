@@ -52,7 +52,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		let checkOutDate = "28.06.2025".date()
 		let criteria = makeSearchCriteria(checkInDate: checkInDate, checkOutDate: checkOutDate)
 		let (sut, provider, _, presenter) = makeSUT()
-		
+
 		sut.doFetchDateRange(request: .init())
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(criteria)
@@ -64,7 +64,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	func test_doFetchRoomGuests_presentLoadErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
-		
+
 		sut.doFetchRoomGuests(request: .init())
 		await provider.waitUntilStarted()
 		provider.completeWithError(providerError)
@@ -132,7 +132,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	func test_handleDestinationSelection_presentUpdateErrorOnCacheError() async {
 		let cacheError = anyNSError()
 		let (sut, provider, cache, presenter) = makeSUT()
-		
+
 		sut.handleDestinationSelection(request: .init(destination: anyDestination()))
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(anySearchCriteria())
@@ -163,7 +163,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	func test_handleDateRangeSelection_presentUpdateErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
-		
+
 		sut.handleDateRangeSelection(request: .init(checkInDate: Date(), checkOutDate: Date()))
 		await provider.waitUntilStarted()
 		provider.completeWithError(providerError)
@@ -208,7 +208,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 	func test_handleRoomGuestsSelection_presentUpdateErrorOnProviderError() async {
 		let providerError = anyNSError()
 		let (sut, provider, _, presenter) = makeSUT()
-		
+
 		sut.handleRoomGuestsSelection(request: .init(rooms: 1, adults: 1, childrenAge: [0]))
 		await provider.waitUntilStarted()
 		provider.completeWithError(providerError)
@@ -241,7 +241,7 @@ final class HotelsSearchCriteriaInteractorTests: XCTestCase {
 		expectedCriteria.adults = adults
 		expectedCriteria.childrenAge = childrenAge
 		let (sut, provider, cache, presenter) = makeSUT()
-		
+
 		sut.handleRoomGuestsSelection(request: .init(rooms: rooms, adults: adults, childrenAge: childrenAge))
 		await provider.waitUntilStarted()
 		provider.completeWithCriteria(criteria)
@@ -375,17 +375,17 @@ final class HotelsSearchCriteriaPresenterSpy: HotelsSearchCriteriaPresentationLo
 		messages.append(.presentRoomGuests(response))
 		stream.continuation.yield(())
 	}
-	
+
 	func presentUpdateDestination(response: HotelsSearchCriteriaModels.DestinationSelection.Response) {
 		messages.append(.presentUpdateDestination(response))
 		stream.continuation.yield(())
 	}
-	
+
 	func presentUpdateDates(response: HotelsSearchCriteriaModels.DateRangeSelection.Response) {
 		messages.append(.presentUpdateDates(response))
 		stream.continuation.yield(())
 	}
-	
+
 	func presentUpdateRoomGuests(response: HotelsSearchCriteriaModels.RoomGuestsSelection.Response) {
 		messages.append(.presentUpdateRoomGuests(response))
 		stream.continuation.yield(())

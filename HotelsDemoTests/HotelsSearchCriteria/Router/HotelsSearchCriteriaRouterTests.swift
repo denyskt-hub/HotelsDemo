@@ -20,9 +20,9 @@ final class HotelsSearchCriteriaRouterTests: XCTestCase {
 
 	func test_routeToDestinationPicker_buildsPickerWithExpectedDelegate() {
 		let container = makeSUT()
-		
+
 		container.sut.routeToDestinationPicker()
-		
+
 		XCTAssertEqual(container.destinationPickerFactory.messages, [
 			.makeDestinationPicker(objectID(container.viewController))
 		])
@@ -30,9 +30,9 @@ final class HotelsSearchCriteriaRouterTests: XCTestCase {
 
 	func test_routeToDateRangePicker_presentsDateRangeVC() {
 		let container = makeSUT()
-		
+
 		container.sut.routeToDateRangePicker(viewModel: .init(startDate: .init(), endDate: .init()))
-		
+
 		XCTAssertEqual(container.viewController.presentedVC, container.dateRangePickerFactory.stub)
 	}
 
@@ -55,7 +55,7 @@ final class HotelsSearchCriteriaRouterTests: XCTestCase {
 
 	func test_routeToRoomGuestsPicker_presentsRoomGuestsVC() {
 		let container = makeSUT()
-		
+
 		container.sut.routeToRoomGuestsPicker(viewModel: .init(rooms: 1, adults: 1, childrenAge: []))
 
 		XCTAssertEqual(container.viewController.presentedVC, container.roomGuestsPickerFactory.stub)

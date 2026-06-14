@@ -24,7 +24,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 		sut.simulateAppearance()
 
 		sut.simulateDestinationButtonTap()
-		
+
 		XCTAssertEqual(router.messages, [.routeToDestinationPicker])
 	}
 
@@ -40,7 +40,7 @@ final class HotelsSearchCriteriaViewControllerTests: XCTestCase {
 	func test_roomGuestsButtonTap_loadsRoomGuests() {
 		let (sut, interactor, _, _) = makeSUT()
 		sut.simulateAppearance()
-		
+
 		sut.simulateRoomGuestsButtonTap()
 
 		XCTAssertEqual(interactor.receivedMessages().last, .doFetchRoomGuests(.init()))

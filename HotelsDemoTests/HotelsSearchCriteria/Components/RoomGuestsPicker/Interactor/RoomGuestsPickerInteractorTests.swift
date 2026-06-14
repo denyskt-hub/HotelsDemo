@@ -61,10 +61,10 @@ final class RoomGuestsPickerInteractorTests: XCTestCase {
 
 	func test_handleDecrementAdults_presentsUpdatedAdults() {
 		let (sut, presenter) = makeSUT(adults: 2)
-		
+
 		sut.handleDecrementAdults()
 		XCTAssertEqual(presenter.messages, [.presentUpdateAdults(.init(adults: 1))])
-		
+
 		sut.handleDecrementAdults()
 		XCTAssertEqual(presenter.messages, [
 			.presentUpdateAdults(.init(adults: 1)),
@@ -194,31 +194,31 @@ final class RoomGuestsPickerPresentationLogicSpy: RoomGuestsPickerPresentationLo
 	func presentLimits(response: RoomGuestsPickerModels.FetchLimits.Response) {
 		messages.append(.presentLimits(response))
 	}
-	
+
 	func presentRoomGuests(response: RoomGuestsPickerModels.FetchRoomGuests.Response) {
 		messages.append(.presentRoomGuests(response))
 	}
-	
+
 	func presentUpdateRooms(response: RoomGuestsPickerModels.UpdateRooms.Response) {
 		messages.append(.presentUpdateRooms(response))
 	}
-	
+
 	func presentUpdateAdults(response: RoomGuestsPickerModels.UpdateAdults.Response) {
 		messages.append(.presentUpdateAdults(response))
 	}
-	
+
 	func presentUpdateChildrenAge(response: RoomGuestsPickerModels.UpdateChildrenAge.Response) {
 		messages.append(.presentUpdateChildrenAge(response))
 	}
-	
+
 	func presentAgePicker(response: RoomGuestsPickerModels.AgeSelection.Response) {
 		messages.append(.presentAgePicker(response))
 	}
-	
+
 	func presentChildrenAge(response: RoomGuestsPickerModels.AgeSelected.Response) {
 		messages.append(.presentChildrenAge(response))
 	}
-	
+
 	func presentSelectedRoomGuests(response: RoomGuestsPickerModels.Select.Response) {
 		messages.append(.presentSelectedRoomGuests(response))
 	}

@@ -161,31 +161,31 @@ final class RoomGuestsPickerDisplayLogicSpy: RoomGuestsPickerDisplayLogic {
 	func applyLimits(_ limits: RoomGuestsLimits) {
 		messages.append(.applyLimits(limits))
 	}
-	
+
 	func displayRoomGuests(viewModel: RoomGuestsPickerModels.FetchRoomGuests.ViewModel) {
 		messages.append(.displayRoomGuests(viewModel))
 	}
-	
+
 	func displayRooms(viewModel: RoomGuestsPickerModels.UpdateRooms.ViewModel) {
 		messages.append(.displayRooms(viewModel))
 	}
-	
+
 	func displayAdults(viewModel: RoomGuestsPickerModels.UpdateAdults.ViewModel) {
 		messages.append(.displayAdults(viewModel))
 	}
-	
+
 	func displayUpdateChildrenAge(viewModel: RoomGuestsPickerModels.UpdateChildrenAge.ViewModel) {
 		messages.append(.displayUpdateChildrenAge(viewModel))
 	}
-	
+
 	func displayAgePicker(viewModel: RoomGuestsPickerModels.AgeSelection.ViewModel) {
 		messages.append(.displayAgePicker(viewModel))
 	}
-	
+
 	func displayChildrenAge(viewModel: RoomGuestsPickerModels.AgeSelected.ViewModel) {
 		messages.append(.displayChildrenAge(viewModel))
 	}
-	
+
 	func displaySelectedRoomGuests(viewModel: RoomGuestsPickerModels.Select.ViewModel) {
 		messages.append(.displaySelectedRoomGuests(viewModel))
 	}

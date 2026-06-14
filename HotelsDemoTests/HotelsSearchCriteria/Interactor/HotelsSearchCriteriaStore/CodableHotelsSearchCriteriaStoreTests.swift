@@ -12,13 +12,13 @@ import HotelsDemo
 final class CodableHotelsSearchCriteriaStoreTests: XCTestCase, HotelsSearchCriteriaStoreSpecs {
 	override func setUp() async throws {
 		try await super.setUp()
-		
+
 		setupEmptyStoreState()
 	}
 
 	override func tearDown() async throws {
 		try await super.tearDown()
-		
+
 		undoStoreSideEffects()
 	}
 

@@ -208,7 +208,7 @@ extension DateCell {
 	var title: String? {
 		titleLabel.text
 	}
-	
+
 	var isEnabled: Bool {
 		titleLabel.isEnabled
 	}

@@ -33,9 +33,9 @@ final class PriceRangePresenterTests: XCTestCase {
 
 	func test_presentReset_presentsReset() {
 		let (sut, viewController) = makeSUT()
-		
+
 		sut.presentReset(response: .init(availablePriceRange: 0...100, currencyCode: "USD"))
-		
+
 		let expectedViewModel = PriceRangeModels.PriceRangeViewModel(
 			availablePriceRange: 0...100,
 			priceRange: 0...100,
@@ -55,9 +55,9 @@ final class PriceRangePresenterTests: XCTestCase {
 
 	func test_presentSelecting_presentsSelecting() {
 		let (sut, viewController) = makeSUT()
-		
+
 		sut.presentSelecting(response: .init(priceRange: 50...80, currencyCode: "USD"))
-		
+
 		XCTAssertEqual(viewController.messages.last, .displaySelecting(.init(lowerValue: "$50.00", upperValue: "$80.00")))
 	}
 

@@ -16,7 +16,7 @@ final class StarRatingInteractorTests: XCTestCase {
 			([.five, .four], "when .five and .four is selected")
 		]
 
-		cases.forEach { selected, desctiption in
+		cases.forEach { selected, _ in
 			let (sut, presenter) = makeSUT(selectedStarRatings: selected)
 
 			sut.doFetchStarRating(request: .init())
@@ -84,11 +84,11 @@ final class StarRatingPresentationLogicSpy: StarRatingPresentationLogic {
 	func present(response: StarRatingModels.FetchStarRating.Response) {
 		messages.append(.present(response))
 	}
-	
+
 	func presentReset(response: StarRatingModels.StarRatingReset.Response) {
 		messages.append(.presentReset(response))
 	}
-	
+
 	func presentSelect(response: StarRatingModels.StarRatingSelection.Response) {
 		messages.append(.presentSelect(response))
 	}

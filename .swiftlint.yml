@@ -18,6 +18,3 @@ opt_in_rules:
 
 line_length:
   warning: 130
-
-excluded:
-  - HotelsDemoTests

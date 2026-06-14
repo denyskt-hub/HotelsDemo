@@ -124,11 +124,11 @@ final class ReviewScoreBusinessLogicSpy: ReviewScoreBusinessLogic {
 	func doFetchReviewScore(request: ReviewScoreModels.FetchReviewScore.Request) {
 		messages.append(.doFetchReviewScore(request))
 	}
-	
+
 	func handleReviewScoreReset(request: ReviewScoreModels.ReviewScoreReset.Request) {
 		messages.append(.handleReviewScoreReset(request))
 	}
-	
+
 	func handleReviewScoreSelection(request: ReviewScoreModels.ReviewScoreSelection.Request) {
 		messages.append(.handleReviewScoreSelection(request))
 	}

@@ -26,7 +26,7 @@
   },
   "testTargets" : [
     {
-      "parallelizable" : true,
+      "parallelizable" : false,
       "target" : {
         "containerPath" : "container:HotelsDemo.xcodeproj",
         "identifier" : "92A3EB392E0C524F009FC429",

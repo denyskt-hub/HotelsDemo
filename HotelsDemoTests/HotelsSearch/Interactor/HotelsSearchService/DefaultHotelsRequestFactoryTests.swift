@@ -19,7 +19,7 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 			checkInDate: "18.07.2025".date(),
 			checkOutDate: "19.07.2025".date(),
 			adults: 2,
-			childrenAge: [5,7],
+			childrenAge: [5, 7],
 			roomsQuantity: 1
 		)
 		let sut = makeSUT(url: url)

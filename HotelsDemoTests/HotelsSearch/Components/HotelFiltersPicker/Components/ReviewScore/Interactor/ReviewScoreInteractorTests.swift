@@ -100,11 +100,11 @@ final class ReviewScorePresentationLogicSpy: ReviewScorePresentationLogic {
 	func present(response: ReviewScoreModels.FetchReviewScore.Response) {
 		messages.append(.present(response))
 	}
-	
+
 	func presentReset(response: ReviewScoreModels.ReviewScoreReset.Response) {
 		messages.append(.presentReset(response))
 	}
-	
+
 	func presentSelect(response: ReviewScoreModels.ReviewScoreSelection.Response) {
 		messages.append(.presentSelect(response))
 	}
