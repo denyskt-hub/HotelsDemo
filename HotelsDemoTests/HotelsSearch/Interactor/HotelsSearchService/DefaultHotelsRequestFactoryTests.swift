@@ -59,6 +59,20 @@ final class DefaultHotelsRequestFactoryTests: XCTestCase {
 		XCTAssertEqual(requestQuery?.contains("departure_date=2025-07-19"), true)
 	}
 
+	func test_makeSearchRequest_bypassesURLCache_forFreshPricesAndAvailability() throws {
+		let sut = makeSUT(url: anyURL())
+
+		let criteria = makeSearchCriteria(
+			destination: makeDestination(),
+			checkInDate: "18.07.2025".date(),
+			checkOutDate: "19.07.2025".date()
+		)
+
+		let request = try sut.makeSearchRequest(criteria: criteria)
+
+		XCTAssertEqual(request.cachePolicy, .reloadIgnoringLocalCacheData)
+	}
+
 	// MARK: - Helpers
 
 	private func makeSUT(url: URL, calendar: Calendar = .gregorian()) -> DefaultHotelsRequestFactory {
