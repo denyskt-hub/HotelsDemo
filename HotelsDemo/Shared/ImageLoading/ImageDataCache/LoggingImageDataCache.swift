@@ -34,6 +34,14 @@ public final class LoggingImageDataCache: ImageDataCache {
 		#endif
 	}
 
+	public func remove(forKey key: String) async throws {
+		try await cache.remove(forKey: key)
+	}
+
+	public func removeAll() async throws {
+		try await cache.removeAll()
+	}
+
 	public func data(forKey key: String) async throws -> Data? {
 		#if DEBUG
 		do {

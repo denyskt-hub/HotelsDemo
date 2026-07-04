@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/denyskt-hub/ImageLoadingKit.git",
       "state" : {
-        "revision" : "c90fa485d1969496efdbe1ce474ab7af7a41129a",
-        "version" : "1.0.0"
+        "revision" : "a3062ac8cae400fac1c118ca0e30b7ce5215cf4b",
+        "version" : "2.0.0"
       }
     }
   ],
