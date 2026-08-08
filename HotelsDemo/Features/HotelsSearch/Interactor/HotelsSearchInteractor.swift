@@ -35,6 +35,14 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	}
 
 	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
+		startSearch()
+	}
+
+	public func handleRetry(request: HotelsSearchModels.Retry.Request) {
+		startSearch()
+	}
+
+	private func startSearch() {
 		searchTask.withLock { task in
 			task?.cancel()
 			task = Task { [self] in
@@ -71,6 +79,11 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		} catch {
 			await presentSearchError(error)
 		}
+
+		// A cancelled search must not touch the loading indicator either: when
+		// the cancel came from a retry, the superseding search already owns it,
+		// and hiding it here would blank the spinner out from under it.
+		guard !Task.isCancelled else { return }
 
 		await presenter.presentSearchLoading(false)
 	}

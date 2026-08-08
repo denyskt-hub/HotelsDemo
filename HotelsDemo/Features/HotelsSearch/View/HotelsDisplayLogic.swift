@@ -11,6 +11,6 @@ public protocol HotelsDisplayLogic: AnyObject {
 	func displayCellControllers(_ cellControllers: [HotelCellController])
 	func displayFiltersBadge(_ isBadgeVisible: Bool)
 	func displayLoading(_ isLoading: Bool)
-	func displayErrorMessage(_ message: String)
+	func displaySearchFailure(_ message: String)
 	func displayFilters(_ filters: HotelFilters)
 }

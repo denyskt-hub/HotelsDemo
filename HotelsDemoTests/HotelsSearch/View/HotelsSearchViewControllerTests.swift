@@ -67,22 +67,63 @@ final class HotelsSearchViewControllerTests: XCTestCase, ListItemsRendererTestCa
 		sut.simulateAppearanceInWindow()
 
 		sut.displayCellControllers([])
-		XCTAssertTrue(sut.isShowingEmptyState)
-		XCTAssertEqual(sut.emptyStateMessage?.isEmpty, false)
+		XCTAssertTrue(sut.isShowingPlaceholder)
+		XCTAssertEqual(sut.placeholderMessage?.isEmpty, false)
+		XCTAssertNil(sut.placeholderActionTitle, "An empty result is not something the user can retry")
 
 		sut.displayCellControllers([HotelCellController(viewModel: viewModel)])
-		XCTAssertFalse(sut.isShowingEmptyState)
+		XCTAssertFalse(sut.isShowingPlaceholder)
 	}
 
-	func test_displaySearchError_rendersErrorMessage() {
+	func test_displaySearchFailure_rendersErrorWithRetryInPlaceOfTheList() {
 		let (sut, _, _) = makeSUT()
 		sut.simulateAppearanceInWindow()
 
-		sut.displayErrorMessage("Some error message")
+		sut.displaySearchFailure("Some error message")
 
-		XCTAssertEqual(sut.errorMessage, "Some error message")
+		XCTAssertEqual(sut.placeholderMessage, "Some error message")
+		XCTAssertEqual(sut.placeholderActionTitle?.isEmpty, false, "A failed load must offer a way out")
+		XCTAssertNil(sut.presentedViewController, "The error belongs on the screen, not in an alert")
+	}
 
-		sut.simulateDismissal()
+	func test_retryTap_requestsSearchAgain() {
+		let (sut, interactor, _) = makeSUT()
+		sut.simulateAppearanceInWindow()
+		sut.displaySearchFailure("Some error message")
+
+		sut.simulateRetryTap()
+
+		XCTAssertEqual(interactor.messages.last, .handleRetry(.init()))
+	}
+
+	func test_displayCellControllers_afterError_clearsErrorState() {
+		let viewModel = HotelsSearchModels.HotelViewModel(
+			position: 0,
+			starRating: 2,
+			name: "Hotel",
+			score: "6.9",
+			reviews: "10 reviews",
+			price: "US$123.99",
+			priceDetails: "Tax included",
+			photoURL: nil
+		)
+		let (sut, _, _) = makeSUT()
+		sut.simulateAppearanceInWindow()
+		sut.displaySearchFailure("Some error message")
+
+		sut.displayCellControllers([HotelCellController(viewModel: viewModel)])
+
+		XCTAssertFalse(sut.isShowingPlaceholder)
+	}
+
+	func test_displayLoading_clearsErrorState() {
+		let (sut, _, _) = makeSUT()
+		sut.simulateAppearanceInWindow()
+		sut.displaySearchFailure("Some error message")
+
+		sut.displayLoading(true)
+
+		XCTAssertFalse(sut.isShowingPlaceholder, "A retry in flight should not sit under the error it is retrying")
 	}
 
 	func test_displayFilter_routesToHotelFiltersPicker() {
@@ -156,6 +197,7 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 		case doFetchFilters(HotelsSearchModels.FetchFilters.Request)
 		case handleViewDidAppear(HotelsSearchModels.ViewDidAppear.Request)
 		case handleViewWillDisappearFromParent(HotelsSearchModels.ViewWillDisappearFromParent.Request)
+		case handleRetry(HotelsSearchModels.Retry.Request)
 		case handleFilterSelection(HotelsSearchModels.FilterSelection.Request)
 	}
 
@@ -171,6 +213,10 @@ final class SearchBusinessLogicSpy: HotelsSearchBusinessLogic {
 
 	func handleViewWillDisappearFromParent(request: HotelsSearchModels.ViewWillDisappearFromParent.Request) {
 		messages.append(.handleViewWillDisappearFromParent(request))
+	}
+
+	func handleRetry(request: HotelsSearchModels.Retry.Request) {
+		messages.append(.handleRetry(request))
 	}
 
 	func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request) {
@@ -191,27 +237,30 @@ final class HotelsSearchRoutingLogicSpy: HotelsSearchRoutingLogic {
 }
 
 extension HotelsSearchViewController: TableViewRenderer {
-	var errorView: UIAlertController? {
-		presentedViewController as? UIAlertController
-	}
-
-	var errorMessage: String? {
-		errorView?.message
-	}
-
 	var isShowingLoadingIndicator: Bool {
 		!loadingView.isHidden && loadingView.isAnimating
 	}
 
-	var isShowingEmptyState: Bool {
-		tableView.backgroundView != nil
+	var isShowingPlaceholder: Bool {
+		tableView.backgroundView === placeholderView
 	}
 
-	var emptyStateMessage: String? {
-		(tableView.backgroundView as? UILabel)?.text
+	var placeholderMessage: String? {
+		isShowingPlaceholder ? placeholderView.messageLabel.text : nil
+	}
+
+	var placeholderActionTitle: String? {
+		guard isShowingPlaceholder, !placeholderView.actionButton.isHidden else {
+			return nil
+		}
+		return placeholderView.actionButton.configuration?.title
 	}
 
 	func simulateFilterButtonTap() {
 		filterButton.simulateTap()
+	}
+
+	func simulateRetryTap() {
+		placeholderView.actionButton.simulateTap()
 	}
 }

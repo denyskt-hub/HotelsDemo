@@ -73,18 +73,69 @@ final class HotelsSearchInteractorTests: XCTestCase {
 
 		// Bounded on purpose: if a regression detaches the search from the
 		// cancelled task, the cancel never reaches the service and the flow
-		// stalls. Fail in a second instead of hanging until XCTest gives up.
-		let searchFinished = expectation(description: "Wait for search to finish")
-		presenter.onLoadingFinished = { searchFinished.fulfill() }
+		// stalls. Fail fast instead of hanging until XCTest gives up.
+		let searchCancelled = expectation(description: "Wait for search cancellation")
+		service.onCancel = { searchCancelled.fulfill() }
+
+		let nothingElsePresented = expectation(description: "Wait for further presentation")
+		nothingElsePresented.isInverted = true
+		presenter.onMessage = { nothingElsePresented.fulfill() }
 
 		sut.handleViewWillDisappearFromParent(request: .init())
 
-		await fulfillment(of: [searchFinished], timeout: 1.0)
+		await fulfillment(of: [searchCancelled, nothingElsePresented], timeout: 0.1)
 		XCTAssertEqual(service.cancelCallCount, 1)
+		XCTAssertEqual(
+			presenter.messages,
+			[.presentSearchLoading(true)],
+			"A cancelled search should present nothing further — neither an error nor a loading change"
+		)
+	}
+
+	func test_retry_requestsSearchAgain() async {
+		let criteria = anySearchCriteria()
+		let (sut, service, presenter) = makeSUT(criteria: criteria)
+
+		sut.handleRetry(request: .init())
+		await service.waitUntilStarted()
+
+		XCTAssertEqual(service.receivedMessages(), [.search(criteria)])
+
+		// Drain the in-flight request so no suspended task outlives the test.
+		service.completeWithHotels([])
+		await presenter.waitUntilPresented(expected: 3)
+	}
+
+	func test_retry_cancelsPreviousSearchWithoutTouchingLoading() async {
+		let (sut, service, presenter) = makeSUT()
+
+		sut.handleViewDidAppear(request: .init())
+		await service.waitUntilStarted()
+
+		// Regression: a second attempt supersedes the first. The superseded one
+		// must not hide the loading indicator the new one has just shown.
+		sut.handleRetry(request: .init())
+		await service.waitUntilStarted()
+
+		XCTAssertEqual(service.cancelCallCount, 1)
+
+		service.completeWithHotels([], at: 1)
+		await presenter.waitUntilPresented(expected: 4)
+
+		// The superseded task's stray message can land either before or after
+		// the surviving one's, so waiting for a fixed count is not enough:
+		// hold the door open briefly and require that nothing else arrives.
+		let nothingElsePresented = expectation(description: "Wait for further presentation")
+		nothingElsePresented.isInverted = true
+		presenter.onMessage = { nothingElsePresented.fulfill() }
+		await fulfillment(of: [nothingElsePresented], timeout: 0.1)
+
 		XCTAssertEqual(presenter.messages, [
 			.presentSearchLoading(true),
+			.presentSearchLoading(true),
+			.presentSearch(.init(hotels: [])),
 			.presentSearchLoading(false)
-		], "Cancellation should be silenced, not presented as a failed search")
+		], "The superseded search should contribute no messages of its own")
 	}
 
 	func test_viewWillDisappearFromParent_doesNotSearchWhenCriteriaArriveAfterCancellation() async {
@@ -221,6 +272,7 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 	private let pendingSearches = Mutex<[PendingSearch]>([])
 	private let _cancelCallCount = Mutex<Int>(0)
 	private let _onSearch = Mutex<(@Sendable () -> Void)?>(nil)
+	private let _onCancel = Mutex<(@Sendable () -> Void)?>(nil)
 
 	private let stream = AsyncStream<Void>.makeStream()
 
@@ -229,6 +281,11 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 	var onSearch: (@Sendable () -> Void)? {
 		get { _onSearch.withLock { $0 } }
 		set { _onSearch.withLock { $0 = newValue } }
+	}
+
+	var onCancel: (@Sendable () -> Void)? {
+		get { _onCancel.withLock { $0 } }
+		set { _onCancel.withLock { $0 = newValue } }
 	}
 
 	func receivedMessages() -> [Message] {
@@ -281,6 +338,7 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 
 	private func recordCancellation() {
 		_cancelCallCount.withLock { $0 += 1 }
+		onCancel?()
 	}
 }
 
@@ -295,42 +353,39 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 
 	private(set) var messages = [Message]()
 
-	/// Called when the flow reaches its terminal presenter call, so a test can
-	/// bound its wait with an expectation. `waitUntilPresented` suspends until
-	/// the expected number of messages arrives, which is what we want while the
-	/// flow runs — but a regression that stalls the flow turns that into a hang,
-	/// and the test then reports nothing until XCTest's global allowance expires.
-	var onLoadingFinished: (() -> Void)?
+	/// Called after every recorded message, so a test can bound its wait with an
+	/// expectation. `waitUntilPresented` suspends until the expected number of
+	/// messages arrives, which is what we want while the flow runs — but a
+	/// regression that stalls the flow turns that into a hang, and the test then
+	/// reports nothing until XCTest's global allowance expires.
+	var onMessage: (() -> Void)?
 
 	private let stream = AsyncStream<Void>.makeStream()
 
 	func presentSearch(response: HotelsSearchModels.Search.Response) {
-		messages.append(.presentSearch(response))
-		stream.continuation.yield(())
+		record(.presentSearch(response))
 	}
 
 	func presentSearchLoading(_ isLoading: Bool) {
-		messages.append(.presentSearchLoading(isLoading))
-		stream.continuation.yield(())
-
-		if !isLoading {
-			onLoadingFinished?()
-		}
+		record(.presentSearchLoading(isLoading))
 	}
 
 	func presentSearchError(_ error: Error) {
-		messages.append(.presentSearchError(error as NSError))
-		stream.continuation.yield(())
+		record(.presentSearchError(error as NSError))
 	}
 
 	func presentFilters(response: HotelsSearchModels.FetchFilters.Response) {
-		messages.append(.presentFilters(response))
-		stream.continuation.yield(())
+		record(.presentFilters(response))
 	}
 
 	func presentUpdateFilters(response: HotelsSearchModels.FilterSelection.Response) {
-		messages.append(.presentUpdateFilter(response))
+		record(.presentUpdateFilter(response))
+	}
+
+	private func record(_ message: Message) {
+		messages.append(message)
 		stream.continuation.yield(())
+		onMessage?()
 	}
 
 	func waitUntilPresented(expected count: Int = 1) async {

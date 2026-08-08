@@ -56,8 +56,8 @@ extension WeakRefVirtualProxy: HotelsDisplayLogic where T: HotelsDisplayLogic {
 		object?.displayLoading(isLoading)
 	}
 
-	public func displayErrorMessage(_ message: String) {
-		object?.displayErrorMessage(message)
+	public func displaySearchFailure(_ message: String) {
+		object?.displaySearchFailure(message)
 	}
 
 	public func displayFilters(_ filters: HotelFilters) {

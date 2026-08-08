@@ -18,16 +18,12 @@ public final class HotelsSearchViewController: NiblessViewController {
 	public let loadingView = UIActivityIndicatorView(style: .large)
 	public var tableView: UITableView { rootView.tableView }
 
-	public let emptyStateLabel: UILabel = {
-		let label = UILabel()
-		label.text = "No hotels match your search."
-		label.textColor = .secondaryLabel
-		label.textAlignment = .center
-		label.numberOfLines = 0
-		label.font = .preferredFont(forTextStyle: .body)
-		label.adjustsFontForContentSizeCategory = true
-		return label
-	}()
+	public let placeholderView = ListPlaceholderView()
+
+	private enum Placeholder {
+		static let emptyMessage = "No hotels match your search."
+		static let retryTitle = "Try Again"
+	}
 
 	private var actionBar: HotelsActionBar { rootView.actionBar }
 	public var filterButton: UIButton { actionBar.filterButton }
@@ -50,6 +46,7 @@ public final class HotelsSearchViewController: NiblessViewController {
 
 		setupTableView()
 		setupFilterButton()
+		setupPlaceholderView()
 
 		onViewDidAppear = { viewController in
 			viewController.onViewDidAppear = nil
@@ -89,6 +86,19 @@ public final class HotelsSearchViewController: NiblessViewController {
 		filterButton.addTarget(self, action: #selector(filterTapHandler), for: .touchUpInside)
 	}
 
+	private func setupPlaceholderView() {
+		placeholderView.actionButton.addTarget(self, action: #selector(retryTapHandler), for: .touchUpInside)
+	}
+
+	private func showPlaceholder(message: String, actionTitle: String? = nil) {
+		placeholderView.display(message: message, actionTitle: actionTitle)
+		tableView.backgroundView = placeholderView
+	}
+
+	private func hidePlaceholder() {
+		tableView.backgroundView = nil
+	}
+
 	private func cellController(at indexPath: IndexPath) -> HotelCellController? {
 		guard cellControllers.indices.contains(indexPath.row) else {
 			return nil
@@ -99,6 +109,10 @@ public final class HotelsSearchViewController: NiblessViewController {
 	@objc private func filterTapHandler() {
 		interactor.doFetchFilters(request: .init())
 	}
+
+	@objc private func retryTapHandler() {
+		interactor.handleRetry(request: .init())
+	}
 }
 
 // MARK: - HotelsDisplayLogic
@@ -106,8 +120,20 @@ public final class HotelsSearchViewController: NiblessViewController {
 extension HotelsSearchViewController: HotelsDisplayLogic {
 	public func displayCellControllers(_ cellControllers: [HotelCellController]) {
 		self.cellControllers = cellControllers
-		tableView.backgroundView = cellControllers.isEmpty ? emptyStateLabel : nil
+
+		if cellControllers.isEmpty {
+			showPlaceholder(message: Placeholder.emptyMessage)
+		} else {
+			hidePlaceholder()
+		}
+
 		tableView.reloadData()
+	}
+
+	/// Rendered in place of the list rather than as an alert: dismissing an
+	/// alert used to leave the user on a blank screen with nothing to do.
+	public func displaySearchFailure(_ message: String) {
+		showPlaceholder(message: message, actionTitle: Placeholder.retryTitle)
 	}
 
 	public func displayFiltersBadge(_ isBadgeVisible: Bool) {
@@ -119,6 +145,9 @@ extension HotelsSearchViewController: HotelsDisplayLogic {
 			return loadingView.hide()
 		}
 
+		// A retry starts from the error placeholder — clear it so the spinner
+		// does not sit on top of the message it is about to replace.
+		hidePlaceholder()
 		loadingView.show(in: view)
 	}
 

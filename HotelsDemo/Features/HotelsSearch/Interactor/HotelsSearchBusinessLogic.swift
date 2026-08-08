@@ -12,5 +12,6 @@ public protocol HotelsSearchBusinessLogic {
 
 	func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request)
 	func handleViewWillDisappearFromParent(request: HotelsSearchModels.ViewWillDisappearFromParent.Request)
+	func handleRetry(request: HotelsSearchModels.Retry.Request)
 	func handleFilterSelection(request: HotelsSearchModels.FilterSelection.Request)
 }

@@ -24,7 +24,7 @@ public final class HotelsSearchDisplayLogicAdapter: HotelsSearchDisplayLogic {
 	}
 
 	public func displaySearchError(viewModel: HotelsSearchModels.ErrorViewModel) {
-		viewController.displayErrorMessage(viewModel.message)
+		viewController.displaySearchFailure(viewModel.message)
 	}
 
 	public func displayFilters(viewModel: HotelsSearchModels.FetchFilters.ViewModel) {
