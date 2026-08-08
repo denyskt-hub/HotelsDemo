@@ -40,7 +40,19 @@ public enum Environment {
 				See README → Getting Started for details.
 				"""
 			case .invalidURL(let value):
-				return "Invalid URL: \(value)"
+				return """
+				BASE_URL is not a usable URL: \(value)
+
+				It must be absolute, with a scheme and a host, and must not \
+				carry credentials — for example `https://api.example.com`.
+
+				In `.xcconfig` files `//` starts a comment, so a plain \
+				`https://api.example.com` collapses to `https:`. Write it \
+				with the `$()` trick exactly as in the template:
+				BASE_URL = https:/$()/api.example.com
+
+				See README → Getting Started for details.
+				"""
 			}
 		}
 	}
@@ -58,15 +70,36 @@ public enum Environment {
 		let apiHost = try value(for: Keys.apiHost, in: dict)
 		let baseURLString = try value(for: Keys.baseURL, in: dict)
 
-		guard let baseURL = URL(string: baseURLString) else {
-			throw Error.invalidURL(baseURLString)
-		}
+		let baseURL = try baseURL(from: baseURLString)
 
 		return Config(
 			apiKey: apiKey,
 			apiHost: apiHost,
 			baseURL: baseURL
 		)
+	}
+
+	/// `URL(string:)` alone is far too permissive for a base URL: it happily
+	/// accepts `https:` or `api.example.com`, which then compose into endpoint
+	/// URLs that look fine and fail every request at runtime. `https:` is not a
+	/// hypothetical — it is exactly what an `.xcconfig` yields when the `$()`
+	/// trick is omitted and `//` starts a comment. Requiring a scheme and a
+	/// host turns that into an explanation at launch.
+	///
+	/// Credentials are rejected rather than ignored: endpoints now carry the
+	/// whole base URL through, and `SensitiveDataRedactor` masks query items
+	/// and headers — not userinfo — so a `user:pw@host` base URL would print
+	/// verbatim in the request log. This API authenticates by header anyway.
+	private static func baseURL(from string: String) throws -> URL {
+		guard
+			let url = URL(string: string),
+			let scheme = url.scheme, !scheme.isEmpty,
+			let host = url.host(), !host.isEmpty,
+			url.user() == nil, url.password() == nil
+		else {
+			throw Error.invalidURL(string)
+		}
+		return url
 	}
 
 	/// Treats an empty string the same as a missing key: when the secrets

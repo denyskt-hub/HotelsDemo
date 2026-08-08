@@ -10,18 +10,13 @@ import Foundation
 public enum HotelsEndpoint {
 	case searchHotels
 
+	/// Appending to the base URL cannot fail, so composing an endpoint has no
+	/// error case to invent. Whether `baseURL` is usable at all is decided once
+	/// at launch by `Environment`, not re-litigated on every request.
 	public func url(_ baseURL: URL) -> URL {
 		switch self {
 		case .searchHotels:
-			var components = URLComponents()
-			components.scheme = baseURL.scheme
-			components.host = baseURL.host
-			components.port = baseURL.port
-			components.path = baseURL.path + "/api/v1/hotels/searchHotels"
-			guard let url = components.url else {
-				preconditionFailure("Invalid endpoint URL composed from baseURL: \(baseURL)")
-			}
-			return url
+			return baseURL.appending(path: "api/v1/hotels/searchHotels")
 		}
 	}
 }

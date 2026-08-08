@@ -37,6 +37,47 @@ final class EnvironmentTests: XCTestCase {
 		}
 	}
 
+	func test_load_throwsInvalidURLWhenBaseURLIsNotAbsolute() {
+		// `https:` is what the xcconfig yields when the `$()` trick is omitted:
+		// `//` starts a comment, so the host is silently eaten. Each of these
+		// passes `URL(string:)` and then fails every request at runtime.
+		let unusable = [
+			"https:",
+			"https://",
+			"api.example.com",
+			"/api/v1",
+			"not a url",
+			// Endpoints carry the whole base URL through, and the log redactor
+			// masks query items and headers — not userinfo. Reject credentials
+			// rather than let them reach the request log verbatim.
+			"https://user:pw@api.example.com"
+		]
+
+		for value in unusable {
+			var dict = validDictionary()
+			dict["BASE_URL"] = value
+
+			assertThrows(.invalidURL(value), loadingFrom: dict)
+		}
+	}
+
+	func test_load_acceptsBaseURLWithPortAndPath() throws {
+		var dict = validDictionary()
+		dict["BASE_URL"] = "https://api.example.com:8443/v2"
+
+		let config = try Environment.load(from: dict)
+
+		XCTAssertEqual(config.baseURL, URL(string: "https://api.example.com:8443/v2")!)
+	}
+
+	func test_invalidURLError_describesTheXcconfigCommentPitfall() {
+		let description = Environment.Error.invalidURL("https:").description
+
+		XCTAssertTrue(description.contains("BASE_URL"))
+		XCTAssertTrue(description.contains("$()"))
+		XCTAssertTrue(description.contains("README"))
+	}
+
 	func test_emptyValueError_describesHowToConfigureSecrets() {
 		let description = Environment.Error.emptyValue("BASE_URL").description
 
