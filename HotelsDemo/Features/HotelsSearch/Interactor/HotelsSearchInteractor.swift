@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Synchronization
 
 public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	private let context: HotelsSearchContext
@@ -15,6 +16,11 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	private let filtersStore: FiltersStore
 	private let repository: HotelsRepository
 	private let presenter: HotelsSearchPresentationLogic
+
+	/// Owns the whole "retrieve criteria → search" flow, not just the network
+	/// call. Cancel-previous and store-new run inside a single `Mutex` critical
+	/// section, so a cancel can never overtake the task it is meant to cancel.
+	private let searchTask = Mutex<Task<Void, Never>?>(nil)
 
 	public init(
 		context: HotelsSearchContext,
@@ -29,12 +35,21 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 	}
 
 	public func handleViewDidAppear(request: HotelsSearchModels.ViewDidAppear.Request) {
-		Task {
-			do {
-				let criteria = try await provider.retrieve()
-				performSearch(request: .init(criteria: criteria))
-			} catch {
-				await presentSearchError(error)
+		searchTask.withLock { task in
+			task?.cancel()
+			task = Task { [self] in
+				do {
+					let criteria = try await provider.retrieve()
+
+					// The criteria still arrive after the user has left: the
+					// store completes regardless of cancellation. Stop here
+					// instead of starting a search nobody is waiting for.
+					guard !Task.isCancelled else { return }
+
+					await performSearch(request: .init(criteria: criteria))
+				} catch {
+					await presentSearchError(error)
+				}
 			}
 		}
 	}
@@ -43,32 +58,27 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		doCancelSearch()
 	}
 
-	private let searchTaskStore = TaskStore<Void, Never>()
-	private func performSearch(request: HotelsSearchModels.Search.Request) {
-		let task = Task {
-			await presenter.presentSearchLoading(true)
+	private func performSearch(request: HotelsSearchModels.Search.Request) async {
+		await presenter.presentSearchLoading(true)
 
-			do {
-				let hotels = try await worker.search(criteria: request.criteria)
-				await setHotels(hotels)
+		do {
+			let hotels = try await worker.search(criteria: request.criteria)
+			await setHotels(hotels)
 
-				let currentFilters = await currentFilters()
-				let filteredHotels = await applyFilters(currentFilters)
-				await presenter.presentSearch(response: .init(hotels: filteredHotels))
-			} catch {
-				await presentSearchError(error)
-			}
-
-			await presenter.presentSearchLoading(false)
+			let currentFilters = await currentFilters()
+			let filteredHotels = await applyFilters(currentFilters)
+			await presenter.presentSearch(response: .init(hotels: filteredHotels))
+		} catch {
+			await presentSearchError(error)
 		}
-		Task {
-			await searchTaskStore.setTask(task)
-		}
+
+		await presenter.presentSearchLoading(false)
 	}
 
 	private func doCancelSearch() {
-		Task {
-			await searchTaskStore.cancel()
+		searchTask.withLock { task in
+			task?.cancel()
+			task = nil
 		}
 	}
 
@@ -107,7 +117,11 @@ public final class HotelsSearchInteractor: HotelsSearchBusinessLogic, Sendable {
 		await repository.filter(with: HotelFiltersSpecificationFactory.make(from: filters))
 	}
 
+	/// Cancellation is the caller's own intent — the user left the screen — so
+	/// it is silenced instead of being surfaced as a failed search.
 	private func presentSearchError(_ error: Error) async {
+		guard !Task.isCancelled else { return }
+
 		await presenter.presentSearchError(error)
 	}
 }

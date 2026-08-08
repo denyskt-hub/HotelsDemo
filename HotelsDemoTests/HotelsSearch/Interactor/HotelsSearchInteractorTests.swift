@@ -65,6 +65,51 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		])
 	}
 
+	func test_viewWillDisappearFromParent_cancelsInFlightSearch() async {
+		let (sut, service, presenter) = makeSUT()
+
+		sut.handleViewDidAppear(request: .init())
+		await service.waitUntilStarted()
+
+		// Bounded on purpose: if a regression detaches the search from the
+		// cancelled task, the cancel never reaches the service and the flow
+		// stalls. Fail in a second instead of hanging until XCTest gives up.
+		let searchFinished = expectation(description: "Wait for search to finish")
+		presenter.onLoadingFinished = { searchFinished.fulfill() }
+
+		sut.handleViewWillDisappearFromParent(request: .init())
+
+		await fulfillment(of: [searchFinished], timeout: 1.0)
+		XCTAssertEqual(service.cancelCallCount, 1)
+		XCTAssertEqual(presenter.messages, [
+			.presentSearchLoading(true),
+			.presentSearchLoading(false)
+		], "Cancellation should be silenced, not presented as a failed search")
+	}
+
+	func test_viewWillDisappearFromParent_doesNotSearchWhenCriteriaArriveAfterCancellation() async {
+		let provider = HotelsSearchCriteriaProviderSpy()
+		let (sut, service, presenter) = makeSUT(provider: provider)
+
+		sut.handleViewDidAppear(request: .init())
+		await provider.waitUntilStarted()
+
+		// Regression: the criteria retrieval is part of the cancellable flow.
+		// The store completes regardless of cancellation, so leaving the screen
+		// while it is in flight used to start a search nothing could stop.
+		sut.handleViewWillDisappearFromParent(request: .init())
+
+		let searchNotRequested = expectation(description: "Wait for search")
+		searchNotRequested.isInverted = true
+		service.onSearch = { searchNotRequested.fulfill() }
+
+		provider.completeWithCriteria(anySearchCriteria())
+
+		await fulfillment(of: [searchNotRequested], timeout: 0.1)
+		XCTAssertTrue(service.receivedMessages().isEmpty)
+		XCTAssertTrue(presenter.messages.isEmpty)
+	}
+
 	func test_filters_presentsFilters() async {
 		let filters = anyHotelFilters()
 		let (sut, _, presenter) = makeSUT()
@@ -95,7 +140,20 @@ final class HotelsSearchInteractorTests: XCTestCase {
 		service: HotelsSearchServiceSpy,
 		presenter: SearchPresentationLogicSpy
 	) {
-		let provider = HotelsSearchCriteriaProviderStub(criteria: criteria)
+		makeSUT(
+			provider: HotelsSearchCriteriaProviderStub(criteria: criteria),
+			filters: filters
+		)
+	}
+
+	private func makeSUT(
+		provider: HotelsSearchCriteriaProvider,
+		filters: HotelFilters = anyHotelFilters()
+	) -> (
+		sut: HotelsSearchInteractor,
+		service: HotelsSearchServiceSpy,
+		presenter: SearchPresentationLogicSpy
+	) {
 		let service = HotelsSearchServiceSpy()
 		let presenter = SearchPresentationLogicSpy()
 		let context = HotelsSearchContext(
@@ -120,10 +178,58 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 		case search(HotelsSearchCriteria)
 	}
 
+	/// Per-search state machine guaranteeing the continuation is resumed
+	/// exactly once, no matter in which phase cancellation arrives (before
+	/// suspension, while suspended, or racing a completion).
+	private final class PendingSearch: Sendable {
+		private enum State {
+			case idle
+			case suspended(CheckedContinuation<[Hotel], Error>)
+			case finished
+		}
+
+		private let state = Mutex<State>(.idle)
+
+		var isFinished: Bool {
+			state.withLock {
+				if case .finished = $0 { return true }
+				return false
+			}
+		}
+
+		/// Stores the continuation; returns `false` if the search already
+		/// finished (e.g. was cancelled before it could suspend).
+		func suspend(_ continuation: CheckedContinuation<[Hotel], Error>) -> Bool {
+			state.withLock {
+				guard case .idle = $0 else { return false }
+				$0 = .suspended(continuation)
+				return true
+			}
+		}
+
+		/// Atomically extracts the continuation at most once.
+		func take() -> CheckedContinuation<[Hotel], Error>? {
+			state.withLock { state in
+				defer { state = .finished }
+				if case let .suspended(continuation) = state { return continuation }
+				return nil
+			}
+		}
+	}
+
 	private let messages = Mutex<[Message]>([])
-	private let continuations = Mutex<[CheckedContinuation<[Hotel], Error>]>([])
+	private let pendingSearches = Mutex<[PendingSearch]>([])
+	private let _cancelCallCount = Mutex<Int>(0)
+	private let _onSearch = Mutex<(@Sendable () -> Void)?>(nil)
 
 	private let stream = AsyncStream<Void>.makeStream()
+
+	var cancelCallCount: Int { _cancelCallCount.withLock { $0 } }
+
+	var onSearch: (@Sendable () -> Void)? {
+		get { _onSearch.withLock { $0 } }
+		set { _onSearch.withLock { $0 = newValue } }
+	}
 
 	func receivedMessages() -> [Message] {
 		messages.withLock { $0 }
@@ -131,26 +237,50 @@ final class HotelsSearchServiceSpy: HotelsSearchService {
 
 	func search(criteria: HotelsSearchCriteria) async throws -> [Hotel] {
 		messages.withLock { $0.append(.search(criteria)) }
+		onSearch?()
 
-		return try await withCheckedThrowingContinuation { continuation in
-			continuations.withLock { $0.append(continuation) }
-			stream.continuation.yield(())
+		let pending = PendingSearch()
+
+		return try await withTaskCancellationHandler {
+			try await withCheckedThrowingContinuation { continuation in
+				guard !pending.isFinished else {
+					// Cancelled before suspension.
+					return continuation.resume(throwing: CancellationError())
+				}
+
+				guard pending.suspend(continuation) else {
+					// Cancelled between the check above and suspension.
+					return continuation.resume(throwing: CancellationError())
+				}
+
+				pendingSearches.withLock { $0.append(pending) }
+				stream.continuation.yield(())
+			}
+		} onCancel: { [weak self] in
+			self?.recordCancellation()
+			// Deterministic cancellation: wake the suspended search no matter
+			// when the cancel arrives — a continuation must never stay parked.
+			pending.take()?.resume(throwing: CancellationError())
 		}
 	}
 
 	func completeWithHotels(_ hotels: [Hotel], at index: Int = 0) {
-		let continuation = continuations.withLock { $0[index] }
-		continuation.resume(returning: hotels)
+		let pending = pendingSearches.withLock { $0[index] }
+		pending.take()?.resume(returning: hotels)
 	}
 
 	func completeWithError(_ error: Error, at index: Int = 0) {
-		let continuation = continuations.withLock { $0[index] }
-		continuation.resume(throwing: error)
+		let pending = pendingSearches.withLock { $0[index] }
+		pending.take()?.resume(throwing: error)
 	}
 
 	func waitUntilStarted() async {
 		var iterator = stream.stream.makeAsyncIterator()
 		_ = await iterator.next()
+	}
+
+	private func recordCancellation() {
+		_cancelCallCount.withLock { $0 += 1 }
 	}
 }
 
@@ -165,6 +295,13 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 
 	private(set) var messages = [Message]()
 
+	/// Called when the flow reaches its terminal presenter call, so a test can
+	/// bound its wait with an expectation. `waitUntilPresented` suspends until
+	/// the expected number of messages arrives, which is what we want while the
+	/// flow runs — but a regression that stalls the flow turns that into a hang,
+	/// and the test then reports nothing until XCTest's global allowance expires.
+	var onLoadingFinished: (() -> Void)?
+
 	private let stream = AsyncStream<Void>.makeStream()
 
 	func presentSearch(response: HotelsSearchModels.Search.Response) {
@@ -175,6 +312,10 @@ final class SearchPresentationLogicSpy: HotelsSearchPresentationLogic {
 	func presentSearchLoading(_ isLoading: Bool) {
 		messages.append(.presentSearchLoading(isLoading))
 		stream.continuation.yield(())
+
+		if !isLoading {
+			onLoadingFinished?()
+		}
 	}
 
 	func presentSearchError(_ error: Error) {
