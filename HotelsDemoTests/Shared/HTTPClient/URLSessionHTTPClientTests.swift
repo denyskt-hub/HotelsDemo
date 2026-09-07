@@ -33,7 +33,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
 		XCTAssertEqual(sent.url, request.url)
 		XCTAssertEqual(sent.httpMethod, "POST")
 		XCTAssertEqual(sent.value(forHTTPHeaderField: "Content-Type"), "application/json")
-		XCTAssertEqual(sent.bodyData(), request.httpBody, "Expected the body to reach the loader unchanged")
+		XCTAssertEqual(sent.streamedBodyData(), request.httpBody, "Expected the body to reach the loader unchanged")
 	}
 
 	func test_perform_deliversDataAndResponseOnHTTPURLResponse() async throws {
@@ -214,11 +214,11 @@ private final class URLProtocolStub: URLProtocol {
 }
 
 private extension URLRequest {
-	/// `URLProtocol` never sees `httpBody`: `URLSession` moves it into
-	/// `httpBodyStream` before handing the request to the loader, so asserting
-	/// on `httpBody` here would silently compare `nil` to `nil`.
-	func bodyData() -> Data? {
-		if let httpBody { return httpBody }
+	/// A request that has reached the loader carries its body in `httpBodyStream`.
+	/// `URLSession` moves `httpBody` there before `canInit(with:)` runs, so
+	/// `httpBody` is nil at every `URLProtocol` stage and asserting on it would
+	/// fail on a body that was in fact sent.
+	func streamedBodyData() -> Data? {
 		guard let stream = httpBodyStream else { return nil }
 
 		stream.open()
